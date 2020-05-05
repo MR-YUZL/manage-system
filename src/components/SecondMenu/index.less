@@ -1,0 +1,57 @@
+.qf-components-secondmenu {
+    @secondWidth: 120px;
+    width       : 100%;
+
+    .menu-left {
+        height: 100vh;
+
+        .menu {
+            width: @secondWidth;
+
+            .ant-menu {
+                overflow: hidden;
+
+                .ant-menu-item {
+                    padding: 0 24px !important;
+                }
+            }
+        }
+
+        .l-left-title {
+            padding      : 4px 0 4px 24px;
+            line-height  : 50px;
+            border-right : 1px solid #e8e8e8;
+            border-bottom: 1px solid #e8e8e8;
+            color        : #000;
+            font-weight  : 600;
+        }
+    }
+
+
+    // 右边内容部分
+    .second-content {
+        width           : calc(100% - @secondWidth);
+        height          : 100vh;
+        background-color: #f1f2f5;
+
+        &-header {
+            width           : 100%;
+            line-height     : 50px;
+            padding         : 4px 20px;
+            background-color: #fff;
+
+            .count-img {
+                margin-top      : 5px;
+                width           : 40px;
+                height          : 40px;
+                border-radius   : 50%;
+                overflow        : hidden;
+                background-color: #666;
+            }
+        }
+
+        &-container {
+            width: 100%;
+        }
+    }
+}

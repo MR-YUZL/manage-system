@@ -1,0 +1,39 @@
+.qf-components-leftmenu{
+    // width: 120px;
+    height: 100vh;
+    background-color:#2D3A64;
+    overflow-y: auto;
+    overflow-x: hidden;
+   .img{
+       width: 100%;
+       img{
+           width: 100%;
+           height: 58px;
+       }
+   }
+   .menu{
+    // width: 180px;
+    .ant-menu-item{
+        padding-right: 16px;
+        
+    }
+    .ant-menu-submenu{
+        .ant-menu-submenu-title{
+            &>span{
+                img{
+                    padding: 0 5px  5px 0;
+                }
+            }
+        }
+    }
+    //    text-align: center;
+       li{
+        //    padding-left: 0 !important;
+        //    padding-right: 0;
+        //    width: 120px;
+       }
+   }
+   .ant-menu-dark, .ant-menu-dark .ant-menu-sub {
+        background: #2D3A64;
+    }
+}
