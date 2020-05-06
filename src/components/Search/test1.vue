@@ -4,7 +4,7 @@
           >
             <div v-for="(item,index) in searchList" :key="index" class="search_item" :class="item.type == 'time_interval'?'time_interval':''">
             
-             
+
               <a-form-item :label="item.label" v-if="item.label && item.type == 'input'" >
                 <a-input  v-decorator="[...item.model]" />
               </a-form-item>

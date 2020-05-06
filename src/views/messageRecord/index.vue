@@ -1,97 +1,70 @@
 <template>
   <div>
-    <Search :search-list="searchList" @func="getMsgFormSon" />
+    <h2 class="TitleH2"></h2>
+    <Search :tools="formList" @onSearch="searchFun" /> 
   </div>
 </template>
 
 <script>
-import Search from './../../components/Search/test1'
+import Search from './../../components/Search/index'
+import moment from "moment";
 export default {
   components: {
     Search
   },
-  data: () => ({
-    searchList:[
-            {
-                model:'time',              //参数数据
-                status:'time',        //匹配组件
-                name:'',              //参数名称
-                title:'回访时间：'     //条件名称
-            },
-            {
-                model:'input',
-                status:'input',
-                name:'',
-                title:'客户标签：'
-            },
-            
-            {
-                model:'select',//单选下拉
-                status:'select',
-                name:'',
-                title:'客户姓名：',
-                options:[{name:'1111',value:'1111'},{name:'2222',value:'2222'}]
-            },
-            {
-                model:'input1',
-                status:'input',
-                name:'',
-                title:'输入框：'
-            },
-            {
-                model:'time1',
-                status:'time',
-                name:'',
-                title:'结束时间：'
-            },
-            {
-                model:['select_input1','select_input2'],
-                status:'select_input',
-                name:'',
-                title:'',
-                // placeholder:'ces',
-                options:[{name:'1111',value:'1111'},{name:'2222',value:'2222'}]
-            },
-             {
-                model:'time3',
-                status:'time',
-                name:'',
-                title:'回访时间：'
-            },
-            {
-                model:'input3',
-                status:'input',
-                name:'',
-                title:'客户标签：'
-            },
-            {
-              model:'time_interval3',
-              status:'time_interval',
-              name:'',
-              title:'时间区间：'
-            },
-            {
-              model:'number_nterval',
-              status:'number_nterval',
-              name:'',
-              title:'数字区间：'
-            },
-        
-            {
-                status:'btn',
-            },
-        ],
-         msgFormSon:[]
-  }),
-  
+  data(){
+    return {
+      formList: [
+        {
+          type: 'input',
+          title: '用户名:',
+          placeholder: '请输入',
+          key: 'guestName',
+          defaultValue: null,
+        },
+        {
+          type: 'dateRange',
+          title: '留言时间:',
+          key: 'queryTime',
+          defaultValue:null,
+          ranges: {
+            今天: [moment(), moment()],
+            昨天: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+            近7天: [moment().subtract(6, "days"), moment()],
+            近30天: [moment().subtract(29, "days"), moment()]
+          }
+        },
+        {
+          type: 'select',
+          title: '留言状态:',
+          key: 'status',
+          defaultValue: "null",
+          options:[{ value: "null", name: "全部" },{value:0,name:"未处理"},{value:1,name:'已处理'}]
+        },
+        {
+          type: 'select',
+          title: '来源终端:',
+          key: 'source',
+          defaultValue: "null",
+          options:[{ value: "null", name: "全部" },{value:0,name:"网页"},{value:1,name:'微信小程序'},{value:2,name:'微信公众号'},{value:3,name:'安卓'},{value:3,name:'ios'}]
+        },
+        {
+          type: 'search',
+          title: '筛选',
+          btnType:'primary'
+        }
+      ],
+      searchField: {},
+      msgFormSon:[]
+    }
+  },
   mounted() {
     console.log("goods/groups加载");
   },
   methods: {
     //检索组件传参接收
-    getMsgFormSon(data){
-      this.msgFormSon = data
-      console.log(this.msgFormSon)
+    searchFun(values){
+      this.searchField = values
     }
   },
   watch: {},

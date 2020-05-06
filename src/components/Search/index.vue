@@ -1,148 +1,144 @@
 <template>
-  <div class="search">
-    <a-row>
-      <a-col :xs="24" :sm="24" :md="12" :lg="8" :xl="6" v-for="(item,index) in searchList" :key="index" class="condition">
-          <span >{{item.title}}</span>
-          <!-- <span v-else></span> -->
-          <!-- 输入框 -->
-          <a-input v-if="item.status == 'input'" v-model="item.model" placeholder="请输入" />
-          <!-- 下拉选择 -->
-           <a-select
-            v-else-if="item.status == 'select'" 
-            v-model="item.model"
-            placeholder="请选择实现"
-            style="width: 60%"
-            @change="handleChange"
-            @popupScroll="popupScroll"
+  <div class="tool-bar">
+      <div class="item"  v-for="(item, index) in tools" :key="index">
+        <div v-if="!!item.title && item.type !== 'search'" style="margin-right:10px">
+            {{item.title}}
+        </div>
+        <div v-if="item.type === 'input'">
+            <a-input
+                style="width: 170px"
+                :placeholder="item.placeholder"
+                @pressEnter="onSearch"
+                @change="eonChange($event,item)"
+                :value="valueObj[item.key]"
+            />
+        </div>
+        <div v-else-if="item.type === 'select'">
+            <a-select
+                style="width: 170px"
+                @change="onChange($event,item)"
+                :value="valueObj[item.key]"
+                :allowClear="!!item.allowClear"
             >
-            <a-select-option v-for="option in item.options" :key="option">
-                {{option}}
-            </a-select-option>
-          </a-select>
-
-          <!-- 日期选择器 -->
-          <a-date-picker v-else-if="item.status == 'time'"
-           v-model="item.model" showTime format="YYYY-MM-DD HH:mm:ss" @change="onChange(...arguments,index)" />
-
-          <!-- 日期区间选择器 -->
-           <a-range-picker  v-else-if="item.status == 'time_interval'" v-model="item.model" 
-            showTime format="YYYY-MM-DD HH:mm:ss" @change="onChange(...arguments,index)" />
-
-            <!-- 下拉 + 输入 -->
-          <a-input-group compact v-else-if="item.status == 'select_input'" >
-            <a-select  style="width: 35%" :placeholder="item.placeholder">
-                <a-select-option v-for="option in item.options" :key="option" >
-                    {{option}}
+                <a-select-option
+                    v-for="(it, ind) in item.options"
+                    :key="ind"
+                    :value="it.value"
+                >
+                    {{it.name}}
                 </a-select-option>
             </a-select>
-            <a-input style="width: 65%"  />
-          </a-input-group>
+        </div>
+        <div v-else-if="item.type === 'dateRange'">
+            <a-range-picker
+                :value="valueObj[item.key]"
+                @change="onChange($event,item)"
+                :ranges="item.ranges"
+                style="width: 240px"
+            />
+        </div>
+        <div v-else-if="item.type === 'search'">
+            <a-button @click="onSearch" :type="item.btnType || 'default'">筛选</a-button>
+        </div>
 
-          <!-- 数字区间 -->
-          <div v-else-if="item.status == 'number_nterval'" class="number">
-               <a-input-number
-                :min="0"
-                :max="100"
-                style="width: 47%"
-                v-model="item.model[0]"
-                :formatter="value => `${value}个`"
-                :parser="value => value.replace('个', '')"
-                />
-                <span>-</span>
-               <a-input-number
-                :min="0"
-                :max="100"
-                style="width: 47%"
-                v-model="item.model[1]"
-                :formatter="value => `${value}个`"
-                :parser="value => value.replace('个', '')"
-                /> 
-          </div>
-          <a-button type="primary" v-else-if="item.status == 'btn'" @click="sendMsg">搜索</a-button>
-      </a-col>
-    </a-row>
-    
+      </div>
+      
   </div>
 </template>
 
 <script>
-
+// tools 传参示例
+    //   [
+    //       {
+    //         type: 'input',
+    //         title: '活动名称:',
+    //         placeholder: '请输入标签',
+    //         key: 'searchText',
+    //         defaultValue: null,
+    //     },
+    //     {
+    //         type: 'select',
+    //         title: '活动类型:',
+    //         key: 'type',
+    //         defaultValue: 'null',
+    //         options: [
+    //           {value: 'null', name: '全部'},
+    //           {value: '1', name: '店铺满减'},
+    //         ]
+    //     },
+    //     {
+    //         type: 'search',
+    //         title: '筛选',
+    //         btnType: 'default'
+    //     }
+    //   ]
 export default {
-    props:['searchList'],
-    data: () => ({
-        formItemLayout: {
-            labelCol: { span: 6 },
-            wrapperCol: { span: 14 },
-        },
-    }),
-    components: {},
-    beforeCreate() {
-        this.form = this.$form.createForm(this, { name: 'validate_other' });
+  name:'search',
+  props: {
+    tools:{
+      type: Array,
+      required: false,
+      default:null
     },
-    mounted() {
-        console.log("goods/groups加载");
-    },
-    methods: {
-        handleChange(value) {
-            console.log(`Selected: ${value}`);
-        },
-        popupScroll() {
-            console.log('popupScroll');
-        },
-     
-        onChange(date, dateString ,index) {
-            
-            // this.searchList[index].model = dateString
-            console.log(index ,date, dateString);
-            
-        },
-        sendMsg(){
-            this.$emit('func',this.searchList)
-        },
-        handleSubmit(e) {
-            e.preventDefault();
-            this.form.validateFields((err, values) => {
-                if (!err) {
-                console.log('Received values of form: ', values);
+  },
+  data() {
+    return {
+      valueObj: {},
+    };
+  },
+  created() {
+    this.tools.forEach((item) => {
+        if(item.key != null) {
+            // this.valueObj[item.key] = item.defaultValue || null;
+        this.$set(this.valueObj, item.key, item.defaultValue || null) // 需要用$set方法去设置data中valueObj的属性值，不然无法实现双向绑定
+        }
+    })
+    console.log(this.tools, this.valueObj)
+  },
+  methods: {
+      eonChange(e,targetItem) {
+            this.valueObj[targetItem.key] = e.target.value;
+            // console.log(this.valueObj,targetItem,e.target.value);
+            this.$emit('onChange',targetItem.key, e.target.value, this.valueObj); // 返回当前改变的字段名，改变的内容，改变后valueObj的内容
+      },
+      onChange(value,targetItem) {
+            this.valueObj[targetItem.key] = value;
+            // console.log(this.valueObj,targetItem,value);
+            this.$emit('onChange',targetItem.key, value, this.valueObj); // 返回当前改变的字段名，改变的内容，改变后valueObj的内容
+      },
+      onSearch() {
+          console.log(this.valueObj)
+          this.$emit('onSearch', this.valueObj);
+      }
+  },
+  watch: {
+    tools: {
+        handler(ee) {
+            console.log(ee)
+            this.tools.forEach((item) => {
+                if(item.key != null) {
+                    // this.valueObj[item.key] = item.defaultValue || null;
+                this.$set(this.valueObj, item.key, item.defaultValue || null) // 需要用$set方法去设置data中valueObj的属性值，不然无法实现双向绑定
                 }
-            });
+            })
+            console.log(this.tools, this.valueObj)
         },
+        deep: true
     },
-    watch: {},
-    computed: {}
+  }
 };
 </script>
-<style lang="less" scoped>
-    .search{
-        .condition{
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 30px;
-            margin: 10px 0;
-        }
-        .condition::after{
-            content: '';
-            flex:1 //flex:auto
-        }
-        // .ant-col-6 {
-        //     display: flex;
-        //     justify-content: space-between;
-        //     align-items: center;
-        //     padding: 0 20px;
-        //     margin: 10px 0;
-        // }
-        .ant-calendar-picker{
-            width: 60% !important;
-            min-width: 0 !important;
-        }
-        
-        .ant-input{
-            width: 60%;
-        }
-        .number{
-            width: 60%;
-        }
+
+<style lang="less">
+.tool-bar{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    .item{
+        margin: 10px 20px 0 0;
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
     }
-    
+}
 </style>
