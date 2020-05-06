@@ -31,6 +31,6 @@ export default {
 </script>
 <style lang="less" scoped>
     .sessionCenter{
-        width: calc(100% - 20% - 300px);
+        width: calc(100% - 550px);
     }
 </style>

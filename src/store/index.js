@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import conversation from './modules/conversation'
 import user from './modules/user'
 import blacklist from './modules/blacklist'
+import basic from './modules/basic'
 //注入全局属性$message
 import { message} from 'ant-design-vue'
 
@@ -55,5 +56,6 @@ export default new Vuex.Store({
     conversation,
     blacklist,
     user,
+    basic
   }
 })

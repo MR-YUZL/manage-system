@@ -1,12 +1,12 @@
 <template>
-  <div cllass="model">
-     <a-button type="primary" @click="showModal">Open Modal with async logic</a-button>
+  <div class="model">
+     <!-- <a-button type="primary" @click="showModal">Open Modal with async logic</a-button> -->
      <a-modal
       :title="modelObj.title"
       :visible="visible"
-      @ok="handleOk"
       :confirmLoading="confirmLoading"
       @cancel="handleCancel"
+      :footer="null"
     >
      
       <div>
@@ -91,14 +91,25 @@
                   :options="item.options"
                 />
               </a-form-item>
+              <a-form-item :label="item.label" v-if="item.label && item.type == 'tag'" >
+                 <template v-for="tag in item.options">
+                  <a-checkable-tag
+                    :key="tag.value"
+                    :checked="selectedTags.indexOf(tag) > -1"
+                    @change="checked => handleChange(tag, checked)"
+                  >
+                    {{ tag.value }}
+                  </a-checkable-tag>
+                </template>
+              </a-form-item>
             </div>
            
-            <a-form-item :wrapper-col="{ span: 14, offset: 4 }">
-              <a-button type="primary" @click="onSubmit">
-                  Create
+            <a-form-item :wrapper-col="{ span: 14, offset: 8 }">
+              <a-button  @click="handleCancel">
+                  取消
               </a-button>
-              <a-button style="margin-left: 10px;">
-                  Cancel
+              <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">
+                  确定
               </a-button>
             </a-form-item>
         </a-form>
@@ -113,15 +124,16 @@ export default {
   data(){
     return{
       form:this.$form.createForm(this, { name: 'transationFlow' }),
-      visible: false,
+      // visible: false,
       confirmLoading: false,
+      selectedTags: [],
       formItemLayout: {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 },
       },
       
     
-      modelObj:{
+      modelObj1:{
           title:'新增',
           modelList:[
               {
@@ -335,6 +347,14 @@ export default {
                     },
                   ]
               },
+              {
+                type:'tag' ,
+                label:'标签',
+                model:[
+                    'tag',
+                  ],
+                options:[{key:'111',value:'111'},{key:'222',value:'222'}]
+              },
           ]
 
       },
@@ -345,11 +365,13 @@ export default {
   components: {
     
   },
-  mounted() {},
+  props:['visible','modelObj'],
+  mounted() {
+    console.log('----------------------')
+    console.log(this.visible,this.modelObj)
+  },
   methods: {
-    showModal() {
-      this.visible = true;
-    },
+   
     handleOk(e) {
       console.log(e)
       this.confirmLoading = true;
@@ -379,6 +401,15 @@ export default {
         return e;
       }
       return e && e.fileList;
+    },
+    //标签选择
+     handleChange(tag, checked) {
+      const { selectedTags } = this;
+      const nextSelectedTags = checked
+        ? [...selectedTags, tag]
+        : selectedTags.filter(t => t !== tag);
+      console.log('You are interested in: ', nextSelectedTags);
+      this.selectedTags = nextSelectedTags;
     },
   },
   watch: {},

@@ -1,6 +1,6 @@
 <template>
   <div>
-    电话客服
+    <router-view></router-view>
   </div>
 </template>
 

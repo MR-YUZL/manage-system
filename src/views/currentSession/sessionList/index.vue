@@ -72,7 +72,7 @@ export default {
 <style lang="less" scoped>
     .session_list{
         background: #FFFFFF;
-        width: 20%;
+        width:250px;
         .list_count{
             line-height: 45px;
             padding-left: 15px;
