@@ -60,6 +60,7 @@ export default {
             justify-content: space-between;
             border: 1px solid #E7E7E8;
             padding: 0 0 0 10px;
+            background: #FFFFFF;
             .left{
                 display: flex;
                 align-items: center;

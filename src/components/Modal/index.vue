@@ -119,7 +119,7 @@
 </template>
 
 <script>
-
+import { mapState } from 'vuex'
 export default {
   data(){
     return{
@@ -365,7 +365,7 @@ export default {
   components: {
     
   },
-  props:['visible','modelObj'],
+  props:['modelObj'],
   mounted() {
     console.log('----------------------')
     console.log(this.visible,this.modelObj)
@@ -383,10 +383,11 @@ export default {
     handleCancel(e) {
       console.log(e)
       console.log('Clicked cancel button');
-      this.visible = false;
+      this.$store.commit('getVisible',false)
     },  
     onSubmit(e) {
       e.preventDefault();
+      this.$store.commit('getVisible',false)
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
           console.log('Received values of form: ', values);
@@ -413,7 +414,11 @@ export default {
     },
   },
   watch: {},
-  computed: {}
+  computed: {
+    ...mapState({
+      visible: state => state.basic.visible,
+    })
+  }
 };
 </script>
 <style lang="less" scoped>

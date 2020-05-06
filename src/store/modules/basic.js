@@ -1,9 +1,11 @@
 const basic = {
     state : {
-        visiable:false
+        visible:false
     },
     mutations : {
-
+        getVisible(state,visible){
+            state.visible = visible
+        }
     },
     action : {
 

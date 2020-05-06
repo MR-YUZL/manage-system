@@ -4,12 +4,12 @@
           <span>访客标签</span>
           <span class="setting" @click="tagsFn">设置标签</span>  
         </div>
-        <div>
+        <div class="tag_item">
             <a-tag color="#2db7f5" v-for="(item,index) in tagsList" :key="index">
                 {{item}}
             </a-tag>
         </div>
-        <Model :modelObj="modelObj" :visible="visible" />
+        <Model :modelObj="modelObj"  />
     </div>
 </template>
 <script>
@@ -37,13 +37,19 @@ export default {
 
         }
     },
+    computed(){
+
+    },
     components:{
         Model
     },
     methods:{
         tagsFn(){
-            this.visible = true
+            // this.visible = true
             console.log('tagsFn')
+           
+            this.$store.commit('getVisible',true)
+            
         },
     }
 }
@@ -58,6 +64,9 @@ export default {
                 color:#3E7BF8;
                 cursor: pointer;
             }
+        }
+        .tag_item{
+            padding-top: 10px;
         }
     }
 </style>
