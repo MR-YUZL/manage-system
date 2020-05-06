@@ -93,7 +93,7 @@ const listMenu = [
         title: "坐席管控",
       },{
         key: "dataAnalysis/IVR",
-        title: "ivr导航分析",
+        title: "IVR导航分析",
       },{
         key: "dataAnalysis/orderAnalysis",
         title:'工单工作分析'
@@ -136,17 +136,17 @@ const listMenu = [
     item: [
       {
         key: "setting/onlineChannel",
-        title: "在线会话渠道设置",
+        title: "渠道设置",
       },{
         key: "setting/sessionAssignment",
         title: "会话分配设置",
       },{
         key: "setting/IVRSettings",
-        title:'IVR语音导航设置'
+        title:'语音导航设置'
       },
       {
         key: "setting/leavingMessage",
-        title: "留言设置",
+        title: "会话辅助设置",
       },{
         key: "setting/field",
         title: "字段设置",
@@ -162,7 +162,7 @@ const listMenu = [
         title: "质检设置",
       },{
         key: "setting/informationSafety",
-        title: "客户信息安全设置",
+        title: "信息安全设置",
       },
     ]
   }

@@ -18,8 +18,10 @@
             <span >结束服务</span>
         </div>
     </div>
-    <User />
-    <Tags />
+    <div v-if="isShow" class="information">
+        <User />
+        <Tags />
+    </div>
   </div>
 </template>
 
@@ -98,6 +100,10 @@ export default {
                     cursor: pointer;
                 }
             }
+       }
+       .information{
+           background: white;
+           padding-bottom: 20px;
        }
     }
 </style>
