@@ -1,16 +1,28 @@
 <template>
   <div>
-    <h2 class="TitleH2"></h2>
-    <Search :tools="formList" @onSearch="searchFun" /> 
+    <h2 class="TitleH2">留言记录</h2>
+    <div class="box">
+      <Search :tools="formList" @onSearch="searchFun" /> 
+      <div>
+        <!-- <Table-data :columns-list="columnsList"  :pagination-status="paginationStatus"></Table-data> -->
+        <a-table :columns="columns" :dataSource="dataSource" :pagination='true'>
+          <!-- <div slot="guestName" slot-scope="record,row,index">
+            <span @click="checkMessage(row.id)">{{row.guestName}}</span>
+          </div> -->
+        </a-table>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Search from './../../components/Search/index'
+// import TableData from "./../../components/Table"
 import moment from "moment";
 export default {
   components: {
-    Search
+    Search,
+    // TableData
   },
   data(){
     return {
@@ -55,13 +67,83 @@ export default {
         }
       ],
       searchField: {},
-      msgFormSon:[]
+      columns:[
+        {
+          title: '用户名',
+          dataIndex: 'guestName',
+          key: 'guestName',
+          scopedSlots: { customRender: 'guestName' },
+        },
+        {
+          title: '留言时间',
+          dataIndex: 'inputTime',
+          key: 'inputTime',
+        },
+        {
+          title: '当前状态',
+          dataIndex: 'status',
+          key: 'status',
+          customRender:(value)=>{
+            let obj = {
+              "0":'未处理',
+              "1":'已处理'
+            }
+            return obj[value]
+          }
+        },
+        {
+          title: '处理结果',
+          dataIndex: 'content',
+          key: 'content',
+        },
+        {
+          title: '跟进人',
+          dataIndex: 'followAccName',
+          key: 'followAccName',
+        },
+        {
+          title: '处理时间',
+          dataIndex: 'followTime',
+          key: 'followTime',
+        },
+        {
+          title: '来源终端',
+          dataIndex: 'source',
+          key: 'source',
+          customRender:(value)=>{
+            let obj = {
+              "0":'网页',
+              "1":'微信小程序',
+              "2":'微信公众号',
+              "3":'安卓',
+              "4":'ios'
+            }
+            return obj[value]
+          }
+        },
+      ],
+      dataSource:[],
+      //分页请求参数
+      paginationStatus:{
+        url:'mock/trueExam.do',
+        method:'',
+        params:{
+          page:1,
+          pageSize:10,
+          currentPage:1
+        },
+      },
     }
   },
   mounted() {
-    console.log("goods/groups加载");
   },
   methods: {
+    getList(){
+      
+    },
+    checkMessage(id){   // 调取接口
+      console.log(id)
+    },
     //检索组件传参接收
     searchFun(values){
       this.searchField = values

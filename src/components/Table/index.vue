@@ -31,8 +31,11 @@
             </span> 
           
         </a-table>
-        <a-pagination :total="50" showSizeChanger showQuickJumper :showTotal="total => `共 ${total} 条`" 
+        <div class="pagination">
+          <a-pagination :total="50" showSizeChanger showQuickJumper :showTotal="total => `共 ${total} 条`" 
             @change="change" @showSizeChange="showSizeChange"/>
+        </div>
+        
     </div>
 </template>
 <script>
@@ -162,5 +165,11 @@
                 border-left:1px solid  transparent;
             }
         }
+    }
+    .pagination{
+      padding:20px 0;
+      display:flex;
+      justify-content:flex-end;
+     
     }
 </style>

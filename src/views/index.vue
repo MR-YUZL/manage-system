@@ -31,16 +31,14 @@ export default {
 <style lang="less" scoped>
     .qf-home{
         .list-right {
-           
             box-sizing: border-box;
             padding-left: 200px;
-            
             .content{
                 width: 100%;
                 float: right;
                 height: 100vh;
                 background: #FAFAFA;
-                padding: 20px 15px;
+                padding: 10px 15px;
             }
           
         }

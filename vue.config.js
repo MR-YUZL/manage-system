@@ -16,8 +16,7 @@ module.exports = {
     disableHostCheck: true, //穿透 如果不配置，穿透不了
     proxy: {
       '.*': {
-      // target: "http://192.168.1.15:9985", //回头配置开发本地地址
-      target: "http://192.168.1.15:9985", //回头配置开发本地地址
+      target: "http://192.168.1.15:9910", //回头配置开发本地地址
       changeOrigin: true,
       ws: false
         }
