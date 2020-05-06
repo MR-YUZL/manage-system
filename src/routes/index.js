@@ -2,7 +2,7 @@ const routes = [
   {
     path:'/',
     component: () => import("@/views/index.vue"),
-    redirect: 'currentSession',
+    redirect: '/currentSession',
     children: [
       {
         path:'currentSession',
@@ -174,13 +174,13 @@ const routes = [
       }
     ]
   },
-  {
-    path: "/login",
-    component: () => import("@/containers/Login/index.vue")
-  },
+  // {
+  //   path: "/login",
+  //   component: () => import("@/containers/Login/index.vue")
+  // },
   {
     path: "*",
-    component: () => import("@/containers/NotFound/index.vue")
+    component: () => import("@/components/NotFound")
   }
 
 ]
