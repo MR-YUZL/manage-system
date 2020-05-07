@@ -1,16 +1,29 @@
 <template>
   <div>
-    <h2 class="TitleH2"></h2>
-    <Search :tools="formList" @onSearch="searchFun" /> 
+    <h2 class="TitleH2">留言记录</h2>
+    <div class="box">
+      <Search :tools="formList" @onSearch="searchFun" /> 
+      <div>
+        <Table-data :columns-list="columnsList"  :pagination-status="paginationStatus"></Table-data>
+        <!-- <a-table :columns="columns" :dataSource="dataSource" :pagination='true'>
+          <div slot="guestName" slot-scope="record,row">
+            <span class="blue" @click="checkMessage(row.id)">{{row.guestName}}22</span>
+          </div>
+        </a-table> -->
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import Search from './../../components/Search/index'
+import TableData from "./../../components/Table"
 import moment from "moment";
+// import axios from "axios"
 export default {
   components: {
-    Search
+    Search,
+    TableData
   },
   data(){
     return {
@@ -55,13 +68,96 @@ export default {
         }
       ],
       searchField: {},
-      msgFormSon:[]
+      columnsList:[
+        {
+          title: '用户名',
+          dataIndex: 'guestName',
+          key: 'guestName',
+          scopedSlots: { customRender: 'guestName' },
+        },
+        {
+          title: '留言时间',
+          dataIndex: 'inputTime',
+          key: 'inputTime',
+        },
+        {
+          title: '当前状态',
+          dataIndex: 'status',
+          key: 'status',
+          customRender:(value)=>{
+            let obj = {
+              "0":'未处理',
+              "1":'已处理'
+            }
+            return obj[value]
+          }
+        },
+        {
+          title: '处理结果',
+          dataIndex: 'content',
+          key: 'content',
+        },
+        {
+          title: '跟进人',
+          dataIndex: 'followAccName',
+          key: 'followAccName',
+        },
+        {
+          title: '处理时间',
+          dataIndex: 'followTime',
+          key: 'followTime',
+        },
+        {
+          title: '来源终端',
+          dataIndex: 'source',
+          key: 'source',
+          customRender:(value)=>{
+            let obj = {
+              "0":'网页',
+              "1":'微信小程序',
+              "2":'微信公众号',
+              "3":'安卓',
+              "4":'ios'
+            }
+            return obj[value]
+          }
+        },
+      ],
+      dataSource:[],
+      pager: {
+        pageSizeOptions: ["10", "20", "30", "40", "50"],
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+        totalPage: 0
+      },
+      //分页请求参数
+      paginationStatus:{
+        url:'hfw/tsmHfwLeaveComments/listPageJson',
+        method:'post',
+        params:{
+          page:1,
+          pageSize:10,
+          currentPage:1
+        },
+      },
     }
   },
   mounted() {
-    console.log("goods/groups加载");
+    // axios.post("workflow/follow/saveWorkflowFollow",{test:123})
+    // this.getList()
   },
   methods: {
+    getList(){
+      this.Request.post('hfw/tsmHfwLeaveComments/listPageJson',{ ...this.searchField}).then(res => {
+        console.log(res.data,'asdfadfasdfasdfasdf')
+        let data = res.data
+        this.dataSource =  data.list
+      })
+    },
+    checkMessage(id){   // 调取接口
+      console.log(id)
+    },
     //检索组件传参接收
     searchFun(values){
       this.searchField = values

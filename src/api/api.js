@@ -32,7 +32,7 @@ method.forEach(item => {
       axios(
         Object.assign(
           {
-            url: `/hfw${url}`,
+            url: `${url}`,
             method: item,
             params: item == 'get' ? {_t: new Date().getTime(),...data} : null,  //加时间戳，防止浏览器缓存,
             data

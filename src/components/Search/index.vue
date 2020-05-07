@@ -131,14 +131,16 @@ export default {
 
 <style lang="less">
 .tool-bar{
+    padding:10px 15px 20px;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    border-bottom:1px solid #e8e8e8;
     .item{
-        margin: 10px 20px 0 0;
-        display: flex;
-        align-items: center;
-        flex-wrap: nowrap;
+      margin: 10px 20px 0 0;
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
     }
 }
 </style>
