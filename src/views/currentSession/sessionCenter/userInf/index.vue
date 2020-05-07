@@ -5,7 +5,7 @@
             <img :src="require('./../../../../assets/imgs/current_session/app.png')" alt="">
             <div class="user" @click="userInf">
                 <div class="name">科比布莱恩特</div>
-                <a-icon :type="isShow ? 'up' : 'down'" />
+                <a-icon :type="isShow ? 'down' : 'up'" />
             </div>
             
             <div class="time">当前会话时长：{{'5分6秒'}}</div>
@@ -21,6 +21,9 @@
     <div v-if="isShow" class="information">
         <User />
         <Tags />
+        <access-inf />
+        <order-inf />
+        <service-summary />
     </div>
   </div>
 </template>
@@ -29,6 +32,9 @@
 // import sessionList from "./sessionList/index"
 import User from './../../../../components/userInf'
 import Tags from './../../../../components/userInf/tags'
+import accessInf from './../../../../components/userInf/accessInf'
+import orderInf from './../../../../components/userInf/orderInf'
+import serviceSummary from './../../../../components/userInf/serviceSummary'
 export default {
   data: () => ({
     isShow:false
@@ -38,7 +44,10 @@ export default {
   }),
   components: {
     User,
-    Tags
+    Tags,
+    accessInf,
+    orderInf,
+    serviceSummary
   },
   mounted() {
     
@@ -104,6 +113,7 @@ export default {
        .information{
            background: white;
            padding-bottom: 20px;
+           box-shadow: 0 5px 10px rgba(51, 51, 51, .25);
        }
     }
 </style>

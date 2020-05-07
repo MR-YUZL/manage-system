@@ -28,13 +28,13 @@ method.forEach(item => {
       if (options && options.headers) {
         _options.headers = Object.assign({}, headers, options.headers)
       }
-      
+      console.log(data)
       axios(
         Object.assign(
           {
-            url: `/qfy${url}`,
+            url: `/hfw${url}`,
             method: item,
-            params: item == 'get' ? {_t: new Date().getTime(),...data} : null,  //加时间戳，防止浏览器缓存
+            params: item == 'get' ? {_t: new Date().getTime(),...data} : null,  //加时间戳，防止浏览器缓存,
             data
           },
           _options

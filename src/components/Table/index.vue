@@ -88,6 +88,9 @@
     mounted(){
         console.log(this.paginationStatus)
         this.getTableData()
+        this.Request.post('/tsmHfwLeaveCommentsSet/saveJson',{"id":"","source":0,"content":"1111"}).then(res => {
+          console.log(res,'asdfadfasdfasdfasdf')
+      })
     },
     methods:{
         //页码改变的回调

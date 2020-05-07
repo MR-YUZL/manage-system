@@ -8,7 +8,7 @@ module.exports = {
   //     }
   //   }
   // },
-  publicPath: "/qfy/",
+  publicPath: "",
   devServer: {
     host: "0.0.0.0",
     port: "9200", //代理端口
@@ -17,7 +17,7 @@ module.exports = {
     proxy: {
       '.*': {
       // target: "http://192.168.1.15:9985", //回头配置开发本地地址
-      target: "http://192.168.1.15:9985", //回头配置开发本地地址
+      target: "http://hfw.test.com", //回头配置开发本地地址
       changeOrigin: true,
       ws: false
         }

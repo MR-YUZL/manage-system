@@ -58,7 +58,7 @@ export default {
 </script>
 <style lang="less" scoped>
     .user_data{
-        padding: 10px 20px;
+        padding:20px;
         .header{
             display: flex;
             justify-content: space-between;
