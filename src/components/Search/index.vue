@@ -107,8 +107,14 @@ export default {
             this.$emit('onChange',targetItem.key, value, this.valueObj); // 返回当前改变的字段名，改变的内容，改变后valueObj的内容
       },
       onSearch() {
-          console.log(this.valueObj)
-          this.$emit('onSearch', this.valueObj);
+        let data = this.valueObj;
+        let obj={}
+        for(let key in data){
+          if(data[key]!==null&&data[key]!=='null'){
+            obj[key] = data[key]
+          }
+        }
+        this.$emit('onSearch', obj);
       }
   },
   watch: {
