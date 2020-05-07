@@ -2,7 +2,7 @@
     <div class="table">
         <a-table :columns="columnsList" :dataSource="dataList" :pagination=false 
             :rowSelection=" paginationStatus.isSelect == true ? {selectedRowKeys: selectedRowKeys, onChange: onSelectChange}:null" :scroll="{x:1300}">
-            <a slot="name" slot-scope="text">{{ text }}</a>
+             <a slot="guestName" slot-scope="text">{{ text }}</a>
              <span slot="tags" slot-scope="tags">
                  <div>{{tags.tagsName}}</div>
                 <a-tag
