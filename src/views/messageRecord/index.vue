@@ -4,12 +4,12 @@
     <div class="box">
       <Search :tools="formList" @onSearch="searchFun" /> 
       <div>
-        <!-- <Table-data :columns-list="columnsList"  :pagination-status="paginationStatus"></Table-data> -->
-        <a-table :columns="columns" :dataSource="dataSource" :pagination='true'>
-          <!-- <div slot="guestName" slot-scope="record,row,index">
-            <span @click="checkMessage(row.id)">{{row.guestName}}</span>
-          </div> -->
-        </a-table>
+        <Table-data :columns-list="columnsList"  :pagination-status="paginationStatus"></Table-data>
+        <!-- <a-table :columns="columns" :dataSource="dataSource" :pagination='true'>
+          <div slot="guestName" slot-scope="record,row">
+            <span class="blue" @click="checkMessage(row.id)">{{row.guestName}}22</span>
+          </div>
+        </a-table> -->
       </div>
     </div>
   </div>
@@ -17,12 +17,13 @@
 
 <script>
 import Search from './../../components/Search/index'
-// import TableData from "./../../components/Table"
+import TableData from "./../../components/Table"
 import moment from "moment";
+// import axios from "axios"
 export default {
   components: {
     Search,
-    // TableData
+    TableData
   },
   data(){
     return {
@@ -67,7 +68,7 @@ export default {
         }
       ],
       searchField: {},
-      columns:[
+      columnsList:[
         {
           title: '用户名',
           dataIndex: 'guestName',
@@ -123,10 +124,17 @@ export default {
         },
       ],
       dataSource:[],
+      pager: {
+        pageSizeOptions: ["10", "20", "30", "40", "50"],
+        currentPage: 1,
+        pageSize: 10,
+        total: 0,
+        totalPage: 0
+      },
       //分页请求参数
       paginationStatus:{
-        url:'mock/trueExam.do',
-        method:'',
+        url:'hfw/tsmHfwLeaveComments/listPageJson',
+        method:'post',
         params:{
           page:1,
           pageSize:10,
@@ -136,10 +144,16 @@ export default {
     }
   },
   mounted() {
+    // axios.post("workflow/follow/saveWorkflowFollow",{test:123})
+    // this.getList()
   },
   methods: {
     getList(){
-      
+      this.Request.post('hfw/tsmHfwLeaveComments/listPageJson',{ ...this.searchField}).then(res => {
+        console.log(res.data,'asdfadfasdfasdfasdf')
+        let data = res.data
+        this.dataSource =  data.list
+      })
     },
     checkMessage(id){   // 调取接口
       console.log(id)

@@ -8,7 +8,7 @@ module.exports = {
   //     }
   //   }
   // },
-  publicPath: "/qfy/",
+  publicPath: "",
   devServer: {
     host: "0.0.0.0",
     port: "9200", //代理端口
@@ -16,9 +16,9 @@ module.exports = {
     disableHostCheck: true, //穿透 如果不配置，穿透不了
     proxy: {
       '.*': {
-      target: "http://192.168.1.15:9910", //回头配置开发本地地址
-      changeOrigin: true,
-      ws: false
+        target: "http://hfw.test.com/", //回头配置开发本地地址
+        changeOrigin: true,
+        ws: false
         }
       }
     },
