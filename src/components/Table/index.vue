@@ -32,8 +32,8 @@
           
         </a-table>
         <div class="pagination">
-          <a-pagination :total="50" showSizeChanger showQuickJumper :showTotal="total => `共 ${total} 条`" 
-            @change="change" @showSizeChange="showSizeChange"/>
+          <a-pagination :total="totalPage" showSizeChanger showQuickJumper :showTotal="total => `共 ${total} 条`" 
+            @change="change" @showSizeChange="showSizeChange" v-if="totalPage" />
         </div>
         
     </div>
@@ -47,33 +47,8 @@
         selectedRowKeys: [],
         dataList:[],
         //表格数据
-        dataList1 : [
-            {
-                key: '1',
-                name: 'John Brown',
-                age: 32,
-                tels:'18777777777',
-                address: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-                tags: {
-                    tagsName:'红牛',
-                    tagsList:['nice', 'developer'],
-                },
-               
-            },
-            {
-                key: '14',
-                name: 'John Brown',
-                age: 32,
-                tels:'18777777778',
-                address: 'New York No. 1 Lake Park, New York No. 1 Lake Park',
-                tags:{
-                     tagsName:'红牛',
-                     tagsList:['nice', 'developer'],
-                } 
-              
-            },
-           
-        ],
+        dataList1 : [],
+        totalPage:0
       };
     },
     watch:{
@@ -91,9 +66,7 @@
     mounted(){
         console.log(this.paginationStatus)
         this.getTableData()
-        this.Request.post('/tsmHfwLeaveCommentsSet/saveJson',{"id":"","source":0,"content":"1111"}).then(res => {
-          console.log(res,'asdfadfasdfasdfasdf')
-      })
+   
     },
     methods:{
         //页码改变的回调
@@ -106,7 +79,6 @@
            
             this.paginationStatus.params.page= page
             this.paginationStatus.params.pageSize= pageSize
-            console.log(this.paginationStatus)
           
             // this.getTableData()
         },
@@ -129,23 +101,40 @@
       //获取表格数据
       getTableData(){
         console.log('------')
+        console.log(this.paginationStatus)
         this.dataList = []
-        if(this.paginationStatus.methods == 'get'){
+        if(this.paginationStatus.method == 'get'){
             this.Request.get(this.paginationStatus.url,this.paginationStatus.params).then(res => {
-                console.log(res)
+                if(res.status == 200){
+                    console.log(res.data)
+                    //绑定操作的事件  
+                    this.dataList1=res.data.list  
+                    this.dataList1.map(item => {
+                        item.action = this.paginationStatus.action,
+                        item.events = this.paginationStatus.events
+                        this.dataList.push(item)
+                    })
+                }
             })
-        }else if(this.paginationStatus.methods == 'post'){
-            this.Request.post('/home/entp').then(res => {
-                console.log(res)
+        }else if(this.paginationStatus.method == 'post'){
+            
+            this.Request.post(this.paginationStatus.url,this.paginationStatus.params).then(res => {
+                if(res.status == 200){
+                    console.log(res.data)
+                    //绑定操作的事件  
+                    this.dataList1=res.data.list 
+                    this.totalPage = res.data.pager.totalPage
+                    this.dataList1.map(item => {
+                        item.action = this.paginationStatus.action,
+                        item.events = this.paginationStatus.events
+                        this.dataList.push(item)
+                    })
+                }
+                
             })
                     
         }
-        //绑定操作的事件    
-        this.dataList1.map(item => {
-            item.action = this.paginationStatus.action,
-            item.events = this.paginationStatus.events
-            this.dataList.push(item)
-        })
+        
          
       },
      
