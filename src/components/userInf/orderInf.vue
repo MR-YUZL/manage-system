@@ -4,17 +4,22 @@
             <span>访客信息</span>
             <span class="save">新增工单</span>
         </div>
-        <div class="content">
-            <a-row type="flex" justify="space-between" align="bottom">
-                <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"/>
-                <a-col :span="10" v-for="(item,index) in userInfList" :key="index" class="item">
-                    <div class="list">
-                        <div class="item_left">{{item.key}}</div>
-                        <div class="item_right" v-if="item.status == 1">受理中</div>
-                        <div class="item_right" v-else-if="item.status == 2">已完结</div>
-                    </div>
-                </a-col>
-            </a-row>    
+        
+        <div class="content row_1" v-bind:class="{ expansion : active }">
+            <a-icon :type="active ? 'up' : 'down'" class="icon" @click="showFn"/>
+            <div class="content_item "  >
+                <a-row type="flex" justify="space-between" align="bottom" >
+                    
+                    <a-col :span="10" v-for="(item,index) in userInfList" :key="index" class="item" @click="viewDetails(item)">
+                        <div class="list">
+                            <div class="item_left">{{item.key}}</div>
+                            <div class="item_right item_1" v-if="item.status == 1">受理中</div>
+                            <div class="item_right item_2" v-else-if="item.status == 2">已完结</div>
+                        </div>
+                    </a-col>
+                </a-row>  
+            </div>
+              
         </div>
     </div>
 </template>
@@ -25,20 +30,12 @@ export default {
             active:false,
             userInfList:[
                 {
+                    key:'名字safdffffasfdsafdsa股份的噶的噶阿发的所发生的',
+                    status:'2',
+                },
+                {
                     key:'名字',
-                    status:'2',
-                },
-                {
-                    key:'nikename',
                     status:'1',
-                },
-                {
-                    key:'上次访问时间',
-                    status:'1',
-                },
-                {
-                    key:'nikename',
-                    status:'2',
                 },
                 {
                     key:'名字',
@@ -51,6 +48,10 @@ export default {
          showFn(){
             
             this.active = !this.active
+           
+        },
+        viewDetails(item){
+            console.log(item,'viewDetails(item)')
         }
     }
 }
@@ -66,36 +67,65 @@ export default {
                 cursor: pointer;
             }
         }
-        .content{
-            width: 93%;
+        .row_1{
             position: relative;
-            .item{
-                
-                .list{
-                    display: flex;
-                    cursor: pointer;
-                    
-                    .item_left{
-                        min-width: 0px;
-                        overflow: hidden;
-                        -webkit-box-flex: 1;
-                        -ms-flex: 1;
-                        flex: 1;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                    }
-                    .item_right{
-                        padding-left: 10px;
-                        -ms-flex-negative: 0;
-                        flex-shrink: 0;
-                        text-align: right;
-                    }
-                }
-               display: flex; 
-               padding-top: 10px; 
-               
-               
+            overflow: hidden;
+        }
+        .expansion{
+           height: 40px;;
+        }
+        .content{
+            
+            // position: relative;
+            
+            .icon{
+                position: absolute;
+                right: 0;
+                top: 18px;
             }
+            .content_item{
+                width: 93%;
+                padding-top: 5px; 
+                .item{
+                
+                    .list{
+                        display: flex;
+                        align-items: center;
+                        cursor: pointer;
+                        width: 100%;
+                        
+                        .item_left{
+                            min-width: 0px;
+                            overflow: hidden;
+                            -webkit-box-flex: 1;
+                            -ms-flex: 1;
+                            flex: 1;
+                            text-overflow: ellipsis;
+                            white-space: nowrap;
+                            color: #6D97F9;
+                        }
+                        .item_right{
+                            padding:0 5px;
+                            -ms-flex-negative: 0;
+                            flex-shrink: 0;
+                            text-align: right;
+                            border: 1px solid #D3D3D3;
+                            
+                        }
+                        .item_1{
+                            color: #F8A28B;
+                        }
+                        .item_2{
+                            color: #8BD6B8;
+                        }
+                    }
+                display: flex; 
+                padding-top: 12px; 
+                
+                
+                }
+            }
+            
         }
     }
 </style>

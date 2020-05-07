@@ -6,9 +6,13 @@
         </div>
         <div class="tag_item" v-bind:class="{ expansion : active }">
             <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"/>
-            <a-tag color="#2db7f5" v-for="(item,index) in tagsList" :key="index">
-                {{item}}
-            </a-tag>
+            <div class="tag">
+                <a-tag color="#2db7f5" v-for="(item,index) in tagsList" :key="index">
+                    {{item}}
+                </a-tag>
+            </div>
+            
+            
         </div>
         <Model :modelObj="modelObj"  />
     </div>
@@ -18,7 +22,7 @@ import Model from './../Modal'
 export default {
     data(){
         return{
-            tagsList:['标签1','标签2','标签2','标签2','标签2','标签2','标签2','标签2','标签2','标签2','标签2','标签2','标签2','标签2','标签2','标签2'],
+            tagsList:['标签1','标签2','标签2','标签2','标签2'],
             visible:false,
             active:false,
             modelObj:{
@@ -39,9 +43,7 @@ export default {
 
         }
     },
-    computed(){
-
-    },
+   
     components:{
         Model
     },
@@ -73,25 +75,27 @@ export default {
         }
         .tag_item{
             position: relative;
-            display: -webkit-box;
-            -webkit-box-orient: vertical;
+            // display: -webkit-box;
+            // -webkit-box-orient: vertical;
             overflow: hidden;
-            // text-overflow: ellipsis;
-            /* margin: 10px 0 10px 0; */
-            // font-size: 15px; 
-            -webkit-line-clamp:1;
+            // -webkit-line-clamp:1;
 
             .icon{
                 position: absolute;
                 right: 0;
                 top: 15px;
             }
-            .ant-tag{
-                margin-top: 15px;
+            .tag{
+                width: 93%;
+                .ant-tag{
+                    margin-top: 15px;
+                }
             }
+            
         }
         .expansion{
-             -webkit-line-clamp:100;
+            //  -webkit-line-clamp:100;
+            height: 37px;
         }
     }
 </style>

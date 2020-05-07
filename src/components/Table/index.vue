@@ -1,7 +1,7 @@
 <template>
     <div class="table">
         <a-table :columns="columnsList" :dataSource="dataList" :pagination=false 
-            :rowSelection=" paginationStatus.isSelect == true ? {selectedRowKeys: selectedRowKeys, onChange: onSelectChange}:null" :scroll="{x:1300}">
+            :rowSelection=" paginationStatus.isSelect == true ? {selectedRowKeys: selectedRowKeys, onChange: onSelectChange}:null" >
             <a slot="name" slot-scope="text">{{ text }}</a>
              <span slot="tags" slot-scope="tags">
                  <div>{{tags.tagsName}}</div>
@@ -18,7 +18,6 @@
                 <span>{{tels}}</span>
              </span>  
              <span slot="action" slot-scope="action,records">
-                 <!-- {{action}} -->
                  <span
                     v-for="(record,index) in action"
                     :key="record"
@@ -27,7 +26,6 @@
                 >
                     <a>{{record}}</a>
                 </span>
-                <!-- <a-divider type="vertical" /> -->
             </span> 
           
         </a-table>

@@ -43,9 +43,6 @@ export default {
 
         }
     },
-    computed(){
-        
-    },
     mounted(){
         this.questionList = [this.questionList1[0]]
     },

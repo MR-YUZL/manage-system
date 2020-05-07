@@ -367,8 +367,7 @@ export default {
   },
   props:['modelObj'],
   mounted() {
-    console.log('----------------------')
-    console.log(this.visible,this.modelObj)
+   
   },
   methods: {
    

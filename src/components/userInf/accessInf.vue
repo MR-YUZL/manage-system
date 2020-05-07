@@ -18,9 +18,7 @@ export default {
 
         }
     },
-    computed(){
-        
-    },
+   
     mounted(){
       
     },

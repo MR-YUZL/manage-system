@@ -4,8 +4,8 @@
         <div class="left">
             <img :src="require('./../../../../assets/imgs/current_session/app.png')" alt="">
             <div class="user" @click="userInf">
-                <div class="name">科比布莱恩特</div>
-                <a-icon :type="isShow ? 'down' : 'up'" />
+                <div class="name">科比布莱恩特dddd</div>
+                <a-icon :type="isShow ? 'down' : 'up'" class="icon"/>
             </div>
             
             <div class="time">当前会话时长：{{'5分6秒'}}</div>
@@ -81,7 +81,7 @@ export default {
                     
                 }
                 .user{
-                display: flex;
+                    display: flex;
                     align-items: center; 
                     cursor: pointer;
                     .name{
