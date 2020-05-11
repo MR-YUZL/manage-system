@@ -4,7 +4,9 @@
     <visitor-info ref="visitorInfo" :vistorInfoObj="visitorInfoData" :relateRedio="relateRedio" @handleSaveClueOk="handleSaveClueOk" @handleRelatedCusOk="handleRelatedCusOk" @onRelatedCusSearch="relateSearchKey"/>
     <Tags :tags="tagsList" :selectTagList="selectTagList"  @submitTags="submitTags"/>
     <AccessInfo />
-    <OrderInf />
+    <OrderInf :userInfList="userInfList"/>
+    <!-- <ServiceSummary :questionList="questionList" /> -->
+    <ServiceSummary />
   </div>
 </template>
 
@@ -13,13 +15,15 @@ import AccessInfo from './AccessInfo'
 import VisitorInfo from './VisitorInfo'
 import Tags from './Tags'
 import OrderInf from './OrderInf'
+import ServiceSummary from './ServiceSummary'
 export default {
     name: "",
     components: {
       VisitorInfo,
       Tags,
       AccessInfo,
-      OrderInf
+      OrderInf,
+      ServiceSummary
     },
     props:{
       guestId:{  // 访客id
@@ -32,7 +36,9 @@ export default {
         visitorInfoData:{},
         tagsList:[],
         selectTagList:[],
-        relateRedio:[] // 关联客户rediolist
+        relateRedio:[], // 关联客户rediolist
+        questionList:[],//客服小结
+        userInfList:[],//工单信息
       }
     },
     watch:{
@@ -42,6 +48,7 @@ export default {
           this.getVisitorInfo()
           this.getTags()
           this.getWorkOrderList()
+          this.getServiceList()
         }
       }
     },
@@ -111,19 +118,27 @@ export default {
       getWorkOrderList(){
         this.Request.post('/hfw/workbench/getWorkFlowInfo?guestId=' + this.guestId).then(res => {
           console.log('工单信息',res.data.list)
+          this.userInfList = res.data.list
         })
-      }
+      },
+      //获取服务小结
+      getServiceList(){
+        this.Request.post('/hfw/workbench/getServiceSummary?guestId=' + this.guestId).then(res => {
+          console.log('服务小结',res.data.list)
+          this.questionList = res.data.list
+        })
+      },
     }
 }
 </script>
 
 <style lang="less" scoped>
-.relateCus{
-  margin:10px 0 0 15px;
-}
+  .relateCus{
+    margin:10px 0 0 15px;
+  }
 </style>
 <style lang="less">
-.saveClue .ant-form-item{
-  margin-bottom:15px;
-}
+  .saveClue .ant-form-item{
+    margin-bottom:15px;
+  }
 </style>

@@ -31,8 +31,8 @@
 import User from './../../../../components/userInf/VisitorInfo'
 import Tags from './../../../../components/userInf/Tags'
 import AccessInfo from './../../../../components/userInf/AccessInfo'
-import orderInf from './../../../../components/userInf/orderInf'
-import serviceSummary from './../../../../components/userInf/serviceSummary'
+import orderInf from './../../../../components/userInf/OrderInf'
+import ServiceSummary from './../../../../components/userInf/ServiceSummary'
 export default {
   data: () => ({
     isShow:false
@@ -42,7 +42,7 @@ export default {
     Tags,
     AccessInfo,
     orderInf,
-    serviceSummary
+    ServiceSummary
   },
   mounted() {
     
