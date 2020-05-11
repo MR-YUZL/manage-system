@@ -247,3 +247,8 @@ h6 {
   color: #3e7bf8;
   cursor: pointer;
 }
+.ant-modal-root .ant-modal-footer {
+  text-align: center;
+  border-top: none;
+  padding-bottom: 30px;
+}

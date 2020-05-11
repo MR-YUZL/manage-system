@@ -410,6 +410,7 @@ export default {
         : selectedTags.filter(t => t !== tag);
       console.log('You are interested in: ', nextSelectedTags);
       this.selectedTags = nextSelectedTags;
+      this.$emit('selectGetTags',this.selectedTags)
     },
   },
   watch: {},

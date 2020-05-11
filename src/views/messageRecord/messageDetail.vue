@@ -18,21 +18,24 @@
                   </li>
               </ul>
             </div>
-            <div >
-              <div class="d-head" style="margin-top:30px;"><h5>处理结果</h5> <p>客服：张宝宝</p></div>
-              <p>{{handleResult}}</p>
+            <div v-if="handleResult.con&&handleResult.con!==''">
+              <div class="d-head" style="margin-top:30px;" ><h5>处理结果</h5> <p>跟进人:{{handleResult.name}}</p></div>
+              <p>{{handleResult.con}}</p>
             </div>
         </div>
-        <div>
-          这里是一个组件
-        </div>
+        <!-- <div class="information">
+          <UserInformation  :guestId="guestId"/>
+        </div> -->
     </div>
 </template>
 
 <script>
+// import UserInformation from './../../components/userInf'
 export default {
     name: "messageDetail",
-    components: {},
+    components: {
+      // UserInformation
+    },
     props:{
       recordList:{
         type:Array
@@ -41,13 +44,15 @@ export default {
         type:Boolean
       },
       handleResult:{
-        type:String
-      }
+        type:Object
+      },
     },
     data() {
         return {}
     },
-    created(){},
+    created(){
+      console.log('guestId',this.guestId)
+    },
     mounted(){},
     methods: {
       setHandleResult(){
@@ -61,11 +66,14 @@ export default {
 .messageDetail{
   display:flex;
   .recordDetail{
-    border-right:1px solid #e6e6e6;
+    // border-right:1px solid #e6e6e6;
     width:400px;
     padding:0 37px 0 23px;
     box-sizing: border-box;
   }
+  // .information{
+  //   width:480px;
+  // }
 }
 .d-head{
   // margin-bottom:18px;
