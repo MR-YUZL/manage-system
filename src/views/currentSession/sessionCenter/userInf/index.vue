@@ -106,6 +106,8 @@ export default {
             }
        }
        .information{
+           position: relative;
+           z-index:  10;
            background: white;
            padding-bottom: 20px;
            box-shadow: 0 5px 10px rgba(51, 51, 51, .25);

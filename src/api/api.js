@@ -28,7 +28,7 @@ method.forEach(item => {
       if (options && options.headers) {
         _options.headers = Object.assign({}, headers, options.headers)
       }
-      console.log(data)
+  
       axios(
         Object.assign(
           {

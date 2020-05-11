@@ -1,6 +1,5 @@
 <template>
   <div class="model">
-     <!-- <a-button type="primary" @click="showModal">Open Modal with async logic</a-button> -->
      <a-modal
       :title="modelObj.title"
       :visible="visible"
@@ -35,9 +34,7 @@
                     <a-radio :value="val.key">
                     {{val.value}}
                     </a-radio>
-                    <!-- <a-radio value="2">
-                    Venue
-                    </a-radio> -->
+                 
                 </a-radio-group>
               </a-form-item>
               <a-form-item :label="item.label" v-if="item.label && item.type == 'checkbox'" >
@@ -45,12 +42,6 @@
                     <a-checkbox :value="val.key" name="type">
                     {{val.value}}
                     </a-checkbox>
-                    <!-- <a-checkbox value="2" name="type">
-                    Promotion
-                    </a-checkbox>
-                    <a-checkbox value="3" name="type">
-                    Offline
-                    </a-checkbox> -->
                 </a-checkbox-group>
               </a-form-item>
               <a-form-item :label="item.label" v-if="item.label && item.type == 'upload'" >
@@ -96,7 +87,7 @@
                   <a-checkable-tag
                     :key="tag.value"
                     :checked="selectedTags.indexOf(tag) > -1"
-                    @change="checked => handleChange(tag, checked)"
+                    @change="checked => handleChange(tag, checked,index)"
                   >
                     {{ tag.value }}
                   </a-checkable-tag>
@@ -367,28 +358,38 @@ export default {
   },
   props:['modelObj'],
   mounted() {
-   
+  
+    this.selectedTags = []
+   this.modelObj.modelList.map((item) => {
+     if(item.type == 'tag'){
+       item.options.map((val) => {
+         if(val.selected){
+           this.selectedTags.push(val)
+         }
+       })
+     }
+   })
   },
   methods: {
    
-    handleOk(e) {
-      console.log(e)
-      this.confirmLoading = true;
-      setTimeout(() => {
-        this.visible = false;
-        this.confirmLoading = false;
-      }, 2000);
-    },
-    handleCancel(e) {
-      console.log(e)
-      console.log('Clicked cancel button');
+  
+    handleCancel() {
       this.$store.commit('getVisible',false)
+      this.selectedTags = []
     },  
     onSubmit(e) {
       e.preventDefault();
       this.$store.commit('getVisible',false)
       this.form.validateFieldsAndScroll((err, values) => {
         if (!err) {
+          
+
+          if(this.selectedTags.length){
+            values.selectedTags = this.selectedTags
+
+          }
+          this.selectedTags = []
+          this.$emit('formData',values)
           console.log('Received values of form: ', values);
         }
       });
@@ -410,7 +411,8 @@ export default {
         : selectedTags.filter(t => t !== tag);
       console.log('You are interested in: ', nextSelectedTags);
       this.selectedTags = nextSelectedTags;
-      this.$emit('selectGetTags',this.selectedTags)
+      // this.$emit('selectGetTags',this.selectedTags)
+      
     },
   },
   watch: {},

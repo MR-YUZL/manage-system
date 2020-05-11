@@ -99,7 +99,7 @@ export default {
           guestId:this.guestId,
           tagIds:[]
         }
-        obj.map( item => {
+        obj.selectedTags.map( item => {
           params.tagIds.push(item.key)
         })
         this.Request.post('/hfw/workbench/saveGuestLabel',{...params}).then(res => {

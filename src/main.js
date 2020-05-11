@@ -15,13 +15,14 @@ import TIM from 'tim-js-sdk'
 
 Vue.prototype.tim = tim
 Vue.prototype.TIM = TIM
+Vue.prototype.$bus = new Vue() // event Bus 用于无关系组件间的通信。
 
 Vue.use(Antd);
 Vue.config.productionTip = false;
 Vue.prototype.Request = Request;
 Vue.prototype.validateRules = validateRules
 
-document.cookie = "JSESSIONID=DA1C2B86E927B920CBE9A2492CF4C511";
+document.cookie = "JSESSIONID=699C6FD80788FBF9C95859228FC550B9";
 
 new Vue({
   router,
