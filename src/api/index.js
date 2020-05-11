@@ -6,7 +6,7 @@ axios.defaults.timeout = 10000;
 // 请求拦截器
 axios.interceptors.request.use(
     config => {
-        console.log('请求拦截')
+        // console.log('请求拦截')
         return config;
     })
 
@@ -18,7 +18,7 @@ axios.interceptors.response.use(
                 message.error("登录状态已超时，请重新登录");
                 return Promise.resolve(response.data)
               } 
-            console.log('请响应拦截器求拦截')
+            // console.log('请响应拦截器求拦截')
             return response
         } else {
             

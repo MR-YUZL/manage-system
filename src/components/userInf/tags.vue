@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="aaa">
-          <Model :modelObj="modelObj"  @selectGetTags="selectGetTags" />
+          <Model :modelObj="modelObj"  @formData="formData" />
         </div>
     </div>
 </template>
@@ -62,7 +62,7 @@ export default {
       showFn(){
         this.active = !this.active
       },
-      selectGetTags(data){
+      formData(data){
         this.$emit('submitTags',data)
         console.log('传过去提交的数据',data)
       }
