@@ -6,7 +6,6 @@
         <div class="message-list" ref="message-list" @scroll="this.onScroll">
           <div class="more" v-if="!isCompleted">
             <a-button
-              type="text"
               @click="$store.dispatch('getMessageList', currentConversation.conversationID)"
             >查看更多</a-button>
           </div>
@@ -170,6 +169,7 @@ export default {
     -ms-flex-direction: column;
     flex-direction: column;
     width: 100%;
+    height: 100%;
     // height: 80vh;
     .content{
         display: flex;
@@ -180,14 +180,14 @@ export default {
         -webkit-box-direction: normal;
         -ms-flex-direction: column;
         flex-direction: column;
-        height: 100%;
-        overflow-y: scroll;
+        height: calc(100% - 177px);;
+        // overflow-y: scroll;
         position: relative;
         .message-list{
             width: 100%;
+            // height:calc(100% - 224px);
             -webkit-box-sizing: border-box;
-            box-sizing: border-box;
-            // overflow-y: scroll;
+            overflow-y: scroll;
             padding: 0 20px;
             .more{
                 display: flex;
@@ -195,6 +195,13 @@ export default {
                 -ms-flex-pack: center;
                 justify-content: center;
                 font-size: 12px;
+                .ant-btn{
+                    color: #409EFF ;
+                    background: #F5F5F5 ;
+                    border-color: transparent ;
+                    -webkit-box-shadow: none ;
+                    box-shadow: none 
+                }
             }
             
             .no-more{

@@ -1,5 +1,5 @@
 <template>
-  <div id="message-send-box-wrapper" :style="focus ? {'backgroundColor': 'white'} : {}" >
+  <div id="message-send-box-wrapper" :style="focus ? {'backgroundColor': '#F5F5F5'} : {}" >
     <div class="send-header-bar">
       <a-popover placement="top" trigger="click">
         <div class="emojis" slot="content">
@@ -35,7 +35,10 @@
         placement="left"
       >
         <div class="btn-send" @click="sendTextMessage">
-          <div class="tim-icon-send">发送</div>
+          <!-- <div class="tim-icon-send">发送</div> -->
+          <a-button type="primary">
+            发 送
+          </a-button>
         </div>
       </a-tooltip>
     </div>
@@ -396,6 +399,8 @@ export default {
   font-size: 24px;
   color: gray;
   margin: 0 12px 0 0;
+  width: 30px;
+  height: 30px;
 }
 
 .send-header-bar i:hover {
@@ -428,8 +433,8 @@ textarea {
   .btn-send {
     cursor: pointer;
     position: absolute;
-    color: red;
-    font-size: 30px;
+    // color: red;
+    font-size: 20px;
     right: 0;
     bottom: -5px;
     padding: 6px 6px 4px 4px;

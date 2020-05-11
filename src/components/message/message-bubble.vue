@@ -1,6 +1,6 @@
 <template>
   <div class="chat-bubble" @mousedown.stop @contextmenu.prevent>
-    <a-dropdown trigger="" ref="dropdown" v-if="!message.isRevoked" @command="handleCommand">
+    <a-dropdown :trigger="['click']" ref="dropdown" v-if="!message.isRevoked" @command="handleCommand">
       <div class="message-content" :class="bubbleStyle">
         <slot></slot>
         <div class="icon"></div>
@@ -89,7 +89,6 @@ export default {
   },
   methods: {
     handleDropDownMousedown(e) {
-      console.log('--------------')
       if (!this.isMine || this.isTimeout) {
         return
       }
@@ -155,6 +154,7 @@ export default {
         }
         .icon{
           position: absolute;
+          top:10px;
           display: block;
           width: 12px;
           height: 12px;
@@ -185,7 +185,7 @@ export default {
         .icon{
          
           left: -6px;
-          bottom:50%;
+          
           background: white;
           border-style: white;
          
@@ -208,7 +208,6 @@ export default {
     .icon{
      
       right: -6px;
-      bottom:50%;
       display: block;
       background: #DFEAFE;
       border-style: #DFEAFE;

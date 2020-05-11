@@ -39,7 +39,7 @@ export default {
                 float: right;
                 height: 100vh;
                 background: #FAFAFA;
-                padding: 10px 15px;
+                padding: 10px 0 10px 15px;
             }
           
         }

@@ -4,8 +4,14 @@
     <div class="header">
       <i class="el-icon-document file-icon"></i>
       <div class="file-element">
-        <span class="file-name">{{ fileName }}</span>
-        <span class="file-size">{{ size }}</span>
+        <div class="file_img">
+          <img src="./../../../assets/imgs/current_session/file_b.jpg" alt="">
+        </div>
+        <div class="file_del">
+          <div class="file-name">{{ fileName }}</div>
+          <div class="file-size"><span>{{ size }}</span><span></span></div>
+        </div>
+        
       </div>
     </div>
     <a-progress
@@ -102,8 +108,14 @@ export default {
 }
 .file-element {
   display: flex;
-  flex-direction: column;
+  // flex-direction: column;
   margin-left: 12px;
+  .file_img{
+
+  }
+  .file_del{
+    margin-left: 12px;
+  }
 }
 .file-size {
   font-size: 12px;

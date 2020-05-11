@@ -5,12 +5,13 @@
       class="c2c-layout"
       :class="messagePosition"
     >
-      <div class="col-1" v-if="showAvatar">
+      <div class="col-1 " v-if="showAvatar">
         <!-- 头像 -->
-        <a-avatar :src="avatar" />
+        <a-avatar :src="avatar" class="avatar"/>
       </div>
       <div class="col-2">
         <!-- 消息主体 -->
+        <message-footer v-if="showMessageHeader" :message="message" />
         <div class="content-wrapper">
           <message-status-icon v-if="isMine" :message="message" />
           <text-element
@@ -60,7 +61,7 @@
           />
           <span v-else>暂未支持的消息类型：{{message.type}}</span>
         </div>
-        <message-footer v-if="showMessageHeader" :message="message" />
+        
       </div>
       <div class="col-3">
         <!-- 消息状态 -->
@@ -226,10 +227,12 @@ export default {
 
   .col-1 {
     .avatar {
-      width: 56px;
-      height: 56px;
+      width: 45px;
+      height: 45px;
       border-radius: 50%;
       box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
+       margin-top: 10px;
+     
     }
   }
 
