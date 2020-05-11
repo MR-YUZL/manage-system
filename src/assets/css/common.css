@@ -249,4 +249,6 @@ h6 {
 }
 .ant-modal-root .ant-modal-footer {
   text-align: center;
+  border-top: none;
+  padding-bottom: 30px;
 }

@@ -2,7 +2,7 @@
   <!-- 访客信息，访客标签，工单信息，访问信息，服务小结整合 -->
   <div class="userInformation">
     <visitor-info :vistorInfoObj="visitorInfoData" @saveClue="saveClue" @relatedCustomers="relatedCustomers"/>
-    <!-- <Tags /> -->
+    <Tags :tags="tagsList" :selectTagList="selectTagList"  @submitTags="submitTags"/>
     <a-modal title="保存为线索" v-if="saveClueModal" okText="保存"   :visible="saveClueModal" @cancel="handleSaveClueCancel" @ok="handleSaveClueOk">
       <div class="saveClue">
         <a-form-model
@@ -52,12 +52,12 @@
 
 <script>
 import VisitorInfo from './VisitorInfo'
-// import Tags from './Tags'
+import Tags from './Tags'
 export default {
     name: "",
     components: {
       VisitorInfo,
-      // Tags
+      Tags
     },
     props:{
       guestId:{  // 访客id
@@ -93,7 +93,9 @@ export default {
         rules:{
           remark:[{required: true, message: '请输入咨询备注', trigger: 'blur' }],
           name:[{required: true, message: '请输入姓名', trigger: 'blur' }]
-        }
+        },
+        tagsList:[],
+        selectTagList:[],
       }
     },
     watch:{
@@ -101,15 +103,14 @@ export default {
         console.log('aa',value,'bb',old,'===============')
         if(value){
           this.getVisitorInfo()
+          this.getTags()
         }
       }
     },
-    created(){},
-    mounted(){
-      if(this.guestId){
-        this.getVisitorInfo()
-      }
+    created(){
+      this.getSelectTags()
     },
+    mounted(){},
     methods: {
       getVisitorInfo(){
         this.Request.get('/hfw/workbench/getGuestInfo?guestId='+this.guestId).then(res => {
@@ -144,6 +145,40 @@ export default {
           console.log('提交客户关联',res.data)
         }) 
       },
+      //获取tags  参数  guestId  访客id
+      getTags(){
+        this.Request.get('/hfw/workbench/getGuestLabel?guestId='+this.guestId).then(res => {
+          console.log('标签tags',res.data)
+        })
+      },
+      //访客设置标签时获取单位下所有维护的访客标签
+      getSelectTags(){
+        this.Request.get('/hfw/workbench/getAllGuestLabel').then(res => {
+          let data = res.data.list
+          data.map((item)=>{
+            this.selectTagList.push({
+              key:item.id,
+              value:item.name,
+            })
+          })
+          console.log('所有标签',data)
+        })
+      },
+      submitTags(data){
+        console.log('提交的数据',data)
+        let obj = data
+        let params = {
+          guestId:this.guestId,
+          tagIds:[]
+        }
+        obj.map( item => {
+          params.tagIds.push(item.key)
+        })
+        this.Request.post('/hfw/workbench/saveGuestLabel',{...params}).then(res => {
+          console.log('标签selectTags',res.data)
+          this.getTags()
+        })
+      }
     }
 }
 </script>
