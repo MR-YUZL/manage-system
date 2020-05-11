@@ -29,7 +29,7 @@
 <script>
 // import sessionList from "./sessionList/index"
 import User from './../../../../components/userInf/VisitorInfo'
-import Tags from './../../../../components/userInf/tags'
+import Tags from './../../../../components/userInf/Tags'
 import accessInf from './../../../../components/userInf/accessInf'
 import orderInf from './../../../../components/userInf/orderInf'
 import serviceSummary from './../../../../components/userInf/serviceSummary'
