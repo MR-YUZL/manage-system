@@ -1,12 +1,12 @@
 <template>
     <div class="serviceSummary">
         <div class="header">
-          <span>服务小结</span>
+          <span class="serviceIcon">服务小结</span>
         </div>
         <div class="serviceSummary_item">
             <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"/>
             <div v-for="(item,index) in questionList" :key="index" class="question" >
-                <div class="question_top"><span>{{item.time}}</span><span>{{item.name}}</span></div>
+                <div class="question_top"><span>{{item.inputTime}}</span><span>{{item.inputAcc}}</span></div>
                 <div>{{item.question}}</div>
                 <div>{{item.content}}</div>
             </div>
@@ -16,43 +16,33 @@
 </template>
 <script>
 export default {
+    // props:{
+    //   questionList:{
+    //     type:Array
+    //   }
+    // },
     data(){
         return{
-            questionList1:[
-                {
-                    time:'2020-12-07 12',
-                    name:'冠希哥',
-                    question:'士大夫撒地方的发生的的撒发到付',
-                    content:'发送飞机撒大家哦个都解耦if圣诞节案件覅偶个就放ID数据分IP'
-                },{
-                    time:'2020-12-07 12',
-                    name:'冠希哥',
-                    question:'士大夫撒地方的发生的的撒发到付',
-                    content:'发送飞机撒大家哦个都解耦if圣诞节案件覅偶个就放ID数据分IP'
-                },{
-                    time:'2020-12-07 12',
-                    name:'冠希哥',
-                    question:'士大夫撒地方的发生的的撒发到付',
-                    content:'发送飞机撒大家哦个都解耦if圣诞节案件覅偶个就放ID数据分IP'
-                }
-            ],
-            questionList:[],
-            active:false,
-           
-            
-
+          questionList1:[
+              {
+                inputTime:'2020-12-07 12',
+                inputAcc:'冠希哥',
+                question:'士大夫撒地方的发生的的撒发到付',
+                content:'发送飞机撒大家哦个都解耦if圣诞节案件覅偶个就放ID数据分IP'
+              },
+          ],
+          questionList:[],
+          active:false,
         }
     },
     mounted(){
         this.questionList = [this.questionList1[0]]
     },
     components:{
-       
     },
     methods:{
       
         showFn(){
-            
             this.active = !this.active
             if(this.active){
                 this.questionList = this.questionList1
@@ -72,6 +62,10 @@ export default {
             .setting{
                 color:#3E7BF8;
                 cursor: pointer;
+            }
+            .serviceIcon{
+              padding-left:26px;
+              background:url('../../assets/imgs/text-icon.png') center left no-repeat;
             }
         }
         .serviceSummary_item{

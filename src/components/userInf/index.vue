@@ -1,63 +1,29 @@
 <template>
   <!-- 访客信息，访客标签，工单信息，访问信息，服务小结整合 -->
   <div class="userInformation">
-    <visitor-info :vistorInfoObj="visitorInfoData" @saveClue="saveClue" @relatedCustomers="relatedCustomers"/>
+    <visitor-info ref="visitorInfo" :vistorInfoObj="visitorInfoData" :relateRedio="relateRedio" @handleSaveClueOk="handleSaveClueOk" @handleRelatedCusOk="handleRelatedCusOk" @onRelatedCusSearch="relateSearchKey"/>
     <Tags :tags="tagsList" :selectTagList="selectTagList"  @submitTags="submitTags"/>
-    <a-modal title="保存为线索" v-if="saveClueModal" okText="保存"   :visible="saveClueModal" @cancel="handleSaveClueCancel" @ok="handleSaveClueOk">
-      <div class="saveClue">
-        <a-form-model
-          ref="ruleForm"
-          :model="saveClueForm"
-          :rules="rules"
-          :label-col="labelCol"
-          :wrapper-col="wrapperCol">
-          <a-form-model-item label="姓名：" prop="name">
-              <a-input v-model="saveClueForm.guestName"></a-input>
-          </a-form-model-item>
-          <a-form-model-item  label="手机号：" >
-              <a-input v-model="saveClueForm.telPhone"></a-input>
-          </a-form-model-item>
-          <a-form-model-item  label="微信号：" >
-              <a-input v-model="saveClueForm.wechat"></a-input>
-          </a-form-model-item>
-          <a-form-model-item  label="邮箱：" >
-              <a-input v-model="saveClueForm.email"></a-input>
-          </a-form-model-item>
-          <a-form-model-item  label="QQ：" >
-              <a-input v-model="saveClueForm.qq"></a-input>
-          </a-form-model-item>
-          <a-form-model-item  label="钉钉：">
-              <a-input v-model="saveClueForm.dingding"></a-input>
-          </a-form-model-item>
-          <a-form-model-item  label="所在地区：">
-            <a-input v-model="saveClueForm.dingding"></a-input>
-          </a-form-model-item>
-          <a-form-model-item  label="咨询备注：" prop="remark">
-            <a-input v-model="saveClueForm.remark"></a-input>
-          </a-form-model-item>
-        </a-form-model>
-      </div>
-    </a-modal>
-    <a-modal title="关联客户" v-if="relatedCusModal"   :visible="relatedCusModal" @cancel="handleRelatedCusCancel" @ok="handleRelatedCusOk">
-        <div><a-input-search v-model="relateSearchKey" placeholder="请输入客户名称" enter-button='查询' @search="onRelatedCusSearch" /></div>
-        <div class="relateCus">
-          <a-radio-group v-model="relateValue">
-            <a-radio :style="radioStyle" :value="1">adf</a-radio>
-            <a-radio :style="radioStyle" :value="2">aadf</a-radio>
-          </a-radio-group>
-        </div>
-    </a-modal>
+    <AccessInfo />
+    <OrderInf :userInfList="userInfList"/>
+    <!-- <ServiceSummary :questionList="questionList" /> -->
+    <ServiceSummary />
   </div>
 </template>
 
 <script>
+import AccessInfo from './AccessInfo'
 import VisitorInfo from './VisitorInfo'
 import Tags from './Tags'
+import OrderInf from './OrderInf'
+import ServiceSummary from './ServiceSummary'
 export default {
     name: "",
     components: {
       VisitorInfo,
-      Tags
+      Tags,
+      AccessInfo,
+      OrderInf,
+      ServiceSummary
     },
     props:{
       guestId:{  // 访客id
@@ -67,35 +33,12 @@ export default {
     },
     data() {
       return {
-        labelCol: { span:6 },
-        wrapperCol: { span: 14 },
         visitorInfoData:{},
-        saveClueModal:false,
-        relatedCusModal:false,
-        radioStyle: {
-          display: 'block',
-          height: '30px',
-          lineHeight: '30px',
-        },
-        relateSearchKey:'',
-        relateValue:'',
-        saveClueForm:{
-            guestName:'',
-            telPhone:'',
-            wechat:'',
-            email:'',
-            qq:'',
-            dingding:'',
-            provinceId:'',
-            cityId:'',
-            countyId:''
-        },
-        rules:{
-          remark:[{required: true, message: '请输入咨询备注', trigger: 'blur' }],
-          name:[{required: true, message: '请输入姓名', trigger: 'blur' }]
-        },
         tagsList:[],
         selectTagList:[],
+        relateRedio:[], // 关联客户rediolist
+        questionList:[],//客服小结
+        userInfList:[],//工单信息
       }
     },
     watch:{
@@ -104,6 +47,8 @@ export default {
         if(value){
           this.getVisitorInfo()
           this.getTags()
+          this.getWorkOrderList()
+          this.getServiceList()
         }
       }
     },
@@ -118,37 +63,27 @@ export default {
           this.visitorInfoData = res.data.data
         })   
       },
-      // 保存为线索
-      saveClue(){
-        this.saveClueModal = true
-      },
-      handleSaveClueCancel(){
-        this.saveClueModal = false
-      },
       handleSaveClueOk(){
-        this.relatedCusModal = true
+        // 关闭保存为线索的弹窗
+        this.$refs.visitorInfo.saveClueModal = false
       },
-      //关联客户
-      relatedCustomers(){
-        this.relatedCusModal = true
-      },
-      handleRelatedCusCancel(){
-         this.relatedCusModal = false
-      },
-      onRelatedCusSearch(){
-        this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+this.relateSearchKey).then(res => {
-          console.log('模糊搜索',res.data)
+      handleRelatedCusOk(con){
+        console.log('this.relateValue',con,'===============')
+        this.Request.get('/hfw/workbench/associatedCustomers?matchKey='+con).then(res => {
+          console.log('提交客户关联',res.data)
         }) 
       },
-      handleRelatedCusOk(){
-         this.Request.get('/hfw/workbench/associatedCustomers?matchKey='+this.relateValue).then(res => {
-          console.log('提交客户关联',res.data)
+      relateSearchKey(relateSearchKey){
+        console.log('=====================',relateSearchKey)
+        this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+relateSearchKey).then(res => {
+          console.log('模糊搜索',res.data)
         }) 
       },
       //获取tags  参数  guestId  访客id
       getTags(){
         this.Request.get('/hfw/workbench/getGuestLabel?guestId='+this.guestId).then(res => {
           console.log('标签tags',res.data)
+          this.tagsList = res.data.data
         })
       },
       //访客设置标签时获取单位下所有维护的访客标签
@@ -178,18 +113,32 @@ export default {
           console.log('标签selectTags',res.data)
           this.getTags()
         })
-      }
+      },
+      // 获取工单信息
+      getWorkOrderList(){
+        this.Request.post('/hfw/workbench/getWorkFlowInfo?guestId=' + this.guestId).then(res => {
+          console.log('工单信息',res.data.list)
+          this.userInfList = res.data.list
+        })
+      },
+      //获取服务小结
+      getServiceList(){
+        this.Request.post('/hfw/workbench/getServiceSummary?guestId=' + this.guestId).then(res => {
+          console.log('服务小结',res.data.list)
+          this.questionList = res.data.list
+        })
+      },
     }
 }
 </script>
 
 <style lang="less" scoped>
-.relateCus{
-  margin:10px 0 0 15px;
-}
+  .relateCus{
+    margin:10px 0 0 15px;
+  }
 </style>
 <style lang="less">
-.saveClue .ant-form-item{
-  margin-bottom:15px;
-}
+  .saveClue .ant-form-item{
+    margin-bottom:15px;
+  }
 </style>
