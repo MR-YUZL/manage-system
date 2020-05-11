@@ -7,9 +7,7 @@
                 <div class="name">科比布莱恩特dddd</div>
                 <a-icon :type="isShow ? 'down' : 'up'" class="icon"/>
             </div>
-            
             <div class="time">当前会话时长：{{'5分6秒'}}</div>
-            
         </div>
         
         <div class="right">
@@ -30,7 +28,7 @@
 
 <script>
 // import sessionList from "./sessionList/index"
-import User from './../../../../components/userInf'
+import User from './../../../../components/userInf/VisitorInfo'
 import Tags from './../../../../components/userInf/tags'
 import accessInf from './../../../../components/userInf/accessInf'
 import orderInf from './../../../../components/userInf/orderInf'
@@ -38,9 +36,6 @@ import serviceSummary from './../../../../components/userInf/serviceSummary'
 export default {
   data: () => ({
     isShow:false
-
-    
- 
   }),
   components: {
     User,

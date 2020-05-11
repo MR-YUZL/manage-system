@@ -18,9 +18,12 @@
         </a-pagination>
       </div>
     </div>
-    <a-modal title="记录" :footer="null" width="875px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
-      <MessageDetail :recordList="recordList" :handleRecordBtn="handleRecordBtn" :handleResult="resultConText" @setHandleResult="setHandleResult"/>
-    </a-modal>
+    <a-modal title="记录" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
+      <div class="record-detail">
+        <div class="message"><MessageDetail :recordList="recordList" :handleRecordBtn="handleRecordBtn" :handleResult="handleResultCon" @setHandleResult="setHandleResult" /> </div>
+        <div class="information"><UserInformation  :guestId="guestId"/></div>
+      </div>
+   </a-modal>
     <a-modal title="留言处理" v-if="leaveModalShow" :visible="leaveModalShow" @cancel="handleleaveModalCancel" @ok="handleleaveModalOk">
       <div style="display:flex">
         <p style="width:78px;">处理结果</p><a-textarea v-model="resultContent" placeholder="请输入处理结果" :auto-size="{ minRows: 3, maxRows: 5 }" />
@@ -30,13 +33,16 @@
 </template>
 
 <script>
+import UserInformation from './../../components/userInf'
 import Search from './../../components/Search/index'
 import MessageDetail from './messageDetail'
+
 import moment from "moment";
 export default {
   components: {
     Search,
-    MessageDetail
+    MessageDetail,
+    UserInformation
   },
   data(){
     return {
@@ -98,11 +104,15 @@ export default {
           dataIndex: 'status',
           key: '3',
           customRender:(value)=>{
-            let obj = {
-              "0":'未处理',
-              "1":'已处理'
+            let con = {
+              children:(
+                <div>
+                  {value==0 && <div style="color:#f99921">未处理</div>}
+                  {value==1 && <div>已处理</div> }
+                </div>
+              )
             }
-            return obj[value]
+            return con
           }
         },
         {
@@ -150,7 +160,11 @@ export default {
       detailsId:'',
       leaveModalShow:false,
       resultContent:'',
-      resultConText:''
+      handleResultCon:{
+        name:'',
+        con:''
+      },
+      guestId:''
     }
   },
   mounted() {
@@ -180,8 +194,10 @@ export default {
         console.log(res.data.data,'记录详情')
         let data = res.data.data
         this.detailsId = data.id
-        this.resultConText = data.result
+        this.handleResultCon.con = data.result
+        this.handleResultCon.name = data.followAccName
         this.recordList = data.detailBeanList
+        this.guestId = data.guestId
       })
     },
     handleCancel(){
@@ -206,7 +222,10 @@ export default {
     handleleaveModalOk(){
       this.Request.get('/hfw/tsmHfwLeaveComments/updateStatus?id='+ this.detailsId).then(res=>{
         console.log(res)
+        this.leaveModalShow=false
         this.handleRecordBtn = false
+        this.handleResultCon.con = this.resultContent
+
       })
     },
     //检索组件传参接收
@@ -226,5 +245,16 @@ export default {
     margin:10px 0;
     display: flex;
     justify-content: flex-end;
+  }
+  .record-detail{
+    display:flex;
+    .message{
+      width:380px;
+      border-right:1px solid #e6e6e6;
+    }
+    .information{
+      margin-left:48px;
+      width:384px;
+    }
   }
 </style>
