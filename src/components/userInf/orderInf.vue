@@ -4,22 +4,19 @@
             <span>工单信息</span>
             <span class="save">新增工单</span>
         </div>
-        
         <div class="content row_1" v-bind:class="{ expansion : active }">
             <a-icon :type="active ? 'up' : 'down'" class="icon" @click="showFn"/>
-            <div class="content_item "  >
-                <a-row type="flex" justify="space-between" align="bottom" >
-                    
-                    <a-col :span="10" v-for="(item,index) in userInfList" :key="index" class="item" @click="viewDetails(item)">
-                        <div class="list">
-                            <div class="item_left">{{item.key}}</div>
-                            <div class="item_right item_1" v-if="item.status == 1">受理中</div>
-                            <div class="item_right item_2" v-else-if="item.status == 2">已完结</div>
-                        </div>
-                    </a-col>
+            <div class="content_item"  >
+              <a-row type="flex" justify="space-between" align="bottom" >
+                <a-col :span="20" v-for="(item,index) in userInfList" :key="index" class="item" @click="viewDetails(item)">
+                  <div class="list">
+                    <div class="item_left">{{item.key}}</div>
+                    <div class="item_right item_1" v-if="item.status == 1">受理中</div>
+                    <div class="item_right item_2" v-else-if="item.status == 2">已完结</div>
+                  </div>
+                </a-col>
                 </a-row>  
             </div>
-              
         </div>
     </div>
 </template>

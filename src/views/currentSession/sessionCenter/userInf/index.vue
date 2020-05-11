@@ -19,7 +19,7 @@
     <div v-if="isShow" class="information">
         <User />
         <Tags />
-        <access-inf />
+        <access-info />
         <order-inf />
         <service-summary />
     </div>
@@ -30,7 +30,7 @@
 // import sessionList from "./sessionList/index"
 import User from './../../../../components/userInf/VisitorInfo'
 import Tags from './../../../../components/userInf/Tags'
-import accessInf from './../../../../components/userInf/accessInf'
+import AccessInfo from './../../../../components/userInf/AccessInfo'
 import orderInf from './../../../../components/userInf/orderInf'
 import serviceSummary from './../../../../components/userInf/serviceSummary'
 export default {
@@ -40,7 +40,7 @@ export default {
   components: {
     User,
     Tags,
-    accessInf,
+    AccessInfo,
     orderInf,
     serviceSummary
   },
