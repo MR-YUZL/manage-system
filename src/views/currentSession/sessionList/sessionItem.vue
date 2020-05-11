@@ -27,7 +27,7 @@
 
 <script>
 import { mapGetters, mapState } from 'vuex'
-import { isToday, getDate, getTime } from '../../../utils/date'
+import { isToday, getDate, getTime } from './../../../utils/date'
 export default {
   data: () => ({
     

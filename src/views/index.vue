@@ -30,6 +30,7 @@ export default {
 </script>
 <style lang="less" scoped>
     .qf-home{
+      height: 100%;
         .list-right {
             box-sizing: border-box;
             padding-left: 200px;
@@ -41,6 +42,9 @@ export default {
                 padding: 10px 15px;
             }
           
+        }
+        .l-left{
+          box-sizing: border-box;
         }
     }
 </style>

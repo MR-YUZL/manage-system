@@ -129,7 +129,7 @@ const conversationModules = {
     getMessageList(context, conversationID) {
       console.log(context.state.isCompleted)
       if (context.state.isCompleted) {
-        console.log('----------1')
+        console.log('----------1222')
         context.commit('showMessage', {
           message: '已经没有更多的历史消息了哦',
           type: 'info'

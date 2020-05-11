@@ -15,6 +15,7 @@ import TIM from 'tim-js-sdk'
 
 Vue.prototype.tim = tim
 Vue.prototype.TIM = TIM
+Vue.prototype.$bus = new Vue() // event Bus 用于无关系组件间的通信。
 
 Vue.use(Antd);
 Vue.config.productionTip = false;
