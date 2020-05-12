@@ -2,7 +2,7 @@
   <div class="informationList">
     <a-tabs default-active-key="1" @change="callback">
       <a-tab-pane key="1" tab="知识库">
-        Content of Tab Pane 1
+        <knowledge-base />
       </a-tab-pane>
       <a-tab-pane key="2" tab="更多信息" force-render>
         Content of Tab Pane 2
@@ -15,7 +15,7 @@
 </template>
 
 <script>
-// import sessionList from "./sessionList/index"
+import knowledgeBase from "./knowledgeBase/index"
 
 export default {
   data: () => ({
@@ -25,7 +25,7 @@ export default {
  
   }),
   components: {
-    
+    knowledgeBase
   },
   mounted() {
     
