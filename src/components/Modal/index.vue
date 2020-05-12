@@ -16,20 +16,20 @@
                   <p v-for="(value,ind) in item.content" :key="ind" >{{value}}</p>
               </div>
               
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'textarea'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'textarea'" :prop="item.ruleName" :rules="item.rules">
                 <a-input  type="textarea" v-model="item.model" />
               </a-form-model-item>
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'input'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'input'" :prop="item.ruleName" :rules="item.rules">
                 <a-input  v-model="item.model" />
               </a-form-model-item>
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'select'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'select'" :prop="item.ruleName" :rules="item.rules">
                 <a-select  placeholder="please select your zone" v-model="item.model" >
                     <a-select-option v-for="(val,index) in item.options" :key="index" :value="val.key">
                     {{val.value}}
                     </a-select-option>
                 </a-select>
               </a-form-model-item>
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'radio'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'radio'" :prop="item.ruleName" :rules="item.rules">
                 <a-radio-group v-model="item.model" v-for="(val,index) in item.options" :key="index">
                     <a-radio :value="val.key">
                     {{val.value}}
@@ -37,25 +37,25 @@
                  
                 </a-radio-group>
               </a-form-model-item>
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'checkbox'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'checkbox'" :prop="item.ruleName" :rules="item.rules">
                 <a-checkbox-group v-model="item.model" v-for="(val,index) in item.options" :key="index">
                     <a-checkbox :value="val.key" name="type">
                     {{val.value}}
                     </a-checkbox>
                 </a-checkbox-group>
               </a-form-model-item>
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'upload'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'upload'" :prop="item.ruleName" :rules="item.rules">
                 <a-textarea v-model="item.model" />
                 <a-upload
-                  v-model="item.model"
                   name="file"
-                  :action="action"
+                  :action="item.action"
                   list-type="text"
+                  @change="uploadFile"
                 >
                   <a-button> <a-icon type="upload" /> 附件上传 </a-button>
                 </a-upload>
               </a-form-model-item>
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'date'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'date'" :prop="item.ruleName" :rules="item.rules">
                 <a-date-picker
                     show-time
                     type="date"
@@ -64,7 +64,7 @@
                     v-model="item.model"
                 />
               </a-form-model-item>
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'treeSelect'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'treeSelect'" :prop="item.ruleName" :rules="item.rules">
                 <a-tree-select
                   style="width: 100%"
                   :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
@@ -76,13 +76,13 @@
                  
                 </a-tree-select>
               </a-form-model-item>
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'cascader'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'cascader'" :prop="item.ruleName" :rules="item.rules">
                  <a-cascader
                   v-model="item.model"
                   :options="item.options"
                 />
               </a-form-model-item>
-              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'tag'" :prop="item.ruleName">
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'tag'" :prop="item.ruleName" :rules="item.rules">
                  <template v-for="tag in item.options">
                   <a-checkable-tag
                     :key="tag.value"
@@ -292,7 +292,17 @@ export default {
   },
   methods: {
    
-  
+     uploadFile(info) {
+      if (info.file.status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === 'done') {
+        console.log(info)
+        this.$message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === 'error') {
+        this.$message.error(`${info.file.name} file upload failed.`);
+      }
+    },
     handleCancel() {
       // this.modelObj.visible = false
       this.selectedTags = []

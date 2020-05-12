@@ -71,7 +71,12 @@ export default {
                   type:'input',
                   label:'输入框',
                   model:'',
-                  ruleName:'input'
+                  ruleName:'input',
+                  rules:{
+                    required: true,
+                    message: 'domain can not be null',
+                    trigger: 'blur',
+                  }
               },
               {
                   type:'select',
