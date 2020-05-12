@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="aaa">
-          <Model :modelObj="modelObj"  @formData="formData" />
+          <Model :modelObj="modelObj" :formList="formList" @formData="formData" />
         </div>
     </div>
 </template>
@@ -34,15 +34,16 @@ export default {
           // tagsList:['标签11','标签2222','标签2','标签2','标签2'],
           visible:false,
           active:true,
+          formList:['tagsList'],
           modelObj:{
             title:'访客标签',
+            visible:false,
             modelList:[
                 {
                   type:'tag' ,
                   label:'标签',
-                  model:[
-                    'tag',
-                  ],
+                  model:[],
+                  ruleName:'tag',
                   options:[{key:'111',value:'111'},{key:'222',value:'222'}]
                 },
             ]
@@ -57,14 +58,16 @@ export default {
     },
     methods:{
       tagsFn(){
-        this.$store.commit('getVisible',true)
+        // this.$store.commit('getVisible',true)
+        this.modelObj.visible = true
       },
       showFn(){
         this.active = !this.active
       },
       formData(data){
-        this.$emit('submitTags',data)
-        console.log('传过去提交的数据',data)
+        this.$emit('submitTags',data.data)
+        this.modelObj.visible = data.visible
+        console.log('传过去提交的数据',data.data)
       }
     }
 }
