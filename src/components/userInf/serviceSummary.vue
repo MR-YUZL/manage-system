@@ -7,8 +7,8 @@
             <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"/>
             <div v-for="(item,index) in questionList" :key="index" class="question" >
                 <div class="question_top"><span>{{item.inputTime}}</span><span>{{item.inputAcc}}</span></div>
-                <div>{{item.question}}</div>
-                <div>{{item.content}}</div>
+                <div>{{item.title}}</div>
+                <div>{{item.remark}}</div>
             </div>
         </div>
     
@@ -27,8 +27,8 @@ export default {
               {
                 inputTime:'2020-12-07 12',
                 inputAcc:'冠希哥',
-                question:'士大夫撒地方的发生的的撒发到付',
-                content:'发送飞机撒大家哦个都解耦if圣诞节案件覅偶个就放ID数据分IP'
+                title:'士大夫撒地方的发生的的撒发到付',
+                remark:'发送飞机撒大家哦个都解耦if圣诞节案件覅偶个就放ID数据分IP'
               },
           ],
           questionList:[],
