@@ -2,87 +2,87 @@
   <div class="model">
      <a-modal
       :title="modelObj.title"
-      :visible="visible"
+      :visible="modelObj.visible"
       :confirmLoading="confirmLoading"
-      @cancel="handleCancel"
+      @cancel="handleCancel('modelObj')"
       :footer="null"
     >
      
       <div>
-         <a-form :form="form" v-bind="formItemLayout"
+         <a-form-model ref="modelObj" v-bind="formItemLayout" :model="modelObj"
           >
             <div v-for="(item,index) in modelObj.modelList" :key="index">
               <div v-if="item.type == 'font'" :style="{textAlign:'center'}">
                   <p v-for="(value,ind) in item.content" :key="ind" >{{value}}</p>
               </div>
               
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'textarea'" >
-                <a-input  type="textarea" v-decorator="[...item.model]" />
-              </a-form-item>
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'input'" >
-                <a-input  v-decorator="[...item.model]" />
-              </a-form-item>
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'select'" :prop="item.ruleName">
-                <a-select  placeholder="please select your zone" v-decorator="[...item.model]" >
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'textarea'" :prop="item.ruleName">
+                <a-input  type="textarea" v-model="item.model" />
+              </a-form-model-item>
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'input'" :prop="item.ruleName">
+                <a-input  v-model="item.model" />
+              </a-form-model-item>
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'select'" :prop="item.ruleName">
+                <a-select  placeholder="please select your zone" v-model="item.model" >
                     <a-select-option v-for="(val,index) in item.options" :key="index" :value="val.key">
                     {{val.value}}
                     </a-select-option>
                 </a-select>
-              </a-form-item>
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'radio'" :prop="item.ruleName">
-                <a-radio-group v-decorator="[...item.model]" v-for="(val,index) in item.options" :key="index">
+              </a-form-model-item>
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'radio'" :prop="item.ruleName">
+                <a-radio-group v-model="item.model" v-for="(val,index) in item.options" :key="index">
                     <a-radio :value="val.key">
                     {{val.value}}
                     </a-radio>
                  
                 </a-radio-group>
-              </a-form-item>
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'checkbox'" >
-                <a-checkbox-group v-decorator="[...item.model[0]]" v-for="(val,index) in item.options" :key="index">
+              </a-form-model-item>
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'checkbox'" :prop="item.ruleName">
+                <a-checkbox-group v-model="item.model" v-for="(val,index) in item.options" :key="index">
                     <a-checkbox :value="val.key" name="type">
                     {{val.value}}
                     </a-checkbox>
                 </a-checkbox-group>
-              </a-form-item>
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'upload'" >
-                <a-textarea v-decorator="[...item.model]" />
+              </a-form-model-item>
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'upload'" :prop="item.ruleName">
+                <a-textarea v-model="item.model" />
                 <a-upload
-                  v-decorator="[...item.model[1]]"
+                  v-model="item.model"
                   name="file"
                   :action="action"
                   list-type="text"
                 >
                   <a-button> <a-icon type="upload" /> 附件上传 </a-button>
                 </a-upload>
-              </a-form-item>
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'date'" >
+              </a-form-model-item>
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'date'" :prop="item.ruleName">
                 <a-date-picker
                     show-time
                     type="date"
                     placeholder="Pick a date"
                     style="width: 100%;"
-                    v-decorator="[...item.model]"
+                    v-model="item.model"
                 />
-              </a-form-item>
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'treeSelect'">
+              </a-form-model-item>
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'treeSelect'" :prop="item.ruleName">
                 <a-tree-select
                   style="width: 100%"
                   :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
                   placeholder="Please select"
                   allowClear
-                  v-decorator="[...item.model]"
+                  v-model="item.model"
                   :treeData="item.options"
                 >
                  
                 </a-tree-select>
-              </a-form-item>
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'cascader'" >
+              </a-form-model-item>
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'cascader'" :prop="item.ruleName">
                  <a-cascader
-                  v-decorator="[...item.model]"
+                  v-model="item.model"
                   :options="item.options"
                 />
-              </a-form-item>
-              <a-form-item :label="item.label" v-if="item.label && item.type == 'tag'" >
+              </a-form-model-item>
+              <a-form-model-item :label="item.label" v-if="item.label && item.type == 'tag'" :prop="item.ruleName">
                  <template v-for="tag in item.options">
                   <a-checkable-tag
                     :key="tag.value"
@@ -92,18 +92,18 @@
                     {{ tag.value }}
                   </a-checkable-tag>
                 </template>
-              </a-form-item>
+              </a-form-model-item>
             </div>
            
-            <a-form-item :wrapper-col="{ span: 14, offset: 8 }">
-              <a-button  @click="handleCancel">
+            <a-form-model-item :wrapper-col="{ span: 14, offset: 8 }">
+              <a-button  @click="handleCancel('modelObj')">
                   取消
               </a-button>
               <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">
                   确定
               </a-button>
-            </a-form-item>
-        </a-form>
+            </a-form-model-item>
+        </a-form-model>
       </div>
     </a-modal>
   </div>
@@ -114,149 +114,78 @@ import { mapState } from 'vuex'
 export default {
   data(){
     return{
-      form:this.$form.createForm(this, { name: 'transationFlow' }),
+      // form:this.$form.createForm(this, { name: 'transationFlow' }),
       // visible: false,
       confirmLoading: false,
       selectedTags: [],
+      obj:{},
       formItemLayout: {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 },
       },
       
-    
+     
       modelObj1:{
           title:'新增',
+          visible:true,
           modelList:[
               {
                   type:'font', //文字
                   content:['确认完结工单吗？完结后，可重新开启工单','共删除xxx条数据'],
                   model:'',
-                  ruleName:''
+                  ruleName:'font'
               },
               {
                   type:'textarea',
                   label:'文本框',
-                  model:[
-                    'textarea',
-                    {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please input your textarea!',
-                        },
-                      ],
-                    },
-                  ],
-                 
+                  model:'',
+                  ruleName:'textarea'
               },
               {
                   type:'input',
                   label:'输入框',
-                  model:[
-                    'input',
-                    {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please input your input!',
-                        },
-                      ],
-                    },
-                  ],
-                 
+                  model:'',
+                  ruleName:'input'
               },
               {
                   type:'select',
                   label:'下拉选择',
-                  model:[
-                    'select',
-                    {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please input your select!',
-                        },
-                      ],
-                    },
-                  ],
+                  model:undefined,
+                  ruleName:'select',
                   options:[{key:'111',value:'111'},{key:'222',value:'222'}]
               },
               {
                   type:'radio',
                   label:'单选',
-                  model:[
-                    'radio',
-                    {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please input your radio!',
-                        },
-                      ],
-                    },
-                  ],
+                  model:'',
+                  ruleName:'radio',
                   options:[{key:'111',value:'111'},{key:'222',value:'222'}]
               },
               {
                 type:'checkbox' ,
                 label:'多选',
-                model:[
-                    'checkbox',
-                    {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please input your checkbox!',
-                        },
-                      ],
-                    },
-                  ],
+                model:[],
+                ruleName:'checkbox',
                 options:[{key:'111',value:'111'},{key:'222',value:'222'}]
               },
               {
                   type:'upload',
                   label:'上传',
+                  ruleName:'upload',
                   action:'https://www.mocky.io/v2/5cc8019d300000980a055e76',//配置文件上传路径
-                  model:[
-                    ['upload_text'],
-                    [
-                    'upload',
-                      {
-                        valuePropName: 'fileList',
-                        getValueFromEvent: this.normFile,
-                      },
-                    ]
-                  ],
+                  model:'',
               },
               {
                   type:'date',
                   label:'日期',
-                  model:[
-                    'date',
-                    {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please input your date!',
-                        },
-                      ],
-                    },
-                  ],
+                  model:'',
+                  ruleName:'date',
               },
               {
                   type:'treeSelect',
                   label:'树形选择',
-                  model:[
-                    'treeSelect',
-                    {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please input your treeSelect!',
-                        },
-                      ],
-                    },
-                  ],
+                  model:[],
+                  ruleName:'treeSelect',
                   options:[
                     {
                       title: 'Node1',
@@ -292,17 +221,8 @@ export default {
               {
                   type:'cascader',
                   label:'联级选择',
-                  model:[
-                    'cascader',
-                    {
-                      rules: [
-                        {
-                          required: true,
-                          message: 'Please input your cascader!',
-                        },
-                      ],
-                    },
-                  ],
+                  model:[],
+                  ruleName:'cascader',
                   options:[
                     {
                       value: 'zhejiang',
@@ -323,6 +243,7 @@ export default {
                     {
                       value: 'jiangsu',
                       label: 'Jiangsu',
+                      
                       children: [
                         {
                           value: 'nanjing',
@@ -341,9 +262,8 @@ export default {
               {
                 type:'tag' ,
                 label:'标签',
-                model:[
-                    'tag',
-                  ],
+                model:[],
+                ruleName:'tag',
                 options:[{key:'111',value:'111'},{key:'222',value:'222'}]
               },
           ]
@@ -358,8 +278,8 @@ export default {
   },
   props:['modelObj'],
   mounted() {
-  
-    this.selectedTags = []
+    console.log(this.modelObj)
+  this.selectedTags = []
    this.modelObj.modelList.map((item) => {
      if(item.type == 'tag'){
        item.options.map((val) => {
@@ -374,25 +294,51 @@ export default {
    
   
     handleCancel() {
-      this.$store.commit('getVisible',false)
+      // this.modelObj.visible = false
       this.selectedTags = []
-    },  
+      let status = {
+        visible:false,
+        data:{}
+      }
+      this.reset(this.modelObj.modelList)
+      // this.modelObj.modelList.map(item => {
+      //   item.model = undefined
+      // })
+      this.$emit('formData',status)
+    
+      // this.$refs[formName].resetFields();
+     
+    },
+    //重置弹框
+    reset(list){
+      list.map(item => {
+        item.model = undefined
+      })
+    },
     onSubmit(e) {
       e.preventDefault();
-      this.$store.commit('getVisible',false)
-      this.form.validateFieldsAndScroll((err, values) => {
-        if (!err) {
-          
-
-          if(this.selectedTags.length){
-            values.selectedTags = this.selectedTags
-
-          }
-          this.selectedTags = []
-          this.$emit('formData',values)
-          console.log('Received values of form: ', values);
+    
+   
+      let  obj = {}
+    
+      this.modelObj.modelList.map((item) => {
+        if(this.selectedTags.length && item.type == 'tag'){
+         
+          obj[item.ruleName] = [...this.selectedTags]
+        }else{
+          obj[item.ruleName] = item.model
         }
-      });
+          
+      })
+      console.log(obj)
+      let status = {
+        visible:false,
+        data:obj
+      }
+      this.$emit('formData',status)
+      this.selectedTags = []
+      this.reset(this.modelObj.modelList)
+      
     },
 
     // 附件上传
@@ -409,13 +355,15 @@ export default {
       const nextSelectedTags = checked
         ? [...selectedTags, tag]
         : selectedTags.filter(t => t !== tag);
-      console.log('You are interested in: ', nextSelectedTags);
+      // console.log('You are interested in: ', nextSelectedTags);
       this.selectedTags = nextSelectedTags;
       // this.$emit('selectGetTags',this.selectedTags)
       
     },
   },
-  watch: {},
+  watch: {
+   
+  },
   computed: {
     ...mapState({
       visible: state => state.basic.visible,

@@ -60,7 +60,7 @@ export default {
   margin-left: 15px;
 }
 .base {
-  color: red;
+  color: #BABABA;
   font-size: 12px;
 }
 .name {
