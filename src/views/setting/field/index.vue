@@ -63,7 +63,7 @@
               :wrapperCol="{ span: 20 }"
               :labelCol="{ span: 4 }"
               :prop="'options.'+idx+'.optionValue'"
-              :rules="{required: true, message: '请输入添加的选项', trigger: 'change' }"
+              :rules="{required: true, message: '请输入添加的选项', trigger: 'blur' }"
             >
               <div class="singleChoice">
                 <a-input v-model="addFormData.options[idx].optionValue" placeholder="请输入要增加的字段" />
@@ -202,6 +202,7 @@ export default {
     },
     handleCancelAddField() {
       this.addFieldShow = false;
+      this.$refs.addForm.resetFields();
     },
     handleOkAddfield() {
       this.$refs.addForm.validate(valid => {
@@ -276,9 +277,6 @@ export default {
   .ant-form-explain{
     padding-left:20%
   }
-  // .ant-form-item {
-  //   // margin-bottom: 0;
-  // }
   .addBtn {
     position: absolute;
     right: 80px;
