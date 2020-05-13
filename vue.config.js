@@ -8,6 +8,7 @@ module.exports = {
   //     }
   //   }
   // },
+  lintOnSave: false,
   publicPath: "",
   devServer: {
     host: "0.0.0.0",
@@ -19,7 +20,7 @@ module.exports = {
         target: "http://hfw.test.com/", //回头配置开发本地地址
         changeOrigin: true,
         ws: false
-        }
       }
-    },
+    }
+  },
 };

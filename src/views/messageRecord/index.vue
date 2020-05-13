@@ -10,13 +10,7 @@
           </div>
         </a-table>
       </div>
-      <div class="page_pagination">
-        <a-pagination showQuickJumper showSizeChanger :total="pager.total" v-model="pager.currentPage" @change="paginationChange" :pageSize="pager.pageSize" @showSizeChange="onShowSizeChange" :pageSizeOptions="pager.pageSizeOptions" :showTotal="total => `共有 ${pager.total} 条/${pager.totalPage}页`">
-          <template slot="buildOptionText" slot-scope="props">
-            <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
-          </template>
-        </a-pagination>
-      </div>
+      <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
     <a-modal title="记录" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
       <div class="record-detail">
@@ -36,13 +30,15 @@
 import UserInformation from './../../components/userInf'
 import Search from './../../components/Search/index'
 import MessageDetail from './messageDetail'
+import TablePagination from "../../components/Table/TablePagination"
 
 import moment from "moment";
 export default {
   components: {
     Search,
     MessageDetail,
-    UserInformation
+    UserInformation,
+    TablePagination
   },
   data(){
     return {
@@ -151,7 +147,7 @@ export default {
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         currentPage: 1,
         pageSize: 10,
-        total: 0,
+        totalRecord: 0,
         totalPage: 0
       },
       detailsShow:false,
@@ -172,17 +168,11 @@ export default {
   },
   methods: {
     getList(){
-      this.Request.post('hfw/tsmHfwLeaveComments/listPageJson',{ ...this.pager,...this.searchField}).then(res => {
+      this.Request.get('hfw/tsmHfwLeaveComments/listPageJson',{ ...this.pager,...this.searchField}).then(res => {
         let data = res.data
         let page = data.pager
         this.dataSource =  data.list
-        this.pager = {
-          pageSizeOptions: ["10", "20", "30", "40", "50"],
-          currentPage: page.currentPage,
-          pageSize: page.pageSize,
-          total: page.totalRecord,
-          totalPage: page.totalPage
-        };
+        this.pager = Object.assign({},this.pager,page)
       })
     },
     checkMessage(id,status){   // 调取接口
@@ -208,9 +198,8 @@ export default {
       this.pager.currentPage = 1;
       this.getList();
     },
-    paginationChange(page, pageSize) {
-      this.pager.pageSize = pageSize;
-      this.pager.currentPage = page;
+    paginationChange(values) {
+      this.pager = values
       this.getList();
     },
     setHandleResult(){

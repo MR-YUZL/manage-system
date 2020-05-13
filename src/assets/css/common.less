@@ -1,11 +1,39 @@
+body,
+ul,
+li,
+ol,
+dl,
+dd,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+input,
+p {
+    margin: 0;
+}
 
-body,ul,li,ol,dl,dd,h1,h2,h3,h4,h5,h6,input,p{ margin:0;}
-ul,ol { padding:0;}
-img { border:none;}
-a{text-decoration:none;}
-li{list-style:none;}
-p{
-  margin-bottom:0;
+ul,
+ol {
+    padding: 0;
+}
+
+img {
+    border: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+li {
+    list-style: none;
+}
+
+p {
+    margin-bottom: 0;
 }
 
 .l-left {
@@ -31,10 +59,10 @@ p{
 }
 
 .clearfix:after {
-    content   : '.';
-    display   : block;
-    height    : 0;
-    clear     : both;
+    content: '.';
+    display: block;
+    height: 0;
+    clear: both;
     visibility: hidden;
 }
 
@@ -122,24 +150,48 @@ p{
 .f-s-16 {
     font-size: 16px;
 }
-h1,h2,h3,h4,h5,h6{
-  font-weight: normal;
-}
-.TitleH2{
-  font-size:18px;
-  color:#333;
-  font-weight: bold;
-}
-.box{
-  background:#fff;
-}
-.blue{
-  color:#3e7bf8;
-  cursor: pointer;
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: normal;
 }
 
-.ant-modal-root .ant-modal-footer{
-   text-align: center;
-   border-top:none;
-   padding-bottom:30px;
-} 
+.TitleH2 {
+    font-size: 18px;
+    color: #333;
+    font-weight: bold;
+}
+
+.box {
+    background: #fff;
+}
+
+.blue {
+    color: #3e7bf8;
+    cursor: pointer;
+}
+
+.ant-modal-root .ant-modal-footer {
+    text-align: center;
+    border-top: none;
+    padding-bottom: 30px;
+}
+
+.container {
+    .button-area {
+        .ant-btn {
+            margin-right: 8px;
+            margin-bottom: 12px;
+        }
+    }
+}
+
+.page_pagination {
+    margin: 10px 0;
+    display: flex;
+    justify-content: flex-end;
+}
