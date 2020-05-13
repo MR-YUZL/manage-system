@@ -50,10 +50,11 @@ export default {
                 },  
             ],
              
-      
+           
             modelObj1:{
               title:'新增',
               visible:false,
+              ref:'model',
               modelList:[
               // {
               //     type:'font', //文字
