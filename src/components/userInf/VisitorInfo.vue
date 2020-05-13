@@ -64,13 +64,12 @@
         </div>
       </a-modal>
       <a-modal title="关联客户" v-if="relatedCusModal"   :visible="relatedCusModal" @cancel="handleRelatedCusCancel" @ok="handleRelatedCusOk">
-          <div><a-input-search v-model="relateSearchKey" placeholder="请输入客户名称" enter-button='查询' @search="onRelatedCusSearch" /></div>
-          <div class="relateCus">
-            <a-radio-group v-model="relateValue">
-              <a-radio :style="radioStyle" :value="1">adf</a-radio>
-              <a-radio :style="radioStyle" :value="2">aadf</a-radio>
-            </a-radio-group>
-          </div>
+        <div><a-input-search v-model="relateSearchKey" placeholder="请输入客户名称" enter-button='查询' @search="onRelatedCusSearch" /></div>
+        <div class="relateCus">
+          <a-radio-group v-model="custId" >
+            <a-radio :style="radioStyle"  v-for="(item,index) in relateRedio" :key="index" :value="item.custId">{{item.custName}}</a-radio>
+          </a-radio-group>
+        </div>
       </a-modal>
     </div>
 </template>
@@ -111,7 +110,7 @@ export default {
         },
         relatedCusModal:false,
         relateSearchKey:'',
-        relateValue:''
+        custId:''
       }
     },
     methods:{
@@ -129,22 +128,20 @@ export default {
           this.$emit('handleSaveClueOk',this.saveClueForm)
         },
         relatedCustomers(){
-         this.relatedCusModal = true
+          this.custId = ''
+          this.relatedCusModal = true
         },
         handleRelatedCusCancel(){
           this.relatedCusModal = false
         },
         handleRelatedCusOk(){
-          if(this.relateValue==''){
+          if(this.custId==''){
               this.$message.info('请选择要关联的客户')
           }
-          this.$emit('handleRelatedCusOk',this.relateValue)
+          this.$emit('handleRelatedCusOk',this.custId)
         },
         onRelatedCusSearch(){
           this.$emit('onRelatedCusSearch',this.relateSearchKey)
-          // this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+this.relateSearchKey).then(res => {
-          //   console.log('模糊搜索',res.data)
-          // }) 
         },
     }
 }
@@ -183,5 +180,8 @@ export default {
         }
       }
     }
+  }
+  .relateCus{
+    margin-top:10px;
   }
 </style>

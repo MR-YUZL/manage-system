@@ -39,6 +39,10 @@ export default {
         relateRedio:[], // 关联客户rediolist
         questionList:[],//客服小结
         userInfList:[],//工单信息
+        realteCustParams:{// 关联客户的参数
+          guestId:'',
+          custId:''
+        },
       }
     },
     watch:{
@@ -67,15 +71,22 @@ export default {
         // 关闭保存为线索的弹窗
         this.$refs.visitorInfo.saveClueModal = false
       },
-      handleRelatedCusOk(con){
-        console.log('this.relateValue',con,'===============')
-        this.Request.get('/hfw/workbench/associatedCustomers?matchKey='+con).then(res => {
+      handleRelatedCusOk(custId){
+        console.log('this.custId',custId,'===============')
+        this.realteCustParams.guestId = this.guestId
+        this.realteCustParams.custId = custId
+        this.Request.post('/hfw/workbench/associatedCustomers',{...this.realteCustParams}).then(res => {  // 关联客户Ok
           console.log('提交客户关联',res.data)
         }) 
       },
       relateSearchKey(relateSearchKey){
         console.log('=====================',relateSearchKey)
+        this.relateRedio = []
         this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+relateSearchKey).then(res => {
+          let data = res.data.list
+          if(data.length>0){
+            this.relateRedio = data
+          }
           console.log('模糊搜索',res.data)
         }) 
       },
@@ -90,12 +101,15 @@ export default {
       getSelectTags(){
         this.Request.get('/hfw/workbench/getAllGuestLabel').then(res => {
           let data = res.data.list
-          data.map((item)=>{
-            this.selectTagList.push({
-              key:item.id,
-              value:item.name,
+          if(data.length>0){
+            data.map((item)=>{
+              this.selectTagList.push({
+                key:item.id,
+                value:item.name,
+              })
             })
-          })
+          }
+         
           console.log('所有标签',data)
         })
       },

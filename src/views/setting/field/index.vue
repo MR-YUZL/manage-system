@@ -183,14 +183,14 @@ export default {
   methods: {
     getList() {
       // 0-客户字段,1-联系人字段,2-工单字段
-      let params = {
-        state: this.activeKey
-      };
-      this.Request.post("/config/hfwConfigFields/list", { ...params }).then(
-        res => {
-          console.log("字段设置", res.data);
-        }
-      );
+      // let params = {
+      //   state: this.activeKey
+      // };
+      // this.Request.post("/config/hfwConfigFields/list", { ...params }).then(
+      //   res => {
+      //     console.log("字段设置", res.data);
+      //   }
+      // );
     },
     clickTabs(key) {
       this.activeKey = key;
