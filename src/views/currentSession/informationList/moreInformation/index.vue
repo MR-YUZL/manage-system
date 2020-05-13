@@ -1,26 +1,21 @@
 <template>
   <!-- 访客信息，访客标签，工单信息，访问信息，服务小结整合 -->
   <div class="userInformation">
-    <visitor-info ref="visitorInfo" :vistorInfoObj="visitorInfoData" :relateRedio="relateRedio" @handleSaveClueOk="handleSaveClueOk" @handleRelatedCusOk="handleRelatedCusOk" @onRelatedCusSearch="relateSearchKey"/>
-    <Tags :tags="tagsList" :selectTagList="selectTagList"  @submitTags="submitTags"/>
     <AccessInfo />
     <OrderInf :userInfList="userInfList"/>
-    <ServiceSummary :questionList="questionList" />
-    <!-- <ServiceSummary /> -->
+    <!-- <ServiceSummary :questionList="questionList" /> -->
+    <ServiceSummary />
   </div>
 </template>
 
 <script>
-import AccessInfo from './AccessInfo'
-import VisitorInfo from './VisitorInfo'
-import Tags from './Tags'
-import OrderInf from './OrderInf'
-import ServiceSummary from './ServiceSummary'
+
+import AccessInfo from './../../../../components/userInf/AccessInfo'
+import OrderInf from './../../../../components/userInf/OrderInf'
+import ServiceSummary from './../../../../components/userInf/ServiceSummary'
 export default {
     name: "",
     components: {
-      VisitorInfo,
-      Tags,
       AccessInfo,
       OrderInf,
       ServiceSummary
@@ -39,10 +34,6 @@ export default {
         relateRedio:[], // 关联客户rediolist
         questionList:[],//客服小结
         userInfList:[],//工单信息
-        realteCustParams:{// 关联客户的参数
-          guestId:'',
-          custId:''
-        },
       }
     },
     watch:{
@@ -59,14 +50,7 @@ export default {
     created(){
       this.getSelectTags()
     },
-    mounted(){
-      if(this.guestId!==''){
-        this.getVisitorInfo()
-        this.getTags()
-        this.getWorkOrderList()
-        this.getServiceList()
-      }
-    },
+    mounted(){},
     methods: {
       getVisitorInfo(){
         this.Request.get('/hfw/workbench/getGuestInfo?guestId='+this.guestId).then(res => {
@@ -74,43 +58,19 @@ export default {
           this.visitorInfoData = res.data.data
         })   
       },
-      handleSaveClueOk(formData){
-        console.log(formData)
-        let params = {
-          guestId:this.guestId,
-          ...formData
-        }
-        //字段查重
-        // this.Request.post('/hfw/workbench/clueCensor',{checkKey:'22',type:'1'}).then(res => {
-        //   console.log(res)
-        // })
-
-        this.Request.post('/hfw/workbench/saveClue',{...params}).then(res => {
-          console.log('标签tags',res.data)
-          this.tagsList = res.data.data
-             this.$refs.visitorInfo.saveClueModal = false
-        })
+      handleSaveClueOk(){
         // 关闭保存为线索的弹窗
-        // this.$refs.visitorInfo.saveClueModal = false
+        this.$refs.visitorInfo.saveClueModal = false
       },
-      handleRelatedCusOk(custId){
-        console.log('this.custId',custId,'===============')
-        this.realteCustParams.guestId = this.guestId
-        this.realteCustParams.custId = custId
-        this.Request.post('/hfw/workbench/associatedCustomers',{...this.realteCustParams}).then(res => {  // 关联客户Ok
+      handleRelatedCusOk(con){
+        console.log('this.relateValue',con,'===============')
+        this.Request.get('/hfw/workbench/associatedCustomers?matchKey='+con).then(res => {
           console.log('提交客户关联',res.data)
-          this.$refs.visitorInfo.relatedCusModal = false
-          this.relateRedio = []
         }) 
       },
       relateSearchKey(relateSearchKey){
         console.log('=====================',relateSearchKey)
-        this.relateRedio = []
         this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+relateSearchKey).then(res => {
-          let data = res.data.list
-          if(data.length>0){
-            this.relateRedio = data
-          }
           console.log('模糊搜索',res.data)
         }) 
       },
@@ -125,15 +85,12 @@ export default {
       getSelectTags(){
         this.Request.get('/hfw/workbench/getAllGuestLabel').then(res => {
           let data = res.data.list
-          if(data.length>0){
-            data.map((item)=>{
-              this.selectTagList.push({
-                key:item.id,
-                value:item.name,
-              })
+          data.map((item)=>{
+            this.selectTagList.push({
+              key:item.id,
+              value:item.name,
             })
-          }
-         
+          })
           console.log('所有标签',data)
         })
       },
@@ -144,7 +101,7 @@ export default {
           guestId:this.guestId,
           tagIds:[]
         }
-        obj.tag.map( item => {
+        obj.selectedTags.map( item => {
           params.tagIds.push(item.key)
         })
         this.Request.post('/hfw/workbench/saveGuestLabel',{...params}).then(res => {

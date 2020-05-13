@@ -4,12 +4,13 @@
       :title="modelObj.title"
       :visible="modelObj.visible"
       :confirmLoading="confirmLoading"
-      @cancel="handleCancel('modelObj')"
-      :footer="null"
+      @ok="onSubmit"
+      @cancel="handleCancel"
+    
     >
      
       <div>
-         <a-form-model ref="modelObj" v-bind="formItemLayout" :model="modelObj"
+         <a-form-model ref="modelObj" v-bind="formItemLayout" :model="modelObj"  
           >
             <div v-for="(item,index) in modelObj.modelList" :key="index">
               <div v-if="item.type == 'font'" :style="{textAlign:'center'}">
@@ -23,7 +24,7 @@
                 <a-input  v-model="item.model" />
               </a-form-model-item>
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'select'" :prop="item.ruleName" :rules="item.rules">
-                <a-select  placeholder="please select your zone" v-model="item.model" >
+                <a-select  placeholder="" v-model="item.model" >
                     <a-select-option v-for="(val,index) in item.options" :key="index" :value="val.key">
                     {{val.value}}
                     </a-select-option>
@@ -34,7 +35,6 @@
                     <a-radio :value="val.key">
                     {{val.value}}
                     </a-radio>
-                 
                 </a-radio-group>
               </a-form-model-item>
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'checkbox'" :prop="item.ruleName" :rules="item.rules">
@@ -95,14 +95,14 @@
               </a-form-model-item>
             </div>
            
-            <a-form-model-item :wrapper-col="{ span: 14, offset: 8 }">
-              <a-button  @click="handleCancel('modelObj')">
+            <!-- <a-form-model-item :wrapper-col="{ span: 14, offset: 8 }">
+              <a-button  @click="handleCancel()">
                   取消
               </a-button>
               <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">
                   确定
               </a-button>
-            </a-form-model-item>
+            </a-form-model-item> -->
         </a-form-model>
       </div>
     </a-modal>

@@ -63,7 +63,7 @@
               :wrapperCol="{ span: 20 }"
               :labelCol="{ span: 4 }"
               :prop="'options.'+idx+'.optionValue'"
-              :rules="{required: true, message: '请输入添加的选项', trigger: 'change' }"
+              :rules="{required: true, message: '请输入添加的选项', trigger: 'blur' }"
             >
               <div class="singleChoice">
                 <a-input v-model="addFormData.options[idx].optionValue" placeholder="请输入要增加的字段" />
@@ -183,14 +183,14 @@ export default {
   methods: {
     getList() {
       // 0-客户字段,1-联系人字段,2-工单字段
-      let params = {
-        state: this.activeKey
-      };
-      this.Request.post("/config/hfwConfigFields/list", { ...params }).then(
-        res => {
-          console.log("字段设置", res.data);
-        }
-      );
+      // let params = {
+      //   state: this.activeKey
+      // };
+      // this.Request.post("/config/hfwConfigFields/list", { ...params }).then(
+      //   res => {
+      //     console.log("字段设置", res.data);
+      //   }
+      // );
     },
     clickTabs(key) {
       this.activeKey = key;
@@ -202,6 +202,7 @@ export default {
     },
     handleCancelAddField() {
       this.addFieldShow = false;
+      this.$refs.addForm.resetFields();
     },
     handleOkAddfield() {
       this.$refs.addForm.validate(valid => {
@@ -276,9 +277,6 @@ export default {
   .ant-form-explain{
     padding-left:20%
   }
-  // .ant-form-item {
-  //   // margin-bottom: 0;
-  // }
   .addBtn {
     position: absolute;
     right: 80px;

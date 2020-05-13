@@ -81,7 +81,8 @@ export default {
             border-TOP: 1px solid #E7E7E8;
         }
         .list_inf{
-            height: calc(100vh - 85px);
+            // height: calc(100vh - 85px);
+            height: calc(100vh - 70px);
             overflow-y: auto;
             overflow-x: hidden;
         }

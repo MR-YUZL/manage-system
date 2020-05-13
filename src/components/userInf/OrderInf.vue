@@ -5,7 +5,7 @@
             <span class="save" @click="addWorkOrder">新增工单</span>
         </div>
         <div class="content row_1" v-bind:class="{ expansion : active }">
-            <a-icon :type="active ? 'up' : 'down'" class="icon" @click="showFn"/>
+            <a-icon :type="active ? 'up' : 'down'" class="icon" @click="showFn" v-if="userInfList && userInfList.length" />
             <div class="content_item"  >
               <a-row type="flex" justify="space-between" align="bottom" >
                 <a-col :span="20" v-for="(item,index) in userInfList" :key="index" class="item" @click="viewDetails(item)">
@@ -18,7 +18,7 @@
                 </a-row>  
             </div>
         </div>
-        <Model :modelObj="modelObj1"  @formData="formData" />
+        <Model :modelObj="modelObj1"  @formData="formData" v-if="modelObj1.visible"/>
     </div>
 </template>
 <script>
@@ -46,157 +46,215 @@ export default {
                 },
                 {
                     title:'名字',
-                    status:'0',
-                },
+                    status:'0',  //	工单状态，0-未受理，1-受理中，2-已完成
+                },  
             ],
-          
+             
       
             modelObj1:{
               title:'新增',
               visible:false,
               modelList:[
-              {
-                  type:'font', //文字
-                  content:['确认完结工单吗？完结后，可重新开启工单','共删除xxx条数据'],
-                  model:'',
-                  ruleName:'font'
-              },
-              {
-                  type:'textarea',
-                  label:'文本框',
-                  model:'',
-                  ruleName:'textarea'
-              },
+              // {
+              //     type:'font', //文字
+              //     content:['确认完结工单吗？完结后，可重新开启工单','共删除xxx条数据'],
+              //     model:'',
+              //     ruleName:'font'
+              // },
+          
               {
                   type:'input',
-                  label:'输入框',
+                  label:'工单标题',
                   model:'',
-                  ruleName:'input',
+                  ruleName:'title',
                   rules:{
                     required: true,
-                    message: 'domain can not be null',
+                    message: '请输入工单标题',
+                    trigger: 'blur',
+                  }
+              },
+              // {
+              //     type:'textarea',
+              //     label:'工单内容',
+              //     model:'',
+              //     ruleName:'content',
+              //     rules:{
+              //       required: true,
+              //       message: '请输入工单内容',
+              //       trigger: 'blur',
+              //     }
+              // },
+                {
+                  type:'upload',
+                  label:'工单内容',
+                  ruleName:'content',
+                  action:'https://www.mocky.io/v2/5cc8019d300000980a055e76',//配置文件上传路径
+                  model:'',
+                  rules:{
+                    required: true,
+                    message: '请输入工单内容',
+                    trigger: 'blur',
+                  }
+              },
+               {
+                  type:'radio',
+                  label:'工单优先级',
+                  model:'1',
+                  ruleName:'radio',
+                  options:[{key:'1',value:'低'},{key:'2',value:'中'},{key:'3',value:'高'}],
+                  rules:{
+                    required: true,
+                    message: '请选择工单优先级',
                     trigger: 'blur',
                   }
               },
               {
                   type:'select',
-                  label:'下拉选择',
+                  label:'工单受理组',
                   model:undefined,
-                  ruleName:'select',
-                  options:[{key:'111',value:'111'},{key:'222',value:'222'}]
+                  ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
+                  options:[{key:'r',value:'111'},{key:'y',value:'222'}],
+                  rules:{
+                    required: true,
+                    message: '请选择工单受理组',
+                    trigger: 'change',
+                  }
               },
-              {
-                  type:'radio',
-                  label:'单选',
-                  model:'',
-                  ruleName:'radio',
-                  options:[{key:'111',value:'111'},{key:'222',value:'222'}]
+               {
+                  type:'select',
+                  label:'工单受理人',
+                  model:undefined,
+                  ruleName:'receiverAcc', //receiverAcc 工单受理人账号
+                  options:[{key:'c',value:'111'},{key:'d',value:'222'}],
+                  rules:{
+                    required: true,
+                    message: '请选择工单受理人',
+                    trigger: 'change',
+                  }
               },
-              {
-                type:'checkbox' ,
-                label:'多选',
-                model:[],
-                ruleName:'checkbox',
-                options:[{key:'111',value:'111'},{key:'222',value:'222'}]
+               {
+                  type:'select',
+                  label:'工单分类',
+                  model:undefined,
+                  ruleName:'typeId', //typeId 分类id
+                  options:[{key:'111',value:'111'},{key:'222',value:'222'}],
+                  // rules:{
+                  //   required: true,
+                  //   message: '请选择工单分类',
+                  //   trigger: 'blur',
+                  // }
               },
-              {
-                  type:'upload',
-                  label:'上传',
-                  ruleName:'upload',
-                  action:'https://www.mocky.io/v2/5cc8019d300000980a055e76',//配置文件上传路径
-                  model:'',
+                 {
+                  type:'select',
+                  label:'关联客户',
+                  model:undefined,
+                  ruleName:'receiverAcc', //receiverAcc 工单受理人账号
+                  options:[{key:'a',value:'111'},{key:'b',value:'222'}],
+                  rules:{
+                    required: true,
+                    message: '请选择工单关联客户',
+                    trigger: 'change',
+                  }
               },
-              {
-                  type:'date',
-                  label:'日期',
-                  model:'',
-                  ruleName:'date',
-              },
-              {
-                  type:'treeSelect',
-                  label:'树形选择',
-                  model:[],
-                  ruleName:'treeSelect',
-                  options:[
-                    {
-                      title: 'Node1',
-                      value: '0-0',
-                      key: '0-0',
-                      children: [
-                        {
-                          value: '0-0-1',
-                          key: '0-0-1',
-                          title:'0-0-1',
-                          children:[
-                            {
-                              value: '0-0-0-1',
-                              key: '0-0-0-1',
-                              title:'0-0-0-1',
-                            },
-                          ]
-                        },
-                        {
-                          title: 'Child Node2',
-                          value: '0-0-2',
-                          key: '0-0-2',
-                        },
-                      ],
-                    },
-                    {
-                      title: 'Node2',
-                      value: '0-1',
-                      key: '0-1',
-                    },
-                  ]
-              },
-              {
-                  type:'cascader',
-                  label:'联级选择',
-                  model:[],
-                  ruleName:'cascader',
-                  options:[
-                    {
-                      value: 'zhejiang',
-                      label: 'Zhejiang',
-                      children: [
-                        {
-                          value: 'hangzhou',
-                          label: 'Hangzhou',
-                          children: [
-                            {
-                              value: 'xihu',
-                              label: 'West Lake',
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                    {
-                      value: 'jiangsu',
-                      label: 'Jiangsu',
+              // {
+              //   type:'checkbox' ,
+              //   label:'多选',
+              //   model:[],
+              //   ruleName:'checkbox',
+              //   options:[{key:'111',value:'111'},{key:'222',value:'222'}]
+              // },
+            
+              // {
+              //     type:'date',
+              //     label:'日期',
+              //     model:'',
+              //     ruleName:'date',
+              // },
+              // {
+              //     type:'treeSelect',
+              //     label:'树形选择',
+              //     model:[],
+              //     ruleName:'treeSelect',
+              //     options:[
+              //       {
+              //         title: 'Node1',
+              //         value: '0-0',
+              //         key: '0-0',
+              //         children: [
+              //           {
+              //             value: '0-0-1',
+              //             key: '0-0-1',
+              //             title:'0-0-1',
+              //             children:[
+              //               {
+              //                 value: '0-0-0-1',
+              //                 key: '0-0-0-1',
+              //                 title:'0-0-0-1',
+              //               },
+              //             ]
+              //           },
+              //           {
+              //             title: 'Child Node2',
+              //             value: '0-0-2',
+              //             key: '0-0-2',
+              //           },
+              //         ],
+              //       },
+              //       {
+              //         title: 'Node2',
+              //         value: '0-1',
+              //         key: '0-1',
+              //       },
+              //     ]
+              // },
+              // {
+              //     type:'cascader',
+              //     label:'联级选择',
+              //     model:[],
+              //     ruleName:'cascader',
+              //     options:[
+              //       {
+              //         value: 'zhejiang',
+              //         label: 'Zhejiang',
+              //         children: [
+              //           {
+              //             value: 'hangzhou',
+              //             label: 'Hangzhou',
+              //             children: [
+              //               {
+              //                 value: 'xihu',
+              //                 label: 'West Lake',
+              //               },
+              //             ],
+              //           },
+              //         ],
+              //       },
+              //       {
+              //         value: 'jiangsu',
+              //         label: 'Jiangsu',
                       
-                      children: [
-                        {
-                          value: 'nanjing',
-                          label: 'Nanjing',
-                          children: [
-                            {
-                              value: 'zhonghuamen',
-                              label: 'Zhong Hua Men',
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                  ]
-              },
-              {
-                type:'tag' ,
-                label:'标签',
-                model:[],
-                ruleName:'tag',
-                options:[{key:'111',value:'111'},{key:'222',value:'222'}]
-              },
+              //         children: [
+              //           {
+              //             value: 'nanjing',
+              //             label: 'Nanjing',
+              //             children: [
+              //               {
+              //                 value: 'zhonghuamen',
+              //                 label: 'Zhong Hua Men',
+              //               },
+              //             ],
+              //           },
+              //         ],
+              //       },
+              //     ]
+              // },
+              // {
+              //   type:'tag' ,
+              //   label:'标签',
+              //   model:[],
+              //   ruleName:'tag',
+              //   options:[{key:'111',value:'111'},{key:'222',value:'222'}]
+              // },
             ]
           },
         }
@@ -211,7 +269,7 @@ export default {
       addWorkOrder(){
         // this.$store.commit('getVisible',true)
         console.log(this.modelObj1)
-        this.modelObj1.visible = true
+        this.modelObj1.visible = true 
        
       },
       formData(data){

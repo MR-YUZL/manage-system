@@ -38,18 +38,27 @@ export default new Vuex.Store({
     },
     showMessage(state, options) {
       if (state.message) {
-        state.message.destroy()
+        message.destroy()
       }
-      state.message = message.config({
-        message: options.message,
+      let config = {
+        content: options.message,
         type: options.type || 'success',
-        duration: options.duration || 2000,
-        offset: 40
-      })
-      // this.$message.success(
-      //   'This is a prompt message for success, and it will disappear in 10 seconds',
-      //   10,
-      // );
+        duration: options.duration || 2,
+        // offset: 40
+      }
+     
+      if(options.type == 'warning'){
+        state.message = message.warning(config)
+      }else if(options.type == 'info'){
+        state.message = message.info(config)
+      }else if(options.type == 'error'){
+        state.message = message.error(config)
+      }else{
+        state.message = message.success(config)
+      }
+
+      
+    
     }
   },
   modules: {

@@ -31,12 +31,12 @@
       <a-modal title="保存为线索" v-if="saveClueModal" okText="保存"   :visible="saveClueModal" @cancel="handleSaveClueCancel" @ok="handleSaveClueOk">
         <div class="saveClue">
           <a-form-model
-            ref="ruleForm"
+            ref="clueForm"
             :model="saveClueForm"
             :rules="rules"
             :label-col="labelCol"
             :wrapper-col="wrapperCol">
-            <a-form-model-item label="姓名：" prop="name">
+            <a-form-model-item label="姓名：" prop="guestName">
                 <a-input v-model="saveClueForm.guestName"></a-input>
             </a-form-model-item>
             <a-form-model-item  label="手机号：" >
@@ -64,13 +64,12 @@
         </div>
       </a-modal>
       <a-modal title="关联客户" v-if="relatedCusModal"   :visible="relatedCusModal" @cancel="handleRelatedCusCancel" @ok="handleRelatedCusOk">
-          <div><a-input-search v-model="relateSearchKey" placeholder="请输入客户名称" enter-button='查询' @search="onRelatedCusSearch" /></div>
-          <div class="relateCus">
-            <a-radio-group v-model="relateValue">
-              <a-radio :style="radioStyle" :value="1">adf</a-radio>
-              <a-radio :style="radioStyle" :value="2">aadf</a-radio>
-            </a-radio-group>
-          </div>
+        <div><a-input-search v-model="relateSearchKey" placeholder="请输入客户名称" enter-button='查询' @search="onRelatedCusSearch" /></div>
+        <div class="relateCus">
+          <a-radio-group v-model="custId" >
+            <a-radio :style="radioStyle"  v-for="(item,index) in relateRedio" :key="index" :value="item.custId">{{item.custName}}</a-radio>
+          </a-radio-group>
+        </div>
       </a-modal>
     </div>
 </template>
@@ -107,11 +106,11 @@ export default {
         },
         rules:{
           remark:[{required: true, message: '请输入咨询备注', trigger: 'blur' }],
-          name:[{required: true, message: '请输入姓名', trigger: 'blur' }]
+          guestName:[{required: true, message: '请输入姓名', trigger: 'blur' }]
         },
         relatedCusModal:false,
         relateSearchKey:'',
-        relateValue:''
+        custId:''
       }
     },
     methods:{
@@ -126,25 +125,37 @@ export default {
           this.saveClueModal = false
         },
         handleSaveClueOk(){
-          this.$emit('handleSaveClueOk',this.saveClueForm)
+          let data = this.saveClueForm
+          this.$refs.clueForm.validate(valid => {
+            //   telPhone:'',
+            // wechat:'',
+            // email:'',
+            // qq:'',
+            // dingding:'',
+            if(valid){
+              if(data.telPhone==''&&data.wechat==''&&data.email==''&&data.qq==''&&data.dingding==''){
+                this.$message.warn('请至少填写一个联系方式')
+                return false;
+              }
+              this.$emit('handleSaveClueOk',this.saveClueForm)
+            }
+          })
         },
         relatedCustomers(){
-         this.relatedCusModal = true
+          this.custId = ''
+          this.relatedCusModal = true
         },
         handleRelatedCusCancel(){
           this.relatedCusModal = false
         },
         handleRelatedCusOk(){
-          if(this.relateValue==''){
-              this.$message.info('请选择要关联的客户')
+          if(this.custId==''){
+            this.$message.info('请选择要关联的客户')
           }
-          this.$emit('handleRelatedCusOk',this.relateValue)
+          this.$emit('handleRelatedCusOk',this.custId)
         },
         onRelatedCusSearch(){
           this.$emit('onRelatedCusSearch',this.relateSearchKey)
-          // this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+this.relateSearchKey).then(res => {
-          //   console.log('模糊搜索',res.data)
-          // }) 
         },
     }
 }
@@ -183,5 +194,8 @@ export default {
         }
       }
     }
+  }
+  .relateCus{
+    margin-top:10px;
   }
 </style>

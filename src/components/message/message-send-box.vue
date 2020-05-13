@@ -12,7 +12,7 @@
       <i class="iconfont icon-tupian" title="发图片" @click="handleSendImageClick"><img src="./../../assets/imgs/current_session/picture.jpg" alt=""></i>
      
       <i class="iconfont icon-wenjian" title="发文件" @click="handleSendFileClick"><img src="./../../assets/imgs/current_session/file_s.jpg" alt=""></i>
-     
+      <span class="investigation" @click="investigation">发送满意度调查</span>
     </div>
     <div class="bottom">
       <textarea
@@ -100,12 +100,14 @@ export default {
   mounted() {
     this.$refs['text-input'].addEventListener('paste', this.handlePaste)
     this.$bus.$on('reEditMessage', this.reEditMessage)
+    this.$bus.$on('message',this.reEditMessage)
   },
   beforeDestroy() {
     this.$refs['text-input'].removeEventListener('paste', this.handlePaste)
   },
   methods: {
     reEditMessage(payload) {
+      console.log("事件总线")
       this.messageContent = payload
     },
     handleSelectAtUser() {
@@ -361,6 +363,10 @@ export default {
             type: 'error'
           })
         })
+    },
+    //发起满意度调查事件
+    investigation(){
+      console.log('发起满意度调查事件')
     }
   }
 }
@@ -397,15 +403,24 @@ export default {
 .send-header-bar i {
   cursor: pointer;
   font-size: 24px;
-  color: gray;
+  // color: gray;
   margin: 0 12px 0 0;
   width: 30px;
   height: 30px;
+  opacity: .7;
 }
-
 .send-header-bar i:hover {
   color: black;
+  opacity: 1;
 }
+.investigation{
+  cursor: pointer;
+  float: right;
+  margin-top: 8px;
+  color: #3E7BF8;
+  border-bottom: 1px solid #3E7BF8;
+}
+
 
 textarea {
   resize: none;

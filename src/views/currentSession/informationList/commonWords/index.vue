@@ -1,8 +1,8 @@
 
 <template>
-    <div class='knowledgeBase'>
+    <div class='commonWords'>
          <div class="search">
-             <a-input-search placeholder="请输入关键词" style="width: 250px" @search="onSearch" />
+             <a-input-search placeholder="请输入关键词" style="width: 250px" @search="onSearch"  />
          </div>
          <div class="content">
              <div v-for="(item,index) in list" :key="index">
@@ -65,7 +65,7 @@ mounted() {
 }
 </script>
 <style lang='less' scoped>
-    .knowledgeBase{
+    .commonWords{
        .search{
            text-align: center;
        }

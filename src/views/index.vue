@@ -37,8 +37,8 @@ export default {
             .content{
                 width: 100%;
                 float: right;
-                height: 100vh;
-                background: #FAFAFA;
+                // height: 100vh;
+                background: #FFFFFF;
                 padding: 10px 0 10px 15px;
             }
           
