@@ -136,20 +136,20 @@ export default {
                     
                 }
                 .user{
-                    display: flex;
-                    align-items: center; 
-                    cursor: pointer;
-                    .name{
-                        min-width: 0px;
-                        max-width: 82px;
-                        overflow: hidden;
-                        -webkit-box-flex: 1;
-                        -ms-flex: 1;
-                        flex: 1;
-                        text-overflow: ellipsis;
-                        white-space: nowrap;
-                        margin-left: 5px;
-                    }
+                  display: flex;
+                  align-items: center; 
+                  cursor: pointer;
+                  .name{
+                      min-width: 0px;
+                      max-width: 82px;
+                      overflow: hidden;
+                      -webkit-box-flex: 1;
+                      -ms-flex: 1;
+                      flex: 1;
+                      text-overflow: ellipsis;
+                      white-space: nowrap;
+                      margin-left: 5px;
+                  }
                 }
                 
                 .time{
