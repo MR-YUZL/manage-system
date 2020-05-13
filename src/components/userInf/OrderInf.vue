@@ -5,7 +5,7 @@
             <span class="save" @click="addWorkOrder">新增工单</span>
         </div>
         <div class="content row_1" v-bind:class="{ expansion : active }">
-            <a-icon :type="active ? 'up' : 'down'" class="icon" @click="showFn"/>
+            <a-icon :type="active ? 'up' : 'down'" class="icon" @click="showFn" v-if="userInfList && userInfList.length" />
             <div class="content_item"  >
               <a-row type="flex" justify="space-between" align="bottom" >
                 <a-col :span="20" v-for="(item,index) in userInfList" :key="index" class="item" @click="viewDetails(item)">
@@ -18,7 +18,7 @@
                 </a-row>  
             </div>
         </div>
-        <Model :modelObj="modelObj1"  @formData="formData" />
+        <Model :modelObj="modelObj1"  @formData="formData" v-if="modelObj1.visible"/>
     </div>
 </template>
 <script>

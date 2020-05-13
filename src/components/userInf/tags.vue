@@ -5,7 +5,7 @@
           <span class="setting" @click="tagsFn">设置标签</span>  
         </div>
         <div class="tag_item" v-bind:class="{ expansion : active }">
-          <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"/>
+          <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"  v-if="tagsList && tagsList.length" />
           <div class="tag">
             <a-tag v-for="(item,index) in tagsList" :key="index">
               {{item}}
@@ -91,6 +91,7 @@ export default {
         .tag_item{
             position: relative;
             overflow: hidden;
+            min-height: 37px;
             .icon{
               position: absolute;
               right: 0;

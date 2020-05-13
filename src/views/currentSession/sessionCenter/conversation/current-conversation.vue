@@ -154,7 +154,7 @@ export default {
 /* 当前会话的骨架屏 */
 .current-conversation-wrapper{
     width: 100%;
-  height: calc(100vh - 60px);
+  height: calc(100% - 47px);
   background-color: #f5f5f5;
   color: #1c2438;
   display: -webkit-box;
