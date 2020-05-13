@@ -55,12 +55,18 @@
         <a-tab-pane key="3" tab="Tab 3">Content of Tab Pane 3</a-tab-pane>
       </a-tabs>
     </div>
+    <Upload />
+    <!-- upload有初始值，这样应该可以 -->
+    <!-- <a-form-item label="订单附件" :label-col="{ span: 2}" :wrapper-col="{ span: 10}">
+      <Upload v-decorator="['accessoryArr']" :list="defaultFileList" />
+    </a-form-item> -->
   </div>
 </template>
 
 <script>
 import TablePagination from "@/components/Table/TablePagination";
 import Search from "@/components/Search";
+import Upload from "@/components/Upload";
 const columns = [
   {
     dataIndex: "name",
@@ -118,7 +124,8 @@ export default {
   props: {},
   components: {
     Search,
-    TablePagination
+    TablePagination,
+    Upload
   },
   data() {
     return {
@@ -173,7 +180,7 @@ export default {
     searchFun() {},
     getListData() {
       this.Request.get("接口url地址", {
-        ...this.pager,// pager对象
+        ...this.pager, // pager对象
         ...this.searchField // 如果有搜索头，带上搜索头查询条件
       }).then(res => {
         let {
