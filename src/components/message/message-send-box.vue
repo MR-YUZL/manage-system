@@ -100,12 +100,14 @@ export default {
   mounted() {
     this.$refs['text-input'].addEventListener('paste', this.handlePaste)
     this.$bus.$on('reEditMessage', this.reEditMessage)
+    this.$bus.$on('message',this.reEditMessage)
   },
   beforeDestroy() {
     this.$refs['text-input'].removeEventListener('paste', this.handlePaste)
   },
   methods: {
     reEditMessage(payload) {
+      console.log("事件总线")
       this.messageContent = payload
     },
     handleSelectAtUser() {

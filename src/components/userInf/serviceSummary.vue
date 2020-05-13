@@ -4,7 +4,7 @@
           <span class="serviceIcon">服务小结</span>
         </div>
         <div class="serviceSummary_item">
-            <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"/>
+            <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn" v-if="questionList && questionList.length"/>
             <div v-for="(item,index) in questionList" :key="index" class="question" >
                 <div class="question_top"><span>{{item.inputTime}}</span><span>{{item.inputAcc}}</span></div>
                 <div>{{item.title}}</div>
@@ -24,6 +24,12 @@ export default {
     data(){
         return{
           questionList1:[
+              {
+                inputTime:'2020-12-07 12',
+                inputAcc:'冠希哥',
+                title:'士大夫撒地方的发生的的撒发到付',
+                remark:'发送飞机撒大家哦个都解耦if圣诞节案件覅偶个就放ID数据分IP'
+              },
               {
                 inputTime:'2020-12-07 12',
                 inputAcc:'冠希哥',
