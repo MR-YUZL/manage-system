@@ -211,7 +211,7 @@ export default {
       addWorkOrder(){
         // this.$store.commit('getVisible',true)
         console.log(this.modelObj1)
-        this.modelObj1.visible = true
+        this.modelObj1.visible = true 
        
       },
       formData(data){
