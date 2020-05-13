@@ -38,7 +38,7 @@ export default {
                 width: 100%;
                 float: right;
                 // height: 100vh;
-                background: #FAFAFA;
+                background: #FFFFFF;
                 padding: 10px 0 10px 15px;
             }
           
