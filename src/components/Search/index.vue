@@ -87,7 +87,7 @@ export default {
     };
   },
   created() {
-    this.tools.forEach((item) => {
+    this.tools && this.tools.forEach((item) => {
         if(item.key != null) {
             // this.valueObj[item.key] = item.defaultValue || null;
         this.$set(this.valueObj, item.key, item.defaultValue || null) // 需要用$set方法去设置data中valueObj的属性值，不然无法实现双向绑定
@@ -121,7 +121,7 @@ export default {
     tools: {
         handler(ee) {
             console.log(ee)
-            this.tools.forEach((item) => {
+            this.tools && this.tools.forEach((item) => {
                 if(item.key != null) {
                     // this.valueObj[item.key] = item.defaultValue || null;
                 this.$set(this.valueObj, item.key, item.defaultValue || null) // 需要用$set方法去设置data中valueObj的属性值，不然无法实现双向绑定
