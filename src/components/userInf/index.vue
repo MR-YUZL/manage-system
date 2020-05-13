@@ -5,8 +5,8 @@
     <Tags :tags="tagsList" :selectTagList="selectTagList"  @submitTags="submitTags"/>
     <AccessInfo />
     <OrderInf :userInfList="userInfList"/>
-    <!-- <ServiceSummary :questionList="questionList" /> -->
-    <ServiceSummary />
+    <ServiceSummary :questionList="questionList" />
+    <!-- <ServiceSummary /> -->
   </div>
 </template>
 
@@ -59,7 +59,14 @@ export default {
     created(){
       this.getSelectTags()
     },
-    mounted(){},
+    mounted(){
+      if(this.guestId!==''){
+        this.getVisitorInfo()
+        this.getTags()
+        this.getWorkOrderList()
+        this.getServiceList()
+      }
+    },
     methods: {
       getVisitorInfo(){
         this.Request.get('/hfw/workbench/getGuestInfo?guestId='+this.guestId).then(res => {
@@ -67,9 +74,24 @@ export default {
           this.visitorInfoData = res.data.data
         })   
       },
-      handleSaveClueOk(){
+      handleSaveClueOk(formData){
+        console.log(formData)
+        let params = {
+          guestId:this.guestId,
+          ...formData
+        }
+        //字段查重
+        // this.Request.post('/hfw/workbench/clueCensor',{checkKey:'22',type:'1'}).then(res => {
+        //   console.log(res)
+        // })
+
+        this.Request.post('/hfw/workbench/saveClue',{...params}).then(res => {
+          console.log('标签tags',res.data)
+          this.tagsList = res.data.data
+             this.$refs.visitorInfo.saveClueModal = false
+        })
         // 关闭保存为线索的弹窗
-        this.$refs.visitorInfo.saveClueModal = false
+        // this.$refs.visitorInfo.saveClueModal = false
       },
       handleRelatedCusOk(custId){
         console.log('this.custId',custId,'===============')
@@ -77,6 +99,8 @@ export default {
         this.realteCustParams.custId = custId
         this.Request.post('/hfw/workbench/associatedCustomers',{...this.realteCustParams}).then(res => {  // 关联客户Ok
           console.log('提交客户关联',res.data)
+          this.$refs.visitorInfo.relatedCusModal = false
+          this.relateRedio = []
         }) 
       },
       relateSearchKey(relateSearchKey){
@@ -120,7 +144,7 @@ export default {
           guestId:this.guestId,
           tagIds:[]
         }
-        obj.selectedTags.map( item => {
+        obj.tag.map( item => {
           params.tagIds.push(item.key)
         })
         this.Request.post('/hfw/workbench/saveGuestLabel',{...params}).then(res => {

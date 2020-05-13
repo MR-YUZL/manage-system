@@ -31,12 +31,12 @@
       <a-modal title="保存为线索" v-if="saveClueModal" okText="保存"   :visible="saveClueModal" @cancel="handleSaveClueCancel" @ok="handleSaveClueOk">
         <div class="saveClue">
           <a-form-model
-            ref="ruleForm"
+            ref="clueForm"
             :model="saveClueForm"
             :rules="rules"
             :label-col="labelCol"
             :wrapper-col="wrapperCol">
-            <a-form-model-item label="姓名：" prop="name">
+            <a-form-model-item label="姓名：" prop="guestName">
                 <a-input v-model="saveClueForm.guestName"></a-input>
             </a-form-model-item>
             <a-form-model-item  label="手机号：" >
@@ -106,7 +106,7 @@ export default {
         },
         rules:{
           remark:[{required: true, message: '请输入咨询备注', trigger: 'blur' }],
-          name:[{required: true, message: '请输入姓名', trigger: 'blur' }]
+          guestName:[{required: true, message: '请输入姓名', trigger: 'blur' }]
         },
         relatedCusModal:false,
         relateSearchKey:'',
@@ -125,7 +125,21 @@ export default {
           this.saveClueModal = false
         },
         handleSaveClueOk(){
-          this.$emit('handleSaveClueOk',this.saveClueForm)
+          let data = this.saveClueForm
+          this.$refs.clueForm.validate(valid => {
+            //   telPhone:'',
+            // wechat:'',
+            // email:'',
+            // qq:'',
+            // dingding:'',
+            if(valid){
+              if(data.telPhone==''&&data.wechat==''&&data.email==''&&data.qq==''&&data.dingding==''){
+                this.$message.warn('请至少填写一个联系方式')
+                return false;
+              }
+              this.$emit('handleSaveClueOk',this.saveClueForm)
+            }
+          })
         },
         relatedCustomers(){
           this.custId = ''
@@ -136,7 +150,7 @@ export default {
         },
         handleRelatedCusOk(){
           if(this.custId==''){
-              this.$message.info('请选择要关联的客户')
+            this.$message.info('请选择要关联的客户')
           }
           this.$emit('handleRelatedCusOk',this.custId)
         },

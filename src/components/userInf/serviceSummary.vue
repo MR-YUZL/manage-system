@@ -5,57 +5,47 @@
         </div>
         <div class="serviceSummary_item">
             <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn" v-if="questionList && questionList.length"/>
-            <div v-for="(item,index) in questionList" :key="index" class="question" >
-                <div class="question_top"><span>{{item.inputTime}}</span><span>{{item.inputAcc}}</span></div>
-                <div>{{item.title}}</div>
-                <div>{{item.remark}}</div>
+            <div v-if="questionListArry.length>0">
+            <div v-for="(item,index) in questionListArry" :key="index" class="question" >
+              <div class="question_top"><span>{{item.inputTime}}</span><span>{{item.inputAcc}}</span></div>
+              <div>{{item.title}}</div>
+              <div>{{item.remark}}</div>
+            </div>
             </div>
         </div>
-    
     </div>
 </template>
 <script>
 export default {
-    // props:{
-    //   questionList:{
-    //     type:Array
-    //   }
-    // },
+    props:{
+      questionList:{
+        type:Array
+      }
+    },
     data(){
         return{
-          questionList1:[
-              {
-                inputTime:'2020-12-07 12',
-                inputAcc:'冠希哥',
-                title:'士大夫撒地方的发生的的撒发到付',
-                remark:'发送飞机撒大家哦个都解耦if圣诞节案件覅偶个就放ID数据分IP'
-              },
-              {
-                inputTime:'2020-12-07 12',
-                inputAcc:'冠希哥',
-                title:'士大夫撒地方的发生的的撒发到付',
-                remark:'发送飞机撒大家哦个都解耦if圣诞节案件覅偶个就放ID数据分IP'
-              },
-          ],
-          questionList:[],
           active:false,
+          questionListArry:[]
         }
     },
-    mounted(){
-        this.questionList = [this.questionList1[0]]
+    watch:{
+      questionList(){
+        this.questionListArry = [this.questionList[0]]
+      }
     },
+    created(){},
+    mounted(){},
     components:{
     },
     methods:{
-      
-        showFn(){
-            this.active = !this.active
-            if(this.active){
-                this.questionList = this.questionList1
-            }else{
-                 this.questionList = [this.questionList1[0]]
-            }
+      showFn(){
+        this.active = !this.active
+        if(this.active){
+          this.questionListArry = [...this.questionList]
+        }else{
+          this.questionListArry = [this.questionList[0]]
         }
+      }
     }
 }
 </script>
