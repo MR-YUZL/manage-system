@@ -35,8 +35,7 @@ export default {
     },
     created(){},
     mounted(){},
-    components:{
-    },
+    components:{},
     methods:{
       showFn(){
         this.active = !this.active
