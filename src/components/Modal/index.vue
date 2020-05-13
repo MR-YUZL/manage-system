@@ -10,7 +10,7 @@
     >
      
       <div>
-         <a-form-model ref="modelObj" v-bind="formItemLayout" :model="modelObj"
+         <a-form-model ref="modelObj" v-bind="formItemLayout" :model="modelObj"  
           >
             <div v-for="(item,index) in modelObj.modelList" :key="index">
               <div v-if="item.type == 'font'" :style="{textAlign:'center'}">
@@ -35,7 +35,6 @@
                     <a-radio :value="val.key">
                     {{val.value}}
                     </a-radio>
-                 
                 </a-radio-group>
               </a-form-model-item>
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'checkbox'" :prop="item.ruleName" :rules="item.rules">
