@@ -1,6 +1,6 @@
 <template>
     <div class>
-        <h2 class="TitleH2">字段设置</h2>
+        <a-page-header title="字段设置"/>
         <div class="box">
             <a-tabs :activeKey="activeKey" @change="clickTabs">
                 <a-tab-pane key="1" tab="客户字段设置"></a-tab-pane>

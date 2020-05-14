@@ -6,7 +6,9 @@
     <div class="list-right">
       <!-- <Header /> -->
       <div class="content clearfix">
-        <router-view />
+        <div class="box">
+          <router-view />
+        </div>
       </div>
     </div>
   </div>
@@ -30,6 +32,7 @@ export default {
 </script>
 <style lang="less" scoped>
     .qf-home{
+      background:#f1f2f5;
       height: 100%;
         .list-right {
             box-sizing: border-box;
@@ -40,13 +43,24 @@ export default {
                 height: 100%;
                 float: right;
                 // height: 100vh;
-                background: #FFFFFF;
-                padding: 10px 0 10px 15px;
+                background: #f1f2f5;
+                padding: 10px 0 10px 10px;
+
             }
-          
+            .box{
+              background:#fff;
+              padding-bottom:50px;
+            }
         }
         .l-left{
           box-sizing: border-box;
         }
     }
+</style>
+<style lang="less">
+.ant-page-header{
+  background:#f1f2f5;
+  font-size:14px;
+  padding-left:0;
+}
 </style>
