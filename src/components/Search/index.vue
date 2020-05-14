@@ -1,6 +1,6 @@
 <template>
   <div class="tool-bar">
-      <div class="item"  v-for="(item, index) in tools" :key="index">
+      <div class="item" v-for="(item, index) in tools" :key="index">
         <div v-if="!!item.title && item.type !== 'search'" style="margin-right:10px">
             {{item.title}}
         </div>
@@ -11,6 +11,7 @@
                 @pressEnter="onSearch"
                 @change="eonChange($event,item)"
                 :value="valueObj[item.key]"
+                :allowClear="!!item.allowClear"
             />
         </div>
         <div v-else-if="item.type === 'select'">
@@ -19,6 +20,7 @@
                 @change="onChange($event,item)"
                 :value="valueObj[item.key]"
                 :allowClear="!!item.allowClear"
+                :mode="item.mode || 'default'"
             >
                 <a-select-option
                     v-for="(it, ind) in item.options"
@@ -37,6 +39,13 @@
                 style="width: 240px"
             />
         </div>
+        <div v-else-if="item.type === 'inputRange'">
+            <a-input-group compact style="width: 170px">
+                <a-input :value="valueObj[item.key[0]]" @change="eonChange($event,{...item,key: item.key[0]})" style=" width: 70px; text-align: center"/>
+                <a-input style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff" placeholder="~" disabled />
+                <a-input :value="valueObj[item.key[1]]" @change="eonChange($event,{...item,key: item.key[1]})" style="width: 70px; text-align: center; border-left: 0" placeholder=""/>
+            </a-input-group>
+        </div>
         <div v-else-if="item.type === 'search'">
             <a-button @click="onSearch" :type="item.btnType || 'default'">筛选</a-button>
         </div>
@@ -47,7 +56,13 @@
 </template>
 
 <script>
-// tools 传参示例
+export default {
+  props: {
+    tools:{
+      type: Array,
+      required: false,
+      default: [],
+    // tools 传参示例
     //   [
     //       {
     //         type: 'input',
@@ -72,28 +87,25 @@
     //         btnType: 'default'
     //     }
     //   ]
-export default {
-  name:'search',
-  props: {
-    tools:{
-      type: Array,
-      required: false,
-      default:null
     },
   },
   data() {
     return {
-      valueObj: {},
+        valueObj: {},
     };
   },
   created() {
-    this.tools && this.tools.forEach((item) => {
+    this.tools.forEach((item) => {
         if(item.key != null) {
-            // this.valueObj[item.key] = item.defaultValue || null;
-        this.$set(this.valueObj, item.key, item.defaultValue || null) // 需要用$set方法去设置data中valueObj的属性值，不然无法实现双向绑定
+            if(item.type === 'inputRange') {
+                this.$set(this.valueObj, item.key[0], item.defaultValue[0] || null)
+                this.$set(this.valueObj, item.key[1], item.defaultValue[1] || null)
+            } else {
+                this.$set(this.valueObj, item.key, item.defaultValue || null) // 需要用$set方法去设置data中valueObj的属性值，不然无法实现双向绑定
+            }
         }
     })
-    console.log(this.tools, this.valueObj)
+    // console.log(this.tools, this.valueObj)
   },
   methods: {
       eonChange(e,targetItem) {
@@ -107,27 +119,28 @@ export default {
             this.$emit('onChange',targetItem.key, value, this.valueObj); // 返回当前改变的字段名，改变的内容，改变后valueObj的内容
       },
       onSearch() {
-        let data = this.valueObj;
-        let obj={}
+        console.log(this.valueObj)
+        let data = this.valueObj
+        let obj = {}
         for(let key in data){
-          if(data[key]!==null&&data[key]!=='null'){
+          if(data[key]!==null&&data[key]!='null'){
             obj[key] = data[key]
           }
         }
-        this.$emit('onSearch', obj);
+        this.$emit('onSearch',obj);
       }
   },
   watch: {
     tools: {
         handler(ee) {
             console.log(ee)
-            this.tools && this.tools.forEach((item) => {
+            this.tools.forEach((item) => {
                 if(item.key != null) {
                     // this.valueObj[item.key] = item.defaultValue || null;
                 this.$set(this.valueObj, item.key, item.defaultValue || null) // 需要用$set方法去设置data中valueObj的属性值，不然无法实现双向绑定
                 }
             })
-            console.log(this.tools, this.valueObj)
+            // console.log(this.tools, this.valueObj)
         },
         deep: true
     },
@@ -137,16 +150,14 @@ export default {
 
 <style lang="less">
 .tool-bar{
-    padding:10px 15px 20px;
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    border-bottom:1px solid #e8e8e8;
     .item{
-      margin: 10px 20px 0 0;
-      display: flex;
-      align-items: center;
-      flex-wrap: nowrap;
+        margin: 10px 10px 0 0;
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
     }
 }
 </style>
