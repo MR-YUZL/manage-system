@@ -6,7 +6,6 @@
       :confirmLoading="confirmLoading"
       @ok="onSubmit"
       @cancel="handleCancel"
-    
     >
      
       <div>

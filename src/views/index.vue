@@ -44,12 +44,13 @@ export default {
                 float: right;
                 // height: 100vh;
                 background: #f1f2f5;
-                padding: 10px 0 10px 10px;
+                padding: 10px 10px 10px 10px;
 
             }
             .box{
               background:#fff;
-              padding-bottom:50px;
+              // padding-bottom:50px;
+              height:100%;
             }
         }
         .l-left{

@@ -33,6 +33,7 @@ p {
 .l-left {
   float: left;
   width: 200px;
+  height: 100%;
 }
 .r-right {
   float: right;
@@ -251,4 +252,44 @@ h6 {
   text-align: center;
   border-top: none;
   padding-bottom: 30px;
+}
+.container .button-area .ant-btn {
+  margin-right: 8px;
+  margin-bottom: 12px;
+}
+.page_pagination {
+  margin: 10px 0;
+  display: flex;
+  justify-content: flex-end;
+}
+.sessionList {
+  display: flex;
+  height: 100%;
+}
+.session_list_l {
+  background: #FFFFFF;
+  width: 250px;
+  height: 100%;
+}
+.sessionCenter {
+  width: calc(100% - 550px);
+  position: relative;
+}
+.informationList {
+  width: 300px;
+  background: #FFFFFF;
+}
+.flex {
+  display: flex;
+}
+.flex-around {
+  display: flex;
+  justify-content: space-around;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+}
+.inputW3 {
+  width: 300px;
 }
