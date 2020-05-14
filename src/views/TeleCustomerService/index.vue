@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="workbench">
     <router-view></router-view>
   </div>
 </template>
@@ -17,3 +17,8 @@ export default {
   computed: {}
 };
 </script>
+<style lang="less" scoped>
+  .workbench{
+    height :100%;
+  }
+</style>

@@ -45,8 +45,5 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-    .informationList{
-        width: 300px;
-        background: #FFFFFF;
-    }
+   
 </style>

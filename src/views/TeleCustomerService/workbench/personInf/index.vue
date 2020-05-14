@@ -6,8 +6,8 @@
 </template>
 
 <script>
-import userInf from './userInf'
-import currentConversation from './conversation/current-conversation'
+// import userInf from './userInf'
+// import currentConversation from './conversation/current-conversation'
 
 export default {
   data: () => ({
@@ -17,8 +17,8 @@ export default {
  
   }),
   components: {
-    userInf,
-    currentConversation
+    // userInf,
+    // currentConversation
   },
   mounted() {
     
@@ -33,5 +33,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-  
+  .sessionCenter{
+      background: #f5f5f5;
+  }
 </style>

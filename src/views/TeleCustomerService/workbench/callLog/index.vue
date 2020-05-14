@@ -1,7 +1,15 @@
 <template>
   <div class="session_list_l">
     <div class="list_count">
-        会话列表 ( {{55}} )
+         <a-tabs default-active-key="1" >
+            <a-tab-pane key="1" tab="近期通话">
+                <knowledge-base />
+            </a-tab-pane>
+            <a-tab-pane key="2" tab="外呼任务">
+                <more-information />
+            </a-tab-pane>
+            
+        </a-tabs>
     </div>
     <div class="list_inf">
         <session-item 
@@ -16,16 +24,17 @@
 
 <script>
 import { mapState } from 'vuex'
-import sessionItem from './sessionItem'
+import outCallTask from './outCallTask'
+import recentCalls from './recentCalls'
+// import sessionItem from './sessionItem'
 export default {
   data: () => ({
-    
-
+      aa:'ddd'
     
  
   }),
   components: {
-    sessionItem
+    // sessionItem
   },
   mounted() {
     console.log(this.conversationList)
@@ -77,17 +86,23 @@ export default {
 </script>
 <style lang="less" scoped>
     .session_list_l{
+     
         .list_count{
-            line-height: 45px;
-            padding-left: 15px;
-            color: #000000;
-            border-bottom: 1px solid #E7E7E8;
-            border-top: 1px solid #E7E7E8;
-            border-left: 1px solid #E7E7E8;
+            // line-height: 45px;
+            // padding-left: 15px;
+            // color: #000000;
+            // border-bottom: 1px solid #E7E7E8;
+            // border-top: 1px solid #E7E7E8;
+            .ant-tabs{
+                .ant-tabs-bar{
+                    background: pink;
+                    border: 1px solid #E7E7E8 !important;
+                }
+            }
         }
         .list_inf{
             // height: calc(100vh - 85px);
-            height: calc(100% - 47px);
+            height: calc(100% - 60px);
             overflow-y: auto;
             overflow-x: hidden;
         }

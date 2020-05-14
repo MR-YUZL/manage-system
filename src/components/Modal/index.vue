@@ -19,13 +19,13 @@
               <!-- {{item.rules}}
               {{item.ruleName}} -->
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'textarea'" :prop="'modelList.' + index + '.model'"  :rules="item.rules">
-                <a-input  type="textarea" v-model="item.model" />
+                <a-input  type="textarea" v-model="item.model" :placeholder="item.placeholder"/>
               </a-form-model-item>
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'input'" :prop="'modelList.' + index + '.model'" :rules="item.rules">
-                <a-input  v-model="item.model" />
+                <a-input  v-model="item.model" :placeholder="item.placeholder"/>
               </a-form-model-item>
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'select'" :prop="'modelList.' + index + '.model'" :rules="item.rules">
-                <a-select  placeholder="" v-model="item.model" >
+                <a-select  v-model="item.model" :placeholder="item.placeholder">
                     <a-select-option v-for="(val,index) in item.options" :key="index" :value="val.key">
                     {{val.value}}
                     </a-select-option>
@@ -39,14 +39,14 @@
                 </a-radio-group>
               </a-form-model-item>
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'checkbox'" :prop="'modelList.' + index + '.model'" :rules="item.rules">
-                <a-checkbox-group v-model="item.model" v-for="(val,index) in item.options" :key="index">
+                <a-checkbox-group v-model="item.model" v-for="(val,index) in item.options" :key="index" :placeholder="item.placeholder">
                     <a-checkbox :value="val.key" name="type">
                     {{val.value}}
                     </a-checkbox>
                 </a-checkbox-group>
               </a-form-model-item>
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'upload'" :prop="'modelList.' + index + '.model'" :rules="item.rules">
-                <a-textarea v-model="item.model" />
+                <a-textarea v-model="item.model" :placeholder="item.placeholder" />
                 <a-upload
                   name="file"
                   :action="item.action"
@@ -60,19 +60,19 @@
                 <a-date-picker
                     show-time
                     type="date"
-                    placeholder="Pick a date"
                     style="width: 100%;"
                     v-model="item.model"
+                    :placeholder="item.placeholder"
                 />
               </a-form-model-item>
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'treeSelect'" :prop="'modelList.' + index + '.model'" :rules="item.rules">
                 <a-tree-select
                   style="width: 100%"
                   :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
-                  placeholder="Please select"
                   allowClear
                   v-model="item.model"
                   :treeData="item.options"
+                  :placeholder="item.placeholder"
                 >
                  
                 </a-tree-select>
@@ -81,6 +81,7 @@
                  <a-cascader
                   v-model="item.model"
                   :options="item.options"
+                  :placeholder="item.placeholder"
                 />
               </a-form-model-item>
               <a-form-model-item :label="item.label" v-if="item.label && item.type == 'tag'" :prop="'modelList.' + index + '.model'" :rules="item.rules">

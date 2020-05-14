@@ -34,8 +34,10 @@ export default {
         .list-right {
             box-sizing: border-box;
             padding-left: 200px;
+            height: 100%;
             .content{
                 width: 100%;
+                height: 100%;
                 float: right;
                 // height: 100vh;
                 background: #FFFFFF;

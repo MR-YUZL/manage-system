@@ -130,7 +130,5 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-  .sessionList{
-    display:flex
-  }
+  
 </style>
