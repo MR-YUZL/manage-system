@@ -11,12 +11,12 @@
       <a-tabs default-active-key="1" @change="callback">
         <a-tab-pane key="1" tab="Tab 1" force-render>
           <!-- 搜索头用组件 -->
-          <Search :tools="formList" @onSearch="searchFun" />
+          <Search ref="searchHeader" :tools="formList" @onSearch="searchFun" />
           <!-- 按钮区 -->
           <div class="button-area">
             <div class="left-side">
               <span>describe</span>
-              <a-button>Default</a-button>
+              <a-button @click="handleResetSearchForm">重置表单内容</a-button>
               <a-button>Default</a-button>
             </div>
             <div class="right-side">
@@ -143,9 +143,9 @@ export default {
           type: "select",
           title: "留言状态:",
           key: "status",
-          defaultValue: "null",
+          defaultValue: "",
           options: [
-            { value: "null", name: "全部" },
+            { value: "", name: "全部" },
             { value: 0, name: "未处理" },
             { value: 1, name: "已处理" }
           ]
@@ -154,9 +154,8 @@ export default {
           type: "select",
           title: "来源终端:",
           key: "source",
-          defaultValue: "null",
           options: [
-            { value: "null", name: "全部" },
+            { value: "", name: "全部" },
             { value: 0, name: "网页" },
             { value: 1, name: "微信小程序" },
             { value: 2, name: "微信公众号" },
@@ -170,14 +169,20 @@ export default {
           btnType: "primary"
         }
       ],
-      searchField: [],
+      searchField: {},
       pager: {}
     };
   },
   methods: {
     callback() {},
     paginationChange() {},
-    searchFun() {},
+    searchFun(values) {
+      console.log(values)
+      this.searchField = values
+    },
+    handleResetSearchForm() {
+      this.$refs["searchHeader"].resetValues()
+    },
     getListData() {
       this.Request.get("接口url地址", {
         ...this.pager, // pager对象
