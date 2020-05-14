@@ -301,6 +301,7 @@ export default {
       this.selectedTags = []
       let status = {
         visible:false,
+        status:false,
         data:{}
       }
       this.reset(this.modelObj.modelList)
@@ -335,6 +336,7 @@ export default {
             console.log(obj)
             let status = {
               visible:false,
+              status:true,
               data:obj
             }
             this.$emit('formData',status)
