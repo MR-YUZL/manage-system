@@ -52,6 +52,14 @@ methods: {
     onSearch(value) {
       console.log(value);
     },
+     getKnowledgeBase(){
+        this.Request.get('common/speech/tree/info').then(res => {
+          console.log('获取常用语',res.data)
+        //   if(res.data.status){
+
+        //   }
+        })  
+    },
 },
 created() {
 

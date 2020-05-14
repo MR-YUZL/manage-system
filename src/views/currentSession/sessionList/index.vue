@@ -29,6 +29,7 @@ export default {
   },
   mounted() {
     console.log(this.conversationList)
+    this.getSessionList()
   },
   methods: {
    getIsSDKReady(){
@@ -45,6 +46,11 @@ export default {
           this.isCheckouting = false
         })
     },
+    getSessionList(){
+      this.Request.get('/session/guest/my/all/list').then(res => {
+          console.log('会话列表',res.data)
+        })  
+    }
   },
   watch: {
     isSDKReady(a,b){
