@@ -50,7 +50,7 @@ export default {
             .box{
               background:#fff;
               //padding-bottom:50px; 
-              height:100%;
+              // height:100%;
             }
         }
         .l-left{
