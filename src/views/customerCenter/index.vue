@@ -1,6 +1,7 @@
 <template>
   <div>
-    <Modal />
+    <router-view></router-view>
+    <!-- <Modal /> -->
   </div>
 </template>
 
