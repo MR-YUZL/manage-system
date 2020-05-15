@@ -198,7 +198,7 @@ h6 {
 }
 .sessionList{
     display: flex;
-    height: 100%;
+    height: calc(100vh - 20px);
 }
 .session_list_l{
     background: #FFFFFF;
@@ -231,6 +231,9 @@ h6 {
     height: 100%;
     .ant-tabs-bar{
         border: 1px solid #e8e8e8;
+        .ant-tabs-nav-scroll{
+            text-align: center;
+        }
     }
     .ant-tabs-content{
         height:calc(100% - 60px);
@@ -239,6 +242,3 @@ h6 {
         }
      }
 } 
-.ant-tabs-nav-scroll{
-    text-align: center;
-}

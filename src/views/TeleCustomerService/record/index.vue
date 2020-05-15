@@ -55,7 +55,7 @@ export default {
           type: 'select',
           title: '通话类型:',
           key: 'status',
-          defaultValue: "null",
+          defaultValue: "",
           options:[{ value: "0", name: "null" },{ value: "1", name: "来电已接" },{value:2,name:"来电未接"},{value:3,name:'去电已接'},{value:4,name:'去电未接'}] //来电已接,来电未接、去电已接、去电未接
         },
         {
@@ -151,26 +151,11 @@ export default {
   },
   methods: {
     getList(){
-      this.Request.get('hfw/tsmHfwLeaveComments/listPageJson',{ ...this.pager,...this.searchField}).then(res => {
+      this.Request.get('/hfw/callrecords/queryCallRecords',{ ...this.pager,...this.searchField}).then(res => {
         let data = res.data
         let page = data.pager
         this.dataSource =  data.list
         this.pager = Object.assign({},this.pager,page)
-      })
-    },
-    checkMessage(id,status){   // 调取接口
-    //  "0":'未处理',  "1":'已处理'
-      console.log(id,status)
-      this.handleRecordBtn = !status?true:false
-      this.detailsShow = true
-      this.Request.get('/hfw/tsmHfwLeaveComments/infoJson?id='+ id).then(res=>{
-        console.log(res.data.data,'记录详情')
-        let data = res.data.data
-        this.detailsId = data.id
-        this.handleResultCon.con = data.result
-        this.handleResultCon.name = data.followAccName
-        this.recordList = data.detailBeanList
-        this.guestId = data.guestId
       })
     },
    
