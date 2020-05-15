@@ -34,6 +34,7 @@ p {
   float: left;
   width: 200px;
   height: 100%;
+  position: fixed;
 }
 .r-right {
   float: right;
@@ -292,4 +293,16 @@ h6 {
 }
 .inputW3 {
   width: 300px;
+}
+.tabs {
+  height: 100%;
+}
+.tabs .ant-tabs-bar {
+  border: 1px solid #e8e8e8;
+}
+.tabs .ant-tabs-content {
+  height: calc(100% - 60px);
+}
+.tabs .ant-tabs-content .tans_ {
+  height: 100%;
 }
