@@ -1,0 +1,111 @@
+<template>
+  <div>
+    <h2 class="TitleH2">跟进记录</h2>
+    <div class="box">
+      <Search :tools="searchList" @onSearch="searchFun" />
+      <div>
+        <DataTable :tableConfig="tableConfig" @onSelectChange="onSelectChange"></DataTable>
+      </div>
+      <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
+    </div>
+  </div>
+</template>
+
+<script>
+import moment from "moment";
+import api from "@/api/customerCenter";
+import Search from "@/components/Search/index";
+import DataTable from "@/components/DataTable";
+import TablePagination from "@/components/Table/TablePagination";
+export default {
+  data() {
+    return {
+      searchList: [
+          
+        {
+          type: "input",
+          title: "客户名称:",
+          placeholder: "请输入",
+          key: "guestName"
+          // defaultValue: '',
+        },
+        {
+          type: "input",
+          title: "客户姓名",
+          placeholder: "请输入",
+          key: "inputAccs"
+        },
+        {
+          type: "dateRange",
+          title: "跟进时间",
+          key: "queryTime",
+          ranges: {
+            今日: [moment(), moment()],
+            // 昨天: [moment().subtract(1, "days"), moment().subtract(1, "days")],
+            本周: [moment().subtract(6, "days"), moment()],
+            本月: [moment().subtract(29, "days"), moment()]
+          }
+        },
+      ],
+      tableConfig: {
+        rowKey: "id",
+        columns: [
+          {
+            title: "跟进时间",
+            dataIndex: "custName",
+            key: "custName"
+          },
+          {
+            title: "客户名称",
+            dataIndex: "custLabels",
+            key: "custLabels"
+          },
+          {
+            title: "有效联系",
+            dataIndex: "custGroup",
+            key: "custGroup"
+          },
+          {
+            title: "客服姓名",
+            dataIndex: "custGroup",
+            key: "custGroup"
+          },
+          {
+            title: "跟进记录",
+            dataIndex: "custGroup",
+            key: "custGroup"
+          },
+          
+        ], // 表头
+        list: [
+
+        ], // 表格数据
+        align: "center",
+        loading: false,
+        rowSelection:true
+      },
+    };
+  },
+  components: {
+    Search,
+    TablePagination,
+    DataTable
+  },
+  mounted(){
+      this.getList()
+  },
+  methods: {
+    getList(){
+      api.followRecordList().then(res=>{
+        
+      })
+    },
+    searchFun() {},
+    onSelectChange(){},
+    paginationChange(){},
+  }
+};
+</script>
+
+<style>
+</style>
