@@ -50,11 +50,10 @@ export default {
                 },  
             ],
              
-           
+      
             modelObj1:{
               title:'新增',
               visible:false,
-              ref:'model',
               modelList:[
               // {
               //     type:'font', //文字
@@ -68,7 +67,6 @@ export default {
                   label:'工单标题',
                   model:'',
                   ruleName:'title',
-                  placeholer:'请输入',
                   rules:{
                     required: true,
                     message: '请输入工单标题',
@@ -91,7 +89,6 @@ export default {
                   label:'工单内容',
                   ruleName:'content',
                   action:'https://www.mocky.io/v2/5cc8019d300000980a055e76',//配置文件上传路径
-                  placeholer:'请输入',
                   model:'',
                   rules:{
                     required: true,
@@ -114,7 +111,6 @@ export default {
               {
                   type:'select',
                   label:'工单受理组',
-                  placeholer:'请选择',
                   model:undefined,
                   ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
                   options:[{key:'r',value:'111'},{key:'y',value:'222'}],
@@ -127,7 +123,6 @@ export default {
                {
                   type:'select',
                   label:'工单受理人',
-                  placeholer:'请选择',
                   model:undefined,
                   ruleName:'receiverAcc', //receiverAcc 工单受理人账号
                   options:[{key:'c',value:'111'},{key:'d',value:'222'}],
@@ -140,7 +135,6 @@ export default {
                {
                   type:'select',
                   label:'工单分类',
-                  placeholer:'请选择',
                   model:undefined,
                   ruleName:'typeId', //typeId 分类id
                   options:[{key:'111',value:'111'},{key:'222',value:'222'}],
@@ -153,7 +147,6 @@ export default {
                  {
                   type:'select',
                   label:'关联客户',
-                  placeholer:'请选择',
                   model:undefined,
                   ruleName:'receiverAcc', //receiverAcc 工单受理人账号
                   options:[{key:'a',value:'111'},{key:'b',value:'222'}],
