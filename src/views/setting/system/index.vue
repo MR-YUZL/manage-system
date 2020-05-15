@@ -1,6 +1,6 @@
 <template>
     <div class="">
-        <a-page-header title="系统树形设置" />
+        <a-page-header title="系统属性设置" />
         <div class="sysmSort">
           <a-tabs :activeKey="activeKey" @change="clickTabs">
             <a-tab-pane key="1" tab="咨询分类"></a-tab-pane>
