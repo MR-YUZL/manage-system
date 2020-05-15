@@ -2,8 +2,8 @@
   <div class="">
       <a-page-header title="会话分配规则" />
       <div>
-        <h6 class="">会话分配规则</h6>
-        <div>
+        <h6 class="conversationTitle">会话分配规则</h6>
+        <div class="conversationCon">
           <a-form-model>
              <p>常规分配方式</p>
              <a-form-model-item label="常规分配方式">
@@ -21,8 +21,8 @@
                 </a-radio>
               </a-radio-group>
             </a-form-model-item>
-            <p>特殊分配规则<span>特殊分配规则优先级大于主要常规分配规则，若同时启用且满足，分配优先级以负责人优先>历史咨询优先</span></p>
-            <a-form-model-item label="特殊分配规则">
+            <p class="pStyle">特殊分配规则<span>特殊分配规则优先级大于主要常规分配规则，若同时启用且满足，分配优先级以负责人优先>历史咨询优先</span></p>
+            <a-form-model-item>
               <a-checkbox-group>
                 <a-checkbox value="1">
                   负责人优先（如果访客接入时识别为客户，那么会优先分配至该客户负责人）
@@ -38,13 +38,13 @@
             </a-form-model-item>
           </a-form-model>
         </div>
-        <h6>会话同时接待量</h6>
-        <div>
+        <h6 class="conversationTitle">会话同时接待量</h6>
+        <div class="conversationCon">
           <div><a-checkbox></a-checkbox>单个客服同时接待量上限<a-input :value="10" style="width:100px;"></a-input><span>同时接待量达到上限时，新接入的访客将进入排队队列</span></div>
           <a-button type="primary">保存</a-button>
         </div>
-        <h6>渠道分配接待组</h6>
-        <div>
+        <h6 class="conversationTitle">渠道分配接待组</h6>
+        <div  class="conversationCon">
           <span>开启渠道分配接待组，你可以将访客按照设定的规则分配给特定的客服组或者客服；不使用指定分配则默认分配给所有客服</span>
           <a-tabs :activeKey="activeKey" @change="clickTabs">
             <a-tab-pane key="1" tab="web分配"></a-tab-pane>
@@ -107,5 +107,21 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
+  .conversationTitle{
+    font-size:16px;
+    height:53px;
+    line-height:53px;
+    border-bottom:1px solid #dedede;
+    padding-left:20px;
+  }
+  .conversationCon{
+    padding-left:20px;
+  }
+  .pStyle{
+    font-size:14px;
+    span{
+      color:#bfbfbf;
+      font-size:12px;
+    }
+  }
 </style>

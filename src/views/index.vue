@@ -40,17 +40,12 @@ export default {
             height: 100%;
             .content{
                 width: 100%;
-                height: 100%;
                 float: right;
-                // height: 100vh;
                 background: #f1f2f5;
                 padding: 10px;
-
             }
             .box{
               background:#fff;
-              //padding-bottom:50px; 
-              // height:100%;
             }
         }
         .l-left{
