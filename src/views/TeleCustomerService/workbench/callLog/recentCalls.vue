@@ -34,6 +34,86 @@ export default {
                     type:2,
                     callType:2
                 },
+                 {
+                    tel:'122221212',
+                    address:'杭州',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:2,
+                    callType:2
+                },
+                 {
+                    tel:'122221212',
+                    address:'杭州',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:2,
+                    callType:2
+                },
+                {
+                    tel:'122221212',
+                    address:'杭州',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:'ivr导航',
+                    callType:1
+                },
+                {
+                    tel:'122221212',
+                    address:'杭州',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:2,
+                    callType:2
+                },
+                 {
+                    tel:'122221212',
+                    address:'杭州',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:2,
+                    callType:2
+                },
+                 {
+                    tel:'122221212',
+                    address:'杭州',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:2,
+                    callType:2
+                },
+                {
+                    tel:'122221212',
+                    address:'杭州',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:'ivr导航',
+                    callType:1
+                },
+                {
+                    tel:'122221212',
+                    address:'杭州',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:2,
+                    callType:2
+                },
+                 {
+                    tel:'122221212',
+                    address:'杭州',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:2,
+                    callType:2
+                },
+                 {
+                    tel:'122221212',
+                    address:'杭州11111',
+                    time:'2019 10:82',
+                    timeLong:'00 :35:00',
+                    type:2,
+                    callType:2
+                },
             ]
         };
     },
@@ -62,6 +142,9 @@ export default {
 </script>
 <style lang='less' scoped>
     .recentCalls{
+        // height: calc(100% - 80px);
+        // overflow-x: hidden;
+        // overflow-y: auto;
         .recentCalls_item{
             padding: 10px;
             cursor: pointer;
