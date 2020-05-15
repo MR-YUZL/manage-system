@@ -1,8 +1,8 @@
 <template>
   <div class="session_list_l">
     <div class="list_count">
-         <a-tabs default-active-key="1" >
-            <a-tab-pane key="1" tab="近期通话">
+         <a-tabs default-active-key="1" class="tabs">
+            <a-tab-pane key="1" tab="近期通话" class="tans_">
                 <recent-calls />
             </a-tab-pane>
             <a-tab-pane key="2" tab="外呼任务">
@@ -11,14 +11,6 @@
             
         </a-tabs>
     </div>
-    <div class="list_inf">
-        <session-item 
-        :conversation="item"
-        v-for="item in conversationList"
-        :key="item.conversationID"
-        />
-    </div>
-    
   </div>
 </template>
 
@@ -54,23 +46,28 @@ export default {
     .session_list_l{
      
         .list_count{
+            height: 100%;
             // line-height: 45px;
             // padding-left: 15px;
             // color: #000000;
             // border-bottom: 1px solid #E7E7E8;
             // border-top: 1px solid #E7E7E8;
-            .ant-tabs{
+            .tabs{
+                height: 100%;
                 .ant-tabs-bar{
-                    background: pink;
                     border: 1px solid #E7E7E8 !important;
                 }
+                
             }
+          
         }
         .list_inf{
-            // height: calc(100vh - 85px);
             height: calc(100% - 60px);
             overflow-y: auto;
             overflow-x: hidden;
         }
+    }
+    .ant-tabs-content{
+        background: red !important;
     }
 </style>
