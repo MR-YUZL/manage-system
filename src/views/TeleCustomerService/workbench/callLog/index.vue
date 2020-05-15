@@ -12,8 +12,7 @@
         </a-tabs>
     </div>
   </div>
-</template>
-
+</template>          
 <script>
 import { mapState } from 'vuex'
 import outCallTask from './outCallTask'
@@ -52,13 +51,10 @@ export default {
             // color: #000000;
             // border-bottom: 1px solid #E7E7E8;
             // border-top: 1px solid #E7E7E8;
-            .tabs{
-                height: 100%;
-                .ant-tabs-bar{
-                    border: 1px solid #E7E7E8 !important;
-                }
-                
-            }
+            // .tabs{
+            //     height: 100%;
+               
+            // }
           
         }
         .list_inf{
@@ -67,7 +63,5 @@ export default {
             overflow-x: hidden;
         }
     }
-    .ant-tabs-content{
-        background: red !important;
-    }
+   
 </style>

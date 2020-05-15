@@ -1,28 +1,22 @@
 <template>
-  <div>
+  <div class="record">
     <h2 class="TitleH2">通话记录</h2>
     <div class="box">
       <Search :tools="formList" @onSearch="searchFun" /> 
+      <div class="btn">
+         <a-button type="primary">
+          批量播放录音
+        </a-button>
+      </div>
       <div>
-        <a-table :columns="columns" :dataSource="dataSource" :pagination='false' :rowKey="record => record.id">
-          <div slot="guestName" slot-scope="record,row">
-             <span class="blue" @click="checkMessage(row.id,row.status)">{{row.guestName}}22</span>
-          </div>
+        <a-table :columns="columns" :dataSource="dataSource" :pagination='false' :rowKey="record => record.id"
+          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          >
+          <a slot="action" slot-scope="text" href="javascript:;" @click="playRecording(text)">Delete</a>
         </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
-    <a-modal title="记录" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
-      <div class="record-detail">
-        <div class="message"><MessageDetail :recordList="recordList" :handleRecordBtn="handleRecordBtn" :handleResult="handleResultCon" @setHandleResult="setHandleResult" /> </div>
-        <div class="information"><UserInformation  :guestId="guestId"/></div>
-      </div>
-   </a-modal>
-    <a-modal title="留言处理" v-if="leaveModalShow" :visible="leaveModalShow" @cancel="handleleaveModalCancel" @ok="handleleaveModalOk">
-      <div style="display:flex">
-        <p style="width:78px;">处理结果</p><a-textarea v-model="resultContent" placeholder="请输入处理结果" :auto-size="{ minRows: 3, maxRows: 5 }" />
-      </div>
-    </a-modal>
   </div>
 </template>
 
@@ -47,14 +41,14 @@ export default {
           type: 'input',
           title: '联系电话:',
           placeholder: '请输入',
-          key: 'guestName',
+          key: 'telphone',
           // defaultValue: '',
         },
         {
           type: 'input',
           title: '客户名称:',
           placeholder: '请输入',
-          key: 'guestName',
+          key: 'custName',
           // defaultValue: '',
         },
         {
@@ -62,13 +56,13 @@ export default {
           title: '通话类型:',
           key: 'status',
           defaultValue: "null",
-          options:[{ value: "null", name: "全部" },{value:0,name:"未处理"},{value:1,name:'已处理'}] //来电已接 来电未接 去电已接 去电未接
+          options:[{ value: "0", name: "null" },{ value: "1", name: "来电已接" },{value:2,name:"来电未接"},{value:3,name:'去电已接'},{value:4,name:'去电未接'}] //来电已接,来电未接、去电已接、去电未接
         },
         {
           type: 'input',
           title: '客服姓名:',
           placeholder: '请输入',
-          key: 'guestName',
+          key: 'customers',
           // defaultValue: '',
         },
         {
@@ -80,61 +74,56 @@ export default {
       searchField: {},
       columns:[
         {
-          title: '用户名',
-          dataIndex: 'guestName',
+          title: '通话ID',
+          dataIndex: 'callId',
           key: '1',
-          scopedSlots: { customRender: 'guestName' },
         },
         {
-          title: '留言时间',
-          dataIndex: 'inputTime',
+          title: '客户名称',
+          dataIndex: 'custName',
           key: '2',
         },
         {
-          title: '当前状态',
-          dataIndex: 'status',
+          title: '通话类型',
+          dataIndex: 'callType',
           key: '3',
-          customRender:(value)=>{
-            let con = {
-              children:(
-                <div>
-                  {value==0 && <div style="color:#f99921">未处理</div>}
-                  {value==1 && <div>已处理</div> }
-                </div>
-              )
-            }
-            return con
-          }
+
         },
         {
-          title: '处理结果',
-          dataIndex: 'content',
+          title: '通话时间',
+          dataIndex: 'callTime',
           key: '4',
         },
         {
-          title: '跟进人',
-          dataIndex: 'followAccName',
+          title: '主呼号码',
+          dataIndex: 'caller',
           key: '5',
         },
         {
-          title: '处理时间',
-          dataIndex: 'followTime',
+          title: '被呼号码',
+          dataIndex: 'called',
           key: '6',
         },
         {
-          title: '来源终端',
-          dataIndex: 'source',
+          title: '客服姓名',
+          dataIndex: 'serviceName',
           key: '7',
-          customRender:(value)=>{
-            let obj = {
-              "0":'网页',
-              "1":'微信小程序',
-              "2":'微信公众号',
-              "3":'安卓',
-              "4":'ios'
-            }
-            return obj[value]
-          }
+        },
+        {
+          title: '通话时长',
+          dataIndex: 'callLength',
+          key: '8',
+        },
+        {
+          title: '咨询分类',
+          dataIndex: 'consultType',
+          key: '9',
+        },
+        {
+          title: '操作',
+          dataIndex: '',
+          key: '10',
+          scopedSlots: { customRender: 'action' }
         },
       ],
       dataSource:[],
@@ -145,12 +134,11 @@ export default {
         totalRecord: 0,
         totalPage: 0
       },
-      detailsShow:false,
       recordList:[],
       handleRecordBtn:false,
       detailsId:'',
-      leaveModalShow:false,
       resultContent:'',
+      selectedRowKeys:[],
       handleResultCon:{
         name:'',
         con:''
@@ -185,9 +173,7 @@ export default {
         this.guestId = data.guestId
       })
     },
-    handleCancel(){
-      this.detailsShow = false
-    },
+   
     onShowSizeChange(current, pageSize) {
       this.pager.pageSize = pageSize;
       this.pager.currentPage = 1;
@@ -197,21 +183,12 @@ export default {
       this.pager = values
       this.getList();
     },
-    setHandleResult(){
-      this.leaveModalShow=true
-    },
-    handleleaveModalCancel(){
-      this.leaveModalShow=false
-    },
-    handleleaveModalOk(){
-      this.Request.get('/hfw/tsmHfwLeaveComments/updateStatus?id='+ this.detailsId).then(res=>{
-        console.log(res)
-        this.leaveModalShow=false
-        this.handleRecordBtn = false
-        this.handleResultCon.con = this.resultContent
-
-      })
-    },
+   
+     onSelectChange(selectedRowKeys) {
+        console.log('selectedRowKeys changed: ', selectedRowKeys);
+        this.selectedRowKeys = selectedRowKeys;
+      },
+  
     //检索组件传参接收
     searchFun(values){
       console.log('values',values)
@@ -225,6 +202,11 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+  .record{
+    .btn{
+      padding: 20px;
+    }
+  }
   .page_pagination{
     margin:10px 0;
     display: flex;

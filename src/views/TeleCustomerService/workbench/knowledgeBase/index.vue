@@ -1,13 +1,18 @@
 <template>
-  <div class="informationList">
-    <div>知识库</div>
+  <div class="knowledgeBase informationList">
+    <div class="operation">
+        知识库
+    </div>
+    <div class="content">
+        <knowledgeBase />
+    </div>
   </div>
 </template>
 
 <script>
-// import knowledgeBase from "./knowledgeBase/index"
-// import moreInformation from "./moreInformation/index"
-// import commonWords from "./commonWords"
+
+
+import knowledgeBase from './../../../currentSession/informationList/knowledgeBase/index'
 export default {
   data: () => ({
     
@@ -16,17 +21,14 @@ export default {
  
   }),
   components: {
-    // knowledgeBase,
-    // moreInformation,
-    // commonWords
+    knowledgeBase
+   
   },
   mounted() {
     
   },
   methods: {
-   callback(key) {
-      console.log(key);
-    },
+   
   },
   watch: {},
   computed: {
@@ -35,5 +37,15 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-   
+  .knowledgeBase{
+      .operation{
+          border:1px solid #e8e8e8;
+          line-height: 43px;
+          text-align: center;
+        
+      }
+      .content{
+         padding-top: 15px;
+      }
+  }
 </style>
