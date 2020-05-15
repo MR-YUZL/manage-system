@@ -46,16 +46,6 @@ export default {
      
         .list_count{
             height: 100%;
-            // line-height: 45px;
-            // padding-left: 15px;
-            // color: #000000;
-            // border-bottom: 1px solid #E7E7E8;
-            // border-top: 1px solid #E7E7E8;
-            // .tabs{
-            //     height: 100%;
-               
-            // }
-          
         }
         .list_inf{
             height: calc(100% - 60px);
