@@ -67,6 +67,8 @@ export default {
             gradeLimit:'',
             gradeType:0
           },
+          editScoreId:'',
+          scroeType:'',
           range:'',
           rules:{
             gradeName: [
@@ -153,9 +155,19 @@ export default {
           if(valid){
             console.log(this.addScoreFormData)
             let params = {...this.addScoreFormData,type:this.activeKey}
+            if(this.scroeType == 'edit'){
+              params.id = this.editScoreId
+            }
             this.Request.post('/config/qc/saveGrade',params).then(res => {
               console.log('质检设置保存',res)
               this.$message.success('保存成功')
+              this.addScoreFormData = {
+                  gradeName:'',
+                  gradeExplain:'',
+                  gradeLimit:'',
+                  gradeType:0
+              }
+              this.$refs.addScoreForm.resetFields()
               this.addScoreShow = false
               this.getList()
             })
@@ -164,21 +176,30 @@ export default {
       },
       handleAddScoreCancel(){
         this.addScoreShow = false
+        this.addScoreFormData = {
+          gradeName:'',
+          gradeExplain:'',
+          gradeLimit:'',
+          gradeType:0
+        }
+        this.$refs.addScoreForm.resetFields()
       },
       addScoreItem(){
         this.addScoreShow = true
+        this.scroeType = 'add'
       },
       editItem(record){
       this.addScoreShow = true
       console.log('编辑',record)
-      let {gradeName,gradeExplain,gradeLimit,gradeType} = record
+      this.scroeType = 'edit'
+      let {gradeName,gradeExplain,gradeLimit,gradeType,id} = record
       this.addScoreFormData = {
           gradeName,
           gradeExplain,
           gradeLimit,
-          gradeType
+          gradeType,
         }
-      // this.handleAddScoreOk()
+       this.editScoreId = id 
       },
       deleteItem(id){
         let that = this
