@@ -3,14 +3,14 @@
     <a-page-header title="会话辅助设置" />
     <div>
       <a-tabs :activeKey="activeKey" @change="clickTabs">
-        <a-tab-pane key="2" tab="  接入欢迎语"></a-tab-pane>
-        <a-tab-pane key="0" tab="网页客服留言应道"></a-tab-pane>
-        <a-tab-pane key="1" tab="微信公众号/小程序留言应道"></a-tab-pane>
+        <a-tab-pane key="2" tab="接入欢迎语"></a-tab-pane>
+        <a-tab-pane key="0" tab="网页客服留言引导"></a-tab-pane>
+        <a-tab-pane key="1" tab="微信公众号/小程序留言引导"></a-tab-pane>
       </a-tabs>
     </div>
     <div class="tabCon">
-      <p v-if="activeKey==1">接入人工坐席时，系统会向访客发出一条欢迎的消息</p>
-      <p v-if="activeKey==2||activeKey==3">当客服不在线时自动进入留言模式，请设置留言引导语</p>
+      <p v-if="activeKey==2">接入人工坐席时，系统会向访客发出一条欢迎的消息</p>
+      <p v-if="activeKey==0||activeKey==1">当客服不在线时自动进入留言模式，请设置留言引导语</p>
       <div>
         <a-form-model 
         ref="welcomeWords" 
@@ -56,7 +56,7 @@ export default {
     methods: {
       clickTabs(key){
         this.activeKey = key
-        this.textName = this.activeKey == 1?'接入欢迎语':'留言引导语'
+        this.textName = this.activeKey == 2?'接入欢迎语':'留言引导语'
         this.getData()
       },
       getData(){

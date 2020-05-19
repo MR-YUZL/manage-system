@@ -12,10 +12,10 @@
       <p>处于白名单内的客服，对于电话号码信息可见 ，不受加密设置影响</p>
       <div class="white-list">
         <a-radio-group v-model="radioValue" @change="changeRadio">
-          <a-radio :style="radioStyle" :value="1">
+          <a-radio :style="radioStyle" value="1">
             指定客服
           </a-radio>
-          <a-radio :style="radioStyle" :value="2">
+          <a-radio :style="radioStyle" value="0">
             指定客服組
           </a-radio>
         </a-radio-group>
@@ -26,7 +26,7 @@
             </a-select>
           </div>
           <div>
-            <a-select placeholder="请选择" style="width: 200px" v-model="DATA_70037" :disabled="radioValue==2?false:true">
+            <a-select placeholder="请选择" style="width: 200px" v-model="DATA_70037" :disabled="radioValue==0?false:true">
               <a-select-option v-for="(item,index) in customerGroupList" :key="index" :value="item.groupId">{{item.groupName}}</a-select-option>
             </a-select>
           </div>
@@ -68,7 +68,7 @@ export default {
       getData(){
          // 客戶信息加密設置DATA_10024_value， 指定客服DATA_40037，指定客服组DATA_70037
         let params = {
-          dictionaryCodes:['DATA_10024','DATA_40037','DATA_70037'],
+          dictionaryCodes:['DATA_10024','DATA_40037','DATA_70037','DATA_30037'],
         }
         console.log(params)
         this.Request.post('/data/dictionary/list',params).then(res => {
@@ -83,8 +83,11 @@ export default {
               this.DATA_40037 = item.dictionaryValue
               console.log('this.DATA_10024_value ',this.DATA_10024_value )
             }
-             if(item.dictionaryCode == 'DATA_70037'){
+            if(item.dictionaryCode == 'DATA_70037'){
               this.DATA_70037 = item.dictionaryValue
+            }
+            if(item.dictionaryCode == 'DATA_30037'){
+              this.radioValue = item.dictionaryValue
             }
           })
         })
@@ -123,7 +126,8 @@ export default {
       saveWhiteList(){
         let params = {
           DATA_40037:this.DATA_40037,
-          DATA_70037:this.DATA_70037
+          DATA_70037:this.DATA_70037,
+          DATA_30037:this.radioValue
         }
         this.saveData(params)
       }
