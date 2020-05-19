@@ -11,13 +11,14 @@
                 <a-button type="primary" @click="addField">添加字段</a-button>
             </div>
             <div class="table-data">
-                <a-table :columns="columns" :dataSource="dataSource">
+                <a-table :columns="columns" :dataSource="dataSource" :pagination = 'false' :rowkey="record=> record.fieldId">
                     <div slot="action" slot-scope="record,row">
                         <span class="blue" style="margin-right:10px;" @click="editField(row)">编辑</span>
                         <span class="blue" @click="deleteField(row)">删除</span>
                     </div>
                 </a-table>
             </div>
+            <div style="padding-bottom:50px;"><TablePagination :parentPager="pager" @paginationChange="paginationChange"></TablePagination></div>
         </div>
         <a-modal
             title="添加字段"
@@ -37,14 +38,14 @@
                 </a-form-model-item>
                 <a-form-model-item label="状态">
                     <a-radio-group v-model="addFormData.enable">
-                        <a-radio-button value="0">禁用</a-radio-button>
-                        <a-radio-button value="1">启用</a-radio-button>
+                        <a-radio-button :value="0">禁用</a-radio-button>
+                        <a-radio-button :value="1">启用</a-radio-button>
                     </a-radio-group>
                 </a-form-model-item>
                 <a-form-model-item label="必填属性">
                     <a-radio-group v-model="addFormData.isRequired">
-                        <a-radio-button value="0">否</a-radio-button>
-                        <a-radio-button value="1">是</a-radio-button>
+                        <a-radio-button :value="0">否</a-radio-button>
+                        <a-radio-button :value="1">是</a-radio-button>
                     </a-radio-group>
                 </a-form-model-item>
                 <a-form-model-item label="字段类型" prop="dataType">
@@ -83,21 +84,22 @@
     </div>
 </template>
 <script>
+import TablePagination from "@/components/Table/TablePagination";
     export default {
         name : "",
-        components : {},
+        components : {TablePagination},
         props : {},
         data() {
             return {
                 activeKey: "1",
                 addFieldShow: false,
                 dataSource: [
-                    {
-                        fieldName: "微信",
-                        dataType: "2",
-                        isDefined: "0",
-                        enable: 0
-                    }
+                    // {
+                    //     fieldName: "微信",
+                    //     dataType: "2",
+                    //     isDefined: "0",
+                    //     enable: 0
+                    // }
                 ],
                 columns: [
                     {
@@ -145,6 +147,7 @@
                         title: "操作",
                         dataIndex: "followAccName",
                         key: "5",
+                        fixed:'right',
                         scopedSlots: {
                             customRender: "action"
                         }
@@ -155,7 +158,9 @@
                     isRequired: "0", //是否必填：0-否；1-是
                     dataType: "1", //1:文本字段，2：单选字段，3：多选字段，4：日期字段，5：数字字段
                     enable: "0", //是否启用：0-否；1-是
-                    options: []
+                    options: [],
+                    isDefined:1,  // 所有新增的字段 这个值为1
+                    state:''
                 },
                 addOptionsShow: false,
                 rules: {
@@ -176,26 +181,33 @@
                 dataTypeList: [
                     {
                         name: "文本字段",
-                        value: "1",
+                        value: 1,
                         show: true
                     }, {
                         name: "单选字段",
-                        value: "2",
+                        value: 2,
                         show: true
                     }, {
                         name: "多选字段",
-                        value: "3",
+                        value: 3,
                         show: true
                     }, {
                         name: "日期字段",
-                        value: "4",
+                        value: 4,
                         show: true
                     }, {
                         name: "数字字段",
-                        value: "5",
+                        value: 5,
                         show: true
                     }
-                ]
+                ],
+                pager: {
+                  pageSizeOptions: ["10", "20", "30", "40", "50"],
+                  currentPage: 1,
+                  pageSize: 10,
+                  totalRecord: 0,
+                  totalPage: 0
+                },
             };
         },
         created() {
@@ -215,28 +227,49 @@
                     })
                     .then(res => {
                         console.log("字段设置", res.data);
+                        this.dataSource = res.data.list
                     });
             },
             clickTabs(key) {
                 this.activeKey = key;
+
                 this.getList();
             },
-            editField() {
+            editField(row) {
                 this.addFieldShow = true;
+                console.log(row)
+                let {fieldName,isRequired,dataType,enable,isDefined} = row
+                this.addFormData = {
+                  fieldName,
+                  isRequired, //是否必填：0-否；1-是
+                  dataType, //1:文本字段，2：单选字段，3：多选字段，4：日期字段，5：数字字段
+                  enable, //是否启用：0-否；1-是
+                  options: [],
+                  isDefined
+                }
             },
             deleteField(row) {
                 let params = {
                     fieldCode: row.fieldCode,
-                    state: row.state
+                    state: this.activeKey
                 }
-                this
-                    .Request
+                let that= this
+                this.$confirm({
+                  title:'',
+                  content: <div style="color:red;"> 确定要删除吗？</div>,
+                  onOk() {
+                     that.Request
                     .post('/config/hfwConfigFields/delJson', {
                         ...params
                     })
                     .then(res => {
                         console.log('删除字段', res.data)
                     })
+                  },
+                  onCancel() {
+                  },
+                });
+               
             },
             addField() {
                 this.addFieldShow = true;
@@ -246,19 +279,26 @@
                 this.$refs.addForm.resetFields();
             },
             handleOkAddfield() {
+              let params = {
+                ...this.addFormData,
+                state:this.activeKey,
+                isDefined:1  /// 所有新增 这个字段都为0
+              }
                 this
                     .$refs
                     .addForm
                     .validate(valid => {
                         if (valid) {
-                            console.log("表单数据", this.addFormData);
+                            console.log("表单数据", params);
                             this
                                 .Request
                                 .post('/config/hfwConfigFields/edit', {
-                                    ...this.addFormData
+                                    ...params
                                 })
                                 .then(res => {
-                                    console.log('修改字段', res.data)
+                                  this.$message.success('添加成功')
+                                   this.addFieldShow = false
+                                  console.log('添加字段', res.data)
                                 })
                         }
                     });
@@ -317,6 +357,9 @@
                 .then(res => {
                     console.log('字段查重', res.data)
                 })
+            },
+            paginationChange(){
+
             }
         }
     };
