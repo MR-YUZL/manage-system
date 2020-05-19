@@ -221,7 +221,6 @@ export default {
       submitAddGroup(data){ 
         if(data.status){
           let params = {
-            // id:''
             keyword:data
           }
           this.Request.post('/common/speech/save',{...params}).then(res => {
