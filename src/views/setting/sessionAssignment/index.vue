@@ -1,6 +1,6 @@
 <template>
   <div class="">
-      <a-page-header title="会话分配规则" />
+      <a-page-header title="会话分配设置" />
       <div>
         <h6 class="conversationTitle">会话分配规则</h6>
         <div class="conversationCon routineSet">
@@ -60,7 +60,7 @@
                 </a-radio-group>
               </a-form-model-item>
                <a-form-model-item>
-                  功能开关 <a-switch default-checked @change="onChange" /> {{text}}
+                  功能开关 <a-switch default-checked @change="switchChange" /> {{text}}
                 </a-form-model-item>
               <div v-if="activeKey==2||activeKey==3||channelFormData.distrb==1">
                
@@ -128,9 +128,24 @@ export default {
           }
         }
     },
-    created(){},
+    created(){
+      this.getData()
+    },
     mounted(){},
     methods: {
+       getData(){
+         // 
+        let params = {
+          dictionaryCodes:['DATA_10024','DATA_40037','DATA_70037','DATA_30037'],
+        }
+        console.log(params)
+        this.Request.post('/data/dictionary/list',{}).then(res => {
+          console.log('字典表',res)
+          // let data = res.data.list
+          // data.map( item => {
+          // })
+        })
+      },
       clickTabs(key){
         this.activeKey = key
       },
@@ -144,6 +159,9 @@ export default {
         }
       },
       handleChange(){
+
+      },
+      switchChange(){
 
       }
     }

@@ -6,8 +6,7 @@
       :footer="null"
       @handleSubmit="handleSubmit"
       @ok="handleSubmit"
-      @cancel="handleCancel"
-    >
+      @cancel="handleCancel">
       <slot name="content"></slot>
     </a-modal>
   </div>

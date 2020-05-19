@@ -154,13 +154,13 @@ import TablePagination from "@/components/Table/TablePagination";
                     }
                 ],
                 addFormData: {
-                    fieldName: "",
-                    isRequired: "0", //是否必填：0-否；1-是
-                    dataType: "1", //1:文本字段，2：单选字段，3：多选字段，4：日期字段，5：数字字段
-                    enable: "0", //是否启用：0-否；1-是
-                    options: [],
-                    isDefined:1,  // 所有新增的字段 这个值为1
-                    state:''
+                  fieldName: "",
+                  isRequired: "0", //是否必填：0-否；1-是
+                  dataType: "1", //1:文本字段，2：单选字段，3：多选字段，4：日期字段，5：数字字段
+                  enable: "0", //是否启用：0-否；1-是
+                  // options: [],
+                  isDefined:'',  // 所有新增的字段 这个值为1
+                  // state:''
                 },
                 addOptionsShow: false,
                 rules: {
@@ -208,6 +208,7 @@ import TablePagination from "@/components/Table/TablePagination";
                   totalRecord: 0,
                   totalPage: 0
                 },
+                addType:''
             };
         },
         created() {
@@ -226,32 +227,31 @@ import TablePagination from "@/components/Table/TablePagination";
                         ...params
                     })
                     .then(res => {
-                        console.log("字段设置", res.data);
-                        this.dataSource = res.data.list
+                      console.log("字段设置", res.data);
+                      this.dataSource = res.data.list
                     });
             },
             clickTabs(key) {
-                this.activeKey = key;
-
-                this.getList();
+              this.activeKey = key;
+              this.getList();
             },
             editField(row) {
-                this.addFieldShow = true;
-                console.log(row)
-                let {fieldName,isRequired,dataType,enable,isDefined} = row
-                this.addFormData = {
-                  fieldName,
-                  isRequired, //是否必填：0-否；1-是
-                  dataType, //1:文本字段，2：单选字段，3：多选字段，4：日期字段，5：数字字段
-                  enable, //是否启用：0-否；1-是
-                  options: [],
-                  isDefined
-                }
+              this.addFieldShow = true;
+              this.addType = 'edit'
+              let {fieldName,isRequired,dataType,enable,isDefined} = row
+              this.addFormData = {
+                fieldName,
+                isRequired, //是否必填：0-否；1-是
+                dataType, //1:文本字段，2：单选字段，3：多选字段，4：日期字段，5：数字字段
+                enable, //是否启用：0-否；1-是
+                options: [],
+                isDefined,
+              }
             },
             deleteField(row) {
                 let params = {
-                    fieldCode: row.fieldCode,
-                    state: this.activeKey
+                  fieldCode: row.fieldCode,
+                  state: this.activeKey
                 }
                 let that= this
                 this.$confirm({
@@ -272,18 +272,25 @@ import TablePagination from "@/components/Table/TablePagination";
                
             },
             addField() {
-                this.addFieldShow = true;
+              this.addFieldShow = true;
+              this.addType = 'add'
             },
             handleCancelAddField() {
-                this.addFieldShow = false;
-                this.$refs.addForm.resetFields();
+              this.addFieldShow = false;
+              this.$refs.addForm.resetFields();
             },
             handleOkAddfield() {
               let params = {
-                ...this.addFormData,
                 state:this.activeKey,
-                isDefined:1  /// 所有新增 这个字段都为0
+                ...this.addFormData,
               }
+              if(this.addType == 'edit'){
+
+                
+              }else if(this.addType == 'add'){
+                  params.isDefined = 1 // 所有新增 这个字段都为0
+              }
+
                 this
                     .$refs
                     .addForm

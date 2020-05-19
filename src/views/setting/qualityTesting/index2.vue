@@ -17,7 +17,7 @@
             <div class="left-side">
               <span>describe</span>
               <a-button @click="handleResetSearchForm">重置表单内容</a-button>
-              <a-button>Default</a-button>
+              <a-button @click="handleModalShow">Modal</a-button>
             </div>
             <div class="right-side">
               <a-button>Default</a-button>
@@ -59,7 +59,13 @@
     <!-- upload有初始值，这样应该可以 -->
     <!-- <a-form-item label="订单附件" :label-col="{ span: 2}" :wrapper-col="{ span: 10}">
       <Upload v-decorator="['accessoryArr']" :list="defaultFileList" />
-    </a-form-item> -->
+    </a-form-item>-->
+    <Modal :currentModal="currentModal" @toggleModal="toggleModal">
+      <template v-slot:content>
+        <BaseForm :formObject="formObject" @toggleModal="toggleModal" @formSubmit="formSubmit" />
+      </template>
+    </Modal>
+    <!-- <BaseForm :formObject="formObject" /> -->
   </div>
 </template>
 
@@ -67,6 +73,8 @@
 import TablePagination from "@/components/Table/TablePagination";
 import Search from "@/components/Search";
 import Upload from "@/components/Upload";
+import Modal from "@/components/Modal";
+import BaseForm from "@/components/BaseForm";
 const columns = [
   {
     dataIndex: "name",
@@ -125,7 +133,9 @@ export default {
   components: {
     Search,
     TablePagination,
-    Upload
+    Upload,
+    Modal,
+    BaseForm
   },
   data() {
     return {
@@ -170,18 +180,32 @@ export default {
         }
       ],
       searchField: {},
-      pager: {}
+      pager: {},
+      currentModal: {
+        title: "modalTitle",
+        visible: false
+      },
+      formObject: {
+        type: "modalForm",
+        ref: "testModal",
+        modelList: [{
+          type: "input",
+          label: "test",
+          ruleName: "test",
+          rules: [{ required: true, message: 'Please input Activity name', trigger: 'blur' }]
+        }]
+      }
     };
   },
   methods: {
     callback() {},
     paginationChange() {},
     searchFun(values) {
-      console.log(values)
-      this.searchField = values
+      console.log(values);
+      this.searchField = values;
     },
     handleResetSearchForm() {
-      this.$refs["searchHeader"].resetValues()
+      this.$refs["searchHeader"].resetValues();
     },
     getListData() {
       this.Request.get("接口url地址", {
@@ -195,6 +219,15 @@ export default {
         this.pager = Object.assign({}, this.pager, pager);
         // list要干嘛干嘛去
       });
+    },
+    toggleModal(value) {
+      this.currentModal.visible = value;
+    },
+    formSubmit(values) {
+      console.log(values,"formSubmit========")
+    },
+    handleModalShow() {
+      this.currentModal.visible = true;
     }
   }
 };

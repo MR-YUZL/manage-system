@@ -18,7 +18,7 @@
                 </div>
             </a-table>
           </div>
-          <div style="padding-bottom:50px;"><TablePagination :parentPager="pager" @paginationChange="paginationChange"></TablePagination></div>
+          <!-- <div style="padding-bottom:50px;"><TablePagination :parentPager="pager" @paginationChange="paginationChange"></TablePagination></div> -->
        </div>
         <a-modal title="添加评分项" :visible="addScoreShow" v-if="addScoreShow" @ok="handleAddScoreOk" @cancel="handleAddScoreCancel">
             <a-form-model ref="addScoreForm" 
@@ -48,11 +48,11 @@
 </template>
 
 <script>
-import TablePagination from "@/components/Table/TablePagination";
+// import TablePagination from "@/components/Table/TablePagination";
 export default {
     name: "",
     components: {
-      TablePagination
+      // TablePagination
     },
     props:{},
     data() {
@@ -85,13 +85,13 @@ export default {
             ],
           },
           dataSource:[{}],
-          pager: {
-            pageSizeOptions: ["10", "20", "30", "40", "50"],
-            currentPage: 1,
-            pageSize: 10,
-            totalRecord: 0,
-            totalPage: 0
-          },
+          // pager: {
+          //   pageSizeOptions: ["10", "20", "30", "40", "50"],
+          //   currentPage: 1,
+          //   pageSize: 10,
+          //   totalRecord: 0,
+          //   totalPage: 0
+          // },
           columns:[
             {
               title: '评分项',
@@ -189,17 +189,18 @@ export default {
         this.scroeType = 'add'
       },
       editItem(record){
-      this.addScoreShow = true
-      console.log('编辑',record)
-      this.scroeType = 'edit'
-      let {gradeName,gradeExplain,gradeLimit,gradeType,id} = record
-      this.addScoreFormData = {
-          gradeName,
-          gradeExplain,
-          gradeLimit,
-          gradeType,
-        }
-       this.editScoreId = id 
+         console.log('编辑================',this.scroeType)
+        this.addScoreShow = true
+        this.scroeType = 'edit'
+        let {gradeName,gradeExplain,gradeLimit,gradeType,id} = record
+        this.addScoreFormData = {
+            gradeName,
+            gradeExplain,
+            gradeLimit,
+            gradeType,
+          }
+        this.editScoreId = id 
+         
       },
       deleteItem(id){
         let that = this

@@ -3,14 +3,14 @@
     <a-page-header title="会话辅助设置" />
     <div>
       <a-tabs :activeKey="activeKey" @change="clickTabs">
-        <a-tab-pane key="1" tab="  接入欢迎语"></a-tab-pane>
-        <a-tab-pane key="2" tab="网页客服留言应道"></a-tab-pane>
-        <a-tab-pane key="3" tab="微信公众号/小程序留言应道"></a-tab-pane>
+        <a-tab-pane key="2" tab="接入欢迎语"></a-tab-pane>
+        <a-tab-pane key="0" tab="网页客服留言引导"></a-tab-pane>
+        <a-tab-pane key="1" tab="微信公众号/小程序留言引导"></a-tab-pane>
       </a-tabs>
     </div>
     <div class="tabCon">
-      <p v-if="activeKey==1">接入人工坐席时，系统会向访客发出一条欢迎的消息</p>
-      <p v-if="activeKey==2||activeKey==3">当客服不在线时自动进入留言模式，请设置留言引导语</p>
+      <p v-if="activeKey==2">接入人工坐席时，系统会向访客发出一条欢迎的消息</p>
+      <p v-if="activeKey==0||activeKey==1">当客服不在线时自动进入留言模式，请设置留言引导语</p>
       <div>
         <a-form-model 
         ref="welcomeWords" 
@@ -19,10 +19,10 @@
         :label-col="labelCol" 
         :wrapper-col="wrapperCol">
           <a-form-model-item :label="textName" prop="con">
-            <a-textarea v-model="wordsFormData.con" placeholder="您好，有什么可以帮助的吗？" :auto-size="{ minRows: 7 }"></a-textarea>
+            <a-textarea v-model="wordsFormData.con"  placeholder="您好，有什么可以帮助的吗？" :auto-size="{ minRows: 7 }" allow-clear></a-textarea>
           </a-form-model-item>
           <a-form-model-item>
-            <a-button style="margin-left:100px;" type="primary">保存</a-button>
+            <a-button style="margin-left:100px;" type="primary" @click="saveData">保存</a-button>
           </a-form-model-item>
         </a-form-model>
       </div> 
@@ -39,7 +39,7 @@ export default {
       return {
         labelCol: { span: 2},
         wrapperCol: { span: 10 },
-        activeKey:'1',
+        activeKey:'2',
         wordsFormData:{
           con:''
         },
@@ -49,12 +49,31 @@ export default {
         textName:'接入欢迎语'
       }
     },
-    created(){},
+    created(){
+      this.getData()
+    },
     mounted(){},
     methods: {
       clickTabs(key){
         this.activeKey = key
-        this.textName = this.activeKey == 1?'接入欢迎语':'留言引导语'
+        this.textName = this.activeKey == 2?'接入欢迎语':'留言引导语'
+        this.getData()
+      },
+      getData(){
+        this.Request.get('/hfw/tsmHfwLeaveCommentsSet/infoJson?source='+this.activeKey).then(res=>{
+          console.log('欢迎语言，',res.data.data.content)
+          this.wordsFormData.con = res.data.data.content
+        })
+      },
+      saveData(){
+        let params = {
+          source:this.activeKey,
+          content:this.wordsFormData.con
+        }
+        this.Request.post('/hfw/tsmHfwLeaveCommentsSet/saveJson',params).then(res=>{
+            console.log('保存',res)
+            this.$message.success('保存成功')
+        })
       }
     }
 }
