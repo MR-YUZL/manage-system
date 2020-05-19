@@ -270,9 +270,8 @@ export default {
   },
   props:['modelObj'],
   mounted() {
-    console.log(this.modelObj)
-  this.selectedTags = []
-   this.modelObj.modelList.map((item) => {
+    this.selectedTags = []
+    this.modelObj.modelList.map((item) => {
      if(item.type == 'tag'){
        item.options.map((val) => {
          if(val.selected){
@@ -285,11 +284,12 @@ export default {
   methods: {
    
      uploadFile(info) {
+       console.log(info)
       if (info.file.status !== 'uploading') {
         console.log(info.file, info.fileList);
       }
       if (info.file.status === 'done') {
-        console.log(info)
+        
         this.$message.success(`${info.file.name} file uploaded successfully`);
       } else if (info.file.status === 'error') {
         this.$message.error(`${info.file.name} file upload failed.`);
@@ -301,6 +301,7 @@ export default {
       let status = {
         visible:false,
         status:false,
+        ref:this.modelObj.ref,
         data:{}
       }
       this.reset(this.modelObj.modelList)
@@ -336,6 +337,7 @@ export default {
             let status = {
               visible:false,
               status:true,
+              ref:this.modelObj.ref,
               data:obj
             }
             this.$emit('formData',status)
@@ -368,6 +370,7 @@ export default {
       // this.$emit('selectGetTags',this.selectedTags)
       
     },
+   
   },
   watch: {
    

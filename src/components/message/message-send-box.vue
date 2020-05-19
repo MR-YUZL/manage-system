@@ -107,7 +107,6 @@ export default {
   },
   methods: {
     reEditMessage(payload) {
-      console.log("事件总线")
       this.messageContent = payload
     },
     handleSelectAtUser() {
@@ -366,7 +365,10 @@ export default {
     },
     //发起满意度调查事件
     investigation(){
-      console.log('发起满意度调查事件')
+      this.Request.get('/session/appraise').then(res => {
+        console.log('发起满意度调查事件')
+      })
+      
     }
   }
 }

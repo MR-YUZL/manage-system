@@ -25,8 +25,10 @@ export default {
   mounted() {
     this.login()
     this.initListener()
+    
   },
   methods: {
+  
    login(){
        this.tim.login({
           userID: 'user1',
@@ -116,12 +118,27 @@ export default {
         })
       }
     },
-    onUpdateConversationList(event) {
+    async onUpdateConversationList(event) {
       console.log('会话列表更新')
-      console.log(event.data)
-      console.log(this)
-      this.$store.commit('updateConversationList', event.data)
+      
+      // let res = await this.Request.get('/session/guest/my/all/list')
+       this.$store.commit('updateConversationList', event.data)
+      
+      // if(res.data.status){
+      //   console.log(event.data)
+      //   console.log(res.data.list)
+      //    this.$store.commit('updateConversationList', event.data)
+      // }
+      
     },
+    // getSessionList(){
+    //   this.Request.get('/session/guest/my/all/list').then(res => {
+    //     if(res.data.status){
+    //       // console.log(this.)
+    //     }
+    //       console.log('会话列表',res.data)
+    //     })  
+    // }
   },
   watch: {},
   computed: {

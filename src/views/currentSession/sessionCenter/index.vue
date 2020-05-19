@@ -2,12 +2,14 @@
   <div class="sessionCenter">
     <user-inf />
     <current-conversation />
+    <image-previewer />
   </div>
 </template>
 
 <script>
 import userInf from './userInf'
 import currentConversation from './conversation/current-conversation'
+import imagePreviewer from './../../../components/message/image-previewer'
 
 export default {
   data: () => ({
@@ -18,7 +20,8 @@ export default {
   }),
   components: {
     userInf,
-    currentConversation
+    currentConversation,
+    imagePreviewer
   },
   mounted() {
     

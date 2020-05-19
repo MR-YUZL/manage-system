@@ -8,14 +8,14 @@
         @click="close"
       />
     </div>
-    <i class="el-icon-close close-button" @click="close" />
-    <i class="el-icon-back prev-button" @click="goPrev"></i>
-    <i class="el-icon-right next-button" @click="goNext"></i>
+    <a-icon type="close" class="el-icon-close close-button" @click="close" />
+    <a-icon type="left" class="el-icon-back prev-button" @click="goPrev" />
+    <a-icon type="right" class="el-icon-right next-button" @click="goNext" />
     <div class="actions-bar">
-      <i class="el-icon-zoom-out" @click="zoomOut"></i>
-      <i class="el-icon-zoom-in" @click="zoomIn"></i>
-      <i class="el-icon-refresh-left" @click="rotateLeft"></i>
-      <i class="el-icon-refresh-right" @click="rotateRight"></i>
+      <a-icon type="minus-circle" class="el-icon-zoom-out" @click="zoomOut" />
+      <a-icon type="plus-circle" class="el-icon-zoom-in" @click="zoomIn"></a-icon>
+      <a-icon type="undo" class="el-icon-refresh-left" @click="rotateLeft"></a-icon>
+      <a-icon type="redo" class="el-icon-refresh-right" @click="rotateRight"></a-icon>
       <span class="image-counter">{{index+1}} / {{imgUrlList.length}}</span>
     </div>
   </div>
@@ -50,10 +50,13 @@ export default {
     }
   },
   mounted() {
-    this.$bus.$on('image-preview', this.handlePreview)
+    this.$bus.$on('imagePreview', this.handlePreview)
+
   },
   methods: {
+   
     handlePreview({ url }) {
+      console.log("事件总线")
       console.log(url)
       this.url = url
       this.index = this.imgUrlList.findIndex(item => item === url)

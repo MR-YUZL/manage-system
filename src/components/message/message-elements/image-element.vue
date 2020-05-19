@@ -1,10 +1,10 @@
 <template>
-  <message-bubble :isMine=isMine :message=message>
+  <message-bubble :isMine='isMine' :message="message">
      <!-- el-image在IE下会自动加上用于兼容object-fit的类，该类的样式在没设置图片宽高是会 GG -->
     <img class="image-element" :src="imageUrl" @load="onImageLoaded" @click="handlePreview" />
     <a-progress
       v-if="showProgressBar"
-      :percentage="percentage"
+      :percent="percentage"
       :color="percentage => (percentage === 100 ? '#67c23a' : '#409eff')"
     />
   </message-bubble>  
@@ -53,8 +53,9 @@ export default {
       this.$bus.$emit('image-loaded', event)
     },
     handlePreview() {
-      console.log(this)
-      this.$bus.$emit('image-preview', {
+      // console.log(this.payload.imageInfoArray[0].url)
+      
+      this.$bus.$emit('imagePreview', {
         url: this.payload.imageInfoArray[0].url
       })
     }
