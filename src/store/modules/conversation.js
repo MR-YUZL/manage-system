@@ -129,7 +129,6 @@ const conversationModules = {
     getMessageList(context, conversationID) {
       console.log(context.state.isCompleted)
       if (context.state.isCompleted) {
-        console.log('----------1222')
         context.commit('showMessage', {
           message: '已经没有更多的历史消息了哦',
           type: 'info'
@@ -153,7 +152,7 @@ const conversationModules = {
      * @param {String} conversationID
      */
     checkoutConversation(context, conversationID) {
-      context.commit('resetCurrentMemberList')
+      // context.commit('resetCurrentMemberList')
       // 1.切换会话前，将切换前的会话进行已读上报
       if (context.state.currentConversation.conversationID) {
         const prevConversationID = context.state.currentConversation.conversationID

@@ -1,11 +1,11 @@
 <template>
   <div class="session_list_l">
     <div class="list_count">
-         <a-tabs default-active-key="1" class="tabs">
+         <a-tabs default-active-key="1" class="tabs" @change="callback">
             <a-tab-pane key="1" tab="近期通话" class="tans_">
                 <recent-calls />
             </a-tab-pane>
-            <a-tab-pane key="2" tab="外呼任务">
+            <a-tab-pane key="2" tab="外呼任务" >
                 <out-call-task />
             </a-tab-pane>
             
@@ -31,7 +31,9 @@ export default {
   
   },
   methods: {
-   
+    callback(key) {
+      this.$store.commit('getStatus',key)
+    },
   },
   watch: {
   

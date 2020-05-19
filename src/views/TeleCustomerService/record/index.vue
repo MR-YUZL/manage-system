@@ -151,7 +151,8 @@ export default {
   },
   methods: {
     getList(){
-      this.Request.get('/hfw/callrecords/queryCallRecords',{ ...this.pager,...this.searchField}).then(res => {
+      this.Request.post('/hfw/callrecords/queryCallRecords',{ ...this.pager,...this.searchField}).then(res => {
+        console.log(res)
         let data = res.data
         let page = data.pager
         this.dataSource =  data.list
