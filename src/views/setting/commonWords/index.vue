@@ -259,7 +259,7 @@ export default {
                 if(type == 'group'){
                   that.getGroupList()
                 }else if(type=='words'){
-                  this.getCommonWordsList()
+                  that.getCommonWordsList()
                 }
               })
             },
@@ -305,8 +305,8 @@ export default {
             this.Request.post('/common/speech/save',params).then(res => {
             console.log('分组编辑保存成功',res.data)
             this.$message.success('保存成功');
-            this.getGroupList()
-            this.addGroupShow = false
+            this.getCommonWordsList()
+            this.addWordsShow = false
           })
           }
         })
