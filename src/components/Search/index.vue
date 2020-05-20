@@ -33,6 +33,37 @@
           style="width: 240px"
         />
       </div>
+      <div v-else-if="item.type === 'compactSelectInput'">
+        <a-input-group compact>
+          <a-select :value="valueObj[item.keys[0]]" @change="changeValueByKey($event,item.keys[0])">
+            <a-select-option
+              v-for="(it,idx) in item.options"
+              :key="'compactSelectInput'+idx"
+              :value="it.value"
+            >{{it.label}}</a-select-option>
+          </a-select>
+          <a-input style="width: 50%" @change="eChangeValueByKey($event,item.keys[1])" :value="valueObj[item.keys[1]]" />
+        </a-input-group>
+      </div>
+      <div v-else-if="item.type === 'inputRange'">
+        <a-input-group compact>
+          <a-input
+            style=" width: 100px; text-align: center"
+            placeholder="Minimum"
+            v-model="valueObj[item.key][0]"
+          />
+          <a-input
+            style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff"
+            placeholder="~"
+            disabled
+          />
+          <a-input
+            style="width: 100px; text-align: center; border-left: 0"
+            placeholder="Maximum"
+            v-model="valueObj[item.key][1]"
+          />
+        </a-input-group>
+      </div>
       <div v-else-if="item.type === 'search'">
         <a-button @click="onSearch" :type="item.btnType || 'default'">筛选</a-button>
       </div>
@@ -92,6 +123,18 @@ export default {
               ? item.defaultValue
               : null
           ); // 需要用$set方法去设置data中valueObj的属性值，不然无法实现双向绑定
+        } else if (item.keys && item.keys.length) {
+          let _this = this
+          item.keys.map((it,idx) => {
+            
+            _this.$set(
+              _this.valueObj,
+              it,
+              item.defaultValues && (item.defaultValues[idx] || item.defaultValues[idx] == "")
+                ? item.defaultValues[idx]
+                : null
+            );
+          });
         }
       });
     console.log(this.tools, this.valueObj);
@@ -106,6 +149,16 @@ export default {
       this.valueObj[targetItem.key] = value;
       // console.log(this.valueObj,targetItem,value);
       this.$emit("onChange", targetItem.key, value, this.valueObj); // 返回当前改变的字段名，改变的内容，改变后valueObj的内容
+    },
+    eChangeValueByKey(e, key) {
+      this.valueObj[key] = e.target.value;
+      // console.log(this.valueObj,targetItem,value);
+      this.$emit("onChange", key, e.target.value, this.valueObj); // 返回当前改变的字段名，改变的内容，改变后valueObj的内容
+    },
+    changeValueByKey(value, key) {
+      this.valueObj[key] = value;
+      // console.log(this.valueObj,targetItem,value);
+      this.$emit("onChange", key, value, this.valueObj); // 返回当前改变的字段名，改变的内容，改变后valueObj的内容
     },
     onSearch() {
       let data = this.valueObj;

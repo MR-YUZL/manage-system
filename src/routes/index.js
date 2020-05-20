@@ -1,5 +1,9 @@
 const routes = [
   {
+    path: "/test",
+    component: () => import("@/views/setting/qualityTesting/index2.vue")
+  },
+  {
     path:'/',
     component: () => import("@/views/index.vue"),
     redirect: '/currentSession',
