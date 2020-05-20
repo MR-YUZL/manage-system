@@ -5,11 +5,10 @@
       <div class="side">
         <div class="side-head"><strong>常用语分类</strong><p><a-icon @click="addPhrases" type="plus" /></p></div>
         <div class="group">
-          <p style="margin-top:10px;">全部分组</p>
           <ul>
-            <li v-for="(item,index) in groupList" :key="index">
+            <li v-for="(item,index) in groupList" :key="index" :class="{active:item.active}" @click="changeGroup(item.id,index)">
               <h6>{{item.keyword}}</h6>
-              <div><a-icon type="edit" @click="editGroup(item.id,item.keyword)"/><a-icon type="delete" @click="deleteGroupWordsOK(item.id,'group')"/></div>
+              <div v-if="item.id!=''"><a-icon type="edit" @click.stop="editGroup(item.id,item.keyword)"/><a-icon type="delete" @click.stop="deleteGroupWordsOK([item.id],'group')"/></div>
             </li>
           </ul>
         </div>
@@ -17,15 +16,21 @@
       <div class="main">
         <div class="flex searchStyle">
           <p>常用语:</p>
-          <a-input placeholder="请输入快捷键或内容"></a-input>
-          <a-button type="primary"> 查询</a-button>
+          <a-input placeholder="请输入快捷键或内容" v-model="listParams.commonSpeech"></a-input>
+          <a-button type="primary" @click="searchList"> 查询</a-button>
         </div>
         <div class="flex-between">
-            <a-button> 删除 </a-button>
-            <a-button type="primary" @click="handleAddWords"> 添加常用语</a-button>
+          <a-button @click="deleteGroupWordsOK(selectedRowKeys,'batchDelete')"> 删除 </a-button>
+          <a-button type="primary" @click="handleAddWords"> 添加常用语</a-button>
         </div>
         <div style="width:100%">
-           <a-table :columns="columns" :data-source="dataSource" :row-selection="rowSelection"  :pagination='false'>
+          <a-table 
+           :columns="columns" 
+           :data-source="dataSource" 
+           :row-selection="rowSelection"  
+           :pagination='false' 
+           :rowKey="record=>record.id"
+           >
              <div slot="action" slot-scope="record,row,index">
                <span class="blue" style="margin-right:10px;" @click="editCommonWords(row,index)">编辑</span>
                <span class="blue" @click="deleteGroupWordsOK(row.id,'words')">删除</span>
@@ -63,18 +68,18 @@
         ref="addWordsFrom"
         :label-col="labelCol"
         :wrapper-col="wrapperCol">
-        <a-form-model-item label="常用语分组" prop="pid">
-            <a-select v-model="addWordsObj.pid">
-              <a-select-option v-for="(item,index) in groupList" :key="index" :value="item.id" >
-                {{item.keyword}}
-              </a-select-option>
-            </a-select>
+        <a-form-model-item label="常用语分组" prop="pid" >
+          <a-select v-model="addWordsObj.pid"  placeholder="请选择" >
+            <a-select-option  v-for="(item,index) in groupListModal" :key="index" :value="item.id" >
+              {{item.keyword}}
+            </a-select-option>
+          </a-select>
         </a-form-model-item>
         <a-form-model-item label="快捷词" prop="keyword">
-            <a-input v-model="addWordsObj.keyword"/>
+            <a-input placeholder="请输入快捷词"  v-model="addWordsObj.keyword"/>
         </a-form-model-item>
         <a-form-model-item label="回复内容" prop="content">
-            <a-textarea v-model="addWordsObj.content" />
+            <a-textarea placeholder="请输入回复内容" v-model="addWordsObj.content" />
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -90,17 +95,6 @@
 import TablePagination from "@/components/Table/TablePagination";
 import Model from '../../../components/Modal/index';
 import BaseForm from "@/components/BaseForm/index";
-const rowSelection = {
-  onChange: (selectedRowKeys, selectedRows) => {
-    console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-  },
-  onSelect: (record, selected, selectedRows) => {
-    console.log(record, selected, selectedRows);
-  },
-  onSelectAll: (selected, selectedRows, changeRows) => {
-    console.log(selected, selectedRows, changeRows);
-  },
-};
 export default {
     name: "group",
     components: {
@@ -113,9 +107,9 @@ export default {
         return {
           labelCol: { span: 8},
           wrapperCol: { span: 14 },
-          groupList:[],
+          groupList:[{keyword:'全部分组',id:'',active:true}],
           dataSource:[],
-          rowSelection,
+          // rowSelection,
           columns:[
             {
               title: '快捷词',
@@ -166,6 +160,11 @@ export default {
             content:[{required: true, message: '请输入', trigger: 'blur' }],
             keyword:[{required: true, message: '请输入', trigger: 'blur' }]
           },
+          selectedRowKeys: [],
+          listParams:{
+              commonSpeech:'',
+              parentCommonSpeechId:''
+          }
           // addWordsObj:{
           //   title:'添加常用语',
           //   visible:false,
@@ -215,11 +214,38 @@ export default {
       //获取常用语列表
       this.getCommonWordsList();
     },
+    computed:{
+      rowSelection(){
+        return {
+          onChange: (selectedRowKeys, selectedRows) => {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+          },
+          onSelect: (record, selected, selectedRows) => {
+            console.log(record, selected, selectedRows);
+            this.selectedRowKeys = selectedRows
+          },
+          onSelectAll: (selected, selectedRows, changeRows) => {
+            console.log(selected, selectedRows, changeRows);
+          },
+        }
+      },
+    },
     mounted(){},
     methods: {
-      getGroupList(){
+     getGroupList(){
+       this.groupList = [{keyword:'全部分组',id:'',active:true}]
+       this.groupListModal = []
         this.Request.get('/common/speech/group/list').then(res => {
-          this.groupList = res.data.list
+          console.log('分组列表',res.data.list)
+          let  data = res.data.list
+          data.map(item=>{
+            this.groupList.push({
+              active:false,
+              ...item
+            })
+          })
+          // this.groupList.push(res.data.list)
+          this.groupListModal = res.data.list
         })
       },
       editGroup(id,keyword){
@@ -248,17 +274,30 @@ export default {
         })
       },
       deleteGroupWordsOK(id,type){
+         console.log('选中的id',id) 
+         let selectedRowsArray = []
+          let params = {
+            commonSpeechIds:id
+          }
           let that = this
+          if(type=="batchDelete"){
+            id.map((item) =>{
+              selectedRowsArray.push(item.id)
+            })
+            params.commonSpeechIds = selectedRowsArray
+          }
           this.$confirm({
             title: '',
             content:<div style="color:red;">删除分组的同时会删除该分组下的常用语，请确认是否删除？</div>,
             onOk() {
-              that.Request.post('/common/speech/remove',{commonSpeechIds:[id]}).then(res => {
-                console.log('分组删除成功',res.data)
+              that.Request.post('/common/speech/remove',params).then(() => {
                 that.$message.success('删除成功');
                 if(type == 'group'){
                   that.getGroupList()
-                }else if(type=='words'){
+                    that.listParams.parentCommonSpeechId =  ''
+                    that.listParams.commonSpeech = ''
+                    that.getCommonWordsList()
+                }else if(type=='words'||type=="batchDelete"){
                   that.getCommonWordsList()
                 }
               })
@@ -268,33 +307,36 @@ export default {
             },
         });
       },
-      // rowSelection(){},
+      changeGroup(id,index){
+        this.listParams.parentCommonSpeechId =  id
+        this.listParams.commonSpeech = ''
+        this.groupList.map(item=>{
+          item.active = false
+        })
+        this.groupList[index].active = true
+        this.getCommonWordsList()
+        this.pager.currentPage = 1
+      },
+      searchList(){
+        this.pager.currentPage = 1
+        this.getCommonWordsList()
+      },
       getCommonWordsList(){
-        let params = {
-          commonSpeech:'',
-          parentCommonSpeechId:''
-        }
-        this.Request.post('/common/speech/search',params).then(res => {
-          console.log('查询常用语列表',res.data)
+        this.Request.get('/common/speech/search',{...this.pager,...this.listParams}).then(res => {
+          console.log('查询常用语列表',res.data) 
           this.dataSource = res.data.list
+          this.pager = res.data.pager
+          // this.pager.currentPage = intPosition
         })
       },
-      // submitAddGroup(data){ 
-      //   if(data.status){
-      //     let params = {
-      //       keyword:data
-      //     }
-      //     this.Request.post('/common/speech/save',{...params}).then(res => {
-      //       console.log('分组编辑保存成功',res.data)
-      //       this.$message.success('保存成功');
-      //     })
-      //   }else{
-      //     this.addGroupObj.visible = data.visible
-      //   }
-      // },
       handleAddWords(){
         console.log('这不是点击啦吗')
         this.addWordsShow = true
+        this.addWordsObj = {
+          pid:'',
+          content:'',
+          keyword:''
+        }
       },
       okAddWords(){
         let params = {
@@ -314,20 +356,20 @@ export default {
       cancelAddWords(){
         this.addWordsShow = false
       },
-      editCommonWords(){
-
+      editCommonWords(row){
+        console.log(row,'编辑常用语言')
+        this.addWordsShow = true
+        let {pid,content,keyword,id} = row
+        this.addWordsObj = {
+          pid,
+          content,
+          keyword,
+          id
+        }
       },
-      deleteCommonWords(){
-
-      },
-      // // cancelAddWordsModal(){
-      // //    this.addWordsObj.visible = false
-      // // },
-      // submitAddWords(){
-      //     this.addWordsObj.visible = false
-      // },
-      paginationChange(){
-
+      paginationChange(key){
+        this.pager = key
+        this.getCommonWordsList()
       }
     }
 }
@@ -337,7 +379,8 @@ export default {
 .common-phrases{
   display:flex;
   .side{
-    padding:10px;
+    // padding:10px;
+    padding-top:10px;
     width:175px;
     border-right:1px solid #e6e6e6;
     min-height:88vh;
@@ -345,6 +388,7 @@ export default {
       display:flex;
       justify-content: space-between;
       width:100%;
+      padding-left:10px;
       *{
         display:block;
       }
@@ -357,7 +401,7 @@ export default {
           display:flex;
           justify-content: space-between;
           font-size:14px;
-          margin-bottom:10px;
+          padding:8px 0 10px 10px;
           cursor: pointer;
           h6{
             font-size:14px;
@@ -368,6 +412,9 @@ export default {
               margin-right:10px;
             }
           }
+        }
+        li.active{
+          background:#e4f6ff
         }
      }
     
