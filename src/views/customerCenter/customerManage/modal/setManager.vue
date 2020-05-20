@@ -37,14 +37,16 @@ export default {
   methods: {
     handleSubmit() {
       let params = {
+        principals:'',
         custIds: this.custIds
       };
-      api.setPrincipalJson().then(res => {
+      api.setPrincipalJson(params).then(res => {
         console.log(res);
       });
     },
     handleCancel() {
-      this.visibles = false;
+      this.visibles = false
+      this.$emit('closeUpdate')
     }
   }
 };
