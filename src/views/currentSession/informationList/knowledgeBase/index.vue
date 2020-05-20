@@ -113,7 +113,7 @@ methods: {
         list.map(item => {
             if(item.id == key){
                 this.message = item.text
-
+                return;
             }else{
                 if(item.children && item.children.length){
                     this.mapData(item.children,key)
