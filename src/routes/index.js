@@ -183,6 +183,14 @@ const routes = [
   //   component: () => import("@/containers/Login/index.vue")
   // },
   {
+    path:'/test',
+    component: () => import('@/views/Test/index.vue')
+  },
+  {
+    path:'/conversation',
+    component: () => import('@/views/Test/conversation.vue')
+  },
+  {
     path: "*",
     component: () => import("@/components/NotFound")
   }

@@ -1,8 +1,8 @@
 <template>
   <div class="model">
      <a-modal
-      :title="currentModal.title"
-      :visible="currentModal.visible"
+      :title="modalProps.title"
+      :visible="modalProps.visible"
       :footer="null"
       @handleSubmit="handleSubmit"
       @ok="handleSubmit"
@@ -17,10 +17,13 @@ export default {
   props: {},
   data(){
     return{
-      
+      modalProps: {}
     }
   },
   props:['currentModal'],
+  created() {
+    this.modalProps = this.currentModal
+  },
   mounted() {},
   methods: {
     handleSubmit(values) {
@@ -28,7 +31,8 @@ export default {
       this.$emit("toggleModal",false)
     },
     handleCancel() {
-      this.$emit("toggleModal",false)
+      this.modalProps.visible = false
+      // this.$emit("toggleModal",false)
     }
   }
 };

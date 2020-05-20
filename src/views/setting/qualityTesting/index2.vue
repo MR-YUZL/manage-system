@@ -66,6 +66,12 @@
       <template v-slot:content>
         <!-- <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" /> -->
         <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" />
+        <a-button @click="handleModalShow($event,'modalInner')">ModalInner</a-button>
+        <Modal :currentModal="modalInner">
+          <template v-slot:content>
+            111
+          </template>
+        </Modal>
       </template>
     </Modal>
     <!-- <BaseForm :formObject="formObject" /> -->
@@ -217,6 +223,7 @@ export default {
         title: "modalTitle",
         visible: false
       },
+      modalInner:{title:'modalInner',visible:false},
       formObject: {
         type: "modalForm",
         ref: "testModal",
@@ -307,8 +314,12 @@ export default {
     formSubmit(values) {
       console.log(values,"formSubmit========")
     },
-    handleModalShow() {
-      this.currentModal.visible = true;
+    handleModalShow(e,name) {
+      if(name) {
+        this[name]["visible"] = true;
+      }else {
+        this["currentModal"]["visible"] = true;
+      }
     }
   },
   mounted() {
