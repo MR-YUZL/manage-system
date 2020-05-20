@@ -84,6 +84,13 @@ export default {
         loading: false,
         rowSelection:true
       },
+      pager: {
+        pageSizeOptions: ["10", "20", "30", "40", "50"],
+        currentPage: 1,
+        pageSize: 10,
+        totalRecord: 0,
+        totalPage: 0
+      }
     };
   },
   components: {

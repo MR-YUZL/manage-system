@@ -12,6 +12,8 @@
         <a-tab-pane key="1" tab="Tab 1" force-render>
           <!-- 搜索头用组件 -->
           <Search ref="searchHeader" :tools="formList" @onSearch="searchFun" />
+
+          <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" />
           <!-- 按钮区 -->
           <div class="button-area">
             <div class="left-side">
@@ -62,10 +64,12 @@
     </a-form-item>-->
     <Modal :currentModal="currentModal" @toggleModal="toggleModal">
       <template v-slot:content>
-        <BaseForm :formObject="formObject" @toggleModal="toggleModal" @formSubmit="formSubmit" />
+        <!-- <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" /> -->
+        <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" />
       </template>
     </Modal>
     <!-- <BaseForm :formObject="formObject" /> -->
+    <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" />
   </div>
 </template>
 
@@ -75,6 +79,8 @@ import Search from "@/components/Search";
 import Upload from "@/components/Upload";
 import Modal from "@/components/Modal";
 import BaseForm from "@/components/BaseForm";
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import moment from "moment";
 const columns = [
   {
     dataIndex: "name",
@@ -135,13 +141,39 @@ export default {
     TablePagination,
     Upload,
     Modal,
-    BaseForm
+    BaseForm,
+    FormModelSearchForm
   },
   data() {
     return {
       data,
       columns,
       formList: [
+        {
+          type: "compactSelectInput",
+          keys: ["queryType","queryText"],
+          defaultValues: ["1",""],
+          options: [
+            {
+              label: "客户名称",
+              value: "1"
+            },
+            {
+              label: "联系人",
+              value: "2"
+            },
+            {
+              label: "联系电话",
+              value: "3"
+            }
+          ]
+        },
+        {
+          type: "inputRange",
+          key: "inputRange",
+          title: "inputRange",
+          defaultValue: ["",""]
+        },
         {
           type: "input",
           title: "用户名:",
@@ -192,8 +224,57 @@ export default {
           type: "input",
           label: "test",
           ruleName: "test",
+          model: "sss",
           rules: [{ required: true, message: 'Please input Activity name', trigger: 'blur' }]
-        }]
+        }],
+      },
+      formAxiosReturnValues: {
+        // id: "id_123",
+        // test: "hello"
+      },
+      searchFormList: [{
+        name: "input",
+        type: "input",
+        label: "inputName",
+        placeholder: "嘿嘿嘿"
+      },{
+        type: "select",
+        name: "select",
+        label: "selectName",
+        options: [{label:"五个字长度",value:"select1"},{label:"1",value:"select2"}]
+      },{
+        type: "datepicker",
+        name: "datepicker",
+        label: "datepickerName"
+      },{
+        type: "monthpicker",
+        name: "monthpicker",
+        label: "monthpickerName"
+      },{
+        type: "weekpicker",
+        name: "weekpicker",
+        label: "weekpickerName"
+      },{
+        type: "rangepicker",
+        name: "rangepicker",
+        label: "rangepickerName"
+      },{
+        type: "compact",
+        name: "compactInputName",
+        compact: "input",
+        compactName: "compactSelectName",
+        options: [{label:"select1",value:"select1"},{label:"select2",value:"select2"}]
+      },{
+        type: "inputCompact",
+        name: "inputCompact",
+        label: "inputCompact"
+      }],
+      defaultSearchFormValues: {
+        input: "test",
+        select: "select2",
+        datepicker: "2020-05-19",
+        monthpicker: moment("2019-02").format("YYYY-MM"),
+        weekpicker: "2020-05-19"
       }
     };
   },
@@ -229,6 +310,14 @@ export default {
     handleModalShow() {
       this.currentModal.visible = true;
     }
+  },
+  mounted() {
+    setTimeout(()=>{
+      this.formAxiosReturnValues["test"] = "hi";
+      this.formAxiosReturnValues["updateTime"] = new Date().getTime();
+      this.defaultSearchFormValues["input"] = "xxxxx"
+      console.log(this.formAxiosReturnValues)
+    },5000)
   }
 };
 </script>
