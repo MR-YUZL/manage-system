@@ -1,13 +1,46 @@
 <template>
   <div>
-    <h2 class="TitleH2">历史会话</h2>
+    <a-page-header title="历史会话" style="padding:16px 0;" />
+
     <div class="box">
       <Search :tools="searchList" @onSearch="searchFun" />
       <div>
-        <DataTable :tableConfig="tableConfig" @onSelectChange="onSelectChange"></DataTable>
+        <a-table
+          :columns="columns"
+          :dataSource="dataSource"
+          :pagination="false"
+          :rowKey="record => record.id"
+        >
+          <div slot="idSkip" slot-scope="record,row">
+            <span class="blue" @click="skipDetail(row.id)">{{row.id}}</span>
+          </div>
+        </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
+
+    <a-modal
+      title="记录"
+      :footer="null"
+      width="880px"
+      v-if="detailsShow"
+      :visible="detailsShow"
+      @cancel="handleCancel"
+    >
+      <div class="record-detail">
+        <div class="message">
+          <MessageDetail
+            :recordList="recordList"
+            :handleRecordBtn="handleRecordBtn"
+            :handleResult="handleResultCon"
+            @setHandleResult="setHandleResult"
+          />
+        </div>
+        <div class="information">
+          <UserInformation :guestId="guestId" />
+        </div>
+      </div>
+    </a-modal>
   </div>
 </template>
 
@@ -15,11 +48,19 @@
 import moment from "moment";
 import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
-import DataTable from "@/components/DataTable";
 import TablePagination from "@/components/Table/TablePagination";
+import UserInformation from '@/components/userInf'
+import MessageDetail from '@/views/messageRecord/messageDetail'
 export default {
   data() {
     return {
+      pager: {
+        pageSizeOptions: ["10", "20", "30", "40", "50"],
+        currentPage: 1,
+        pageSize: 10,
+        totalRecord: 0,
+        totalPage: 0
+      },
       searchList: [
         {
           type: "input",
@@ -74,12 +115,13 @@ export default {
         }
       ],
       tableConfig: {
-        rowKey: "id",
+        rowKey: "history",
         columns: [
           {
             title: "会话ID",
             dataIndex: "id",
-            key: "id"
+            key: "id",
+            slotName: "idSkip"
           },
           {
             title: "姓名",
@@ -161,26 +203,56 @@ export default {
         align: "center",
         loading: false,
         rowSelection: true
+      },
+      //弹窗
+      detailsShow: false,
+      recordList: [],
+      guestId: "",
+      handleRecordBtn: "",
+      handleResultCon: {
+        name:'',
+        con:''
       }
     };
   },
   components: {
     Search,
     TablePagination,
-    DataTable
+    UserInformation,
+    MessageDetail
   },
   mounted() {
     this.getList();
   },
   methods: {
     getList() {
-        api.sessionList().then(res=>{
-            console.log('=========',res)
-        })
+      api.sessionList().then(res => {
+        console.log("=========", res);
+        if (res.data.status) {
+          this.tableConfig.list = res.data.list;
+        }
+      });
     },
+    
     searchFun() {},
     onSelectChange() {},
-    paginationChange() {}
+    paginationChange() {},
+    //弹窗
+    skipDetail(id) {
+        console.log(id,'==========id')
+        this.Request.get('/hfw/tsmHfwLeaveComments/infoJson?id='+ id).then(res=>{
+            let data = res.data.data;
+            this.handleResultCon.con = data.result
+            this.handleResultCon.name = data.followAccName
+            this.recordList = data.detailBeanList
+            this.guestId = data.guestId
+        })
+        this.detailsShow = true;
+    },
+    handleCancel() {
+        this.detailsShow = false
+    },
+    setHandleResult() {}
   }
 };
 </script>
