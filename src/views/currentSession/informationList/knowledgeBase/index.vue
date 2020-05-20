@@ -104,8 +104,24 @@ methods: {
     },
     handleChangeItem(item, key, keyPath) {
         console.log(item, key, keyPath)
+        this.message = this.mapData(this.list,item.key)
+        this.$bus.$emit('message',this.message )
+
     
     },
+    mapData(list,key){
+        list.map(item => {
+            if(item.id == key){
+                this.message = item.text
+
+            }else{
+                if(item.children && item.children.length){
+                    this.mapData(item.children,key)
+                }
+            }
+        })
+        return this.message
+    }
    
 },
 created() {

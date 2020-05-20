@@ -171,6 +171,7 @@ export default {
     onChange() {},
     handleCancel(e) {
       this.visibles = false
+      this.$emit('closeUpdate')
     },
   }
 };

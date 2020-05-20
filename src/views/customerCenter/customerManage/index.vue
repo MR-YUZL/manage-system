@@ -1,8 +1,9 @@
 <template>
   <div>
-    <h2 class="TitleH2">客户管理</h2>
+    <a-page-header title="客户管理" style="padding:16px 0;" />
     <div class="box">
-      <a-tabs :activeKey="activeKey" @change="changeTabFn">
+      <!-- 普通客服没有tab 记得判断 -->
+      <a-tabs :activeKey="params.dataSource" @change="changeTabFn">
         <a-tab-pane key="1" tab="未分配的客户"></a-tab-pane>
         <a-tab-pane key="2" tab="我负责的客户" force-render></a-tab-pane>
         <a-tab-pane key="3" tab="下属成员负责的客户"></a-tab-pane>
@@ -23,32 +24,40 @@
       </div>
       <!-- 按钮区 -->
       <div>
-        <DataTable :tableConfig="tableConfig" @onSelectChange="onSelectChange"></DataTable>
-        <!-- <a-table
+        <a-table
           :columns="columns"
           :dataSource="dataSource"
           :pagination="false"
           :rowKey="record => record.id"
+          :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          @change="onPageChange"
         >
-          <div slot="guestName" slot-scope="record,row">
-            <span class="blue" @click="checkMessage(row.id,row.status)">{{row.guestName}}22</span>
+          <div slot="detailSkip" slot-scope="record,row">
+            <span class="blue" @click="customerDetail(row.id)">{{row.custName}}</span>
           </div>
-        </a-table>-->
+          <div slot="action" slot-scope="record,row">
+            <span class="blue" style="margin-right:10px;" @click="followCustomer(row.id)">跟进客户</span>
+            <span class="blue" @click="createOrder(row.id)">创建工单</span>
+          </div>
+        </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
     <!-- 弹窗 -->
-    <SetManagerModal :visible="modals.setManagerVisible" :custIds="custIds" />
-    <DelCustomerModal :visible="modals.delCustomerVisible" :custIds="custIds" />
-    <ExportCustomerModal :visible="modals.exportCustomerVisible" :dataSource="activeKey" />
-    <ImportCustomerModal :visible="modals.importCustomerVisible" />
-    <ImportResultModal :visible="modals.importResultVisible" />
-    <CreateCustomerModal :visible="modals.createCustomerVisible" />
+    <SetManagerModal :visible="modals.setManagerVisible" :custIds="custIds" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <DelCustomerModal :visible="modals.delCustomerVisible" :custIds="custIds" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <ExportCustomerModal :visible="modals.exportCustomerVisible" :custIds="custIds" :dataSource="params.dataSource" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <ImportCustomerModal :visible="modals.importCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <ImportResultModal :visible="modals.importResultVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <CreateCustomerModal :visible="modals.createCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <setLabelModal :visible="modals.setLabelVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <followCustomerModal :visible="modals.followCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <DetailModal :visible="modals.detailVisible" :detailId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
   </div>
 </template>
 <script>
 import moment from "moment";
-import Search from "@/components/Search/index";
+import Search from "@/components/Search/index2";
 import TablePagination from "@/components/Table/TablePagination";
 import api from "@/api/customerCenter";
 import SetManagerModal from "@/views/customerCenter/customerManage/modal/setManager";
@@ -57,7 +66,10 @@ import ExportCustomerModal from "@/views/customerCenter/customerManage/modal/exp
 import ImportCustomerModal from "@/views/customerCenter/customerManage/modal/importCustomer";
 import ImportResultModal from "@/views/customerCenter/customerManage/modal/importResult";
 import CreateCustomerModal from "@/views/customerCenter/customerManage/modal/createCustomer";
-import DataTable from "@/components/DataTable";
+import setLabelModal from "@/views/customerCenter/customerManage/modal/setLabel";
+import followCustomerModal from "@/views/customerCenter/customerManage/modal/followCustomer";
+import DetailModal from "@/views/customerCenter/customerManage/detail";
+
 export default {
   components: {
     Search,
@@ -68,123 +80,122 @@ export default {
     ImportCustomerModal,
     ImportResultModal,
     CreateCustomerModal,
-    DataTable
+    setLabelModal,
+    followCustomerModal,
+    DetailModal
   },
   data() {
     return {
-        exportJson:[],
-        custIds:[],
-      tableConfig: {
-        rowKey: "id",
-        columns: [
-          {
-            title: "客户名称",
-            dataIndex: "custName",
-            key: "custName"
+      detailId:'',
+      exportJson: [],
+      custIds: [],
+      columns: [
+        {
+          title: "客户名称",
+          dataIndex: "custName",
+          key: "custName",
+          scopedSlots: { customRender: 'detailSkip' },
+        },
+        {
+          title: "客户标签",
+          dataIndex: "custLabels",
+          key: "custLabels"
+        },
+        {
+          title: "客户分组",
+          dataIndex: "custGroup",
+          key: "custGroup"
+        },
+        {
+          title: "地址",
+          dataIndex: "custAddress",
+          key: "custAddress"
+        },
+        {
+          title: "联系人",
+          dataIndex: "custLinkMan",
+          key: "custLinkMan"
+        },
+        {
+          title: "电话",
+          dataIndex: "custPhone",
+          key: "custPhone"
+        },
+        {
+          title: "客户经理",
+          dataIndex: "custManager",
+          key: "custManager"
+        },
+        {
+          title: "负责人",
+          dataIndex: "custPrincipals",
+          key: "custPrincipals"
+        },
+        {
+          title: "创建人",
+          dataIndex: "inputAcc",
+          key: "inputAcc"
+        },
+        {
+          title: "创建时间",
+          dataIndex: "inputDate",
+          key: "inputDate"
+        },
+        {
+          title: "最近跟进时间",
+          dataIndex: "lastFollowDate",
+          key: "lastFollowDate"
+        },
+        {
+          title: "下次跟进时间",
+          dataIndex: "nextFollowDate",
+          key: "nextFollowDate"
+        },
+        {
+          title: currentPageData => {
+            return (
+              <div>
+                操作
+                <AIcon onClick={this.setLabelClick} type="setting" />
+              </div>
+            );
           },
-          {
-            title: "客户标签",
-            dataIndex: "custLabels",
-            key: "custLabels"
-          },
-          {
-            title: "客户分组",
-            dataIndex: "custGroup",
-            key: "custGroup"
-          },
-          {
-            title: "地址",
-            dataIndex: "custAddress",
-            key: "custAddress"
-          },
-          {
-            title: "联系人",
-            dataIndex: "custLinkMan",
-            key: "custLinkMan"
-          },
-          {
-            title: "电话",
-            dataIndex: "custPhone",
-            key: "custPhone"
-          },
-          {
-            title: "客户经理",
-            dataIndex: "custManager",
-            key: "custManager"
-          },
-          {
-            title: "负责人",
-            dataIndex: "custPrincipals",
-            key: "custPrincipals"
-          },
-          {
-            title: "创建人",
-            dataIndex: "inputAcc",
-            key: "inputAcc"
-          },
-          {
-            title: "创建时间",
-            dataIndex: "inputDate",
-            key: "inputDate"
-          },
-          {
-            title: "最近跟进时间",
-            dataIndex: "lastFollowDate",
-            key: "lastFollowDate"
-          },
-          {
-            title: "下次跟进时间",
-            dataIndex: "nextFollowDate",
-            key: "nextFollowDate"
-          },
-          {
-            title: "操作",
-            dataIndex: "status",
-            key: "3",
-            customRender: value => {
-              let con = {
-                children: (
-                  <div>
-                    {value == 0 && <div style="color:#f99921">跟进客户</div>}
-                    {value == 1 && <div>创建工单</div>}
-                  </div>
-                )
-              };
-              return con;
-            }
-          }
-        ], // 表头
-        list: [
-
-        ], // 表格数据
-        align: "center",
-        loading: false,
-        rowSelection:true
-      },
+          dataIndex: "status",
+          key: "3",
+          scopedSlots: { customRender: 'action' },
+        }
+      ], // 表头
+      dataSource: [], // 表格数据
       modals: {
         setManagerVisible: false,
         delCustomerVisible: false,
         exportCustomerVisible: false,
         importCustomerVisible: false,
         importResultVisible: false,
-        createCustomerVisible: false
+        createCustomerVisible: false,
+        setLabelVisible: false,
+        followCustomerVisible:false,
+        detailVisible:false
       },
-      activeKey: "1",
+      // activeKey: "1",
       searchList: [
         {
           type: "compact",
-          name: "queryType",
-          child: [
+          key: "queryType",
+          defaultValue:'1',
+          name:'queryText',
+          defaultName: null,
+          options: [
             {
-              label: "客户名称",
+              name: "客户名称",
               value: "1"
             },
             {
-              label: "联系人",
+              name: "联系人",
               value: "2"
             },
             {
-              label: "联系电话",
+              name: "联系电话",
               value: "3"
             }
           ]
@@ -193,13 +204,15 @@ export default {
           type: "select",
           title: "客户标签",
           key: "queryTime",
-          mode: "multiple"
+          mode: "multiple",
+          options:[]
         },
         {
           type: "select",
           title: "创建人",
           key: "status",
-          mode: "multiple"
+          mode: "multiple",
+          options:[]
         },
         {
           type: "input",
@@ -253,60 +266,72 @@ export default {
         pageSize: 10,
         totalRecord: 0,
         totalPage: 0
-      }
+      },
+      params: {
+        dataSource: "1",
+        queryType: 1
+      },
+      selectedRowKeys:[]
     };
   },
   mounted() {
-    this.getList();
+    this.getList(this.params);
   },
   methods: {
-    getList() {
-      let params = {
-        dataSource: this.activeKey
-      };
-      this.tableConfig.list = [
-        {
-          custAddress: "0",
-          custGroup: "1",
-          custName: "1",
-          custLinkMan: "1"
-        },
-        {
-          custAddress: "0",
-          custGroup: "1",
-          custName: "1",
-          custLinkMan: "1"
-        },
-        {
-          custAddress: "0",
-          custGroup: "1",
-          custName: "1",
-          custLinkMan: "1"
+    getList(params) {
+      api.custManageList(params).then(res => {
+        console.log(res, "res-----");
+        if (res.data.status) {
+          this.dataSource = res.data.list;
         }
-      ];
-      //   api.custManageList().then(res => {
-      //     console.log(res, "res-----");
-      //   });
+      });
     },
-    onSelectChange(val){
-        console.log(val)
-        this.custIds = val
+    delUpdate(){
+      this.custIds = [];
+      this.getList(this.params);
     },
+    closeUpdate(){
+      this.modals.delCustomerVisible = false;
+      this.modals.setManagerVisible = false;
+      this.modals.exportCustomerVisible = false;
+      this.modals.importCustomerVisible = false;
+      this.modals.importResultVisible = false;
+      this.modals.createCustomerVisible = false;
+      this.modals.setLabelVisible = false;
+      this.modals.followCustomerVisible = false;
+      this.modals.detailVisible = false;
+    },
+    onSelectChange(selectedRowKeys, selectedRows) {
+      this.custIds = [];
+      this.selectedRowKeys = selectedRowKeys;
+      selectedRows.map(v=>{
+        this.custIds.push(v.custId)
+      })
+    },
+    onPageChange(){},
+    customerDetail(id) {
+      this.detailId = id;
+      this.modals.detailVisible = true
+    },
+    followCustomer() {
+      this.modals.followCustomerVisible = true
+    },
+    createOrder() {},
     changeTabFn(key) {
-      this.activeKey = key;
+      this.params.dataSource = key;
     },
     //按钮区start
     setManager() {
-    if(!this.custIds.length){
-        this.$message.warn('请选择客户')
-        return false
+      if (!this.custIds.length) {
+        this.$message.warn("请选择客户");
+        return false;
       }
       this.modals.setManagerVisible = true;
     },
     delCustomer() {
-        if(!this.custIds.length){
-        this.$message.warn('请选择客户')
-        return false
+      if (!this.custIds.length) {
+        this.$message.warn("请选择客户");
+        return false;
       }
       this.modals.delCustomerVisible = true;
     },
@@ -321,6 +346,9 @@ export default {
     },
     createCustomer() {
       this.modals.createCustomerVisible = true;
+    },
+    setLabelClick() {
+      this.modals.setLabelVisible = true;
     },
     //按钮区end
     checkMessage(id, status) {
@@ -347,14 +375,20 @@ export default {
 <style lang="less" scoped>
 .button-area {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
+  padding:10px 0;
   .left-side {
-    flex: 1;
     text-align: left;
+    button{
+      margin-left: 10px;
+    }
   }
   .right-side {
     flex-shrink: unset;
     text-align: right;
+    button{
+      margin-right: 10px;
+    }
   }
 }
 </style>

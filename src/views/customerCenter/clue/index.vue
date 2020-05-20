@@ -1,10 +1,15 @@
 <template>
   <div>
-    <h2 class="TitleH2">线索管理</h2>
+    <a-page-header title="线索管理" style="padding:16px 0;" />
     <div class="box">
       <Search :tools="searchList" @onSearch="searchFun" />
       <div>
-        <DataTable :tableConfig="tableConfig" @onSelectChange="onSelectChange"></DataTable>
+        <a-table
+          :columns="columns"
+          :dataSource="dataSource"
+          :pagination="false"
+          :rowKey="record => record.id"
+        ></a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
@@ -14,7 +19,6 @@
 <script>
 import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
-import DataTable from "@/components/DataTable";
 import TablePagination from "@/components/Table/TablePagination";
 export default {
   data() {
@@ -86,9 +90,7 @@ export default {
           ]
         }
       ],
-      tableConfig: {
-        rowKey: "id",
-        columns: [
+      columns: [
           {
             title: "姓名",
             dataIndex: "clueName",
@@ -145,17 +147,12 @@ export default {
             key: "inputDate"
           }
         ], // 表头
-        list: [], // 表格数据
-        align: "center",
-        loading: false,
-        rowSelection: true
-      }
+        dataSource: [], // 表格数据
     };
   },
   components: {
     Search,
     TablePagination,
-    DataTable
   },
   mounted(){
       this.getList()

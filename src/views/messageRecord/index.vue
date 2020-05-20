@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2 class="TitleH2">留言记录</h2>
+    <a-page-header title="留言记录" style="padding:16px 0;" />
     <div class="box">
       <Search :tools="formList" @onSearch="searchFun" /> 
       <div>
