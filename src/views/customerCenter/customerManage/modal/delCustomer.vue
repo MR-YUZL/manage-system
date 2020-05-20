@@ -24,12 +24,16 @@ export default {
   },
   methods: {
     handleOk() {
-      api.delCustomer(this.custIds).then(res=>{
-
+      api.delCustomer({custIds:this.custIds}).then(res=>{
+        if(res.data.status){
+          this.$message.success('删除成功')
+          this.visibles = false
+          this.$emit('delUpdate')
+        }
       })
     },
     handleCancel() {
-      this.visibles = false;
+      this.$emit('closeUpdate')
     }
   }
 };

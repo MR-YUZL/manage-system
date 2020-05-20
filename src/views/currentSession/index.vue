@@ -32,7 +32,7 @@ export default {
    login(){
        this.tim.login({
           userID: 'user1',
-          userSig: 'eJwtzNsKgkAUheF3mevQ7TSjJnQRkpMhSdjhWnAcdlHIHMKK3j1RL9e34P*SU1F5L6lJQqgHZDFubOTTYosjOyN1MB*mudddhw1JAgaw5JwF4fRYfMhBebyiEaMQTSr7DvXgIbAYYG6gGqptX6a5guxWblIH54O6FtXRit07FZk12l5qX2x799n7*Zr8-r6xMRA_'
+          userSig: 'eJwtzEELgjAYxvHvsnPIq9tsCp2iDuJBcNTZ2Ku*ZDY2DSv67ol6fH4P-L9M52XwQsdSFgXAdssmg-1ANS08enThdnhzr6wlw9JQAHApRRivz0APnFWqRCmuOF8VJ0tu9hiEAtga1MzVvvBJfZpu5rIv5VgUWf7puqO*Zu*8jbSX*PSVcwjNGQ7s9wfTCzGU'
         })
         .then(() => {
           console.log('成功')

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <a-modal v-model="visible" title="导入客户" @ok="handleOk" :footer="null">
-      <a-steps :current="1" size="small">
+    <a-modal v-model="visibles" title="导入客户" @cancel="handleCancel" :footer="null">
+      <a-steps :current="current" size="small">
         <a-step title="上传文档" />
         <a-step title="匹配字段" />
         <a-step title="完成" />
@@ -20,11 +20,10 @@
           <p>上传需要导入的文件</p>
           <a-upload
             name="file"
-            action="http://up.test.com/fileupload/upload"
+            action="/imp/hfwImportFile/importJson"
             :multiple="true"
             :beforeUpload="beforeUpload"
             @change="handleChange"
-            :fileList="fileList"
             accept=".xls, .xlsx"
           >
             <a-button>
@@ -36,8 +35,33 @@
         <a-button type="primary" @click="step='second'">下一步</a-button>
       </div>
       <div class="secondStep" v-if="step=='second'">
-        <!-- <a-table :columns="columns" :data-source="matchData"></a-table> -->
-        <DataTable :tableConfig="tableConfig" ></DataTable>
+        <div class="importFlex">
+          <span>导入字段</span>
+          <span>匹配字段</span>
+          <span>首条数据</span>
+        </div>
+        <div>
+          <!-- listMatchCode -->
+          <div class="tableFlex" v-for="(item,index) in fileInfos.listTitle" :key="index">
+            <div>{{item}}</div>
+            <div>
+              <a-select
+                style="width: 120px"
+                @change="selectChange(index,$event)"
+                v-model="fileInfos.listMatchCode[index]"
+              >
+                <a-select-option
+                  :value="it.fieldCode"
+                  v-for="(it,ind) in fileInfos.importFields"
+                >{{it.fieldName}}</a-select-option>
+              </a-select>
+            </div>
+            <div>{{fileInfos.listData[index]}}</div>
+          </div>
+          <p>
+            <a-checkbox @change="checkBoxChange">是否忽略第一行</a-checkbox>
+          </p>
+        </div>
         <a-button-group>
           <a-button type="primary" @click="step='first'">上一步</a-button>
           <a-button type="primary" @click="nexStep">下一步</a-button>
@@ -49,46 +73,48 @@
           <a-icon type="check-circle" theme="filled" />
           <p>提交完成</p>
         </div>
-        <a-button type="primary" @click="handleOk">完成</a-button>
+        <a-button type="primary" @click="handleCancel">完成</a-button>
       </div>
     </a-modal>
   </div>
 </template>
 <script>
+import api from "@/api/customerCenter";
 export default {
   data() {
     return {
-      fileId:'',
-      fileList:[],
+      current: 1,
+      fileList: [],
+      selects: "",
       step: "first",
-      tableConfig:{
-        rowKey: "id",
-        columns: [
-          {
-            title: "导入字段",
-            dataIndex: "fieldName",
-            key: "fieldName"
-          },
-          {
-            title: "匹配字段",
-            dataIndex: "add",
-            key: "add"
-          },
-          {
-            title: "首条数据",
-            dataIndex: "add",
-            key: "add"
-          }
-        ],
-        list: [],
-        align: "center",
-      },
+      dataType: "",
+
+      matchData: [],
+      visibles: this.visible,
+      selectArr: [],
+      requiredArr: [],
+      firstCheck: 0,
+      fileId: "",
+      fileInfos: {}
     };
   },
   props: {
     visible: Boolean
   },
+  watch: {
+    visible(val) {
+      this.visibles = val;
+    }
+  },
+  created() {},
   methods: {
+    checkBoxChange(e) {
+      if (e.target.checked) {
+        this.firstCheck = 1;
+      } else {
+        this.firstCheck = 0;
+      }
+    },
     beforeUpload(file) {
       const isLt3M = file.size / 1024 / 1024 < 3;
       if (!isLt3M) {
@@ -96,37 +122,79 @@ export default {
       }
       return isLt3M;
     },
-    handleChange(info){
-      let fileList = info.fileList;
-      console.log(info)
-      this.fileList = fileList;
-      this.fileId = fileList[0].response.fileId
-      this.fileObj = info.file
-      console.log(this.fileId)
+    handleChange(info) {
+      // let fileList = [...info.fileList];
+      // 控制大于2M的附件。不显示
+      // if(info.file.size > 2*1024*1024) {
+      //   return;
+      // }
+      console.log("handleChange=====", info);
+      // this.fileList = fileList;
+      if (info.file.status === "done") {
+        this.fileId = info.file.response.field;
+        let fileInfo = info.file.response.fileInfos;
+
+        fileInfo.importFields.unshift({
+          fieldId: "",
+          fieldCode: "",
+          fieldName: "不导入该字段"
+        });
+        this.fileInfos = fileInfo;
+        this.step = "second";
+      }
+    },
+    selectChange(something, $event) {
+      let fieldCodes = this.fileInfos.listMatchCode;
+      this.fileInfos.listMatchCode[something] = $event;
     },
     nexStep() {
-      this.step = "third";
-      // api.importJson({file:this.fileObj}).then(res=>{
-
-      // })
-      let fileInfos =   {
-          rows:'',
-          importFields : [ {
-            state:'0',
-            isRequired:'0',
-            isDefined:'0',
-            dataType:1,
-            fieldCode : "linkName",
-            fieldName : "联系人",
-          }]
+      this.current++;
+      console.log(this.fileInfos.listMatchCode, "selectArr");
+      let arr = [...this.fileInfos.listMatchCode];
+      arr = arr.sort();
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i] && arr[i] == arr[i + 1]) {
+          this.$message.error("重复字段");
+          return;
         }
-      this.tableConfig.list = fileInfos.importFields
+      }
+
+      let params = {
+        fileId: this.fileId,
+        fieldsStr: this.fileInfos.listMatchCode.join(),
+        firstCheck: this.firstCheck
+      };
+      console.log(params);
+      api.matchJson(params).then(res => {
+        if (res.data.status) {
+          this.step = "third";
+        }
+      });
     },
     handleOk() {
-      api.matchJson().then(res=>{
-
-        })
+      api.matchJson().then(res => {});
+    },
+    handleCancel() {
+      this.visibles = false;
+      this.step = "first";
+      this.$emit("closeUpdate");
     }
   }
 };
 </script>
+<style lang="less" scoped>
+.importFlex {
+  display: flex;
+  justify-content: space-between;
+  span {
+    display: block;
+  }
+}
+.tableFlex {
+  display: flex;
+  justify-content: space-between;
+  div {
+    flex: 1;
+  }
+}
+</style>

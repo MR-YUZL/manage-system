@@ -5,12 +5,6 @@
             <div><span>{{item.tel}}</span><span :class="item.status == 1 ? 'pending':'expired'">{{item.status == 1 ? '待处理' : '已过期'}}</span></div>
             <div>{{item.time}}</div>
             <div>{{item.text}}</div>
-            <div class="btn">
-                 <a-button type="primary" ghost>
-                确 定
-                </a-button>
-                <a-button>取 消</a-button>
-            </div>
         </div>
     </div>
 </template>
@@ -28,7 +22,8 @@ data() {
                 tel:121111111,
                 status:1,
                 time:'2020-05-15 09:22',
-                text:'我是外呼任务就发士大夫艰苦了的疯狂拉升的开发发生发生'
+                text:'我是外呼任务就发士大夫艰苦了的疯狂拉升的开发发生发生',
+                id:1
             },
             {
                 tel:121111111,
@@ -70,21 +65,29 @@ methods: {
     //获取通话列表
         getRecentCallsList(){
              this.Request.get('hfw/workbench/getCallRecords').then(res => {
-                console.log('获取常用语',res.data)
+                console.log(res.data)
                 //   if(res.data.status){
-
+                        // this.outCallTaskList = res.data.list
+                        this.$store.commit('getOutCallTask',{id:1,status:1})
                 //   }
             }) 
         },
         selectCallInf(index){
             this.select = index
-        }
+            let obj = {
+                id:this.outCallTaskList[index].id,
+                status:this.outCallTaskList[index].status
+            }
+            this.$store.commit('getOutCallTask',obj)
+        },
+      
 },
 created() {
 
 },
 mounted() {
-
+    console.log('外呼任务')
+    this.getRecentCallsList()
 },
 }
 </script>

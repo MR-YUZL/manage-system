@@ -54,7 +54,7 @@ export default {
         {
           type: 'select',
           title: '通话类型:',
-          key: 'status',
+          key: 'callType',
           defaultValue: "",
           options:[{ value: "0", name: "null" },{ value: "1", name: "来电已接" },{value:2,name:"来电未接"},{value:3,name:'去电已接'},{value:4,name:'去电未接'}] //来电已接,来电未接、去电已接、去电未接
         },
@@ -151,7 +151,9 @@ export default {
   },
   methods: {
     getList(){
-      this.Request.get('/hfw/callrecords/queryCallRecords',{ ...this.pager,...this.searchField}).then(res => {
+      console.log({ ...this.pager,...this.searchField})
+      this.Request.post('/hfw/callrecords/queryCallRecords',{ ...this.pager,...this.searchField}).then(res => {
+        console.log(res)
         let data = res.data
         let page = data.pager
         this.dataSource =  data.list

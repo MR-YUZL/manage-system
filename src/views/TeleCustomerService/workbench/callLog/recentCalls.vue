@@ -93,18 +93,26 @@ export default {
         //获取通话列表
         getRecentCallsList(){
              this.Request.get('hfw/workbench/getCallRecords').then(res => {
-                console.log('获取常用语',res.data)
+                console.log(res.data)
                 //   if(res.data.status){
-
+                    // this.recentCallsList = res.data.list
+                    // this.callType
+                    this.$store.commit('getCallStatus',{id:1,status:1})
                 //   }
             }) 
         },
         selectCallInf(index){
             this.select = index
+            let obj = {
+                id:this.recentCallsList[index].id,
+                status:this.recentCallsList[index].status
+            }
+            this.$store.commit('getCallStatus',obj)
         }
     },
    
     mounted() {
+        console.log('近期通话')
         this.getRecentCallsList()
     },
 }
