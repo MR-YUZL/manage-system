@@ -9,6 +9,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'textarea'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <a-input type="textarea" v-model="formData[item.ruleName]" :placeholder="item.placeholder" />
@@ -16,6 +17,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'input'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <a-input v-model="formData[item.ruleName]" :placeholder="item.placeholder" />
@@ -23,6 +25,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'select'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <a-select v-model="formData[item.ruleName]" :placeholder="item.placeholder">
@@ -36,6 +39,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'radio'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <a-radio-group v-model="formData[item.ruleName]" v-for="(val,index) in item.options" :key="index">
@@ -45,6 +49,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'checkbox'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <a-checkbox-group
@@ -59,6 +64,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'upload'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <Upload :list="formData[item.ruleName]" />
@@ -66,6 +72,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'date'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <a-date-picker
@@ -79,6 +86,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'treeSelect'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <a-tree-select
@@ -93,6 +101,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'cascader'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <a-cascader v-model="formData[item.ruleName]" :options="item.options" :placeholder="item.placeholder" />
@@ -100,6 +109,7 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'tag'"
+        :prop="item.ruleName"
         :rules="item.rules"
       >
         <template v-for="tag in item.options">
