@@ -229,8 +229,8 @@ export default {
         }],
       },
       formAxiosReturnValues: {
-        // id: "id_123",
-        // test: "hello"
+        id: "id_123",
+        test: "hello"
       },
       searchFormList: [{
         name: "input",
@@ -313,7 +313,7 @@ export default {
   },
   mounted() {
     setTimeout(()=>{
-      this.formAxiosReturnValues["test"] = "hi";
+      this.formAxiosReturnValues.test = 333
       this.formAxiosReturnValues["updateTime"] = new Date().getTime();
       this.defaultSearchFormValues["input"] = "xxxxx"
       console.log(this.formAxiosReturnValues)
