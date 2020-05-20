@@ -65,7 +65,8 @@ export default {
             gradeName:'',
             gradeExplain:'',
             gradeLimit:'',
-            gradeType:0
+            gradeType:0,
+            type:0
           },
           editScoreId:'',
           scroeType:'',
@@ -146,6 +147,7 @@ export default {
       },
       clickTabs(key){
         this.activeKey = key
+        this.getList()
       },
       paginationChange(){
 
@@ -198,6 +200,7 @@ export default {
             gradeExplain,
             gradeLimit,
             gradeType,
+            type:this.activeKey
           }
         this.editScoreId = id 
          
