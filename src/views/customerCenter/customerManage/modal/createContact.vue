@@ -1,16 +1,17 @@
 <template>
   <div>
-    <a-modal v-model="visibles" title="创建联系人" @ok="handleSubmit" @cancel="handleCancel">
-      <a-form
-        :form="form"
-        :label-col="{ span: 5 }"
-        :wrapper-col="{ span: 12 }"
-        @submit="handleSubmit"
-      >
-        <a-form-item v-for="(item,index) in formList" :key="index" :label="item.fieldName">
+    <!-- <a-modal v-model="visibles" title="创建联系人" @ok="handleSubmit" @cancel="handleCancel"> -->
+    <a-form-model ref="dynamicValidateForm" :model="dynamicValidateForm">
+        <a-form-model-item
+          v-for="(item,index) in dynamicValidateForm.formList"
+          :key="item.fieldId"
+          :label="item.fieldName"
+          :prop="'formList.' + index + '.fieldValue'"
+          :rules="[{ required: item.isRequired?true:false, message: '不能为空' }]"
+        >
           <a-input
             v-if="item.dataType==1"
-            v-decorator="[item.fieldCode, { rules: [{ required: item.isRequired?true:false, message: '不能为空' }] }]"
+            v-model="item.fieldValue"
             style="width: 200px"
             placeholder="请输入"
           />
@@ -19,13 +20,14 @@
             v-if="item.dataType==2"
             style="width: 170px"
             @change="onChange($event,item)"
-            v-decorator="[item.fieldCode, { rules: [{ required: item.isRequired?true:false, message: '请选择' }] }]"
+            v-model="item.fieldValue"
+            placeholder="请选择"
           >
             <a-select-option
-              v-for="(item,index) in item.child"
+              v-for="(item,index) in item.options"
               :key="index"
-              :value="item.value"
-            >{{item.name}}</a-select-option>
+              :value="item.optionId"
+            >{{item.optionName}}</a-select-option>
           </a-select>
 
           <a-cascader
@@ -34,19 +36,25 @@
             placeholder="请选择省市"
             @change="cityChange"
           />
-          
+
           <a-range-picker
             v-if="item.dataType==4"
             format="YYYY-MM-DD"
             style="width:240px"
-            v-decorator="[
-              item.fieldCode,{ rules: [{ required: item.isRequired?true:false, message: '请选择日期' }] }
-            ]"
+            v-model="item.fieldValue"
             allowClear
           />
-        </a-form-item>
-      </a-form>
-    </a-modal>
+        </a-form-model-item>
+        <a-form-model-item>
+          <a-button
+            type="primary"
+            html-type="submit"
+            @click="submitForm('dynamicValidateForm')"
+          >保存</a-button>
+          <a-button style="margin-left: 10px" >取消</a-button>
+        </a-form-model-item>
+      </a-form-model>
+    <!-- </a-modal> -->
   </div>
 </template>
 <script>
@@ -54,10 +62,12 @@ import api from "@/api/customerCenter";
 export default {
   data() {
     return {
-      visibles: this.visible,
+      // visibles: this.visible,
       valueObj: {},
       form: this.$form.createForm(this, { name: "createCustomer" }),
-      formList: [],
+      dynamicValidateForm: {
+        formList: []
+      },
       options: [
         {
           value: "浙江",
@@ -78,14 +88,14 @@ export default {
       ]
     };
   },
-  props: {
-    visible: Boolean
-  },
-  watch: {
-    visible(val) {
-      this.visibles = val;
-    }
-  },
+  // props: {
+  //   visible: Boolean
+  // },
+  // watch: {
+  //   visible(val) {
+  //     this.visibles = val;
+  //   }
+  // },
 
   mounted() {
     this.getForm();
@@ -100,14 +110,36 @@ export default {
       });
     },
     cityChange(value) {},
-    handleSubmit(e) {
-      e.preventDefault();
-      this.form.validateFields((err, values) => {
-        if (!err) {
-          console.log("Received values of form: ", values);
-          api.createLinkMan().then(res => {});
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          console.log(this.dynamicValidateForm.formList)
+          let fields = [];
+          this.dynamicValidateForm.formList.map(v=>{
+            fields.push({
+              fieldCode:v.fieldCode,
+              isDefined:v.isDefined,
+              fieldValue:v.fieldValue
+            })
+          })
+          let params = {
+            custId:'',
+            fields:fields
+          }
+          api.createLinkMan(params).then(res => {
+            console.log('新建联系人保存',res)
+            if(res.data.status){
+              this.$Message.success('保存成功')
+            }
+          });
+        } else {
+          console.log("error submit!!");
+          return false;
         }
       });
+    },
+    resetForm(formName) {
+      this.$refs[formName].resetFields();
     },
     handleSelectChange() {},
     onChange() {},

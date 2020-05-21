@@ -48,11 +48,11 @@
     <DelCustomerModal :visible="modals.delCustomerVisible" :custIds="custIds" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <ExportCustomerModal :visible="modals.exportCustomerVisible" :tableList="tableList" :dataSource="params.dataSource" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <ImportCustomerModal :visible="modals.importCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <ImportResultModal :visible="modals.importResultVisible" :pageSize="pager.currentPage" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <CreateCustomerModal :visible="modals.createCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <ImportResultModal :visible="modals.importResultVisible" v-if="modals.importResultVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <CreateCustomerModal :visible="modals.createCustomerVisible" v-if="modals.createCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <setLabelModal :visible="modals.setLabelVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <followCustomerModal :visible="modals.followCustomerVisible" v-if="followId" :followId="followId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <DetailModal :visible="modals.detailVisible" v-if="detailId" :detailId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <DetailModal :visibleProps="detailObj" v-if="detailId" :detailId="detailId" @editCustomerShow="editCustomerShow" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
   </div>
 </template>
 <script>
@@ -272,7 +272,12 @@ export default {
         dataSource: "1",
         queryType: 1
       },
-      selectedRowKeys:[]
+      selectedRowKeys:[],
+      detailObj:{
+        title: "客户详情",
+        visible: false,
+        width:'720px'
+      }
     };
   },
   mounted() {
@@ -313,7 +318,10 @@ export default {
     onPageChange(){},
     customerDetail(custId) {
       this.detailId = custId;
-      this.modals.detailVisible = true
+      this.detailObj.visible = true
+    },
+    editCustomerShow(){
+      this.modals.createCustomerVisible = true
     },
     followCustomer(custId) {
       console.log(custId)

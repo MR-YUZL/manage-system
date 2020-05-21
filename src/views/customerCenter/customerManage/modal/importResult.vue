@@ -20,7 +20,7 @@
             <i>{{item.successNum}}</i>条，导入失败
             <i>{{item.failNum}}</i>条
           </span>
-          <a-button type="dashed" icon="download" @click="downFaild">下载导入失败的数据</a-button>
+          <a-button v-if="item.failNum" type="dashed" icon="download" @click="downFaild(item.fileId)">下载导入失败的数据</a-button>
         </li>
       </ul>
     </a-modal>
@@ -61,7 +61,11 @@ export default {
       this.visibles = false;
       this.$emit("closeUpdate");
     },
-    downFaild(){},
+    downFaild(fileId){
+      api.errorResult({fileId:this.fileId}).then(res=>{
+        console.log(res,'下载导入失败的数据')
+      })
+    },
   }
 };
 </script>
