@@ -66,7 +66,7 @@
             </div>
           </a-radio-group>
         </a-form-model-item>
-        <div class="addChoice" v-show="addOptionsShow">
+        <div class="addChoice" v-if="addOptionsShow">
           <div v-for="(it,idx) in addFormData.options" :key="idx">
             <a-form-model-item
               :wrapperCol="{ span: 20 }"
@@ -217,13 +217,6 @@ export default {
           show: true
         }
       ],
-      // pager: {
-      //   pageSizeOptions: ["10", "20", "30", "40", "50"],
-      //   currentPage: 1,
-      //   pageSize: 10,
-      //   totalRecord: 0,
-      //   totalPage: 0
-      // },
       addType: ""
     };
   },
@@ -248,6 +241,7 @@ export default {
       this.getList();
     },
     editField(row) {
+      console.log(row)
       this.addFieldShow = true;
       this.addType = "edit";
       let { fieldName, isRequired, dataType, enable, isDefined, options, fieldId} = row;
@@ -289,7 +283,8 @@ export default {
         isRequired: 0,
         dataType: 1,
         enable: 0,
-        isDefined: 1
+        isDefined: 1,
+        options:[]
       };
     },
     handleCancelAddField() {
@@ -297,14 +292,18 @@ export default {
       this.$refs.addForm.resetFields();
     },
     handleOkAddfield() {
+      let options = this.addFormData.options
       let params = {
         state: this.activeKey,
         ...this.addFormData
       };
+      options.map(item=>{
+        item.isDefault=item.isDefault?1:0
+      })
+      console.log(this.addFormData,'this.addFormData')
       if (this.addType == "add") {
         params.isDefined = 1; // 所有新增 这个字段都为0
       }
-
       this.$refs.addForm.validate(valid => {
         if (valid) {
           console.log("表单数据", params);
