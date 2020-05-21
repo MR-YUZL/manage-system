@@ -154,7 +154,7 @@ export default {
       arr = arr.sort();
       for (var i = 0; i < arr.length; i++) {
         if (arr[i] && arr[i] == arr[i + 1]) {
-          this.$message.error("重复字段");
+          this.$message.error(arr[i]+"重复选择");
           return;
         }
       }

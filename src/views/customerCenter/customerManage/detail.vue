@@ -1,12 +1,15 @@
 <template>
   <div>
-    <a-modal width="720px" v-model="visibles" title="客户详情" @cancel="handleCancel">
-      <div class="btn-area">
-        <a-button type="primary" @click="editCustomer">编辑</a-button>
-        <a-button type="primary" @click="createLinkman">新建联系人</a-button>
-        <a-button type="primary" @click="followCustomer">客户跟进</a-button>
-      </div>
-      <ul class="flex">
+    <Modal :currentModal="currentModal" @toggleModal="toggleModal">
+      <template v-slot:content>
+        <!-- <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" /> -->
+        <!-- <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" /> -->
+        <div class="btn-area">
+          <a-button type="primary">编辑</a-button>
+          <a-button type="primary" @click="createContactModalShow($event,'modalInner')">新建联系人</a-button>
+          <a-button type="primary">客户跟进</a-button>
+        </div>
+        <ul class="flex">
         <li>
           <span>客服负责人</span>
           <span>吴阿鹏</span>
@@ -48,26 +51,57 @@
             </li>
           </ul>
           <!-- 服务小结 -->
-          <ServiceSummary :questionList="questionList" />
+          <ServiceRecord :recordObj="serviceObj" />
+          <!-- 跟进记录 -->
+          <ServiceRecord :recordObj="followObj" />
+          <!-- 工单信息 -->
+          <OrderInf :userInfList="userInfList"/>
         </a-tab-pane>
-        <a-tab-pane key="2" tab="资料"></a-tab-pane>
+        <a-tab-pane key="2" tab="资料">
+
+        </a-tab-pane>
         <a-tab-pane key="3" tab="日志"></a-tab-pane>
       </a-tabs>
-    </a-modal>
+        <Modal :currentModal="modalInner">
+          <template v-slot:content>111</template>
+        </Modal>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
-import ServiceSummary from "@/components/userInf/ServiceSummary";
+import Modal from "@/components/Modal";
+import api from "@/api/customerCenter";
+import OrderInf from "@/components/userInf/OrderInf";
+import ServiceRecord from "@/components/userInf/ServiceRecord";
 export default {
   data() {
     return {
-      visibles: this.visible,
-      questionList: [] //客服小结
+      serviceObj: {
+        currentTit: "服务小结",
+        questionList: []
+      }, //客服小结
+      followObj: {
+        currentTit: "跟进记录",
+        questionList: []
+      },
+      userInfList: [],
+      obj: {
+        custId: this.detailId
+      },
+      currentModal: {
+        title: "客户详情",
+        visible: this.visible,
+        width:'720px'
+      },
+      modalInner: { title: "modalInner", visible: false }
     };
   },
   components: {
-    ServiceSummary
+    ServiceRecord,
+    OrderInf,
+    Modal
   },
   props: {
     visible: Boolean,
@@ -75,27 +109,50 @@ export default {
   },
   watch: {
     visible(val) {
-      this.visibles = val;
+      this.currentModal.visible = val;
     }
   },
   mounted() {
     this.getServiceList();
+    this.getDetail(this.obj);
+    this.getContactJson(this.obj);
   },
   methods: {
-    editCustomer(){},
+    getContactJson(params) {
+      api.contactInfo(params).then(res => {
+        console.log("联系人列表", res);
+      });
+    },
+    editCustomer() {},
     createLinkman() {},
-    followCustomer(){},
+    toggleModal(value) {
+      // this.currentModal.visible = value;
+      // this.$emit("closeUpdate");  
+    },
+    createContactModalShow(e,name) {
+      if(name) {
+        this[name]["visible"] = true;
+      }else {
+        this["currentModal"]["visible"] = true;
+      }
+    },
+    followCustomer() {},
     tabChange() {},
+    getDetail(params) {
+      api.customerDetail(params).then(res => {
+        console.log("客户详情", res);
+      });
+    },
     //获取服务小结
     getServiceList() {
       this.Request.post(
         "/hfw/workbench/getServiceSummary?guestId=" + this.detailId
       ).then(res => {
         console.log("服务小结", res.data.list);
-        this.questionList = res.data.list;
+        this.serviceObj.questionList = res.data.list;
       });
     },
-    
+
     handleSubmit() {},
     handleCancel(e) {
       this.visibles = false;
@@ -106,8 +163,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.btn-area{
-  button{
+.btn-area {
+  button {
     margin-left: 10px;
   }
 }
