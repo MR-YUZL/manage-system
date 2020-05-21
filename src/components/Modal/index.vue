@@ -1,6 +1,7 @@
 <template>
   <div class="model">
      <a-modal
+     :width="modalProps.width"
       :title="modalProps.title"
       :visible="modalProps.visible"
       :footer="null"

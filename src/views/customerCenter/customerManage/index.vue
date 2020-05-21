@@ -26,18 +26,18 @@
       <div>
         <a-table
           :columns="columns"
-          :dataSource="dataSource"
+          :dataSource="tableList"
           :pagination="false"
           :rowKey="record => record.id"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           @change="onPageChange"
         >
           <div slot="detailSkip" slot-scope="record,row">
-            <span class="blue" @click="customerDetail(row.id)">{{row.custName}}</span>
+            <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
           </div>
           <div slot="action" slot-scope="record,row">
-            <span class="blue" style="margin-right:10px;" @click="followCustomer(row.id)">跟进客户</span>
-            <span class="blue" @click="createOrder(row.id)">创建工单</span>
+            <span class="blue" style="margin-right:10px;" @click="followCustomer(row.custId)">跟进客户</span>
+            <span class="blue" @click="createOrder(row.custId)">创建工单</span>
           </div>
         </a-table>
       </div>
@@ -46,13 +46,13 @@
     <!-- 弹窗 -->
     <SetManagerModal :visible="modals.setManagerVisible" :custIds="custIds" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <DelCustomerModal :visible="modals.delCustomerVisible" :custIds="custIds" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <ExportCustomerModal :visible="modals.exportCustomerVisible" :custIds="custIds" :dataSource="params.dataSource" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <ExportCustomerModal :visible="modals.exportCustomerVisible" :tableList="tableList" :dataSource="params.dataSource" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <ImportCustomerModal :visible="modals.importCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <ImportResultModal :visible="modals.importResultVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <ImportResultModal :visible="modals.importResultVisible" :pageSize="pager.currentPage" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <CreateCustomerModal :visible="modals.createCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <setLabelModal :visible="modals.setLabelVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <followCustomerModal :visible="modals.followCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <DetailModal :visible="modals.detailVisible" :detailId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <followCustomerModal :visible="modals.followCustomerVisible" v-if="followId" :followId="followId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <DetailModal :visible="modals.detailVisible" v-if="detailId" :detailId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
   </div>
 </template>
 <script>
@@ -87,6 +87,7 @@ export default {
   data() {
     return {
       detailId:'',
+      followId:'',
       exportJson: [],
       custIds: [],
       columns: [
@@ -165,7 +166,7 @@ export default {
           scopedSlots: { customRender: 'action' },
         }
       ], // 表头
-      dataSource: [], // 表格数据
+      tableList: [], // 表格数据
       modals: {
         setManagerVisible: false,
         delCustomerVisible: false,
@@ -282,7 +283,8 @@ export default {
       api.custManageList(params).then(res => {
         console.log(res, "res-----");
         if (res.data.status) {
-          this.dataSource = res.data.list;
+          this.tableList = res.data.list;
+          this.pager = res.data.pager
         }
       });
     },
@@ -309,11 +311,13 @@ export default {
       })
     },
     onPageChange(){},
-    customerDetail(id) {
-      this.detailId = id;
+    customerDetail(custId) {
+      this.detailId = custId;
       this.modals.detailVisible = true
     },
-    followCustomer() {
+    followCustomer(custId) {
+      console.log(custId)
+      this.followId = custId;
       this.modals.followCustomerVisible = true
     },
     createOrder() {},

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-modal v-model="visibles" title="创建客户" @ok="handleSubmit" @cancel="handleCancel">
+    <a-modal v-model="visibles" title="创建联系人" @ok="handleSubmit" @cancel="handleCancel">
       <a-form
         :form="form"
         :label-col="{ span: 5 }"
@@ -92,8 +92,8 @@ export default {
   },
   methods: {
     getForm() {
-      api.setFieldsJson({ state: 0 }).then(res => {
-        console.log(res, "列表字段");
+      api.setFieldsJson({ state: 1 }).then(res => {
+        console.log(res, "创建联系人");
         if (res.data.status) {
           this.formList = res.data.list;
         }
@@ -105,7 +105,7 @@ export default {
       this.form.validateFields((err, values) => {
         if (!err) {
           console.log("Received values of form: ", values);
-          api.createCustomer().then(res => {});
+          api.createLinkMan().then(res => {});
         }
       });
     },

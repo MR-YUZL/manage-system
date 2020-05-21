@@ -36,6 +36,26 @@ export default {
   importResult(params) {
     return axios.get('/imp/hfwImportResult/resultJson', {params})
   },
+  //客户管理-客户跟进保存 
+  saveCustomerFollow(params){
+    return axios.post('/customers/hfwCustomersFollow/saveJson', params)
+  },
+  //客户管理-客户跟进-最近跟进记录 
+  lastInfo(params) {
+    return axios.get('/customers/hfwCustomersFollow/lastInfo', {params})
+  },
+  //客户管理-客户详情 
+  customerDetail(params) {
+    return axios.get('/customers/hfwCustomersInfo/editInfoJson', {params})
+  },
+  //客户管理-客户详情-新建联系人  
+  createLinkMan(params){
+    return axios.post('customers/hfwCustomersContacts/saveJson', params)
+  },
+  //客户管理-客户详情-联系人列表 
+  contactInfo(params) {
+    return axios.get('/customers/hfwCustomersInfo/InfoContactsJson', {params})
+  },
   //线索管理list 
   clueManageList(params){
     return axios.post('/customers/hfwCustomersClue/listPageJson', params)
