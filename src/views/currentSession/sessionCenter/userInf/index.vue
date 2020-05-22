@@ -20,21 +20,23 @@
     <div v-if="isShow" class="information">
         <visitor-info ref="visitorInfo" :vistorInfoObj="visitorInfoData" :relateRedio="relateRedio" @handleSaveClueOk="handleSaveClueOk" @handleRelatedCusOk="handleRelatedCusOk" @onRelatedCusSearch="relateSearchKey"/>
         <Tags :tags="tagsList" :selectTagList="selectTagList"  @submitTags="submitTags" />
-        <!-- <access-info />
-        <order-inf />
-        <service-summary /> -->
+      
     </div>
-    <Model :modelObj="modelObj"  @formData="formData"  v-if="modelObj.visible"/>
+    <Modal  :currentModal="currentModal" @toggleModal="toggleModal" v-if="currentModal.visible">
+        <template slot="content">
+            <base-form :formObject="currentModal" @toggleModal="toggleModal" @formSubmit="formSubmit" v-if="currentModal.visible" />
+        </template>
+        
+    </Modal>
   </div>
 </template>
 
 <script>
 import VisitorInfo from './../../../../components/userInf/VisitorInfo'
 import Tags from './../../../../components/userInf/Tags'
-import Model from './../../../../components/Modal'
-// import AccessInfo from './../../../../components/userInf/AccessInfo'
-// import orderInf from './../../../../components/userInf/OrderInf'
-// import ServiceSummary from './../../../../components/userInf/ServiceSummary'
+import Modal from './../../../../components/Modal'
+import baseForm from './../../../../components/BaseForm/BaseFrom'
+
 export default {
   data: () => ({
     isShow:false,
@@ -43,7 +45,7 @@ export default {
     relateRedio:[], // 关联客户rediolist
     selectTagList:[],
     tagsList:[],
-    modelObj:{},
+    currentModal:{},
     endServerObj:{
       title:'结束服务',
       visible:false,
@@ -89,10 +91,41 @@ export default {
         },
       ],
     },
+    callTaskObj:{
+      title:'添加至外呼任务',
+      visible:false,
+      ref:'callTask',
+      type :'modalForm',
+      width:'500px',
+      modelList:[
+        {
+          type:'date',
+          label:'预约时间：',
+          placeholder:'请选择',
+          model:undefined,
+          ruleName:'appointmentsTime', //receiverGroupId 工单受理组id
+          options:[],
+          rules:{
+            required: true,
+            message: '请指定客服人员',
+            trigger: 'change',
+          }
+        },
+        {
+          type:'textarea',
+          label:'备注',
+          placeholder:'',
+          model:undefined,
+          ruleName:'remark', //receiverGroupId 工单受理组id
+        }
+      ],
+    },
     transferObj:{
       title:'转接',
       visible:false,
       ref:'transfer',
+      type :'modalForm',
+      width:'500px',
       modelList:[
         {
           type:'cascader',
@@ -207,7 +240,8 @@ export default {
   components: {
     VisitorInfo,
     Tags,
-    Model
+    Modal,
+    baseForm
     // AccessInfo,
     // orderInf,
     // ServiceSummary
@@ -278,11 +312,10 @@ export default {
       },
       //新增工单
       newAddOrder(){
-        console.log('---------------------')
          this.modelObj1.visible = true 
-         this.modelObj = this.modelObj1
+         this.currentModal = this.modelObj1
       },
-       formData(data){
+      formData(data){
         // this.$emit('',data)
         switch(data.visible){
           case 'model':
@@ -294,16 +327,57 @@ export default {
         }
           
         console.log(data)
-        this.modelObj = {}
+        this.currentModal = {}
         // this.modelObj1.visible = data.visible
         console.log(this.modelObj1)
         console.log('传过去提交的数据',data.data)
       },
+      toggleModal(data){
+       console.log(data)
+       this.currentModal = {}
+       switch(data.ref){
+          case 'callTask':
+            this['addServerObj']['visible'] = data.visible
+            break;
+          case 'addServer':
+             this['addServerObj']['visible'] = data.visible
+             break;
+        }
+   },
+   formSubmit(data){
+       console.log(data)
+       this.transferObj = {}
+       let url = ''
+       let obj = data.obj
+       switch(data.ref){
+          case 'callTask':
+            this['addServerObj']['visible'] = data.visible
+            url = '/hfw/workbench/saveTask'
+            obj.appointmentsTime = moment(obj.appointmentsTime).format("YYYY-MM-DD HH:SS:MM")
+            
+            break;
+          case 'addServer':
+             this['addServerObj']['visible'] = data.visible
+             obj.callId = ''
+             obj.firstConsuleId = ''
+             obj.secondConsuleId = ''
+             obj.threeConsuleId = ''
+             url = '/hfw/workbench/saveServiceSummary'
+             break;
+        }
+        obj.guestId = '7ca88132f26949b6bbc82f3b5a339735'
+        console.log(obj)
+        this.Request.post(url,obj).then(res => {
+            if(res.data.status){
+                 this.$message.success('操作成功！');
+            }
+        })
+   },
       //转接
       transfer(){
         this.getCustomer()
-        this.transferObj.visible = true 
-        this.modelObj = this.transferObj
+        this['transferObj']['visible'] = true 
+        this.currentModal = this.transferObj
       },
       //获取客服列表
       getCustomer(){
@@ -346,7 +420,7 @@ export default {
       endServer(){
         this.getSummarySort()
         this.endServerObj.visible = true 
-        this.modelObj = this.endServerObj
+        this.currentModal = this.endServerObj
       },
       getSummarySort(){
         this.Request.get('/hfw/workbench/getSummarySort').then(res => {
