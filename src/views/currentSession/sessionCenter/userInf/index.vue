@@ -126,6 +126,7 @@ export default {
       ref:'transfer',
       type :'modalForm',
       width:'500px',
+      
       modelList:[
         {
           type:'cascader',
@@ -134,6 +135,7 @@ export default {
           model:undefined,
           ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
           options:[],
+          fieldNames:{label: 'text', value: 'id', children: 'children'},
           rules:{
             required: true,
             message: '请指定客服人员',
@@ -384,8 +386,8 @@ export default {
         this.Request.get('/session/transfer/tree/info').then(res => {
           let re = res.data
           if(re.status){
-            let result = this.recursion(re.list)
-            this.transferObj.modelList[0].options = result
+            // let result = this.recursion(re.list)
+            this.transferObj.modelList[0].options = re.list
       
           }
         

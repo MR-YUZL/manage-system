@@ -108,7 +108,7 @@
         :options="item.options" 
         :placeholder="item.placeholder"  
         :field-names="item.fieldNames"
-        @change="onChange"/>
+       />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
@@ -155,8 +155,6 @@ export default {
     };
   },
   mounted() {
-      console.log(this.dataObj)
-      console.log(this.formObject)
       this.dataObj = Object.assign({},this.formObject) 
   },
   methods: {
@@ -199,8 +197,12 @@ export default {
       this.$emit("toggleModal", obj);
       this.resetVal()
     },
+    loadData(selectedOptions){
+        console.log(selectedOptions)
+        this.$emit("onChange", selectedOptions);
+    },
     onChange(val){
-        console.log(val)
+        // this.$emit("onChange", val);
     }
   }
 };

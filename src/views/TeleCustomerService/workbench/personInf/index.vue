@@ -107,9 +107,9 @@ export default {
           label:'咨询分类',
           placeholder:'请选择',
           model:undefined,
-          ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
+          ruleName:'consuleId', //receiverGroupId 工单受理组id
           options:[],
-          fieldNames:{label: 'name', value: 'id', children: 'children'},
+          fieldNames:{label: 'name', value: 'id', children: 'childrens'},
           rules:{
             required: true,
             message: '请选择咨询分类',
@@ -202,14 +202,9 @@ export default {
     //添加服务小结
     async addServer(){
         let result = await this.Request.get('/hfw/workbench/getSummarySort')
-        console.log(result.status)
         if(result.data.status){
             this["addServerObj"]["visible"] = true;
-            result.data.list.map(item => {
-                item.isLeaf = false
-            })
             this.addServerObj.modelList[0].options = result.data.list
-            console.log(this.addServerObj)
             this.transferObj = this.addServerObj
         }
     
@@ -241,14 +236,17 @@ export default {
             this['addServerObj']['visible'] = data.visible
             url = '/hfw/workbench/saveTask'
             obj.appointmentsTime = moment(obj.appointmentsTime).format("YYYY-MM-DD HH:SS:MM")
-            
             break;
           case 'addServer':
              this['addServerObj']['visible'] = data.visible
-             obj.callId = ''
-             obj.firstConsuleId = ''
-             obj.secondConsuleId = ''
-             obj.threeConsuleId = ''
+             console.log(this.outCallTask)
+            //  obj.callId = this.outCallTask ?       //需要判断是通话记录还是外呼任务
+             
+             let [firstConsuleId,secondConsuleId,threeConsuleId] = obj.consuleId
+             obj.firstConsuleId = firstConsuleId
+             obj.secondConsuleId = secondConsuleId
+             obj.threeConsuleId = threeConsuleId
+             delete obj.consuleId
              url = '/hfw/workbench/saveServiceSummary'
              break;
         }
@@ -260,16 +258,8 @@ export default {
             }
         })
    },
-    getSummarySort(id){
-        let obj = {id:id}
-        this.Request.get('/hfw/workbench/getSummarySort',obj)
-        .then(res => {
-            if(res.data.status == 200){
-                this.addServerObj.modelList[0].options = res.data.list
-            }
-            // console.log(res)
-        })
-    }
+  
+
   },
   watch: {},
   computed: {
