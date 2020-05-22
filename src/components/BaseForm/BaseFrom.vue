@@ -104,7 +104,11 @@
         :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
-        <a-cascader v-model="item.model" :options="item.options" :placeholder="item.placeholder" />
+        <a-cascader v-model="item.model" 
+        :options="item.options" 
+        :placeholder="item.placeholder"  
+        :field-names="item.fieldNames"
+        @change="onChange"/>
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
@@ -194,6 +198,9 @@ export default {
      }
       this.$emit("toggleModal", obj);
       this.resetVal()
+    },
+    onChange(val){
+        console.log(val)
     }
   }
 };

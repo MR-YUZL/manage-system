@@ -47,7 +47,6 @@
     <Modal  :currentModal="transferObj" @toggleModal="toggleModal" v-if="transferObj.visible">
         <template slot="content">
             <base-form :formObject="transferObj" @toggleModal="toggleModal" @formSubmit="formSubmit" v-if="transferObj.visible" />
-            <!-- <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="transferObj.modelList" /> -->
         </template>
         
     </Modal>
@@ -72,6 +71,7 @@ export default {
       visible:false,
       ref:'callTask',
       type :'modalForm',
+      width:'500px',
       modelList:[
         {
           type:'date',
@@ -100,6 +100,7 @@ export default {
       visible:false,
       ref:'addServer',
       type :'modalForm',
+      width:'500px',
       modelList:[
         {
           type:'cascader',
@@ -108,6 +109,7 @@ export default {
           model:undefined,
           ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
           options:[],
+          fieldNames:{label: 'name', value: 'id', children: 'children'},
           rules:{
             required: true,
             message: '请选择咨询分类',
@@ -119,8 +121,8 @@ export default {
           label:'解决问题',
           placeholder:'请选择',
           model:undefined,
-          ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
-          options:[{key:'1',value:'已解决'},{key:'2',value:'未解决'}],
+          ruleName:'solveStatus', 
+          options:[{key:'1',value:'已解决'},{key:'0',value:'未解决'}],
           rules:{
             required: true,
             message: '请选择咨询分类',
@@ -132,7 +134,7 @@ export default {
           label:'咨询备注',
           placeholder:'请选择',
           model:undefined,
-          ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
+          ruleName:'remark', 
         }
       ],
     },
@@ -181,10 +183,7 @@ export default {
     
   },
   methods: {
-    moment,
    addCallTask(){
-       console.log(this.callTaskObj)
-       console.log(this.transferObj)
        this["callTaskObj"]["visible"] = true;
        this.transferObj = this.callTaskObj
 
@@ -201,9 +200,20 @@ export default {
       
     },
     //添加服务小结
-    addServer(){
-        this["addServerObj"]["visible"] = true;
-       this.transferObj = this.addServerObj
+    async addServer(){
+        let result = await this.Request.get('/hfw/workbench/getSummarySort')
+        console.log(result.status)
+        if(result.data.status){
+            this["addServerObj"]["visible"] = true;
+            result.data.list.map(item => {
+                item.isLeaf = false
+            })
+            this.addServerObj.modelList[0].options = result.data.list
+            console.log(this.addServerObj)
+            this.transferObj = this.addServerObj
+        }
+    
+       
     },
     //呼叫，回拨
     callBack(){
@@ -231,12 +241,18 @@ export default {
             this['addServerObj']['visible'] = data.visible
             url = '/hfw/workbench/saveTask'
             obj.appointmentsTime = moment(obj.appointmentsTime).format("YYYY-MM-DD HH:SS:MM")
-            obj.guestId = '7ca88132f26949b6bbc82f3b5a339735'
+            
             break;
           case 'addServer':
              this['addServerObj']['visible'] = data.visible
+             obj.callId = ''
+             obj.firstConsuleId = ''
+             obj.secondConsuleId = ''
+             obj.threeConsuleId = ''
+             url = '/hfw/workbench/saveServiceSummary'
              break;
         }
+        obj.guestId = '7ca88132f26949b6bbc82f3b5a339735'
         console.log(obj)
         this.Request.post(url,obj).then(res => {
             if(res.data.status){
@@ -244,7 +260,16 @@ export default {
             }
         })
    },
-    
+    getSummarySort(id){
+        let obj = {id:id}
+        this.Request.get('/hfw/workbench/getSummarySort',obj)
+        .then(res => {
+            if(res.data.status == 200){
+                this.addServerObj.modelList[0].options = res.data.list
+            }
+            // console.log(res)
+        })
+    }
   },
   watch: {},
   computed: {
