@@ -248,7 +248,15 @@ export default {
         type: "select",
         name: "select",
         label: "selectName",
-        options: [{label:"五个字长度",value:"select1"},{label:"1",value:"select2"}]
+        options: [{id:"五个字长度",key:"select1"},{id:"1",key:"select2"}],
+        optionValue: "key",
+        optionLabel: "id"
+      },{
+        type: "select",
+        name: "select2",
+        mode: "multiple",
+        label: "selectName2",
+        placeholder: "woqu"
       },{
         type: "datepicker",
         name: "datepicker",
@@ -280,8 +288,8 @@ export default {
         input: "test",
         select: "select2",
         datepicker: "2020-05-19",
-        monthpicker: moment("2019-02").format("YYYY-MM"),
-        weekpicker: "2020-05-19"
+        // monthpicker: moment("2019-02").format("YYYY-MM"),
+        // weekpicker: "2020-05-19"
       }
     };
   },
@@ -326,6 +334,10 @@ export default {
     setTimeout(()=>{
       this.formAxiosReturnValues.test = 333
       this.formAxiosReturnValues["updateTime"] = new Date().getTime();
+      let filterItem = this.searchFormList.filter(it=>it.name=="select2")
+      if(filterItem) {
+        filterItem[0].options = [{label:"五个字长度",value:"select1"},{label:"1",value:"select2"}]
+      }
       this.defaultSearchFormValues["input"] = "xxxxx"
       console.log(this.formAxiosReturnValues)
     },5000)
