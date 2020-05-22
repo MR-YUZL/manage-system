@@ -48,7 +48,7 @@ export default {
   lastInfo(params) {
     return axios.get('/customers/hfwCustomersFollow/lastInfo', {params})
   },
-  //客户管理-客户详情 
+  //客户管理-客户详情/tab资料/编辑客户
   customerDetail(params) {
     return axios.get('/customers/hfwCustomersInfo/editInfoJson', {params})
   },
@@ -61,12 +61,16 @@ export default {
     return axios.get('/customers/hfwCustomersInfo/InfoContactsJson', {params})
   },
   //客户管理-客户详情-tab资料 
-  materialInfo(params) {
-    return axios.get('/customers/hfwCustomersInfo/editInfoJson', {params})
-  },
+  // materialInfo(params) {
+  //   return axios.get('/customers/hfwCustomersInfo/editInfoJson', {params})
+  // },
   //客户管理-客户详情-跟进记录  
   detailFollowRecord(params) {
     return axios.get('/customers/hfwCustomersFollow/listJson', {params})
+  },
+  //客户管理-客户详情-头部详情 
+  infoTitle(params) {
+    return axios.get('/customers/hfwCustomersInfo/InfoTitleJson', {params})
   },
   //线索管理list 
   clueManageList(params){

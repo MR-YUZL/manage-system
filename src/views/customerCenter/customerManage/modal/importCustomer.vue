@@ -53,6 +53,7 @@
                 <a-select-option
                   :value="it.fieldCode"
                   v-for="(it,ind) in fileInfos.importFields"
+                  :key="ind"
                 >{{it.fieldName}}</a-select-option>
               </a-select>
             </div>

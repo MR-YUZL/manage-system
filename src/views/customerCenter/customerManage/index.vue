@@ -46,13 +46,13 @@
     <!-- 弹窗 -->
     <SetManagerModal :visible="modals.setManagerVisible" :custIds="custIds" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <DelCustomerModal :visible="modals.delCustomerVisible" :custIds="custIds" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <ExportCustomerModal :visible="modals.exportCustomerVisible" :tableList="tableList" :dataSource="params.dataSource" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <ExportCustomerModal :visible="modals.exportCustomerVisible" v-if="modals.exportCustomerVisible" :totalRecord="pager.totalRecord" :dataSource="params.dataSource" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <ImportCustomerModal :visible="modals.importCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <ImportResultModal :visible="modals.importResultVisible" v-if="modals.importResultVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <CreateCustomerModal :visible="modals.createCustomerVisible" v-if="modals.createCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <CreateCustomerModal :visible="modals.createCustomerVisible" v-if="modals.createCustomerVisible" :detailId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <setLabelModal :visible="modals.setLabelVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <followCustomerModal :visible="modals.followCustomerVisible" v-if="followId" :followId="followId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <DetailModal :visibleProps="detailObj" v-if="detailId" :detailId="detailId" @editCustomerShow="editCustomerShow" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <followCustomerModal :visible="modals.followCustomerVisible" v-if="modals.followCustomerVisible" :followId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <DetailModal :visibleProps="detailObj" :detailId="detailId" v-if="detailObj.visible" @customerFollowShow="followCustomer" @editCustomerShow="editCustomerShow" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
   </div>
 </template>
 <script>
@@ -87,7 +87,6 @@ export default {
   data() {
     return {
       detailId:'',
-      followId:'',
       exportJson: [],
       custIds: [],
       columns: [
@@ -317,15 +316,20 @@ export default {
     },
     onPageChange(){},
     customerDetail(custId) {
+      console.log(custId,'客户详情')
       this.detailId = custId;
       this.detailObj.visible = true
     },
-    editCustomerShow(){
+    editCustomerShow(custId){
+      this.detailId = custId.custId;
       this.modals.createCustomerVisible = true
     },
+    // customerFollowShow(){
+    //   this.modals.followCustomerVisible = true
+    // },
     followCustomer(custId) {
       console.log(custId)
-      this.followId = custId;
+      this.detailId = custId.custId;
       this.modals.followCustomerVisible = true
     },
     createOrder() {},

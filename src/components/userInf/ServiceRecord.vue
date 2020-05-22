@@ -1,15 +1,14 @@
 <template>
     <div class="serviceSummary">
         <div class="header">
-          <span class="serviceIcon">{{recordObj.currentTit}}</span>
+          <span class="serviceIcon">跟进记录</span>
         </div>
         <div class="serviceSummary_item">
-            <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn" v-if="recordObj.questionList && recordObj.questionList.length"/>
+            <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn" v-if="questionList && questionList.length"/>
             <div v-if="questionListArry.length>0">
             <div v-for="(item,index) in questionListArry" :key="index" class="question" >
-              <div class="question_top"><span>{{item.inputTime}}</span><span>{{item.inputAcc}}</span></div>
-              <div>{{item.title}}</div>
-              <div>{{item.remark}}</div>
+              <div class="question_top"><span>{{item.followDate}}</span><span v-if="item.followValid">无效联系</span><span v-else>有效联系</span><span>{{item.followAcc}}</span></div>
+              <div>{{item.followRecord}}</div>
             </div>
             </div>
         </div>
@@ -18,12 +17,9 @@
 <script>
 export default {
     props:{
-      recordObj:{
-        currentTit:String,
-        questionList:{
+      questionList:{
           type:Array
         }
-      }
     },
     data(){
         return{
@@ -33,7 +29,7 @@ export default {
     },
     watch:{
       questionList(){
-        this.questionListArry = [this.recordObj.questionList[0]]
+        this.questionListArry = [this.questionList[0]]
       }
     },
     created(){},
@@ -43,9 +39,9 @@ export default {
       showFn(){
         this.active = !this.active
         if(this.active){
-          this.questionListArry = [...this.recordObj.questionList]
+          this.questionListArry = [...this.questionList]
         }else{
-          this.questionListArry = [this.recordObj.questionList[0]]
+          this.questionListArry = [this.questionList[0]]
         }
       }
     }
