@@ -51,7 +51,7 @@
             html-type="submit"
             @click="submitForm('dynamicValidateForm')"
           >保存</a-button>
-          <a-button style="margin-left: 10px" >取消</a-button>
+          <a-button style="margin-left: 10px" @click="handleCancel">取消</a-button>
         </a-form-model-item>
       </a-form-model>
     <!-- </a-modal> -->
@@ -105,7 +105,7 @@ export default {
       api.setFieldsJson({ state: 1 }).then(res => {
         console.log(res, "创建联系人");
         if (res.data.status) {
-          this.formList = res.data.list;
+          this.dynamicValidateForm.formList = res.data.list;
         }
       });
     },
@@ -143,9 +143,8 @@ export default {
     },
     handleSelectChange() {},
     onChange() {},
-    handleCancel(e) {
-      this.visibles = false;
-      this.$emit("closeUpdate");
+    handleCancel() {
+      this.$emit("closeCreateContact");
     }
   }
 };
