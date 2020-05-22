@@ -1,30 +1,9 @@
 <template>
   <div class="TagsEdit">
-    <div class="addTagsbtn"><a-button type="primary" @click="addGroup">添加分组</a-button></div>
+    <div class="addTagsbtn"><a-button type="primary" @click="addGroup">添加标签</a-button></div>
     <div class="flex tagsListArry">
-      <div class="tagsList">
-        <p>分组1</p><div class="tags-icon"><a-icon type="edit" @click="editGroupTags('keyword')"/><a-icon type="delete" /></div>
-      </div>
-      <div class="tagsList">
-        <p>分组1</p><div class="tags-icon"><a-icon type="edit" /><a-icon type="delete" /></div>
-      </div>
-      <div class="tagsList">
-        <p>分组1分组1分组1分组1</p><div class="tags-icon"><a-icon type="edit" /><a-icon type="delete" /></div>
-      </div>
-      <div class="tagsList">
-        <p>分组1</p><div class="tags-icon"><a-icon type="edit" /><a-icon type="delete" /></div>
-      </div>
-      <div class="tagsList">
-        <p>分组1</p><div class="tags-icon"><a-icon type="edit" /><a-icon type="delete" /></div>
-      </div>
-      <div class="tagsList">
-        <p>分组1</p><div class="tags-icon"><a-icon type="edit" /><a-icon type="delete" /></div>
-      </div>
-      <div class="tagsList">
-        <p>分组1</p><div class="tags-icon"><a-icon type="edit" /><a-icon type="delete" /></div>
-      </div>
-       <div class="tagsList">
-        <p>分组1</p><div class="tags-icon"><a-icon type="edit" /><a-icon type="delete" /></div>
+      <div class="tagsList" v-for="(item,index) in tagsList" :key="index" :title="item.name">
+        <p >{{item.name}}</p><div class="tags-icon"><a-icon type="edit" @click="editGroupTags(item.name,item.id)"/><a-icon type="delete" @click="deleteGroupTags(item.id)"/></div>
       </div>
     </div>
     <a-modal :title="type=='edit'?'编辑分组':'添加分组'"  v-if="editTagsShow" :visible="editTagsShow" @ok="handleSubmit" @cancel="handleCancelModal">
@@ -36,7 +15,7 @@
        :wrapper-col="wrapperCol"
        >
           <a-form-model-item label="分组名称" prop="keyword">
-            <a-input v-model="tagsFormData.keyword" placeholder="请输入"></a-input>
+            <a-input v-model="tagsFormData.name" placeholder="请输入"></a-input>
           </a-form-model-item>
        </a-form-model>
     </a-modal>
@@ -47,24 +26,39 @@
 export default {
     name: "",
     components: {},
-    props:{},
+    props:{
+      currentType:{
+        type:String,
+        default:'0'
+      },
+      tagsList:{
+        type:Array,
+        default:function(){
+          return []
+        }
+      }
+    },
     data() {
         return {
           editTagsShow:false,
           labelCol: { span: 4 },
           wrapperCol: { span: 14 },
           tagsFormData:{
-            keyword:''
+            name:'',
           },
           rules:{
-            keyword:[{required: true, message: '请输入分组名称',trigger: 'blur'}]
+            name:[{required: true, message: '请输入分组名称',trigger: 'blur'}]
           },
-          type:'edit'
+          type:'edit',
+          editId:''
         }
+    },
+    watch:{
     },
     created(){},
     mounted(){},
     methods: {
+   
       addGroup(){
         this.editTagsShow = true
         this.type = 'add'
@@ -74,17 +68,39 @@ export default {
         this.editTagsShow = false
         console.log('清空不了嘛',this.tagsFormData.keyword)
       },
-      editGroupTags(keyword){
-        this.tagsFormData.keyword = keyword
+      editGroupTags(name,id){
+        this.tagsFormData.name = name
         this.editTagsShow = true
         this.type = "edit"
+        this.editId = id
       },
       handleSubmit(){
+        let params = {
+          name:this.tagsFormData.name,
+          type:this.currentType,
+        }
         this.$refs.tagsForm.validate(valid => {
           if(valid){
-            console.log(this.tagsFormData)
+            if(this.type =='edit'){
+              params.id = this.editId
+            }
+            this.$emit('handleSubmit',params)
           }
         })
+      },
+      deleteGroupTags(id){
+        let that = this
+         this.$confirm({
+          title: '确定要删除这个标签吗？',
+          content: '',
+          onOk() {
+            that.$emit('deleteGroupTags',id)
+          },
+          onCancel() {
+            console.log('Cancel');
+          },
+        });
+      
       }
     }
 }

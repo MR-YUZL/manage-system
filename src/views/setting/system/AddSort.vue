@@ -24,7 +24,7 @@
         </li>
       </ul>
     </div>
-    <div class="sort" > 
+    <div class="sort" v-if="firstLevel.length>0"> 
       <ul>
         <li class="firstLi">
           <div v-if="secondAddShow" class="firstLiDiv">
@@ -47,7 +47,7 @@
         </li>
       </ul>
     </div>
-    <div class="sort" v-if="secondLevel.length>0">
+    <div class="sort" v-if="threeLevelShow">
       <ul> 
          <li class="firstLi">
           <div v-if="threeAddShow" class="firstLiDiv">
@@ -79,7 +79,9 @@ export default {
   props:{
     list:{
       type:Array,
-      default:[]
+      default:function(){
+        return []
+      }
     },
     currentType:{
       type:String,
@@ -91,6 +93,7 @@ export default {
       firstLevel:[],
       secondLevel:[],
       threeLevel:[],
+      threeLevelShow:false,
       editName:'',
       firstAddShow:false,
       fristAdd:'',
@@ -105,7 +108,8 @@ export default {
     }
   },
   watch:{
-    list(value){
+    list(value,old){
+      console.log(value,'value',old,'old')
       if(value.length>0){
         this.firstLevel = [...this.list]
         this.firstLevel[0].active = true
@@ -113,17 +117,26 @@ export default {
         this.firstIndex = 0
         if(this.firstLevel[0].childList.length>0){
             this.secondLevel = this.firstLevel[0].childList
-            this.secondLevel[0].active = true
-            this.pid = this.secondLevel[0].id
             this.secondIndex = 0
           if(this.secondLevel[0].childList.length>0){
             this.threeLevel = this.secondLevel[0].childList
             this.threeLevel[0].active = true
-
           }
+        }else{
+           this.secondLevel = []
         }
+      }else{
+        this.firstLevel = []
+        this.secondLevel = []
+        this.threeLevel = []
       }
-    }
+    },
+    // currentType(key){
+    //     console.log(key,'我切换tab了')
+    //     if(key==1||key==0){
+    //       this.getSortList()
+    //     }
+    // }
   },
   created(){
     this.getInit()
@@ -150,22 +163,32 @@ export default {
       })
       this.firstLevel[index].active = true
       this.secondLevel = this.firstLevel[index].childList
-      if( this.secondLevel.length>0){
-        this.secondLevel[0].active = true
-        if(this.secondLevel[0].childList.length>0){
-          this.threeLevel = this.secondLevel[0].childList
-        }
+      if( this.secondLevel&&this.secondLevel.length>0){
+        this.secondLevel.map(item=>{
+          item.active = false
+        })
+        // this.secondLevel[0].active = true
+        // if(this.secondLevel[0].childList.length>0){
+        //   this.threeLevel = this.secondLevel[0].childList
+        // }
       }
+      this.threeLevelShow = false
     },
     handleSecondLevel(index){
       // this.pid = this.secondLevel[index].id
-  
       this.secondIndex = index
       this.secondLevel.map(item=>{
         item.active = false
       })
       this.secondLevel[index].active = true
-      this.threeLevel = this.secondLevel[index].childList
+      this.threeLevel = this.secondLevel[index].childList || []
+      if( this.threeLevel.length>0){
+        this.threeLevel.map(item=>{
+          item.active = false
+        })
+
+      }
+      this.threeLevelShow = true
     },
     handlethreeLevel(index){
       console.log(index)
@@ -209,9 +232,6 @@ export default {
         this.$message.warn('请输入字段名！')
         return false;
       }
-
-      console.log(this.firstIndex,'这里是啥啥萨哈')
-
       if(type=='second'){
         params.pid = this.firstLevel[this.firstIndex].id
       }
@@ -223,14 +243,27 @@ export default {
         if(type=='first'){
           this.firstAddShow = false
           this.firstLevel.push(res.data.data)
+          this.firstLevel.map(item=>{
+            item.active = false
+          })
+          this.firstLevel[this.firstLevel.length-1].active = true
+          this.secondLevel = []
+          this.threeLevel = []
         }else if(type == 'second'){
-           this.secondAddShow = false
+          this.secondAddShow = false
           this.secondLevel.push(res.data.data)
+          this.secondLevel.map(item=>{
+            item.active = false
+          })
+          this.secondLevel[this.secondLevel.length-1].active = true
+          this.threeLevel = []
         }else if(type == 'three'){
-           this.threeAddShow = false
+          this.threeAddShow = false
           this.threeLevel.push(res.data.data)
+          this.secondLevel[this.secondIndex].childList =  this.threeLevel
         }
       })
+      this.$forceUpdate()
     },
     editTags(type,index,name){
        this.editName = name
@@ -262,15 +295,15 @@ export default {
             console.log('分类列表',res.data.list)
             if(type=='first'){
               that.firstLevel.splice(index,1)
-              console.log('删除过的firstLever',that.firstLevel)
+              that.secondLevel = []
             }
              if(type=='second'){
               that.secondLevel.splice(index,1)
-              console.log('删除过的firstLever',that.firstLevel)
+               that.threeLevel = []
+               that.threeLevelShow = false
             }
              if(type=='three'){
               that.threeLevel.splice(index,1)
-              console.log('删除过的firstLever',that.firstLevel)
             }
           })
           that.$forceUpdate()
@@ -312,6 +345,8 @@ export default {
     margin:0 15px;
     box-sizing: border-box;
     width:340px;
+    height:80vh;
+    overflow-y:scroll;
     ul{
       border-top:1px solid #e6e6e6;
     }
@@ -344,7 +379,7 @@ export default {
         }
       }
     }
-    li.firstLi{
+    .firstLi{
       .firstLiDiv{
         display: flex;
         justify-content: space-between;
@@ -372,5 +407,28 @@ export default {
       background:#fff;
     }
   }
+}
+
+.sort::-webkit-scrollbar
+{
+	width: 6px;
+	height:6px;
+	background-color: #F5F5F5;
+}
+ 
+/*定义滚动条轨道 内阴影+圆角*/
+.sort::-webkit-scrollbar-track
+{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 10px;
+	background-color: #F5F5F5;
+}
+ 
+/*定义滑块 内阴影+圆角*/
+.sort::-webkit-scrollbar-thumb
+{
+	border-radius: 10px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: #ccc;
 }
 </style>
