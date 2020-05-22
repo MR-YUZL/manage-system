@@ -1,6 +1,6 @@
 <template>
-  <a-form-model :ref="formObject.ref" v-bind="formItemLayout" :model="formObject">
-    <div v-for="(item,index) in formObject.modelList" :key="index">
+  <a-form-model :ref="dataObj.ref" v-bind="formItemLayout" :model="dataObj">
+    <div v-for="(item,index) in dataObj.modelList" :key="index">
       <div v-if="item.type == 'font'" :style="{textAlign:'center'}">
         <p v-for="(value,ind) in item.content" :key="ind">{{value}}</p>
       </div>
@@ -121,8 +121,8 @@
         </template>
       </a-form-model-item>
     </div>
-    <a-form-model-item :wrapper-col="{ span: 24 }" :style="formObject.type == 'modalForm'?{'text-align':'center'}:{'text-align':'right'}">
-      <a-button v-if="formObject.type == 'modalForm'" @click="handleModalState">取消</a-button>
+    <a-form-model-item :wrapper-col="{ span: 24 }" :style="dataObj.type == 'modalForm'?{'text-align':'center'}:{'text-align':'right'}">
+      <a-button v-if="dataObj.type == 'modalForm'" @click="handleModalState">取消</a-button>
       <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">确定</a-button>
     </a-form-model-item>
   </a-form-model>
@@ -137,7 +137,8 @@ export default {
     }
   },
   components: {
-    Upload
+    Upload,
+    
   },
   watch: {},
   data() {
@@ -145,32 +146,54 @@ export default {
       formItemLayout: {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 }
-      }
+      },
+      dataObj:{}
     };
   },
-  mounted() {},
+  mounted() {
+      console.log(this.dataObj)
+      console.log(this.formObject)
+      this.dataObj = Object.assign({},this.formObject) 
+  },
   methods: {
+    //重置传入的值
+    resetVal(){
+        this.formObject.modelList.map(item => {
+            item.model = undefined
+        })
+    },
     onSubmit(e) {
       e.preventDefault();
       let _that = this;
-      _that.$refs[_that.formObject.ref].validate(valid => {
+      _that.$refs[_that.dataObj.ref].validate(valid => {
         if (valid) {
           let obj = {};
-          _that.formObject.modelList.map(item => {
+          _that.dataObj.modelList.map(item => {
             // if (this.selectedTags.length && item.type == "tag") {
             //   obj[item.ruleName] = [...this.selectedTags];
             // } else {
             obj[item.ruleName] = item.model;
             // }
           });
-          _that.$emit("formSubmit", obj);
+          let data = {
+              ref:this.dataObj.ref,
+              visible:false,
+              obj
+          }
+          _that.$emit("formSubmit", data);
+          this.resetVal()
         } else {
           return false;
         }
       });
     },
     handleModalState() {
-      this.$emit("toggleModal", false);
+     let obj = {
+         ref:this.dataObj.ref,
+         visible:false
+     }
+      this.$emit("toggleModal", obj);
+      this.resetVal()
     }
   }
 };
