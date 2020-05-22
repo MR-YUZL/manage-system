@@ -1,20 +1,38 @@
 <template>
   <div>
-    <a-modal v-model="visibles" title="导入结果" @ok="handleSubmit" @cancel="handleCancel">
-      <ul>
-        <li>
-          <span>导入结果 2020-02-13 16:24:25 操作人：nick</span>
-          <span>共解析数据1条，成功导入0条，导入失败1条</span>
+    <a-modal
+      v-model="visibles"
+      title="导入结果"
+      @ok="handleSubmit"
+      @cancel="handleCancel"
+      :footer="null"
+      width="600px"
+    >
+      <ul class="resultUl">
+        <li v-for="(item,index) in resultList" :key="index">
+          <span class="p1">
+            {{item.impTime}}
+            <span>操作人：{{item.inputAcc}}</span>
+          </span>
+          <span class="p1">
+            共解析数据
+            <i>{{item.totalNum}}</i>条，成功导入
+            <i>{{item.successNum}}</i>条，导入失败
+            <i>{{item.failNum}}</i>条
+          </span>
+          <a-button v-if="item.failNum" type="dashed" icon="download" @click="downFaild(item.fileId)">下载导入失败的数据</a-button>
         </li>
       </ul>
     </a-modal>
   </div>
 </template>
 <script>
+import api from "@/api/customerCenter";
 export default {
   data() {
     return {
-      visibles: this.visible
+      visibles: this.visible,
+      resultList: []
     };
   },
   watch: {
@@ -23,14 +41,55 @@ export default {
     }
   },
   props: {
-    visible: Boolean
+    visible: Boolean,
+    pageSize: Number
+  },
+  mounted() {
+    this.getResult();
   },
   methods: {
+    getResult() {
+      api.importResult().then(res => {
+        console.log(res, "导入结果");
+        if (res.data.status) {
+          this.resultList = res.data.list;
+        }
+      });
+    },
     handleSubmit() {},
     handleCancel(e) {
-      this.visibles = false
+      this.visibles = false;
       this.$emit("closeUpdate");
-    }
+    },
+    downFaild(fileId){
+      api.errorResult({fileId:this.fileId}).then(res=>{
+        console.log(res,'下载导入失败的数据')
+      })
+    },
   }
 };
 </script>
+<style lang="less" scoped>
+.resultUl {
+  li {
+    margin-bottom: 10px;
+    position: relative;
+    .p1 {
+      display: block;
+      span {
+        padding-left: 15px;
+      }
+      i {
+        font-style: normal;
+        color: #f00;
+        padding: 0 2px;
+      }
+    }
+    button{
+      position: absolute;
+      right: 0;
+      top:0
+    }
+  }
+}
+</style>

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <a-modal v-model="visibles" title="创建客户" :footer="null" @cancel="handleCancel">
-      <a-form-model ref="dynamicValidateForm" :model="dynamicValidateForm">
+    <!-- <a-modal v-model="visibles" title="创建联系人" @ok="handleSubmit" @cancel="handleCancel"> -->
+    <a-form-model ref="dynamicValidateForm" :model="dynamicValidateForm">
         <a-form-model-item
           v-for="(item,index) in dynamicValidateForm.formList"
           :key="item.fieldId"
@@ -54,7 +54,7 @@
           <a-button style="margin-left: 10px" >取消</a-button>
         </a-form-model-item>
       </a-form-model>
-    </a-modal>
+    <!-- </a-modal> -->
   </div>
 </template>
 <script>
@@ -62,8 +62,9 @@ import api from "@/api/customerCenter";
 export default {
   data() {
     return {
-      visibles: this.visible,
+      // visibles: this.visible,
       valueObj: {},
+      form: this.$form.createForm(this, { name: "createCustomer" }),
       dynamicValidateForm: {
         formList: []
       },
@@ -87,24 +88,24 @@ export default {
       ]
     };
   },
-  props: {
-    visible: Boolean
-  },
-  watch: {
-    visible(val) {
-      this.visibles = val;
-    }
-  },
+  // props: {
+  //   visible: Boolean
+  // },
+  // watch: {
+  //   visible(val) {
+  //     this.visibles = val;
+  //   }
+  // },
 
   mounted() {
     this.getForm();
   },
   methods: {
     getForm() {
-      api.setFieldsJson({ state: 0 }).then(res => {
-        console.log(res, "列表字段");
+      api.setFieldsJson({ state: 1 }).then(res => {
+        console.log(res, "创建联系人");
         if (res.data.status) {
-          this.dynamicValidateForm.formList = res.data.list;
+          this.formList = res.data.list;
         }
       });
     },
@@ -125,8 +126,8 @@ export default {
             custId:'',
             fields:fields
           }
-          api.createCustomer(params).then(res => {
-            console.log('新建客户保存',res)
+          api.createLinkMan(params).then(res => {
+            console.log('新建联系人保存',res)
             if(res.data.status){
               this.$Message.success('保存成功')
             }

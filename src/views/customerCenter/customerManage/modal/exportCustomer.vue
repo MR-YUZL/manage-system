@@ -2,7 +2,7 @@
   <div>
     <a-modal v-model="visibles" title="导出客户" @ok="handleOk" @cancel="handleCancel">
       <p>是否确认导出当前条件下的客户数据？</p>
-      <p>本次导出共{{custIds.length}}条数据</p>
+      <p>本次导出共{{tableList.length}}条数据</p>
     </a-modal>
   </div>
 </template>
@@ -17,7 +17,7 @@ export default {
   props: {
     visible: Boolean,
     dataSource:String,
-    custIds: Array
+    tableList: Array
   },
   watch: {
     visible(val) {
@@ -29,6 +29,7 @@ export default {
       let params = {
         dataSource:this.dataSource,
         queryType:'1',
+        totalRecord:this.tableList.length
       }
       api.exportCustomer(params).then(res=>{
         console.log(res,'7777')

@@ -315,7 +315,6 @@ export default {
       console.log(values,"formSubmit========")
     },
     handleModalShow(e,name) {
-      debugger;
       if(name) {
         this[name]["visible"] = true;
       }else {

@@ -1,101 +1,185 @@
 <template>
   <div>
-    <a-modal width="720px" v-model="visibles" title="客户详情" @cancel="handleCancel">
-      <div class="btn-area">
-        <a-button type="primary" @click="editCustomer">编辑</a-button>
-        <a-button type="primary" @click="createLinkman">新建联系人</a-button>
-        <a-button type="primary" @click="followCustomer">客户跟进</a-button>
-      </div>
-      <ul class="flex">
-        <li>
-          <span>客服负责人</span>
-          <span>吴阿鹏</span>
-        </li>
-        <li>
-          <span>最近回访时间</span>
-          <span>吴阿鹏</span>
-        </li>
-        <li>
-          <span>客户来访次数</span>
-          <span>吴阿鹏</span>
-        </li>
-        <li>
-          <span>客户创建时间</span>
-          <span>吴阿鹏</span>
-        </li>
-      </ul>
-      <a-tabs default-active-key="1" @change="tabChange">
-        <a-tab-pane key="1" tab="客户相关">
-          <div class="contactFlex">
-            <div class="contactHead">联系人(2)</div>
-            <div @click="createLinkman">
-              <a-icon type="plus" />添加联系人
+    <Modal :currentModal="currentModal" @toggleModal="toggleModal">
+      <template v-slot:content>
+        <!-- <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" /> -->
+        <!-- <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" /> -->
+        <div class="btn-area">
+          <a-button type="primary" @click="editCustomerModalShow">编辑</a-button>
+          <a-button type="primary" @click="createContactModalShow($event,'contactModalInner')">新建联系人</a-button>
+          <a-button type="primary">客户跟进</a-button>
+        </div>
+        <ul class="flex">
+          <li>
+            <span>客服负责人</span>
+            <span>吴阿鹏</span>
+          </li>
+          <li>
+            <span>最近回访时间</span>
+            <span>吴阿鹏</span>
+          </li>
+          <li>
+            <span>客户来访次数</span>
+            <span>吴阿鹏</span>
+          </li>
+          <li>
+            <span>客户创建时间</span>
+            <span>吴阿鹏</span>
+          </li>
+        </ul>
+        <a-tabs default-active-key="1" @change="tabChange">
+          <a-tab-pane key="1" tab="客户相关">
+            <div class="contactFlex">
+              <div class="contactHead">联系人(2)</div>
+              <div @click="createLinkman">
+                <a-icon type="plus" />添加联系人
+              </div>
             </div>
-          </div>
-          <ul class="contactUl">
-            <li>
-              <span>
-                吴鹏
-                <a-icon type="edit" />
-                <a-icon type="delete" />
-              </span>
-              <span>
-                <i>手机号18767137823</i>
-                <i>职务：产品经理</i>
-                <i>电话来访333</i>
-                <i>会话来访0</i>
-              </span>
-            </li>
-          </ul>
-          <!-- 服务小结 -->
-          <ServiceSummary :questionList="questionList" />
-        </a-tab-pane>
-        <a-tab-pane key="2" tab="资料"></a-tab-pane>
-        <a-tab-pane key="3" tab="日志"></a-tab-pane>
-      </a-tabs>
-    </a-modal>
+            <ul class="contactUl">
+              <li>
+                <span>
+                  吴鹏
+                  <a-icon type="edit" />
+                  <a-icon type="delete" />
+                </span>
+                <span>
+                  <i>手机号18767137823</i>
+                  <i>职务：产品经理</i>
+                  <i>电话来访333</i>
+                  <i>会话来访0</i>
+                </span>
+              </li>
+            </ul>
+            <!-- 服务小结 -->
+            <ServiceRecord :recordObj="serviceObj" />
+            <!-- 跟进记录 -->
+            <ServiceRecord :recordObj="followObj" />
+            <!-- 工单信息 -->
+            <OrderInf :userInfList="userInfList" />
+          </a-tab-pane>
+          <a-tab-pane key="2" tab="资料">
+            <div class="materialFlex">
+              <li v-for="(item,index) in materialList">{{item.fieldName}}：{{item.fieldOptionValue}}</li>
+            </div>
+          </a-tab-pane>
+          <a-tab-pane key="3" tab="日志">
+            <div class="logFlex">
+              <li v-for="(item,index) in logList">
+                <span></span>
+                <span></span>
+              </li>
+            </div>
+          </a-tab-pane>
+        </a-tabs>
+        <Modal :currentModal="contactModalInner">
+          <template v-slot:content>
+            <CreateContact />
+          </template>
+        </Modal>
+      </template>
+    </Modal>
   </div>
 </template>
 
 <script>
-import ServiceSummary from "@/components/userInf/ServiceSummary";
+import Modal from "@/components/Modal";
+import api from "@/api/customerCenter";
+import OrderInf from "@/components/userInf/OrderInf";
+import ServiceRecord from "@/components/userInf/ServiceRecord";
+import CreateContact from "@/views/customerCenter/customerManage/modal/createContact";
 export default {
   data() {
     return {
-      visibles: this.visible,
-      questionList: [] //客服小结
+      serviceObj: {
+        currentTit: "服务小结",
+        questionList: []
+      }, //客服小结
+      followObj: {
+        currentTit: "跟进记录",
+        questionList: []
+      },
+      userInfList: [],
+      obj: {
+        custId: this.detailId
+      },
+      currentModal: this.visibleProps,
+      contactModalInner: { title: "新建联系人", visible: false },
+      materialList: [],
+      logList:[],
     };
   },
   components: {
-    ServiceSummary
+    ServiceRecord,
+    OrderInf,
+    Modal,
+    CreateContact
   },
   props: {
-    visible: Boolean,
-    detailId: String
-  },
-  watch: {
-    visible(val) {
-      this.visibles = val;
-    }
+    detailId: String,
+    visibleProps: Object
   },
   mounted() {
     this.getServiceList();
+    this.getDetail(this.obj);
+    this.getContactJson(this.obj);
+    this.getMaterialInfo(this.obj);
+    this.getFollowRecord(this.obj);
   },
   methods: {
-    editCustomer(){},
+    getContactJson(params) {
+      api.contactInfo(params).then(res => {
+        console.log("联系人列表", res);
+      });
+    },
+    getMaterialInfo(params) {
+      api.materialInfo(params).then(res => {
+        console.log("资料", res);
+        if (res.data.status) {
+          this.materialList = res.data.list;
+        }
+      });
+    },
+    editCustomerModalShow(){
+      this.$emit("editCustomerShow")
+    },
+    editCustomer() {},
     createLinkman() {},
-    followCustomer(){},
+    toggleModal(value) {
+      // this.currentModal.visible = value;
+      // this.$emit("closeUpdate");
+    },
+    createContactModalShow(e, name) {
+      if (name) {
+        this[name]["visible"] = true;
+      } else {
+        this["currentModal"]["visible"] = true;
+      }
+    },
+    followCustomer() {},
     tabChange() {},
+    getDetail(params) {
+      api.customerDetail(params).then(res => {
+        console.log("客户详情", res);
+      });
+    },
     //获取服务小结
     getServiceList() {
       this.Request.post(
         "/hfw/workbench/getServiceSummary?guestId=" + this.detailId
       ).then(res => {
         console.log("服务小结", res.data.list);
-        this.questionList = res.data.list;
+        this.serviceObj.questionList = res.data.list;
       });
     },
-    
+    //获取跟进记录  
+    getFollowRecord(params){
+      api.detailFollowRecord(params).then(res=>{
+        console.log('跟进记录',res)
+        if(res.data.status){
+          this.followObj.questionList = res.data.list;
+        }
+      })
+    },
     handleSubmit() {},
     handleCancel(e) {
       this.visibles = false;
@@ -106,8 +190,8 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.btn-area{
-  button{
+.btn-area {
+  button {
     margin-left: 10px;
   }
 }
@@ -149,6 +233,19 @@ export default {
       display: flex;
       justify-content: space-between;
     }
+  }
+}
+.materialFlex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  li {
+    width: 45%;
+  }
+}
+.logFlex {
+  li{
+
   }
 }
 </style>
