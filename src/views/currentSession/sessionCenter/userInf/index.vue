@@ -5,9 +5,10 @@
             <img :src="require('./../../../../assets/imgs/current_session/app.png')" alt="">
             <div class="user" @click="userInf">
                 <div class="name">科比布莱恩特dddd</div>
+                <span></span>
                 <a-icon :type="isShow ? 'down' : 'up'" class="icon"/>
             </div>
-            <div class="time">当前会话时长：{{'5分6秒'}}</div>
+            <div class="time">当前会话时长：{{'50分16秒'}}</div>
         </div>
         
         <div class="right">
@@ -376,6 +377,7 @@ export default {
             padding: 0 0 0 10px;
             background: #FFFFFF;
             .left{
+              width: calc(100% - 200px);
                 display: flex;
                 align-items: center;
                 img{
@@ -386,22 +388,28 @@ export default {
                 .user{
                   display: flex;
                   align-items: center; 
+                  width: calc(100% - 400px);
+                  max-width: 120px;
+                  position: relative;
                   cursor: pointer;
                   .name{
-                      min-width: 0px;
-                      max-width: 82px;
-                      overflow: hidden;
-                      -webkit-box-flex: 1;
-                      -ms-flex: 1;
-                      flex: 1;
-                      text-overflow: ellipsis;
-                      white-space: nowrap;
-                      margin-left: 5px;
+                    min-width: 20px;
+                    overflow: hidden;
+                    -webkit-box-flex: 1;
+                    -ms-flex: 1;
+                    flex: 1;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                  }
+                  .icon{
+                    position: absolute;
+                    right: -25px;
                   }
                 }
                 
                 .time{
-                    margin-left: 20px;
+                    margin-left: 70px;
+                    white-space: nowrap;
                 }
             }
             .right{
@@ -410,6 +418,7 @@ export default {
                     color: #3E7BF8;
                     border-bottom: 1px solid #3E7BF8;
                     cursor: pointer;
+                    white-space: nowrap;
                 }
             }
        }

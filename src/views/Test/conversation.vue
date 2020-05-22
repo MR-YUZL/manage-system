@@ -22,7 +22,8 @@ watch: {},
 //方法集合
 methods: {
     setLocalStorage(){
-        localStorage.setItem(this.$route.query.url,uuidv1())
+        let str = uuidv1()
+        localStorage.setItem(this.$route.query.url,str.replace(/-/g,''))
     },
     getNavigation(){
         let params = {
@@ -52,6 +53,33 @@ methods: {
                 
             }
         })
+    },
+    createIM(){
+        let params = {
+            orgId:'880b29c1dae1463ab411e42bac8cdaad',
+            channelId:'afdb8a0e562c4c0085d4d135216f2c80',
+            guestId:this.uuid
+        }
+        this.Request.get('/guest/session/im/account/create',params).then(res => {
+            console.log(res.data)
+            if(res.data.status){
+                
+            }
+        })
+
+    },
+    createSig(){
+        let params = {
+            orgId:'880b29c1dae1463ab411e42bac8cdaad',
+            imAccount:'',
+            imPassword:''
+        }
+        this.Request.get('/guest/session/im/query/user/sig',params).then(res => {
+            console.log(res.data)
+            if(res.data.status){
+                
+            }
+        })
     }
 },
 created() {
@@ -65,7 +93,8 @@ mounted() {
         this.uuid = localStorage.getItem(this.$route.query.url)
     }
     // this.getNavigation()
-    this.customerService()
+    // this.customerService()
+    this.createIM()
    
 },
 }

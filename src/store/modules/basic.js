@@ -2,7 +2,8 @@ const basic = {
     state : {
         status:1, //电话工作台tabs状态
         callStatus:{},//通话状态
-        outCallTask:{}
+        outCallTask:{},//选中的外呼任务信息
+        outCallStatus:true,//选中的外呼任务状态
     },
     mutations : {
         getStatus(state,status){
@@ -15,6 +16,9 @@ const basic = {
         getOutCallTask(state,outCallTask){
             state.outCallTask = outCallTask
 
+        },
+        getOutCallStatus(state,outCallStatus){
+            state.outCallStatus = outCallStatus
         }
     },
     action : {

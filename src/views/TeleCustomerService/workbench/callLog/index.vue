@@ -3,10 +3,10 @@
     <div class="list_count">
          <a-tabs default-active-key="1" class="tabs" @change="callback">
             <a-tab-pane key="1" tab="近期通话" class="tans_">
-                <recent-calls />
+                <recent-calls v-if="status == 1" />
             </a-tab-pane>
             <a-tab-pane key="2" tab="外呼任务" >
-                <out-call-task />
+                <out-call-task v-if="status == 2" />
             </a-tab-pane>
             
         </a-tabs>
@@ -20,7 +20,7 @@ import recentCalls from './recentCalls'
 export default {
   data: () => ({
   
-    
+    status:1
  
   }),
   components: {
@@ -32,6 +32,7 @@ export default {
   },
   methods: {
     callback(key) {
+        this.status= key
       this.$store.commit('getStatus',key)
     },
   },

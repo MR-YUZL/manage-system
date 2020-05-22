@@ -9,10 +9,12 @@
         </a-button>
       </div>
       <div>
-        <a-table :columns="columns" :dataSource="dataSource" :pagination='false' :rowKey="record => record.id"
+        <a-table :columns="columns" :dataSource="dataList" :pagination='false' :rowKey="record => record.id"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           >
-          <a slot="action" slot-scope="text" href="javascript:;" @click="playRecording(text)">Delete</a>
+          <a slot="action" slot-scope="text" href="javascript:;" @click="playRecording(text)">
+            播放录音
+          </a>
         </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
@@ -26,7 +28,7 @@ import Search from './../../../components/Search/index'
 import MessageDetail from './../../messageRecord/messageDetail'
 import TablePagination from "./../../../components/Table/TablePagination"
 
-import moment from "moment";
+
 export default {
   components: {
     Search,
@@ -126,7 +128,19 @@ export default {
           scopedSlots: { customRender: 'action' }
         },
       ],
-      dataSource:[],
+      dataList:[
+        {
+          callId:1,
+          custName:'打不死的小灰灰',
+          callType:1,
+          callTime:20201029,
+          caller:'18153535353',
+          called:'18888888888',
+          serviceName:'灰太狼',
+          callLength:'10min',
+          consultType:'1'
+        }
+      ],
       pager: {
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         currentPage: 1,
@@ -182,6 +196,10 @@ export default {
       this.pager.currentPage = 1
       this.searchField = values
       this.getList();
+    },
+    //播放录音
+    playRecording(text){
+      console.log(text)
     }
   },
   watch: {},
