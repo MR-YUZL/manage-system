@@ -74,7 +74,11 @@ export default {
   },
   //线索管理list 
   clueManageList(params){
-    return axios.post('/customers/hfwCustomersClue/listPageJson', params)
+    return axios.get('/customers/hfwCustomersClue/listPageJson', {params})
+  },
+  //线索管理-导出 
+  exportClue(params){
+    return axios.post('/customers/hfwCustomersClue/exportJson', params)
   },
   //跟进记录list 
   followRecordList(params){
@@ -90,6 +94,6 @@ export default {
   },
   //质量检测-电话质检 
   callphoneList(params) {
-    return axios.get('/callphone/qc/serach', {params})
+    return axios.post('/callphone/qc/serach', params)
   },
 }

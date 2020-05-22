@@ -3,6 +3,15 @@
     <a-page-header title="线索管理" style="padding:16px 0;" />
     <div class="box">
       <Search :tools="searchList" @onSearch="searchFun" />
+      <!-- 按钮区 -->
+      <div class="button-area">
+        <div class="left-side">
+        </div>
+        <div class="right-side">
+          <a-button @click="exportClue">导出</a-button>
+        </div>
+      </div>
+      <!-- 按钮区 -->
       <div>
         <a-table
           :columns="columns"
@@ -148,6 +157,11 @@ export default {
           }
         ], // 表头
         dataSource: [], // 表格数据
+        params:{
+          queryText:'1',
+          queryType:1,
+          totalRecord:'20'
+        },
     };
   },
   components: {
@@ -155,12 +169,20 @@ export default {
     TablePagination,
   },
   mounted(){
-      this.getList()
+      this.getList(this.params)
   },
   methods: {
-    getList(){
-      api.clueManageList().then(res=>{
-        
+    getList(params){
+      api.clueManageList(params).then(res=>{
+        console.log('线索管理列表',res)
+        if(res.data.status){
+          this.dataSource = res.data.list
+        }
+      })
+    },
+    exportClue(){
+      api.exportClue(this.params).then(res=>{
+        console.log('导出线索成功',res)
       })
     },
     searchFun() {},
@@ -170,5 +192,23 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.button-area {
+  display: flex;
+  justify-content: space-between;
+  padding:10px 0;
+  .left-side {
+    text-align: left;
+    button{
+      margin-left: 10px;
+    }
+  }
+  .right-side {
+    flex-shrink: unset;
+    text-align: right;
+    button{
+      margin-right: 10px;
+    }
+  }
+}
 </style>

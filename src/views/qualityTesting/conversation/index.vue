@@ -9,10 +9,20 @@
           :dataSource="dataSource"
           :pagination="false"
           :rowKey="record => record.id"
-        ></a-table>
+        >
+        <div slot="idSkip" slot-scope="record,row">
+            <span class="blue" @click="qualityDetail(row.id)">{{row.id}}</span>
+          </div>
+        </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
+    <a-modal title="质检详情" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
+      <div class="record-detail">
+        <div class="message">123</div>
+        <div class="information">7854</div>
+      </div>
+   </a-modal>
   </div>
 </template>
 
@@ -24,10 +34,11 @@ import TablePagination from "@/components/Table/TablePagination";
 export default {
   components: {
     Search,
-    TablePagination,
+    TablePagination
   },
   data() {
     return {
+      detailsShow:false,
       pager: {
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         currentPage: 1,
@@ -93,6 +104,12 @@ export default {
       ],
       columns: [
         {
+          title: "通话ID",
+          dataIndex: "callId",
+          key: "callId",
+          scopedSlots: { customRender: 'idSkip' },
+        },
+        {
           title: "主叫号码",
           dataIndex: "caller",
           key: "caller"
@@ -142,16 +159,36 @@ export default {
           }
         }
       ], // 表头
-      dataSource: [] // 表格数据
+      dataSource: [], // 表格数据
+      params: {
+        callDate: "2020-05-01,2020-05-11",
+        qcStatus: 0,
+        qcAcc: "ldkj001",
+        callType: 1,
+        serviceGroupIds: ["0012d22c3dd74f68879c75d19c78de44"],
+        serviceIds: ["ldkj001"],
+        telphone: "15606156246",
+        currentPage: 1,
+        pageSize: 10
+      }
     };
   },
 
   mounted() {
-    this.getList();
+    this.getList(this.params);
   },
   methods: {
-    getList() {
-      api.callphoneList().then(res => {});
+    getList(params) {
+      api.callphoneList(params).then(res => {
+        this.dataSource = res.data.list;
+        this.pager = res.data.pager
+      });
+    },
+    qualityDetail(){
+      this.detailsShow = true
+    },
+    handleCancel(){
+      this.detailsShow = false
     },
     searchFun(values) {
       console.log("values", values);
@@ -163,3 +200,16 @@ export default {
   computed: {}
 };
 </script>
+<style lang="less" scoped>
+.record-detail{
+    display:flex;
+    .message{
+      width:380px;
+      border-right:1px solid #e6e6e6;
+    }
+    .information{
+      margin-left:48px;
+      width:384px;
+    }
+  }
+</style>

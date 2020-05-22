@@ -29,11 +29,17 @@
     >
       <div class="record-detail">
         <div class="message">
-          <MessageDetail
+          <!-- <MessageDetail
             :recordList="recordList"
             :handleRecordBtn="handleRecordBtn"
             :handleResult="handleResultCon"
             @setHandleResult="setHandleResult"
+          />-->
+          <BaseForm
+            :formObject="formObject"
+            :defaultValues="formAxiosReturnValues"
+            @toggleModal="toggleModal"
+            @formSubmit="formSubmit"
           />
         </div>
         <div class="information">
@@ -49,8 +55,9 @@ import moment from "moment";
 import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
-import UserInformation from '@/components/userInf'
-import MessageDetail from '@/views/messageRecord/messageDetail'
+import UserInformation from "@/components/userInf";
+// import MessageDetail from "@/views/messageRecord/messageDetail";
+import BaseForm from "@/components/BaseForm";
 export default {
   data() {
     return {
@@ -114,104 +121,151 @@ export default {
           key: "consultType"
         }
       ],
-      tableConfig: {
-        rowKey: "history",
-        columns: [
-          {
-            title: "会话ID",
-            dataIndex: "id",
-            key: "id",
-            slotName: "idSkip"
-          },
-          {
-            title: "姓名",
-            dataIndex: "name",
-            key: "name"
-          },
-          {
-            title: "会话开始时间",
-            dataIndex: "beginTime",
-            key: "beginTime"
-          },
-          {
-            title: "会话时长/轮次",
-            dataIndex: "sessionSum",
-            key: "sessionSum"
-          },
-          {
-            title: "会话来源",
-            dataIndex: "channelType",
-            key: "channelType",
-            customRender: value => {
-              let con = {
-                children: (
-                  <div>
-                    {value == 0 && <div>网站咨询</div>}
-                    {value == 1 && <div>微信公众号</div>}
-                    {value == 2 && <div>微信小程序</div>}
-                    {value == 3 && <div>IOS</div>}
-                    {value == 4 && <div>安卓</div>}
-                    {value == 5 && <div>QQ</div>}
-                    {value == 6 && <div>微信</div>}
-                  </div>
-                )
-              };
-              return con;
-            }
-          },
-          {
-            title: "平均响应时长",
-            dataIndex: "laveResponseDuration",
-            key: "laveResponseDuration"
-          },
-          {
-            title: "接待客服",
-            dataIndex: "serviceName",
-            key: "serviceName"
-          },
-          {
-            title: "咨询分类",
-            dataIndex: "consultType",
-            key: "consultType"
-          },
-          {
-            title: "会话结束时间",
-            dataIndex: "endTime",
-            key: "endTime"
-          },
-          {
-            title: "满意度",
-            dataIndex: "appraiseValue",
-            key: "appraiseValue",
-            customRender: value => {
-              let con = {
-                children: (
-                  <div>
-                    {value == 0 && <div>不太愿意</div>}
-                    {value == 1 && <div>一般满意</div>}
-                    {value == 2 && <div>满意</div>}
-                    {value == 3 && <div>很满意</div>}
-                    {value == 4 && <div>非常满意</div>}
-                  </div>
-                )
-              };
-              return con;
-            }
+      columns: [
+        {
+          title: "会话ID",
+          dataIndex: "id",
+          key: "id",
+          scopedSlots: { customRender: "idSkip" }
+        },
+        {
+          title: "姓名",
+          dataIndex: "name",
+          key: "name"
+        },
+        {
+          title: "会话开始时间",
+          dataIndex: "beginTime",
+          key: "beginTime"
+        },
+        {
+          title: "会话时长/轮次",
+          dataIndex: "sessionSum",
+          key: "sessionSum"
+        },
+        {
+          title: "会话来源",
+          dataIndex: "channelType",
+          key: "channelType",
+          customRender: value => {
+            let con = {
+              children: (
+                <div>
+                  {value == 0 && <div>网站咨询</div>}
+                  {value == 1 && <div>微信公众号</div>}
+                  {value == 2 && <div>微信小程序</div>}
+                  {value == 3 && <div>IOS</div>}
+                  {value == 4 && <div>安卓</div>}
+                  {value == 5 && <div>QQ</div>}
+                  {value == 6 && <div>微信</div>}
+                </div>
+              )
+            };
+            return con;
           }
-        ], // 表头
-        list: [], // 表格数据
-        align: "center",
-        loading: false,
-        rowSelection: true
-      },
+        },
+        {
+          title: "平均响应时长",
+          dataIndex: "laveResponseDuration",
+          key: "laveResponseDuration"
+        },
+        {
+          title: "接待客服",
+          dataIndex: "serviceName",
+          key: "serviceName"
+        },
+        {
+          title: "咨询分类",
+          dataIndex: "consultType",
+          key: "consultType"
+        },
+        {
+          title: "会话结束时间",
+          dataIndex: "endTime",
+          key: "endTime"
+        },
+        {
+          title: "满意度",
+          dataIndex: "appraiseValue",
+          key: "appraiseValue",
+          customRender: value => {
+            let con = {
+              children: (
+                <div>
+                  {value == 0 && <div>不太愿意</div>}
+                  {value == 1 && <div>一般满意</div>}
+                  {value == 2 && <div>满意</div>}
+                  {value == 3 && <div>很满意</div>}
+                  {value == 4 && <div>非常满意</div>}
+                </div>
+              )
+            };
+            return con;
+          }
+        }
+      ], // 表头
+      dataSource: [], // 表格数据
       //弹窗
       detailsShow: false,
       recordList: [],
       guestId: "",
       handleRecordBtn: "",
       handleResultCon: {
-        name:'',
-        con:''
+        name: "",
+        con: ""
+      },
+      params: {
+        id: "",
+        queryTime: "",
+        channelType: "",
+        serviceAccs: "",
+        name: ""
+      },
+      formAxiosReturnValues: {
+        id: "id_123",
+        test: "hello"
+      },
+      formObject: {
+        ref: "testModal",
+        sureBtn:'保存并更新',
+        modelList: [
+          {
+            type: "cascader",
+            label: "咨询分类",
+            placeholder: "请选择",
+            model: undefined,
+            ruleName: "receiverGroupId",
+            options: [],
+            rules: {
+              required: true,
+              message: "请选择咨询分类",
+              trigger: "change"
+            }
+          },
+          {
+            type: "select",
+            label: "解决问题",
+            placeholder: "请选择",
+            model: undefined,
+            ruleName: "receiverGroupId", 
+            options: [
+              { key: "1", value: "已解决" },
+              { key: "2", value: "未解决" }
+            ],
+            rules: {
+              required: true,
+              message: "请选择咨询分类",
+              trigger: "change"
+            }
+          },
+          {
+            type: "textarea",
+            label: "咨询备注",
+            placeholder: "请选择",
+            model: undefined,
+            ruleName: "receiverGroupId" //receiverGroupId 工单受理组id
+          }
+        ]
       }
     };
   },
@@ -219,43 +273,61 @@ export default {
     Search,
     TablePagination,
     UserInformation,
-    MessageDetail
+    // MessageDetail
+    BaseForm
   },
   mounted() {
-    this.getList();
+    this.getList(this.params);
   },
   methods: {
-    getList() {
-      api.sessionList().then(res => {
+    toggleModal() {},
+    formSubmit(data) {
+      console.log(data,'data')
+    },
+    getList(params) {
+      api.sessionList(params).then(res => {
         console.log("=========", res);
         if (res.data.status) {
-          this.tableConfig.list = res.data.list;
+          this.dataSource = res.data.list;
         }
       });
     },
-    
+
     searchFun() {},
     onSelectChange() {},
     paginationChange() {},
     //弹窗
     skipDetail(id) {
-        console.log(id,'==========id')
-        this.Request.get('/hfw/tsmHfwLeaveComments/infoJson?id='+ id).then(res=>{
-            let data = res.data.data;
-            this.handleResultCon.con = data.result
-            this.handleResultCon.name = data.followAccName
-            this.recordList = data.detailBeanList
-            this.guestId = data.guestId
-        })
-        this.detailsShow = true;
+      console.log(id, "==========id");
+      this.Request.get("/hfw/tsmHfwLeaveComments/infoJson?id=" + id).then(
+        res => {
+          let data = res.data.data;
+          this.handleResultCon.con = data.result;
+          this.handleResultCon.name = data.followAccName;
+          this.recordList = data.detailBeanList;
+          this.guestId = data.guestId;
+        }
+      );
+      this.detailsShow = true;
     },
     handleCancel() {
-        this.detailsShow = false
+      this.detailsShow = false;
     },
     setHandleResult() {}
   }
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.record-detail {
+  display: flex;
+  .message {
+    width: 380px;
+    border-right: 1px solid #e6e6e6;
+  }
+  .information {
+    margin-left: 48px;
+    width: 384px;
+  }
+}
 </style>

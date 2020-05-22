@@ -108,6 +108,9 @@ export default {
         pageSize: 10,
         totalRecord: 0,
         totalPage: 0
+      },
+      params:{
+        queryText:'1'
       }
     };
   },
@@ -116,11 +119,13 @@ export default {
     TablePagination,
   },
   mounted() {
-    this.getList();
+    this.getList(this.params);
   },
   methods: {
-    getList() {
-      api.followRecordList().then(res => {});
+    getList(params) {
+      api.followRecordList(params).then(res => {
+        console.log('回访记录',res)
+      });
     },
     customerDetail(){},
     searchFun() {},
