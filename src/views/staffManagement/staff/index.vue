@@ -4,37 +4,53 @@
     <div>
         <Search ref="searchHeader" :tools="formList" @onSearch="searchFun" />
         <div style="padding:10px;text-align:right">
-          <a-button type="primary">添加客服</a-button>
+          <a-button type="primary" @click="addCustmoer">添加客服</a-button>
         </div>
         <div>
           <a-table 
           :columns="columns"
           :dataSource="dataSource"
           :pagination="false"
-          :rowKey="record => record.id">
+          :rowKey="record => record.userAccount">
           <div slot="action">
             <span class="blue" style="margin-right:10px;">编辑</span>
             <span class="blue">删除</span>
           </div>
           </a-table>
         </div>
-        <div><TablePagination :parentPager="pager" @paginationChange="paginationChange" ></TablePagination></div>
+        <div><TablePagination :parentPager="pager" @paginationChange="paginationChange"></TablePagination></div>
     </div>
-    <a-modal title="批量匹配成员" :visible="addCustomerShow" v-if="addCustomerShow" >
-        <p>选择企蜂云账号成员：<a-button type="link">点击选择</a-button></p>
-        <div><p>当前剩余可添加账号：11</p><a-button type="primary">一键分配</a-button></div>
-        <div>
-          <a-table 
-          :columns="columns"
-          :dataSource="dataSource">
+    <a-modal title="添加成员" :visible="addCustomerShow" v-if="addCustomerShow" @cancle="handleCancelAdd" @ok="handleOkAdd" >
+      <div>
+        选择成员：<a-tree-select
+                  v-model="value"
+                  style="width: 80%"
+                  :tree-data="treeData"
+                  tree-checkable
+                  :show-checked-strategy="SHOW_PARENT"
+                  search-placeholder="请选择"
+                />
 
-          </a-table>
+      </div>
+    </a-modal>
+    <a-modal title="编辑成员" :visible="editStaffShow" v-if="editStaffShow" @cancle="handleCancelEditStaff" @ok="handleOkEditStaff">
+        <div>
+          <span>成员：</span><span></span>
+          <span>角色</span>
+        </div>
+        <div>
+          <span>角色:</span>
+          <a-select>
+            <a-select-option>拉拉啊</a-select-option>
+          </a-select>
         </div>
     </a-modal>
   </div>
 </template>
 
 <script>
+import { TreeSelect } from 'ant-design-vue';
+// const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 import TablePagination from "@/components/Table/TablePagination";
 import Search from "@/components/Search";
 export default {
@@ -46,7 +62,10 @@ export default {
     props:{},
     data() {
         return {
+          SHOW_PARENT:TreeSelect.SHOW_PARENT,
+          value:'',
           addCustomerShow:false,
+          editStaffShow:false,
           formList:[
             {
               type: "select",
@@ -114,7 +133,43 @@ export default {
             queryText:'',
             queryType:''
           },
-          pager:{}
+          pager:{},
+          treeData:[ {
+          title: 'Node1',
+          value: '0-0',
+          key: '0-0',
+          children: [
+            {
+              title: 'Child Node1',
+              value: '0-0-0',
+              key: '0-0-0',
+            },
+          ],
+          
+        },
+        {
+          title: 'Node2',
+          value: '0-1',
+          key: '0-1',
+          children: [
+            {
+              title: 'Child Node3',
+              value: '0-1-0',
+              key: '0-1-0',
+              disabled: true,
+            },
+            {
+              title: 'Child Node4',
+              value: '0-1-1',
+              key: '0-1-1',
+            },
+            {
+              title: 'Child Node5',
+              value: '0-1-2',
+              key: '0-1-2',
+            },
+          ],
+        },]
         }
     },
     created(){
@@ -143,6 +198,17 @@ export default {
       searchFun(){
 
       },
+      addCustmoer(){
+        this.addCustomerShow = true
+      },
+      handleCancelAdd(){
+        this.addCustomerShow = false
+      },
+      handleOkAdd(){},
+      handleCancelEditStaff(){
+        this.editStaffShow = false
+      },
+      handleOkEditStaff(){},
       paginationChange(){
 
       }

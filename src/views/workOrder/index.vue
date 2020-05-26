@@ -1,6 +1,9 @@
 <template>
     <div class="">
-          工单管理
+        <a-page-header title="工单管理" />
+        <div>
+            adfad 
+        </div>
     </div>
 </template>
 
