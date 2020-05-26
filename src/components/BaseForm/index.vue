@@ -139,7 +139,10 @@ export default {
       type: Object
     },
     defaultValues: {
-      type: Object
+      type: Object,
+      default: ()=>{
+        return {}
+      }
     }
   },
   components: {

@@ -10,19 +10,20 @@
           :pagination="false"
           :rowKey="record => record.id"
         >
-        <div slot="idSkip" slot-scope="record,row">
+          <div slot="idSkip" slot-scope="record,row">
             <span class="blue" @click="qualityDetail(row.id)">{{row.id}}</span>
           </div>
         </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
-    <a-modal title="质检详情" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
-      <div class="record-detail">
-        <div class="message">123</div>
-        <div class="information">7854</div>
-      </div>
-   </a-modal>
+    <Detail
+      v-if="qcId"
+      :detailsShow="detailsShow"
+      :qcId="qcId"
+      :type="qcType"
+      @closeModal="closeModal"
+    />
   </div>
 </template>
 
@@ -31,14 +32,21 @@ import moment from "moment";
 import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
+import Detail from "@/views/qualityTesting/detail";
 export default {
   components: {
     Search,
-    TablePagination
+    TablePagination,
+    Detail
   },
   data() {
     return {
-      detailsShow:false,
+      qcId: "",
+      qcType: 1,
+      form: {},
+      qualityObj: {},
+
+      detailsShow: false,
       pager: {
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         currentPage: 1,
@@ -107,7 +115,7 @@ export default {
           title: "通话ID",
           dataIndex: "callId",
           key: "callId",
-          scopedSlots: { customRender: 'idSkip' },
+          scopedSlots: { customRender: "idSkip" }
         },
         {
           title: "主叫号码",
@@ -180,15 +188,22 @@ export default {
   methods: {
     getList(params) {
       api.callphoneList(params).then(res => {
-        this.dataSource = res.data.list;
-        this.pager = res.data.pager
+        if (res.data.status) {
+          this.dataSource = res.data.list;
+          this.pager = res.data.pager;
+        }
       });
     },
-    qualityDetail(){
-      this.detailsShow = true
+
+    tabChange() {},
+    editForm() {},
+    onSubmit() {},
+    qualityDetail(id) {
+      this.qcId = id;
+      this.detailsShow = true;
     },
-    handleCancel(){
-      this.detailsShow = false
+    closeModal() {
+      this.detailsShow = false;
     },
     searchFun(values) {
       console.log("values", values);
@@ -200,16 +215,4 @@ export default {
   computed: {}
 };
 </script>
-<style lang="less" scoped>
-.record-detail{
-    display:flex;
-    .message{
-      width:380px;
-      border-right:1px solid #e6e6e6;
-    }
-    .information{
-      margin-left:48px;
-      width:384px;
-    }
-  }
-</style>
+

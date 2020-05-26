@@ -65,8 +65,8 @@
           <a-tab-pane key="3" tab="日志">
             <div class="logFlex">
               <li v-for="(item,index) in logList">
-                <span></span>
-                <span></span>
+                <span>{{item.logDate}}</span>
+                <span>{{item.logContent}}</span>
               </li>
             </div>
           </a-tab-pane>
@@ -122,6 +122,7 @@ export default {
     this.getMaterialInfo(this.obj);
     this.getFollowRecord(this.obj);
     this.getInfoTitle(this.obj);
+    this.getLogJson(this.obj);
   },
   methods: {
     getInfoTitle(params){
@@ -145,6 +146,18 @@ export default {
           this.materialList = res.data.list;
         }
       });
+    },
+    getLogJson(params){
+      api.logJson(params).then(res=>{
+        console.log("日志", res);
+        if(res.data.status){
+          this.logList = res.data.list;
+          // this.logList = [{
+          //   logDate:'2020-2-11 16:22:33',
+          //   logContent:'客户名称设置'
+          // }]
+        }
+      })
     },
     editCustomerModalShow(){
       console.log(this.obj,'详情的custId')
@@ -261,7 +274,9 @@ export default {
 }
 .logFlex {
   li{
-
+    span:last-child{
+      padding-left: 10px;
+    }
   }
 }
 </style>
