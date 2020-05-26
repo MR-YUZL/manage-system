@@ -1,6 +1,6 @@
 <template>
   <div class="sessionCenter">
-    <div class="operation" v-if="status == '2' && outCallTask.id=='1'">
+    <div class="operation" v-if="status == '2' && outCallTask && outCallTask.taskStatus=='0'">
          <a-popconfirm
             title="你确定要取消预约吗？"
             ok-text="确定"
@@ -17,12 +17,12 @@
         呼叫
         </a-button>
     </div>
-    <div class="operation" v-if="status == '2' && outCallTask.id=='2'">
+    <div class="operation" v-else-if="status == '2' && outCallTask && outCallTask.taskStatus=='2'">
         <a-button type="primary" ghost @click="addServer">
         填写服务小结
         </a-button>
     </div>
-    <div class="operation" v-if="status == '1'&& callStatus.status == 2">
+    <div class="operation" v-else-if="status == '1'&& callStatus.status == 2">
         <a-button type="primary" ghost @click="callBack">
          回拨
         </a-button>
@@ -30,7 +30,7 @@
         添加外呼任务
         </a-button>
     </div>
-    <div class="operation" v-if="status == '1' && callStatus.status == 1">
+    <div class="operation" v-else-if="status == '1' && callStatus.status == 1">
          <a-button type="primary" ghost  @click="addCallTask">
          添加外呼任务
         </a-button>
@@ -41,10 +41,13 @@
         添加本次服务小结
         </a-button>
     </div>
-    <Modal  :currentModal="transferObj" @toggleModal="toggleModal">
-        <div slot="content">
-            <base-form :formObject="transferObj" @toggleModal="toggleModal" @formSubmit="formSubmit" />
-        </div>
+    <div class="operation_null" v-else>
+       
+    </div>
+    <Modal  :currentModal="transferObj" @toggleModal="toggleModal" v-if="transferObj.visible">
+        <template slot="content">
+            <base-form :formObject="transferObj" @toggleModal="toggleModal" @formSubmit="formSubmit" v-if="transferObj.visible" />
+        </template>
         
     </Modal>
   
@@ -55,8 +58,10 @@
 <script>
 
 import userInf from './../../../../components/userInf/index'
-import BaseForm from './../../../../components/BaseForm'
+import BaseForm from './../../../../components/BaseForm/BaseFrom'
 import Modal from './../../../../components/Modal'
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import moment from 'moment'
 import {mapState} from 'vuex'
 export default {
   data: () => ({
@@ -66,13 +71,14 @@ export default {
       visible:false,
       ref:'callTask',
       type :'modalForm',
+      width:'500px',
       modelList:[
         {
           type:'date',
-          label:'指定客服人员',
+          label:'预约时间：',
           placeholder:'请选择',
           model:undefined,
-          ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
+          ruleName:'appointmentsTime', //receiverGroupId 工单受理组id
           options:[],
           rules:{
             required: true,
@@ -85,7 +91,7 @@ export default {
           label:'备注',
           placeholder:'',
           model:undefined,
-          ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
+          ruleName:'remark', //receiverGroupId 工单受理组id
         }
       ],
     },
@@ -94,14 +100,16 @@ export default {
       visible:false,
       ref:'addServer',
       type :'modalForm',
+      width:'500px',
       modelList:[
         {
           type:'cascader',
           label:'咨询分类',
           placeholder:'请选择',
           model:undefined,
-          ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
+          ruleName:'consuleId', //receiverGroupId 工单受理组id
           options:[],
+          fieldNames:{label: 'name', value: 'id', children: 'childrens'},
           rules:{
             required: true,
             message: '请选择咨询分类',
@@ -113,8 +121,8 @@ export default {
           label:'解决问题',
           placeholder:'请选择',
           model:undefined,
-          ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
-          options:[{key:'1',value:'已解决'},{key:'2',value:'未解决'}],
+          ruleName:'solveStatus', 
+          options:[{key:'1',value:'已解决'},{key:'0',value:'未解决'}],
           rules:{
             required: true,
             message: '请选择咨询分类',
@@ -126,7 +134,7 @@ export default {
           label:'咨询备注',
           placeholder:'请选择',
           model:undefined,
-          ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
+          ruleName:'remark', 
         }
       ],
     },
@@ -151,13 +159,24 @@ export default {
         }
       ],
     },
-    
+     formObject: {
+        type: "modalForm",
+        ref: "testModal",
+        modelList: [{
+          type: "input",
+          label: "test1",
+          ruleName: "test2",
+          model: "sss",
+          rules: [{ required: true, message: 'Please input Activity name', trigger: 'blur' }]
+        }],
+      },
  
   }),
   components: {
     userInf,
     BaseForm,
-    Modal
+    Modal,
+    FormModelSearchForm
    
   },
   mounted() {
@@ -165,37 +184,82 @@ export default {
   },
   methods: {
    addCallTask(){
-       
-       this.callTaskObj.visible = true
+       this["callTaskObj"]["visible"] = true;
        this.transferObj = this.callTaskObj
+
    },
   
-    confirm(e) {
-       this.Request.post('/hfw/workbench/deleteTask',{id:id}).then(res => {
+    confirm() {
+       this.Request.get('/hfw/workbench/deleteTask',{id:this.outCallTask.id}).then(res => {
             console.log(res.data)
-            //   if(res.data.status){
-                // this.$message.success('Click on Yes');
-            //   }
+              if(res.data.status){
+                this.$store.commit('getOutCallStatus')
+                this.$message.success('操作成功！');
+              }
         }) 
       
     },
     //添加服务小结
-    addServer(){
-        
-        this.addServerObj.visible = true
-       this.transferObj = this.addServerObj
+    async addServer(){
+        let result = await this.Request.get('/hfw/workbench/getSummarySort')
+        if(result.data.status){
+            this["addServerObj"]["visible"] = true;
+            this.addServerObj.modelList[0].options = result.data.list
+            this.transferObj = this.addServerObj
+        }
+    
+       
     },
     //呼叫，回拨
     callBack(){
        console.log('呼叫，回拨') 
     },
-   toggleModal(e){
-       console.log(e)
+   toggleModal(data){
+       console.log(data)
+       this.transferObj = {}
+       switch(data.ref){
+          case 'callTask':
+            this['addServerObj']['visible'] = data.visible
+            break;
+          case 'addServer':
+             this['addServerObj']['visible'] = data.visible
+             break;
+        }
    },
-   formSubmit(e){
-       console.log(e)
+   formSubmit(data){
+       console.log(data)
+       this.transferObj = {}
+       let url = ''
+       let obj = data.obj
+       switch(data.ref){
+          case 'callTask':
+            this['addServerObj']['visible'] = data.visible
+            url = '/hfw/workbench/saveTask'
+            obj.appointmentsTime = moment(obj.appointmentsTime).format("YYYY-MM-DD HH:SS:MM")
+            break;
+          case 'addServer':
+             this['addServerObj']['visible'] = data.visible
+             console.log(this.outCallTask)
+            //  obj.callId = this.outCallTask ?       //需要判断是通话记录还是外呼任务
+             
+             let [firstConsuleId,secondConsuleId,threeConsuleId] = obj.consuleId
+             obj.firstConsuleId = firstConsuleId
+             obj.secondConsuleId = secondConsuleId
+             obj.threeConsuleId = threeConsuleId
+             delete obj.consuleId
+             url = '/hfw/workbench/saveServiceSummary'
+             break;
+        }
+        obj.guestId = '7ca88132f26949b6bbc82f3b5a339735'
+        console.log(obj)
+        this.Request.post(url,obj).then(res => {
+            if(res.data.status){
+                 this.$message.success('操作成功！');
+            }
+        })
    },
-    
+  
+
   },
   watch: {},
   computed: {
@@ -221,6 +285,12 @@ export default {
               min-width: 85px;
               margin: 0 10px;
           }
+      }
+      .operation_null{
+          height: 43px;
+           border-top: 1px solid #e8e8e8;
+          border-top: 1px solid #e8e8e8;
+          background: #FFFFFF;
       }
   }
 </style>

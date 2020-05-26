@@ -7,31 +7,31 @@
         <div class="btn-area">
           <a-button type="primary" @click="editCustomerModalShow">编辑</a-button>
           <a-button type="primary" @click="createContactModalShow($event,'contactModalInner')">新建联系人</a-button>
-          <a-button type="primary">客户跟进</a-button>
+          <a-button type="primary" @click="customerFollow">客户跟进</a-button>
         </div>
         <ul class="flex">
           <li>
             <span>客服负责人</span>
-            <span>吴阿鹏</span>
+            <span>{{infos.principalAcc}}</span>
           </li>
           <li>
             <span>最近回访时间</span>
-            <span>吴阿鹏</span>
+            <span>{{infos.lastVisitDate}}</span>
           </li>
           <li>
             <span>客户来访次数</span>
-            <span>吴阿鹏</span>
+            <span>{{infos.visitCount}}</span>
           </li>
           <li>
             <span>客户创建时间</span>
-            <span>吴阿鹏</span>
+            <span>{{infos.inputDate}}</span>
           </li>
         </ul>
         <a-tabs default-active-key="1" @change="tabChange">
           <a-tab-pane key="1" tab="客户相关">
             <div class="contactFlex">
               <div class="contactHead">联系人(2)</div>
-              <div @click="createLinkman">
+              <div style="cursor: pointer;" @click="createContactModalShow($event,'contactModalInner')">
                 <a-icon type="plus" />添加联系人
               </div>
             </div>
@@ -39,8 +39,8 @@
               <li>
                 <span>
                   吴鹏
-                  <a-icon type="edit" />
-                  <a-icon type="delete" />
+                  <a-button icon="edit" type="link" @click="editContact"></a-button>
+                  <a-button icon="delete" type="link" @click="deleteContact"></a-button>
                 </span>
                 <span>
                   <i>手机号18767137823</i>
@@ -51,9 +51,9 @@
               </li>
             </ul>
             <!-- 服务小结 -->
-            <ServiceRecord :recordObj="serviceObj" />
+            <ServiceSummary :questionList="questionList" v-if="questionList.length" />
             <!-- 跟进记录 -->
-            <ServiceRecord :recordObj="followObj" />
+            <ServiceRecord :questionList="followList" v-if="followList.length" />
             <!-- 工单信息 -->
             <OrderInf :userInfList="userInfList" />
           </a-tab-pane>
@@ -73,7 +73,7 @@
         </a-tabs>
         <Modal :currentModal="contactModalInner">
           <template v-slot:content>
-            <CreateContact />
+            <CreateContact @closeCreateContact="closeCreateContact" />
           </template>
         </Modal>
       </template>
@@ -85,19 +85,15 @@
 import Modal from "@/components/Modal";
 import api from "@/api/customerCenter";
 import OrderInf from "@/components/userInf/OrderInf";
+import ServiceSummary from '@/components/userInf/ServiceSummary'
 import ServiceRecord from "@/components/userInf/ServiceRecord";
 import CreateContact from "@/views/customerCenter/customerManage/modal/createContact";
 export default {
   data() {
     return {
-      serviceObj: {
-        currentTit: "服务小结",
-        questionList: []
-      }, //客服小结
-      followObj: {
-        currentTit: "跟进记录",
-        questionList: []
-      },
+      infos:{},
+      questionList: [],//服务小结
+      followList:[],
       userInfList: [],
       obj: {
         custId: this.detailId
@@ -109,6 +105,7 @@ export default {
     };
   },
   components: {
+    ServiceSummary,
     ServiceRecord,
     OrderInf,
     Modal,
@@ -124,15 +121,25 @@ export default {
     this.getContactJson(this.obj);
     this.getMaterialInfo(this.obj);
     this.getFollowRecord(this.obj);
+    this.getInfoTitle(this.obj);
   },
   methods: {
+    getInfoTitle(params){
+      api.infoTitle(params).then(res=>{
+        console.log('头部',res)
+        if(res.data.status){
+          this.infos = res.data.infos;
+        }
+
+      })
+    },
     getContactJson(params) {
       api.contactInfo(params).then(res => {
         console.log("联系人列表", res);
       });
     },
     getMaterialInfo(params) {
-      api.materialInfo(params).then(res => {
+      api.customerDetail(params).then(res => {
         console.log("资料", res);
         if (res.data.status) {
           this.materialList = res.data.list;
@@ -140,13 +147,22 @@ export default {
       });
     },
     editCustomerModalShow(){
-      this.$emit("editCustomerShow")
+      console.log(this.obj,'详情的custId')
+      this.$emit("editCustomerShow",this.obj)
     },
+    customerFollow(){
+      this.$emit("customerFollowShow",this.obj)
+    },
+    editContact(){},
+    deleteContact(){},
     editCustomer() {},
-    createLinkman() {},
+    // createLinkman() {},
     toggleModal(value) {
       // this.currentModal.visible = value;
       // this.$emit("closeUpdate");
+    },
+    closeCreateContact(){
+      this.contactModalInner.visible = false;
     },
     createContactModalShow(e, name) {
       if (name) {
@@ -168,7 +184,7 @@ export default {
         "/hfw/workbench/getServiceSummary?guestId=" + this.detailId
       ).then(res => {
         console.log("服务小结", res.data.list);
-        this.serviceObj.questionList = res.data.list;
+        this.questionList = res.data.list;
       });
     },
     //获取跟进记录  
@@ -176,7 +192,7 @@ export default {
       api.detailFollowRecord(params).then(res=>{
         console.log('跟进记录',res)
         if(res.data.status){
-          this.followObj.questionList = res.data.list;
+          this.followList = res.data.list;
         }
       })
     },

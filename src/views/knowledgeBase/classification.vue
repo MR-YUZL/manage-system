@@ -12,9 +12,9 @@
           </div>
           <div class="addSortStyle" @click="addSort('first')"  v-if="!firstAddShow"><a-icon type="plus" />添加分类</div>
         </li>
-
+        <h3>全部分类</h3>
         <li v-for="(item,index) in firstLevel " :key="index" :class="{active:item.active}" @click="handleFirstLevel(index)">
-          <span  v-if="!item.edit">{{item.name}}</span>
+          <span  v-if="!item.edit">{{item.groupName}}</span>
           <a-input v-if="item.edit" v-model="editName"/> 
           <div class="sort-icon">
             <a-icon type="check" v-if="item.edit" @click="saveTags('first',item.id,index)"/>
@@ -24,52 +24,8 @@
         </li>
       </ul>
     </div>
-    <div class="sort" v-if="firstLevel.length>0"> 
-      <ul>
-        <li class="firstLi">
-          <div v-if="secondAddShow" class="firstLiDiv">
-            <a-input  v-model="fristAdd" placeholder="请输入" /> 
-            <div class="sort-icon">
-              <a-icon type="check" @click="saveNewTags('second')"/>
-              <a-icon type="delete" @click="deleteAddNewSort('second')"/>
-            </div>
-          </div>
-          <div class="addSortStyle" @click="addSort('second')"  v-if="!secondAddShow"><a-icon type="plus" />添加分类</div>
-        </li>
-        <li v-for="(item,index) in secondLevel " :key="index" :class="{active:item.active}" @click="handleSecondLevel(index)">
-          <span v-if="!item.edit" >{{item.name}}</span>
-          <a-input v-if="item.edit" v-model="editName"/> 
-          <div class="sort-icon">
-            <a-icon type="check" v-if="item.edit" @click="saveTags('second',item.id,index)"/>
-            <a-icon type="edit" @click="editTags('second',index,item.name)" v-if="!item.edit"/>
-            <a-icon type="delete" @click="delteTags('second',index,item.id)" />
-          </div>
-        </li>
-      </ul>
-    </div>
-    <div class="sort" v-if="threeLevelShow">
-      <ul> 
-         <li class="firstLi">
-          <div v-if="threeAddShow" class="firstLiDiv">
-            <a-input  v-model="fristAdd" placeholder="请输入" /> 
-            <div class="sort-icon">
-              <a-icon type="check" @click="saveNewTags('three')"/>
-              <a-icon type="delete" @click="deleteAddNewSort('three')"/>
-            </div>
-          </div>
-          <div class="addSortStyle" @click="addSort('three')"  v-if="!threeAddShow"><a-icon type="plus" />添加分类</div>
-        </li>
-        <li v-for="(item,index) in threeLevel " :key="index" :class="{active:item.active}"  @click="handlethreeLevel(index)">
-          <span  v-if="!item.edit">{{item.name}}</span>
-          <a-input v-if="item.edit" v-model="editName"/> 
-          <div class="sort-icon">
-            <a-icon type="check" v-if="item.edit" @click="saveTags('three',item.id,index)"/>
-            <a-icon type="edit" @click="editTags('three',index,item.name)" v-if="!item.edit"/>
-            <a-icon type="delete" @click="delteTags('three',index,item.id)" />
-          </div>
-        </li>
-      </ul>
-    </div>
+    
+
   </div>
 </template>
 <script>
@@ -79,9 +35,7 @@ export default {
   props:{
     list:{
       type:Array,
-      default:function(){
-        return []
-      }
+      default:[]
     },
     currentType:{
       type:String,
@@ -93,7 +47,6 @@ export default {
       firstLevel:[],
       secondLevel:[],
       threeLevel:[],
-      threeLevelShow:false,
       editName:'',
       firstAddShow:false,
       fristAdd:'',
@@ -108,8 +61,7 @@ export default {
     }
   },
   watch:{
-    list(value,old){
-      console.log(value,'value',old,'old')
+    list(value){
       if(value.length>0){
         this.firstLevel = [...this.list]
         this.firstLevel[0].active = true
@@ -117,26 +69,17 @@ export default {
         this.firstIndex = 0
         if(this.firstLevel[0].childList.length>0){
             this.secondLevel = this.firstLevel[0].childList
+            this.secondLevel[0].active = true
+            this.pid = this.secondLevel[0].id
             this.secondIndex = 0
           if(this.secondLevel[0].childList.length>0){
             this.threeLevel = this.secondLevel[0].childList
             this.threeLevel[0].active = true
+
           }
-        }else{
-           this.secondLevel = []
         }
-      }else{
-        this.firstLevel = []
-        this.secondLevel = []
-        this.threeLevel = []
       }
-    },
-    // currentType(key){
-    //     console.log(key,'我切换tab了')
-    //     if(key==1||key==0){
-    //       this.getSortList()
-    //     }
-    // }
+    }
   },
   created(){
     this.getInit()
@@ -163,32 +106,22 @@ export default {
       })
       this.firstLevel[index].active = true
       this.secondLevel = this.firstLevel[index].childList
-      if( this.secondLevel&&this.secondLevel.length>0){
-        this.secondLevel.map(item=>{
-          item.active = false
-        })
-        // this.secondLevel[0].active = true
-        // if(this.secondLevel[0].childList.length>0){
-        //   this.threeLevel = this.secondLevel[0].childList
-        // }
+      if( this.secondLevel.length>0){
+        this.secondLevel[0].active = true
+        if(this.secondLevel[0].childList.length>0){
+          this.threeLevel = this.secondLevel[0].childList
+        }
       }
-      this.threeLevelShow = false
     },
     handleSecondLevel(index){
       // this.pid = this.secondLevel[index].id
+  
       this.secondIndex = index
       this.secondLevel.map(item=>{
         item.active = false
       })
       this.secondLevel[index].active = true
-      this.threeLevel = this.secondLevel[index].childList || []
-      if( this.threeLevel.length>0){
-        this.threeLevel.map(item=>{
-          item.active = false
-        })
-
-      }
-      this.threeLevelShow = true
+      this.threeLevel = this.secondLevel[index].childList
     },
     handlethreeLevel(index){
       console.log(index)
@@ -203,12 +136,6 @@ export default {
       }
       if(type=='first'){
         this.firstLevel[index].edit = false 
-      }else if(type=='second'){ 
-        this.secondLevel[index].edit = false 
-        params.pid =  this.firstLevel[this.firstIndex].id
-      }else if(type == 'three'){
-        this.threeLevel[index].edit = false 
-        params.pid =  this.secondLevel[this.secondIndex].id
       }
       console.log('保存的参数',params)
       this.Request.post('/config/system/saveJson',params).then(res => {
@@ -225,45 +152,24 @@ export default {
     },
     saveNewTags(type){
       let params = {
-        name:this.fristAdd,
-        type:this.currentType,
+        groupName:this.fristAdd,
+        // id:this.currentType,
       }
       if(this.fristAdd ==''){
         this.$message.warn('请输入字段名！')
         return false;
       }
-      if(type=='second'){
-        params.pid = this.firstLevel[this.firstIndex].id
-      }
-      if(type == 'three'){
-         params.pid = this.secondLevel[this.secondIndex].id
-      }
-      this.Request.post('/config/system/saveJson',params).then(res => {
+
+      console.log(this.firstIndex,'这里是啥啥萨哈')
+
+     
+      this.Request.post('/hfw/tsmHfwKnowlegeGroup/saveJson',params).then(res => {
         console.log('新增',res.data.data)
         if(type=='first'){
           this.firstAddShow = false
           this.firstLevel.push(res.data.data)
-          this.firstLevel.map(item=>{
-            item.active = false
-          })
-          this.firstLevel[this.firstLevel.length-1].active = true
-          this.secondLevel = []
-          this.threeLevel = []
-        }else if(type == 'second'){
-          this.secondAddShow = false
-          this.secondLevel.push(res.data.data)
-          this.secondLevel.map(item=>{
-            item.active = false
-          })
-          this.secondLevel[this.secondLevel.length-1].active = true
-          this.threeLevel = []
-        }else if(type == 'three'){
-          this.threeAddShow = false
-          this.threeLevel.push(res.data.data)
-          this.secondLevel[this.secondIndex].childList =  this.threeLevel
         }
       })
-      this.$forceUpdate()
     },
     editTags(type,index,name){
        this.editName = name
@@ -272,17 +178,6 @@ export default {
           item.edit = false
         })
         this.firstLevel[index].edit = true
-      }else if(type=='second'){
-        this.secondLevel.map(item=>{
-          item.edit = false
-        })
-        this.secondLevel[index].edit = true
-      }else if(type=='three'){
-        console.log('====================')
-         this.threeLevel.map(item=>{
-          item.edit = false
-        })
-        this.threeLevel[index].edit = true
       }
       this.$forceUpdate()
     },
@@ -295,16 +190,9 @@ export default {
             console.log('分类列表',res.data.list)
             if(type=='first'){
               that.firstLevel.splice(index,1)
-              that.secondLevel = []
+              console.log('删除过的firstLever',that.firstLevel)
             }
-             if(type=='second'){
-              that.secondLevel.splice(index,1)
-               that.threeLevel = []
-               that.threeLevelShow = false
-            }
-             if(type=='three'){
-              that.threeLevel.splice(index,1)
-            }
+            
           })
           that.$forceUpdate()
         },
@@ -315,22 +203,10 @@ export default {
       if(type=='first'){
         this.firstAddShow = true
       }
-      if(type=='second'){
-        this.secondAddShow = true
-      }
-      if(type=='three'){
-        this.threeAddShow = true
-      }
     },
     deleteAddNewSort(type){
       if(type=='first'){
         this.firstAddShow = false
-      }
-      if(type=='second'){
-        this.secondAddShow = false
-      }
-      if(type=='three'){
-        this.threeAddShow = false
       }
     }
   }
@@ -345,8 +221,6 @@ export default {
     margin:0 15px;
     box-sizing: border-box;
     width:340px;
-    height:80vh;
-    overflow-y:scroll;
     ul{
       border-top:1px solid #e6e6e6;
     }
@@ -379,7 +253,7 @@ export default {
         }
       }
     }
-    .firstLi{
+    li.firstLi{
       .firstLiDiv{
         display: flex;
         justify-content: space-between;
@@ -407,28 +281,5 @@ export default {
       background:#fff;
     }
   }
-}
-
-.sort::-webkit-scrollbar
-{
-	width: 6px;
-	height:6px;
-	background-color: #F5F5F5;
-}
- 
-/*定义滚动条轨道 内阴影+圆角*/
-.sort::-webkit-scrollbar-track
-{
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-	border-radius: 10px;
-	background-color: #F5F5F5;
-}
- 
-/*定义滑块 内阴影+圆角*/
-.sort::-webkit-scrollbar-thumb
-{
-	border-radius: 10px;
-	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-	background-color: #ccc;
 }
 </style>

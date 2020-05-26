@@ -1,10 +1,15 @@
 <!-- 近期通话 -->
 <template>
 <div class='recentCalls'>
-    <div v-for="(item,index) in recentCallsList" :key="index" class="recentCalls_item" @click="selectCallInf(index)" :class="{ 'choose': index == select }">
-        <div><span>{{item.tel}}({{item.address}})</span><span>{{item.time}}</span></div>
-        <div><span>{{item.name}}</span><span>{{item.timeLong}}</span></div>
-        <div><span>{{item.type}}</span><span :class="item.callType == 1 || item.callType == 3 ? 'received':'missed'">{{item.callType== 1 ? '已接来电' : item.callType== 2 ? '未接来电' : '未接去电'}}</span></div>
+    <div v-if="recentCallsList && recentCallsList.length">
+        <div v-for="(item,index) in recentCallsList" :key="index" class="recentCalls_item" @click="selectCallInf(index)" :class="{ 'choose': index == select }">
+            <div><span>{{item.tel}}({{item.address}})</span><span>{{item.time}}</span></div>
+            <div><span>{{item.name}}</span><span>{{item.timeLong}}</span></div>
+            <div><span>{{item.type}}</span><span :class="item.callType == 1 || item.callType == 3 ? 'received':'missed'">{{item.callType== 1 ? '已接来电' : item.callType== 2 ? '未接来电' : '未接去电'}}</span></div>
+        </div>
+    </div>
+    <div class="noData" v-else>
+        <img src="./../../../../assets/imgs/noData.png" alt="">
     </div>
 </div>
 </template>

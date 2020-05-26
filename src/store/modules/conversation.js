@@ -135,9 +135,10 @@ const conversationModules = {
         })
         return
       }
-      console.log(conversationID)
+      
       const { nextReqMessageID, currentMessageList } = context.state
       tim.getMessageList({ conversationID, nextReqMessageID, count: 15 }).then(imReponse => {
+        console.log(imReponse)
         // 更新messageID，续拉时要用到
         context.state.nextReqMessageID = imReponse.data.nextReqMessageID
         context.state.isCompleted = imReponse.data.isCompleted

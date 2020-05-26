@@ -1,6 +1,6 @@
 <template>
-  <a-form-model :ref="formObject.ref" v-bind="formItemLayout" :model="formObject">
-    <div v-for="(item,index) in formObject.modelList" :key="index">
+  <a-form-model :ref="dataObj.ref" v-bind="formItemLayout" :model="dataObj">
+    <div v-for="(item,index) in dataObj.modelList" :key="index">
       <div v-if="item.type == 'font'" :style="{textAlign:'center'}">
         <p v-for="(value,ind) in item.content" :key="ind">{{value}}</p>
       </div>
@@ -9,26 +9,26 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'textarea'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
-        <a-input type="textarea" v-model="formData[item.ruleName]" :placeholder="item.placeholder" />
+        <a-input type="textarea" v-model="item.model" :placeholder="item.placeholder" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'input'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
-        <a-input v-model="formData[item.ruleName]" :placeholder="item.placeholder" />
+        <a-input v-model="item.model" :placeholder="item.placeholder" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'select'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
-        <a-select v-model="formData[item.ruleName]" :placeholder="item.placeholder">
+        <a-select v-model="item.model" :placeholder="item.placeholder">
           <a-select-option
             v-for="(val,index) in item.options"
             :key="index"
@@ -39,21 +39,21 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'radio'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
-        <a-radio-group v-model="formData[item.ruleName]" v-for="(val,index) in item.options" :key="index">
+        <a-radio-group v-model="item.model" v-for="(val,index) in item.options" :key="index">
           <a-radio :value="val.key">{{val.value}}</a-radio>
         </a-radio-group>
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'checkbox'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
         <a-checkbox-group
-          v-model="formData[item.ruleName]"
+          v-model="item.model"
           v-for="(val,index) in item.options"
           :key="index"
           :placeholder="item.placeholder"
@@ -64,36 +64,36 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'upload'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
-        <Upload :list="formData[item.ruleName]" />
+        <Upload :list="item.model" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'date'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
         <a-date-picker
           show-time
           type="date"
           style="width: 100%;"
-          v-model="formData[item.ruleName]"
+          v-model="item.model"
           :placeholder="item.placeholder"
         />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'treeSelect'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
         <a-tree-select
           style="width: 100%"
           :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
           allowClear
-          v-model="formData[item.ruleName]"
+          v-model="item.model"
           :treeData="item.options"
           :placeholder="item.placeholder"
         ></a-tree-select>
@@ -101,15 +101,19 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'cascader'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
-        <a-cascader v-model="formData[item.ruleName]" :options="item.options" :placeholder="item.placeholder" />
+        <a-cascader v-model="item.model" 
+        :options="item.options" 
+        :placeholder="item.placeholder"  
+        :field-names="item.fieldNames"
+       />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'tag'"
-        :prop="item.ruleName"
+        :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
         <template v-for="tag in item.options">
@@ -121,12 +125,9 @@
         </template>
       </a-form-model-item>
     </div>
-    <a-form-model-item
-      :wrapper-col="{ span: 24 }"
-      :style="formObject.type == 'modalForm'?{'text-align':'center'}:{'text-align':'right'}"
-    >
-      <a-button v-if="formObject.type == 'modalForm'" @click="handleModalState">取消</a-button>
-      <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">{{formObject.sureBtn || '确定'}}</a-button>
+    <a-form-model-item :wrapper-col="{ span: 24 }" :style="dataObj.type == 'modalForm'?{'text-align':'center'}:{'text-align':'right'}">
+      <a-button v-if="dataObj.type == 'modalForm'" @click="handleModalState">取消</a-button>
+      <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">确定</a-button>
     </a-form-model-item>
   </a-form-model>
 </template>
@@ -137,63 +138,71 @@ export default {
   props: {
     formObject: {
       type: Object
-    },
-    defaultValues: {
-      type: Object
     }
   },
   components: {
-    Upload
+    Upload,
+    
   },
-  watch: {
-    // 'defaultValues.updateTime': (val, oldVal) => {
-    //   console.log("defaultValues======", val, oldVal);
-    // }
-    defaultValues: {
-      handler(val,oldVal){
-        this.formData = Object.assign({},this.formData,val)
-        console.log(this.formData,"=====this.formData=====")
-      },
-      deep: true
-    }
-  },
+  watch: {},
   data() {
     return {
       formItemLayout: {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 }
       },
-      formData: {}
+      dataObj:{}
     };
   },
-  created() {
-    this.formData = this.defaultValues
-    console.log(this.formData,"=====this.formData=====")
+  mounted() {
+      this.dataObj = Object.assign({},this.formObject) 
   },
-  mounted() {},
   methods: {
+    //重置传入的值
+    resetVal(){
+        this.formObject.modelList.map(item => {
+            item.model = undefined
+        })
+    },
     onSubmit(e) {
       e.preventDefault();
       let _that = this;
-      _that.$refs[_that.formObject.ref].validate(valid => {
+      _that.$refs[_that.dataObj.ref].validate(valid => {
         if (valid) {
-          // let obj = {};
-          // _that.formObject.modelList.map(item => {
-          //   // if (this.selectedTags.length && item.type == "tag") {
-          //   //   obj[item.ruleName] = [...this.selectedTags];
-          //   // } else {
-          //   obj[item.ruleName] = item.model;
-          //   // }
-          // });
-          // _that.$emit("formSubmit", obj);
-          console.log(_that.formData)
+          let obj = {};
+          _that.dataObj.modelList.map(item => {
+            // if (this.selectedTags.length && item.type == "tag") {
+            //   obj[item.ruleName] = [...this.selectedTags];
+            // } else {
+            obj[item.ruleName] = item.model;
+            // }
+          });
+          let data = {
+              ref:this.dataObj.ref,
+              visible:false,
+              obj
+          }
+          _that.$emit("formSubmit", data);
+          this.resetVal()
         } else {
           return false;
         }
       });
     },
     handleModalState() {
-      this.$emit("toggleModal", false);
+     let obj = {
+         ref:this.dataObj.ref,
+         visible:false
+     }
+      this.$emit("toggleModal", obj);
+      this.resetVal()
+    },
+    loadData(selectedOptions){
+        console.log(selectedOptions)
+        this.$emit("onChange", selectedOptions);
+    },
+    onChange(val){
+        // this.$emit("onChange", val);
     }
   }
 };

@@ -51,7 +51,7 @@
             html-type="submit"
             @click="submitForm('dynamicValidateForm')"
           >保存</a-button>
-          <a-button style="margin-left: 10px" >取消</a-button>
+          <a-button style="margin-left: 10px" @click="handleCancel">取消</a-button>
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -63,6 +63,7 @@ export default {
   data() {
     return {
       visibles: this.visible,
+      custId:this.detailId,
       valueObj: {},
       dynamicValidateForm: {
         formList: []
@@ -84,20 +85,26 @@ export default {
             }
           ]
         }
-      ]
+      ],
     };
   },
   props: {
-    visible: Boolean
+    visible: Boolean,
+    detailId:String
   },
   watch: {
     visible(val) {
       this.visibles = val;
+    },
+    detailId(val) {
+      this.custId = val;
     }
   },
 
   mounted() {
     this.getForm();
+    this.getEditInfo()
+    console.log(this.custId,'this.detailId')
   },
   methods: {
     getForm() {
@@ -107,6 +114,13 @@ export default {
           this.dynamicValidateForm.formList = res.data.list;
         }
       });
+    },
+    //编辑客户
+    getEditInfo(){
+      api.customerDetail({custId:this.detailId}).then(res=>{
+        console.log('编辑客户回显',res)
+        // this.dynamicValidateForm.formList = res.data.list;
+      })
     },
     cityChange(value) {},
     submitForm(formName) {
@@ -142,7 +156,7 @@ export default {
     },
     handleSelectChange() {},
     onChange() {},
-    handleCancel(e) {
+    handleCancel() {
       this.visibles = false;
       this.$emit("closeUpdate");
     }

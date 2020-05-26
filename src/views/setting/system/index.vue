@@ -11,12 +11,12 @@
         </a-tabs>
         <div>
           <AddSort v-if="activeKey==0||activeKey==1" :list="list" :currentType="activeKey"/>
-          <TagsEdit v-if="activeKey==2||activeKey==3||activeKey==4"/>
+          <TagsEdit ref="tag" v-show="activeKey==2||activeKey==3||activeKey==4" :tagsList="tagsList"  :currentType="activeKey" @handleSubmit="handleSubmit" @deleteGroupTags="deleteGroupTags"/>
         </div>
       </div>
   </div>
 </template>
-
+s
 <script>
 import AddSort from "./AddSort"
 import TagsEdit from './TagsEdit'
@@ -30,21 +30,49 @@ export default {
     data() {
         return {
           activeKey:'0',
-          list:[]
+          list:[],
+          tagsList:[]
         }
-    },
+    }, 
     created(){
       this.getList()
+   
     },
     mounted(){},
     methods: {
       clickTabs(key){
         this.activeKey = key;
+        if(key=="0"||key=='1'){
+          this.getList()
+        }else{
+          this.getTagList()
+              console.log(this.$refs.tag)
+        }
       },
       getList(){
-        this.Request.get('/config/system/findTypeListJson').then(res=>{
-          // console.log(res.data.list)
+        this.Request.get('/config/system/findTypeListJson',{ type:this.activeKey}).then(res=>{
           this.list = res.data.list
+        })
+      },
+      getTagList(){
+        this.Request.get('/config/system/listJson',{ type:this.activeKey}).then(res=>{
+          this.tagsList = res.data.list
+        })
+      },
+      handleSubmit(params){
+         this.Request.post('/config/system/saveJson',params).then(res=>{
+           console.log(res,this.$refs.tag)
+           this.$message.success('添加成功')
+           this.$refs.tag.editTagsShow = false
+           this.getTagList()
+        })
+      },
+      deleteGroupTags(id){
+        this.Request.post('/config/system/delJson',{id}).then(res=>{
+          console.log(res,this.$refs.tag)
+          this.$message.success('删除成功！')
+          this.$refs.tag.editTagsShow = false
+          this.getTagList()
         })
       }
     }

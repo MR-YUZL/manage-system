@@ -1,84 +1,64 @@
 <!-- 外呼任务 -->
 <template>
     <div class='outCallTask'>
-        <div v-for="(item,index) in outCallTaskList" :key="index" class="outCallTask_item"  @click="selectCallInf(index)" :class="{ 'choose': index == select }">
-            <div><span>{{item.tel}}</span><span :class="item.status == 1 ? 'pending':'expired'">{{item.status == 1 ? '待处理' : '已过期'}}</span></div>
-            <div>{{item.time}}</div>
-            <div>{{item.text}}</div>
+        <div v-if="outCallTaskList && outCallTaskList.length">
+             <div v-for="(item,index) in outCallTaskList" :key="index" class="outCallTask_item"  @click="selectCallInf(index)" :class="{ 'choose': index == select }">
+                <div><span>{{item.telephone}}</span><span :class="item.taskStatus == 0 ? 'pending':'expired'">{{item.taskStatus == 0 ? '待处理' : '已过期'}}</span></div>
+                <div>{{item.appointmentsTime}}</div>
+                <div>{{item.remark}}</div>
+            </div>
+        </div>
+        <div class="noData" v-else>
+            <img src="./../../../../assets/imgs/noData.png" alt="">
         </div>
     </div>
 </template>
 
 <script>
-
+import {mapState} from 'vuex'
 export default {
 name:'outCallTask',
 components: {},
 data() {
     return {
         select:0,
-        outCallTaskList:[
-            {
-                tel:121111111,
-                status:1,
-                time:'2020-05-15 09:22',
-                text:'我是外呼任务就发士大夫艰苦了的疯狂拉升的开发发生发生',
-                id:1
-            },
-            {
-                tel:121111111,
-                status:2,
-                time:'2020-05-15 09:22',
-                text:'我是外呼任务就发士大夫艰苦了的疯狂拉升的开发发生发生'
-            },
-            {
-                tel:121111111,
-                status:2,
-                time:'2020-05-15 09:22',
-                text:'我是外呼任务就发士大夫艰苦了的疯狂拉升的开发发生发生'
-            },
-            {
-                tel:121111111,
-                status:2,
-                time:'2020-05-15 09:22',
-                text:'我是外呼任务就发士大夫艰苦了的疯狂拉升的开发发生发生'
-            },
-            {
-                tel:121111111,
-                status:2,
-                time:'2020-05-15 09:22',
-                text:'我是外呼任务就发士大夫艰苦了的疯狂拉升的开发发生发生'
-            },
-            {
-                tel:121111111,
-                status:2,
-                time:'2020-05-15 09:22',
-                text:'我是外呼任务就发士大夫艰苦了的疯狂拉升的开发发生发生'
-            },
-        ]
+        outCallTaskList:[]
     };
 },
-computed: {},
-watch: {},
+computed: {
+    ...mapState({
+        outCallStatus : state => state.basic.outCallStatus
+    })
+},
+watch: {
+   outCallStatus(newVal,oldVal){
+       if(!newVal){
+           console.log('ssss')
+           this.getRecentCallsList()
+       }
+       console.log('11111111111')
+   } 
+},
 //方法集合
 methods: {
-    //获取通话列表
+    //获取外呼列表
         getRecentCallsList(){
-             this.Request.get('hfw/workbench/getCallRecords').then(res => {
-                console.log(res.data)
-                //   if(res.data.status){
-                        // this.outCallTaskList = res.data.list
-                        this.$store.commit('getOutCallTask',{id:1,status:1})
-                //   }
+            this.outCallTaskList = []
+             this.Request.get('/hfw/workbench/getCallOutTask').then(res => {
+                  if(res.data.status){
+                      res.data.list.map(item => {
+                          if(item.taskStatus == 0 || item.taskStatus == 2){
+                              this.outCallTaskList.push(item)
+                          }
+                      })
+                        this.select = 0
+                        this.$store.commit('getOutCallTask',this.outCallTaskList[0])
+                  }
             }) 
         },
         selectCallInf(index){
             this.select = index
-            let obj = {
-                id:this.outCallTaskList[index].id,
-                status:this.outCallTaskList[index].status
-            }
-            this.$store.commit('getOutCallTask',obj)
+            this.$store.commit('getOutCallTask',this.outCallTaskList[index])
         },
       
 },
@@ -86,7 +66,7 @@ created() {
 
 },
 mounted() {
-    console.log('外呼任务')
+   
     this.getRecentCallsList()
 },
 }
