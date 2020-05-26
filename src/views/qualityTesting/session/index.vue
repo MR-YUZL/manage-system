@@ -17,12 +17,13 @@
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
-    <a-modal title="质检详情" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
-      <div class="record-detail">
-        <div class="message"></div>
-        <div class="information"></div>
-      </div>
-   </a-modal>
+    <Detail
+      v-if="qcId"
+      :detailsShow="detailsShow"
+      :qcId="qcId"
+      :type="qcType"
+      @closeModal="closeModal"
+    />
   </div>
 </template>
 
@@ -31,14 +32,18 @@ import moment from "moment";
 import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
+import Detail from "@/views/qualityTesting/detail";
 export default {
   components: {
     Search,
     TablePagination,
+    Detail
   },
   data() {
     return {
-      detailsShow:false,
+      qcId: "",
+      qcType: 0,
+      detailsShow: false,
       pager: {
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         currentPage: 1,
@@ -128,7 +133,7 @@ export default {
           title: "会话ID",
           dataIndex: "id",
           key: "id",
-          scopedSlots: { customRender: 'idSkip' },
+          scopedSlots: { customRender: "idSkip" }
         },
         {
           title: "接待客服",
@@ -186,9 +191,11 @@ export default {
         }
       ], // 表头
       dataSource: [], // 表格数据
-      params:{
-        serviceGroupId:'123', //客服组ID
-        qcStatus:'0',//质检状态(1已质检、0未质检)
+      params: {
+        //客服组ID
+        // serviceGroupId:'123',
+        //质检状态(1已质检、0未质检)
+        // qcStatus:'0',
       }
     };
   },
@@ -199,17 +206,20 @@ export default {
   methods: {
     getList(params) {
       api.sessionOnlineList(params).then(res => {
-        console.log('会话列表',res)
+        console.log("会话列表", res);
         this.dataSource = res.data.list;
-        this.pager = res.data.pager
+        this.pager = res.data.pager;
       });
     },
-    qualityDetail(){
-      this.detailsShow = true
+    qualityDetail(id) {
+      this.qcId = id;
+      this.detailsShow = true;
+      // this.getDetailInfo({id:id})
     },
-    handleCancel(){
-      this.detailsShow = false
+    closeModal() {
+      this.detailsShow = false;
     },
+    tabChange() {},
     searchFun() {},
     onSelectChange() {},
     paginationChange() {}
@@ -219,15 +229,15 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.record-detail{
-    display:flex;
-    .message{
-      width:380px;
-      border-right:1px solid #e6e6e6;
-    }
-    .information{
-      margin-left:48px;
-      width:384px;
-    }
+.record-detail {
+  display: flex;
+  .message {
+    width: 380px;
+    border-right: 1px solid #e6e6e6;
   }
+  .information {
+    margin-left: 48px;
+    width: 384px;
+  }
+}
 </style>
