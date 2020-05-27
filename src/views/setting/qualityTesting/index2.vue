@@ -13,7 +13,10 @@
           <!-- 搜索头用组件 -->
           <Search ref="searchHeader" :tools="formList" @onSearch="searchFun" />
 
-          <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" />
+          <FormModelSearchForm
+            :defaultFormValues="defaultSearchFormValues"
+            :formList="searchFormList"
+          />
           <!-- 按钮区 -->
           <div class="button-area">
             <div class="left-side">
@@ -65,17 +68,23 @@
     <Modal :currentModal="currentModal" @toggleModal="toggleModal">
       <template v-slot:content>
         <!-- <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" /> -->
-        <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" />
+        <FormModelSearchForm
+          :defaultFormValues="defaultSearchFormValues"
+          :formList="searchFormList"
+        />
         <a-button @click="handleModalShow($event,'modalInner')">ModalInner</a-button>
         <Modal :currentModal="modalInner">
-          <template v-slot:content>
-            111
-          </template>
+          <template v-slot:content>111</template>
         </Modal>
       </template>
     </Modal>
     <!-- <BaseForm :formObject="formObject" /> -->
-    <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" />
+    <BaseForm
+      :formObject="formObject"
+      :defaultValues="formAxiosReturnValues"
+      @toggleModal="toggleModal"
+      @formSubmit="formSubmit"
+    />
   </div>
 </template>
 
@@ -157,8 +166,8 @@ export default {
       formList: [
         {
           type: "compactSelectInput",
-          keys: ["queryType","queryText"],
-          defaultValues: ["1",""],
+          keys: ["queryType", "queryText"],
+          defaultValues: ["1", ""],
           options: [
             {
               label: "客户名称",
@@ -178,7 +187,7 @@ export default {
           type: "inputRange",
           key: "inputRange",
           title: "inputRange",
-          defaultValue: ["",""]
+          defaultValue: ["", ""]
         },
         {
           type: "input",
@@ -223,71 +232,135 @@ export default {
         title: "modalTitle",
         visible: false
       },
-      modalInner:{title:'modalInner',visible:false},
+      modalInner: { title: "modalInner", visible: false },
       formObject: {
         type: "modalForm",
         ref: "testModal",
-        modelList: [{
-          type: "input",
-          label: "test",
-          ruleName: "test",
-          model: "sss",
-          rules: [{ required: true, message: 'Please input Activity name', trigger: 'blur' }]
-        }],
+        modelList: [
+          {
+            type: "input",
+            label: "test",
+            ruleName: "test",
+            model: "sss",
+            rules: [
+              {
+                required: true,
+                message: "Please input Activity name",
+                trigger: "blur"
+              }
+            ]
+          }
+        ]
       },
       formAxiosReturnValues: {
         id: "id_123",
         test: "hello"
       },
-      searchFormList: [{
-        name: "input",
-        type: "input",
-        label: "inputName",
-        placeholder: "嘿嘿嘿"
-      },{
-        type: "select",
-        name: "select",
-        label: "selectName",
-        options: [{id:"五个字长度",key:"select1"},{id:"1",key:"select2"}],
-        optionValue: "key",
-        optionLabel: "id"
-      },{
-        type: "select",
-        name: "select2",
-        mode: "multiple",
-        label: "selectName2",
-        placeholder: "woqu"
-      },{
-        type: "datepicker",
-        name: "datepicker",
-        label: "datepickerName"
-      },{
-        type: "monthpicker",
-        name: "monthpicker",
-        label: "monthpickerName"
-      },{
-        type: "weekpicker",
-        name: "weekpicker",
-        label: "weekpickerName"
-      },{
-        type: "rangepicker",
-        name: "rangepicker",
-        label: "rangepickerName"
-      },{
-        type: "compact",
-        name: "compactInputName",
-        compact: "input",
-        compactName: "compactSelectName",
-        options: [{label:"select1",value:"select1"},{label:"select2",value:"select2"}]
-      },{
-        type: "inputCompact",
-        name: "inputCompact",
-        label: "inputCompact"
-      }],
+      searchFormList: [
+        {
+          name: "input",
+          type: "input",
+          label: "inputName",
+          placeholder: "嘿嘿嘿"
+        },
+        {
+          type: "select",
+          name: "select",
+          label: "selectName",
+          options: [
+            { id: "五个字长度", key: "select1" },
+            { id: "1", key: "select2" }
+          ],
+          optionValue: "key",
+          optionLabel: "id"
+        },
+        {
+          type: "select",
+          name: "select2",
+          mode: "multiple",
+          label: "selectName2",
+          placeholder: "woqu"
+        },
+        {
+          type: "datepicker",
+          name: "datepicker",
+          label: "datepickerName"
+        },
+        {
+          type: "monthpicker",
+          name: "monthpicker",
+          label: "monthpickerName"
+        },
+        {
+          type: "weekpicker",
+          name: "weekpicker",
+          label: "weekpickerName"
+        },
+        {
+          type: "rangepicker",
+          name: "rangepicker",
+          label: "rangepickerName"
+        },
+        {
+          type: "compact",
+          name: "compactInputName",
+          compact: "input",
+          compactName: "compactSelectName",
+          options: [
+            { label: "select1", value: "select1" },
+            { label: "select2", value: "select2" }
+          ]
+        },
+        {
+          type: "inputCompact",
+          name: "inputCompact",
+          label: "inputCompact"
+        },
+        {
+          type: "selectGroup",
+          name: "selectGroup",
+          label: "selectGroup",
+          mode: "multiple",
+          list: [
+            {
+              groupName: "技能组2",
+              groupId: "214231415",
+              staffs: [
+                {
+                  name: "cszh012",
+                  value: "cszh012"
+                }
+              ]
+            },
+            {
+              groupName: "技能组1",
+              groupId: "214231414",
+              staffs: [
+                {
+                  name: "cszh011",
+                  value: "cszh011"
+                },
+                {
+                  name: "测试企蜂云账号5",
+                  value: "cszh01"
+                },
+                {
+                  name: "测试企蜂云账号3",
+                  value: "cszh02"
+                },
+                {
+                  name: "cszh03",
+                  value: "cszh03"
+                }
+              ]
+            }
+          ]
+        }
+      ],
       defaultSearchFormValues: {
         input: "test",
         select: "select2",
-        datepicker: "2020-05-19",
+        datepicker: "2020-05-19"
         // monthpicker: moment("2019-02").format("YYYY-MM"),
         // weekpicker: "2020-05-19"
       }
@@ -320,27 +393,30 @@ export default {
       this.currentModal.visible = value;
     },
     formSubmit(values) {
-      console.log(values,"formSubmit========")
+      console.log(values, "formSubmit========");
     },
-    handleModalShow(e,name) {
-      if(name) {
+    handleModalShow(e, name) {
+      if (name) {
         this[name]["visible"] = true;
-      }else {
+      } else {
         this["currentModal"]["visible"] = true;
       }
     }
   },
   mounted() {
-    setTimeout(()=>{
-      this.formAxiosReturnValues.test = 333
+    setTimeout(() => {
+      this.formAxiosReturnValues.test = 333;
       this.formAxiosReturnValues["updateTime"] = new Date().getTime();
-      let filterItem = this.searchFormList.filter(it=>it.name=="select2")
-      if(filterItem) {
-        filterItem[0].options = [{label:"五个字长度",value:"select1"},{label:"1",value:"select2"}]
+      let filterItem = this.searchFormList.filter(it => it.name == "select2");
+      if (filterItem) {
+        filterItem[0].options = [
+          { label: "五个字长度", value: "select1" },
+          { label: "1", value: "select2" }
+        ];
       }
-      this.defaultSearchFormValues["input"] = "xxxxx"
-      console.log(this.formAxiosReturnValues)
-    },5000)
+      this.defaultSearchFormValues["input"] = "xxxxx";
+      console.log(this.formAxiosReturnValues);
+    }, 5000);
   }
 };
 </script>

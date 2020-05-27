@@ -28,6 +28,31 @@
           :value="item.optionValue?it[item.optionValue]:it['value']"
         >{{item.optionLabel?it[item.optionLabel]:it['label']}}</a-select-option>
       </a-select>
+      <!-- select group 下拉框 -->
+      <a-select
+        style="width: 174px;"
+        v-if="item.type=='selectGroup'"
+        v-model="formInline[item.name]"
+        :mode="item.mode?item.mode:'default'"
+        optionFilterProp="children"
+        :placeholder="item.placeholder"
+        allowClear
+      >
+        <a-select-opt-group
+          v-for="(group,groupIdx) in item.list"
+          :key="'formModelSelectGroup_'+groupIdx+'_'+group.groupId"
+        >
+          <span slot="label">
+            <a-icon type="apartment" />
+            {{group.groupName}}
+          </span>
+          <a-select-option
+            v-for="(groupOption,optionIdx) in item.groupOptionsName?group[item.groupOptionsName]:group['staffs']"
+            :key="'groupOption_'+optionIdx"
+            :value="groupOption.value"
+          >{{groupOption.name}}</a-select-option>
+        </a-select-opt-group>
+      </a-select>
       <!-- compact 组合 -->
       <a-input-group compact v-if="item.type=='compact'">
         <a-select style="min-width: 94px;" v-model="formInline[item.compactName]">
