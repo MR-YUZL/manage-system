@@ -50,7 +50,7 @@
     <ImportCustomerModal :visible="modals.importCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <ImportResultModal :visible="modals.importResultVisible" v-if="modals.importResultVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <CreateCustomerModal :visible="modals.createCustomerVisible" v-if="modals.createCustomerVisible" :detailId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <setLabelModal :visible="modals.setLabelVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <setLabelModal :visible="modals.setLabelVisible" v-if="modals.setLabelVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <followCustomerModal :visible="modals.followCustomerVisible" v-if="modals.followCustomerVisible" :followId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
     <DetailModal :visibleProps="detailObj" :detailId="detailId" v-if="detailObj.visible" @customerFollowShow="followCustomer" @editCustomerShow="editCustomerShow" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
   </div>
@@ -156,7 +156,7 @@ export default {
             return (
               <div>
                 操作
-                <AIcon onClick={this.setLabelClick} type="setting" />
+                <span style="padding-left:2px"><AIcon onClick={this.setLabelClick} type="setting" /></span>
               </div>
             );
           },

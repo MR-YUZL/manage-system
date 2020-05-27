@@ -22,7 +22,7 @@
         <div class="white-select">
           <div>
             <a-select placeholder="请选择"  v-model="DATA_40037" style="width: 200px" :disabled="radioValue==1?false:true">
-              <a-select-option v-for="(item) in customerList" :key="item.userAccount" :value="item.userAccount">{{item.userAccount}}</a-select-option>
+              <a-select-option v-for="(item) in customerList" :key="item.userAccount" :value="item.userAccount">{{item.userName}}</a-select-option>
             </a-select>
           </div>
           <div>

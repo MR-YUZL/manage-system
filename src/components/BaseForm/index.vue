@@ -126,7 +126,7 @@
       :style="formObject.type == 'modalForm'?{'text-align':'center'}:{'text-align':'right'}"
     >
       <a-button v-if="formObject.type == 'modalForm'" @click="handleModalState">取消</a-button>
-      <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">确定</a-button>
+      <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">{{formObject.sureBtn || '确定'}}</a-button>
     </a-form-model-item>
   </a-form-model>
 </template>
@@ -139,7 +139,10 @@ export default {
       type: Object
     },
     defaultValues: {
-      type: Object
+      type: Object,
+      default: ()=>{
+        return {}
+      }
     }
   },
   components: {

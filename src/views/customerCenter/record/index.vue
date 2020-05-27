@@ -9,7 +9,6 @@
           :dataSource="dataSource"
           :pagination="false"
           :rowKey="record => record.id"
-          :row-selection="rowSelection"
         >
           <div slot="detailSkip" slot-scope="record,row">
             <span class="blue" @click="customerDetail(row.id)">{{row.custName}}</span>
@@ -108,6 +107,9 @@ export default {
         pageSize: 10,
         totalRecord: 0,
         totalPage: 0
+      },
+      params:{
+        queryText:'测试'
       }
     };
   },
@@ -116,11 +118,16 @@ export default {
     TablePagination,
   },
   mounted() {
-    this.getList();
+    this.getList(this.params);
   },
   methods: {
-    getList() {
-      api.followRecordList().then(res => {});
+    getList(params) {
+      api.followRecordList(params).then(res => {
+        console.log('回访记录',res)
+        if(res.data.status){
+          this.dataSource = res.data.list;
+        }
+      });
     },
     customerDetail(){},
     searchFun() {},

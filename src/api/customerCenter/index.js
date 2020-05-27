@@ -64,6 +64,10 @@ export default {
   // materialInfo(params) {
   //   return axios.get('/customers/hfwCustomersInfo/editInfoJson', {params})
   // },
+  //客户管理-客户详情-日志  
+  logJson(params) {
+    return axios.get('/customers/hfwCustomersLog/listJson', {params})
+  },
   //客户管理-客户详情-跟进记录  
   detailFollowRecord(params) {
     return axios.get('/customers/hfwCustomersFollow/listJson', {params})
@@ -74,11 +78,15 @@ export default {
   },
   //线索管理list 
   clueManageList(params){
-    return axios.post('/customers/hfwCustomersClue/listPageJson', params)
+    return axios.get('/customers/hfwCustomersClue/listPageJson', {params})
   },
-  //跟进记录list 
+  //线索管理-导出 
+  exportClue(params){
+    return axios.post('/customers/hfwCustomersClue/exportJson', params)
+  },
+  //跟进记录list有分页 
   followRecordList(params){
-    return axios.post('/customers/hfwCustomersVisit/listPageJson', params)
+    return axios.post('/customers/hfwCustomersFollow/listPageJson', params)
   },
   //历史会话list 
   sessionList(params) {
@@ -90,6 +98,14 @@ export default {
   },
   //质量检测-电话质检 
   callphoneList(params) {
-    return axios.get('/callphone/qc/serach', {params})
+    return axios.post('/callphone/qc/serach', params)
+  },
+  //质量检测-电话质检-质检详情 
+  QcDetail(params) {
+    return axios.get('/callphone/qc/getQcDetail', {params})
+  },
+  //质量检测-电话质检-保存评分 
+  saveQc(params) {
+    return axios.post('/callphone/qc/saveQc', params)
   },
 }
