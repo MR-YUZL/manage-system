@@ -33,10 +33,8 @@ computed: {
 watch: {
    outCallStatus(newVal,oldVal){
        if(!newVal){
-           console.log('ssss')
            this.getRecentCallsList()
        }
-       console.log('11111111111')
    } 
 },
 //方法集合
@@ -66,7 +64,6 @@ created() {
 
 },
 mounted() {
-   
     this.getRecentCallsList()
 },
 }
