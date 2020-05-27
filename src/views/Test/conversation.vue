@@ -48,6 +48,11 @@ methods: {
             newGuestFlag:1   //是否是新访客, 1新访客, 0旧访客
         }
         this.Request.get('/guest/session/service/acc/assign',params).then(res => {
+
+
+
+
+            
             console.log(res.data)
             if(res.data.status){
                 
