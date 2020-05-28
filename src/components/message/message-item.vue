@@ -59,6 +59,13 @@
             :payload="message.payload"
             :message="message"
           />
+
+           <video-element
+            v-else-if="message.type === TIM.TYPES.MSG_VIDEO"
+            :isMine="isMine"
+            :payload="message.payload"
+            :message="message"
+          />
           <span v-else>暂未支持的消息类型：{{message.type}}</span>
         </div>
         
@@ -90,7 +97,7 @@ import FaceElement from './message-elements/face-element.vue'
 import ImageElement from './message-elements/image-element.vue'
 import TextElement from './message-elements/text-element.vue'
 import SoundElement from './message-elements/sound-element.vue'
-
+import VideoElement from './message-elements/video-element.vue'
 
 
 import CustomElement from './message-elements/custom-element.vue'
@@ -113,7 +120,7 @@ export default {
     ImageElement,
     TextElement,
     SoundElement,
-  
+    VideoElement,
     CustomElement,
     
     GeoElement,

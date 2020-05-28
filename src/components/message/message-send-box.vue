@@ -279,7 +279,6 @@ export default {
       this.messageContent += item
     },
     handleSendImageClick() {
-      console.log(this.$refs.imagePicker)
       this.$refs.imagePicker.click()
     },
     handleSendFileClick() {

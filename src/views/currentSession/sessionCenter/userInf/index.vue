@@ -41,6 +41,7 @@ export default {
   data: () => ({
     isShow:false,
     visitorInfoData:'',
+    serviceAcc:'',//客服账号
     arr:[],
     relateRedio:[], // 关联客户rediolist
     selectTagList:[],
@@ -50,6 +51,7 @@ export default {
       title:'结束服务',
       visible:false,
       ref:'endServer',
+      type :'modalForm',
       modelList:[
         {
           type:'cascader',
@@ -57,13 +59,9 @@ export default {
           label:'咨询分类',
           placeholder:'请选择',
           model:undefined,
-          ruleName:'receiverGroupId', 
-          options:[
-            {
-              value: '1',
-              label: 'Zhejiang',
-            }
-          ] ,
+          ruleName:'consultId', 
+          fieldNames:{label: 'name', value: 'id', children: 'childrens'},
+          options:[] ,
           rules:{
             required: true,
             message: '请选择咨询分类',
@@ -75,8 +73,8 @@ export default {
           label:'问题解决',
           placeholder:'请选择',
           model:undefined,
-          ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
-          options:[{key:'r',value:'已解决'},{key:'y',value:'未解决'}],
+          ruleName:'status', 
+          options:[{key:'1',value:'已解决'},{key:'0',value:'未解决'}],
           rules:{
             required: true,
             message: '请选择问题解决',
@@ -87,39 +85,11 @@ export default {
           type:'textarea',
           label:'文本框',
           model:'',
-          ruleName:'textarea'
+          ruleName:'advisoryRemark'
         },
       ],
     },
-    callTaskObj:{
-      title:'添加至外呼任务',
-      visible:false,
-      ref:'callTask',
-      type :'modalForm',
-      width:'500px',
-      modelList:[
-        {
-          type:'date',
-          label:'预约时间：',
-          placeholder:'请选择',
-          model:undefined,
-          ruleName:'appointmentsTime', //receiverGroupId 工单受理组id
-          options:[],
-          rules:{
-            required: true,
-            message: '请指定客服人员',
-            trigger: 'change',
-          }
-        },
-        {
-          type:'textarea',
-          label:'备注',
-          placeholder:'',
-          model:undefined,
-          ruleName:'remark', //receiverGroupId 工单受理组id
-        }
-      ],
-    },
+
     transferObj:{
       title:'转接',
       visible:false,
@@ -316,58 +286,52 @@ export default {
       newAddOrder(){
          this.modelObj1.visible = true 
          this.currentModal = this.modelObj1
-      },
-      formData(data){
-        // this.$emit('',data)
-        switch(data.visible){
-          case 'model':
-            this.modelObj1.visible = data.visible
-            break;
-          case 'transfer':
-             this.transferObj.visible = data.visible
-             break;
-        }
-          
-        console.log(data)
-        this.currentModal = {}
-        // this.modelObj1.visible = data.visible
-        console.log(this.modelObj1)
-        console.log('传过去提交的数据',data.data)
+    
       },
       toggleModal(data){
-       console.log(data)
+        console.log(data)
        this.currentModal = {}
        switch(data.ref){
-          case 'callTask':
-            this['addServerObj']['visible'] = data.visible
+          case 'transfer':
+            this['transferObj']['visible'] = data.visible
             break;
-          case 'addServer':
-             this['addServerObj']['visible'] = data.visible
+          case 'endServer':
+             this['endServerObj']['visible'] = data.visible
              break;
+          
         }
    },
    formSubmit(data){
        console.log(data)
-       this.transferObj = {}
+       this.currentModal = {}
        let url = ''
        let obj = data.obj
        switch(data.ref){
-          case 'callTask':
-            this['addServerObj']['visible'] = data.visible
-            url = '/hfw/workbench/saveTask'
-            obj.appointmentsTime = moment(obj.appointmentsTime).format("YYYY-MM-DD HH:SS:MM")
-            
-            break;
-          case 'addServer':
-             this['addServerObj']['visible'] = data.visible
-             obj.callId = ''
-             obj.firstConsuleId = ''
-             obj.secondConsuleId = ''
-             obj.threeConsuleId = ''
-             url = '/hfw/workbench/saveServiceSummary'
-             break;
+          case 'transfer':
+             this['transferObj']['visible'] = data.visible
+             obj = {
+               serviceAcc: obj.receiverGroupId[obj.receiverGroupId.length - 1],
+               sessionId:''
+             }
+             url = '/session/transfer/to'
+             break; 
+           case 'endServer':
+             this['endServerObj']['visible'] = data.visible
+             let [firstConsuleId,secondConsuleId,threeConsuleId] = obj.consuleId
+             obj.firstConsuleId = firstConsuleId
+             obj.secondConsuleId = secondConsuleId
+             obj.threeConsuleId = threeConsuleId
+             delete obj.consuleId
+             obj = {
+               sessionId:'',
+               status:obj.status,
+               advisoryRemark:obj.advisoryRemark
+             }
+             url = '/session/end'
+             break;      
         }
-        obj.guestId = '7ca88132f26949b6bbc82f3b5a339735'
+      
+      
         console.log(obj)
         this.Request.post(url,obj).then(res => {
             if(res.data.status){
@@ -376,11 +340,26 @@ export default {
         })
    },
       //转接
-      transfer(){
-        this.getCustomer()
-        this['transferObj']['visible'] = true 
-        this.currentModal = this.transferObj
+      async transfer(){
+        let obj = {
+          sessionId:1
+        }
+        let result = await this.Request.get('/session/transfer/service/acc/search',obj)
+        // if(result.data.status){
+        //   if(result.data.list.length){
+            this.getCustomer()
+            this['transferObj']['visible'] = true 
+            this.currentModal = this.transferObj
+        //   }else{
+        //     this.$message.warning('当前没有其他客服在线，无法转接！');
+        //   }
+          
+        // }else{
+        //   this.$message.warning(result.data.msg);
+        // }
+     
       },
+     
       //获取客服列表
       getCustomer(){
         this.Request.get('/session/transfer/tree/info').then(res => {
@@ -429,6 +408,7 @@ export default {
           let re = res.data
           if(re.status){
             console.log(re)
+            this.endServerObj['modelList'][0]['options'] = re.list
            
       
           }

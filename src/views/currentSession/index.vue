@@ -32,7 +32,7 @@ export default {
    login(){
        this.tim.login({
           userID: 'user1',
-          userSig: 'eJwtzEELgjAYxvHvsnPIq9tsCp2iDuJBcNTZ2Ku*ZDY2DSv67ol6fH4P-L9M52XwQsdSFgXAdssmg-1ANS08enThdnhzr6wlw9JQAHApRRivz0APnFWqRCmuOF8VJ0tu9hiEAtga1MzVvvBJfZpu5rIv5VgUWf7puqO*Zu*8jbSX*PSVcwjNGQ7s9wfTCzGU'
+          userSig:'eJwtzEELgjAYxvHvsnPI69zmErqUSInkYUFdoy15qTWZVmb03RP1*Pwe*H-JoVDBy3iSEBoAWYwbtXm0eMWRn43x4Xw0*naua9QkCRlAxDkLxfS0aM2gfAmcSyqiSU1Xox9cAJMAcwOrodq7bZdncbVzd5umZR-n74-aSH0yZcYVbfeuOEaNpXZ9WZHfH8ooMSU_'
         })
         .then(() => {
           console.log('成功')
@@ -121,7 +121,10 @@ export default {
     async onUpdateConversationList(event) {
       console.log('会话列表更新')
       
-      // let res = await this.Request.get('/session/guest/my/all/list')
+      let res = await this.Request.get('/session/guest/my/all/list')
+      console.log(res)
+      console.log('res----------------------')
+
        this.$store.commit('updateConversationList', event.data)
       
       // if(res.data.status){
@@ -131,14 +134,7 @@ export default {
       // }
       
     },
-    // getSessionList(){
-    //   this.Request.get('/session/guest/my/all/list').then(res => {
-    //     if(res.data.status){
-    //       // console.log(this.)
-    //     }
-    //       console.log('会话列表',res.data)
-    //     })  
-    // }
+   
   },
   watch: {},
   computed: {

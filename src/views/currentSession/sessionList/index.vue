@@ -28,8 +28,8 @@ export default {
     sessionItem
   },
   mounted() {
-    console.log(this.conversationList)
-    this.getSessionList()
+    // console.log(this.conversationList)
+    // this.getSessionList()
   },
   methods: {
    getIsSDKReady(){
@@ -60,7 +60,6 @@ export default {
       }
     },
     conversationList(a,b){
-      console.log(a,b)
       if(a){
         this.conversationList = a
       }

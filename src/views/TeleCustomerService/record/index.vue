@@ -12,6 +12,10 @@
         <a-table :columns="columns" :dataSource="dataList" :pagination='false' :rowKey="record => record.id"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           >
+           <div slot="callId" slot-scope="record,row">
+             <span class="blue" @click="checkMessage(row)">{{row.callId}}</span>
+          </div>
+          <span slot="callType" slot-scope="record,row">{{row.callType == 1 ? '来电已接' : row.callType == 2 ?  '来电未接' : row.callType == 3 ? '去电已接':row.callType == 4 ? '去电未接':''}}</span>
           <a slot="action" slot-scope="text" href="javascript:;" @click="playRecording(text)">
             播放录音
           </a>
@@ -19,13 +23,19 @@
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
+     <a-modal title="记录" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
+      <div class="record-detail">
+        <div class="message"><MessageDetail :telInf="telInf"  /> </div>
+        <div class="information"><UserInformation  :guestId="guestId"/></div>
+      </div>
+   </a-modal>
   </div>
 </template>
 
 <script>
 import UserInformation from './../../../components/userInf'
 import Search from './../../../components/Search/index'
-import MessageDetail from './../../messageRecord/messageDetail'
+import MessageDetail from './messageDetail'
 import TablePagination from "./../../../components/Table/TablePagination"
 
 
@@ -74,11 +84,13 @@ export default {
         }
       ],
       searchField: {},
+      detailsShow:false,
       columns:[
         {
           title: '通话ID',
           dataIndex: 'callId',
           key: '1',
+          scopedSlots: { customRender: 'callId' },
         },
         {
           title: '客户名称',
@@ -89,6 +101,7 @@ export default {
           title: '通话类型',
           dataIndex: 'callType',
           key: '3',
+          scopedSlots: { customRender: 'callType' },
 
         },
         {
@@ -157,7 +170,8 @@ export default {
         name:'',
         con:''
       },
-      guestId:''
+      guestId:'',
+      telInf:{}
     }
   },
   mounted() {
@@ -174,7 +188,10 @@ export default {
         this.pager = Object.assign({},this.pager,page)
       })
     },
-   
+    checkMessage(row){
+      this.telInf = row
+      this.detailsShow = true
+    },
     onShowSizeChange(current, pageSize) {
       this.pager.pageSize = pageSize;
       this.pager.currentPage = 1;
@@ -200,7 +217,10 @@ export default {
     //播放录音
     playRecording(text){
       console.log(text)
-    }
+    },
+    handleCancel(){
+      this.detailsShow = false
+    },
   },
   watch: {},
   computed: {}
