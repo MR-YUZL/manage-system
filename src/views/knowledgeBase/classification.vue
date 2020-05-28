@@ -12,11 +12,10 @@
           </div>
           <div class="addSortStyle" @click="addSort('first')"  v-if="!firstAddShow"><a-icon type="plus" />添加分类</div>
         </li>
-        <h3>全部分类</h3>
-        <li v-for="(item,index) in firstLevel " :key="index" :class="{active:item.active}" @click="handleFirstLevel(index)">
+        <li v-for="(item,index) in firstLevel " :key="index" :class="{active:item.active == true}" @click="handleFirstLevel(index)">
           <span  v-if="!item.edit">{{item.groupName}}</span>
-          <a-input v-if="item.edit" v-model="editName"/> 
-          <div class="sort-icon">
+          <a-input @click.stop v-if="item.edit" v-model="editName"/> 
+          <div class="sort-icon" @click.stop>  
             <a-icon type="check" v-if="item.edit" @click="saveTags('first',item.id,index)"/>
             <a-icon type="edit" @click="editTags('first',index,item.name)" v-if="!item.edit"/>
             <a-icon type="delete" @click="delteTags('first',index,item.id)" />
@@ -24,8 +23,6 @@
         </li>
       </ul>
     </div>
-    
-
   </div>
 </template>
 <script>
@@ -33,56 +30,24 @@ export default {
   name: "addSort",
   components: {},
   props:{
-    list:{
-      type:Array,
-      default:[]
-    },
-    currentType:{
-      type:String,
-      default:'0'
-    }
+  
   },
   data() {
     return {
       firstLevel:[],
-      secondLevel:[],
-      threeLevel:[],
       editName:'',
       firstAddShow:false,
       fristAdd:'',
-      secondAddShow:false,
-      secondAdd:'',
+    
       pid:'',
-      threeAddShow:false,
-      threeAdd:'',
       firstIndex:'',
-      secondIndex:'',
-      threeIndex:''
     }
   },
   watch:{
-    list(value){
-      if(value.length>0){
-        this.firstLevel = [...this.list]
-        this.firstLevel[0].active = true
-        this.pid = this.firstLevel[0].id
-        this.firstIndex = 0
-        if(this.firstLevel[0].childList.length>0){
-            this.secondLevel = this.firstLevel[0].childList
-            this.secondLevel[0].active = true
-            this.pid = this.secondLevel[0].id
-            this.secondIndex = 0
-          if(this.secondLevel[0].childList.length>0){
-            this.threeLevel = this.secondLevel[0].childList
-            this.threeLevel[0].active = true
-
-          }
-        }
-      }
-    }
+  
   },
   created(){
-    this.getInit()
+    this.getSortList()
   },
   mounted(){},
   methods: {
@@ -90,12 +55,15 @@ export default {
 
     },
     getSortList(){
-      let params = {
-        type:this.currentType,
-        pid:''
-      }
-      this.Request.post('/config/system/findTypeListJson',params).then(res => {
-        console.log('分类列表',res.data.list)
+     
+      this.Request.post('/hfw/tsmHfwKnowlegeGroup/listJson').then(res => {
+        if(res.data.status){
+            let obj = res.data.list[0]
+            obj['active'] = true
+            this.$set(this.firstLevel,0,obj)
+            this.firstLevel = [...res.data.list]
+            this.$store.commit('getClassificationId',this.firstLevel[0].id)
+        }
       })
     },
     handleFirstLevel(index){
@@ -103,49 +71,33 @@ export default {
       this.firstIndex = index
       this.firstLevel.map(item=>{
         item.active = false
+        item.edit = false
       })
-      this.firstLevel[index].active = true
-      this.secondLevel = this.firstLevel[index].childList
-      if( this.secondLevel.length>0){
-        this.secondLevel[0].active = true
-        if(this.secondLevel[0].childList.length>0){
-          this.threeLevel = this.secondLevel[0].childList
-        }
-      }
+      let obj = this.firstLevel[index]
+      obj['active'] = true
+      this.$set(this.firstLevel,index,obj)
+      this.$store.commit('getClassificationId',this.firstLevel[index].id)
+     
     },
-    handleSecondLevel(index){
-      // this.pid = this.secondLevel[index].id
-  
-      this.secondIndex = index
-      this.secondLevel.map(item=>{
-        item.active = false
-      })
-      this.secondLevel[index].active = true
-      this.threeLevel = this.secondLevel[index].childList
-    },
-    handlethreeLevel(index){
-      console.log(index)
-    },
+   
+    
     saveTags(type,id,index){
       // id name  type pid   id 用于编辑  pid 用于新增 父类的
-      console.log(this.currentType) 
+      if(this.editName ==''){
+        this.$message.warn('分类名不能为空！')
+        return false;
+      }
       let params = {
         id,
-        name:this.editName,
-        type:this.currentType,
+        groupName:this.editName,
+        
       }
       if(type=='first'){
         this.firstLevel[index].edit = false 
       }
-      console.log('保存的参数',params)
-      this.Request.post('/config/system/saveJson',params).then(res => {
-        console.log('编辑过的',res.data.data)
+      this.Request.post('/hfw/tsmHfwKnowlegeGroup/saveJson',params).then(res => {
         if(type=='first'){
-          this.firstLevel[index].name = res.data.data.name
-        }else if(type=='second'){
-          this.secondLevel[index].name = res.data.data.name
-        }else if(type=='three'){
-          this.threeLevel[index].name = res.data.data.name
+          this.firstLevel[index].groupName = res.data.data.groupName
         }
       })
       this.$forceUpdate()
@@ -153,21 +105,18 @@ export default {
     saveNewTags(type){
       let params = {
         groupName:this.fristAdd,
-        // id:this.currentType,
+        
       }
       if(this.fristAdd ==''){
-        this.$message.warn('请输入字段名！')
+        this.$message.warn('请输入分类名！')
         return false;
       }
 
-      console.log(this.firstIndex,'这里是啥啥萨哈')
-
-     
       this.Request.post('/hfw/tsmHfwKnowlegeGroup/saveJson',params).then(res => {
-        console.log('新增',res.data.data)
         if(type=='first'){
           this.firstAddShow = false
-          this.firstLevel.push(res.data.data)
+          this.getSortList()
+        //   this.firstLevel.push(res.data.data)
         }
       })
     },
@@ -186,11 +135,9 @@ export default {
        this.$confirm({
         content:<div style="color:red;">确定要删除这个分类吗？</div>,
         onOk() {
-          that.Request.post('/config/system/delJson',{id}).then(res => {
-            console.log('分类列表',res.data.list)
+          that.Request.post('/hfw/tsmHfwKnowlegeGroup/delJson',{id}).then(res => {
             if(type=='first'){
               that.firstLevel.splice(index,1)
-              console.log('删除过的firstLever',that.firstLevel)
             }
             
           })
@@ -217,12 +164,16 @@ export default {
 .addSort{
   display:flex;
   margin-right:20px;
+  border-right:1px solid #e6e6e6;
   .sort{
-    margin:0 15px;
+    // margin:0 15px;
     box-sizing: border-box;
     width:340px;
     ul{
-      border-top:1px solid #e6e6e6;
+    //   border-top:1px solid #e6e6e6;
+       .all{
+          line-height: 40px;
+      }
     }
     li{
       cursor: pointer;
@@ -232,9 +183,9 @@ export default {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom:1px solid #e6e6e6;
-      border-left:1px solid #e6e6e6;
-      border-right:1px solid #e6e6e6;
+    //   border-bottom:1px solid #e6e6e6;
+    //   border-left:1px solid #e6e6e6;
+    //   border-right:1px solid #e6e6e6;
       .sort-icon{
         display: none;
       }
@@ -247,11 +198,23 @@ export default {
       border-left:2px solid #3f7af8;
       background:#f7f8fa;
       .sort-icon{
+        // display: block;
+        i{
+          margin:0 10px;
+        }
+      }
+    }
+    li.active{
+    
+      .sort-icon{
         display: block;
         i{
           margin:0 10px;
         }
       }
+    }
+    li:nth-of-type(2){
+        // border-top:1px solid #e6e6e6;
     }
     li.firstLi{
       .firstLiDiv{
@@ -276,6 +239,7 @@ export default {
         // justify-content: space-between;
         align-items: center;
       }
+     
     }
     li.firstLi:hover{
       background:#fff;

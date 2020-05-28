@@ -4,6 +4,7 @@ const basic = {
         callStatus:{},//通话状态
         outCallTask:{},//选中的外呼任务信息
         outCallStatus:true,//选中的外呼任务状态
+        classificationId:'',//知识库分类id
     },
     mutations : {
         getStatus(state,status){
@@ -19,6 +20,9 @@ const basic = {
         },
         getOutCallStatus(state,outCallStatus){
             state.outCallStatus = outCallStatus
+        },
+        getClassificationId(state,classificationId){
+            state.classificationId = classificationId
         }
     },
     action : {

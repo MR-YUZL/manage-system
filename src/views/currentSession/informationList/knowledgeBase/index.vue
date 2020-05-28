@@ -9,20 +9,20 @@
                     class="menu"
                     @click="handleChangeItem">
                     <template v-for="item in list">
-                         <a-menu-item :key="item.id" v-if="!item.children || item.children.length == 0">
-                            {{item.text}}
+                         <a-menu-item :key="item.id" v-if="!item.knowlegeBeanList || item.knowlegeBeanList.length == 0">
+                            {{item.groupName || item.title}}
                         </a-menu-item>
-                        <a-sub-menu v-if="item && item.children && item.children.length > 0" :key="item.id"> 
-                            <span slot="title">{{item.text}}</span>
-                            <a-menu-item v-for="(val) in item.children" :key="val.id">
+                        <a-sub-menu v-if="item && item.knowlegeBeanList && item.knowlegeBeanList.length > 0" :key="item.id"> 
+                            <span slot="title">{{item.groupName}}</span>
+                            <a-menu-item v-for="(val) in item.knowlegeBeanList" :key="val.id">
                                 <a-tooltip placement="bottomLeft">
                                     <template slot="title">
-                                    {{val.text}}
+                                    {{val.content}}
                                     </template>
-                                    {{val.text}}
+                                    {{val.title}}
                                 </a-tooltip>
                             </a-menu-item>
-                    </a-sub-menu>    
+                        </a-sub-menu>    
                     </template>
                 </a-menu>
          </div>
@@ -38,44 +38,7 @@ data() {
     return {
         message:'',
         // openKeysList: [],
-        list : [ {
-            "id" : "9999",
-            "text" : "未分组",
-            "ext" : "",
-            "state" : "",
-            "attributes" : {
-            "type" : "G"
-            },
-            "children" : []
-        },{
-            "id" : "222",
-            "text" : "未分组222",
-            "ext" : "",
-            "state" : "",
-            "attributes" : {
-            "type" : "G"
-            },
-            "children" : [
-                {
-                    "id" : "229",
-                    "text" : "飞洒地方dfafdsafdsfdf广泛受到法国大使馆犯得上广泛的孤独感",
-                    "ext" : "",
-                    "state" : "",
-                    "attributes" : {
-                    "type" : "G"
-                    },
-                },
-                {
-                    "id" : "2292",
-                    "text" : "西方发达",
-                    "ext" : "",
-                    "state" : "",
-                    "attributes" : {
-                    "type" : "G"
-                    },
-                }
-            ]
-        } ],
+        list : [ ],
     
     };
 },
@@ -85,38 +48,32 @@ computed: {
 watch: {},
 //方法集合
 methods: {
-    selectFont(val){
-        console.log(val)
-        this.message = val
-        this.$bus.$emit('message',this.message )
-    },
-    onSearch(value) {
-      console.log(value);
-    },
-    //获取知识库信息
-    getKnowledgeBase(){
-        this.Request.get('hfw/tsmHfwKnowlegeGroup/listJson').then(res => {
-          console.log('获取知识库信息',res.data)
-        //   if(res.data.status){
-
-        //   }
+  
+    onSearch(value) {  
+      let obj = {
+          title:value
+      }
+      this.Request.get('/hfw/tsmHfwKnowlegeGroup/getListByTitle',obj).then(res => {
+          if(res.data.status){
+              this.list = res.data.list
+          }
         })  
     },
-    handleChangeItem(item, key, keyPath) {
-        console.log(item, key, keyPath)
-        this.message = this.mapData(this.list,item.key)
+    
+    handleChangeItem(key) {
+        this.message = this.mapData(this.list,key.key)
         this.$bus.$emit('message',this.message )
 
     
     },
     mapData(list,key){
+
         list.map(item => {
             if(item.id == key){
-                this.message = item.text
-                return;
+                this.message = item.content || item.groupName
             }else{
-                if(item.children && item.children.length){
-                    this.mapData(item.children,key)
+                if(item.knowlegeBeanList && item.knowlegeBeanList.length){
+                    this.mapData(item.knowlegeBeanList,key)
                 }
             }
         })
@@ -128,7 +85,7 @@ created() {
 
 },
 mounted() {
-    this.getKnowledgeBase()
+    this.onSearch()
 },
  beforeDestroy() {
     this.$bus.$off('message',this.message )

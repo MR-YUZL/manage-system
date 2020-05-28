@@ -36,5 +36,7 @@ export default {
 <style lang="less" scoped>
   .knowledgeBase{
       background: #fff;
+      display: flex;
+      padding: 20px;
   }
 </style>
