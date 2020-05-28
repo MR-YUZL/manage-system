@@ -2,7 +2,12 @@
   <div>
     <a-page-header title="通话质检" style="padding:16px 0;" />
     <div class="box">
-      <Search :tools="searchList" @onSearch="searchFun" />
+      <!-- <Search :tools="searchList" @onSearch="searchFun" /> -->
+      <FormModelSearchForm
+        :defaultFormValues="defaultSearchFormValues"
+        :formList="searchFormList"
+        @prevHandleSubmit="prevHandleSubmit"
+      />
       <div>
         <a-table
           :columns="columns"
@@ -33,9 +38,10 @@ import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
 import Detail from "@/views/qualityTesting/detail";
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
   components: {
-    Search,
+    FormModelSearchForm,
     TablePagination,
     Detail
   },
@@ -54,59 +60,57 @@ export default {
         totalRecord: 0,
         totalPage: 0
       },
-      searchList: [
+      searchFormList: [
         {
-          type: "dateRange",
-          title: "通话时间",
-          key: "callDate",
-          ranges: {
-            近7天: [moment().subtract(6, "days"), moment()],
-            近30天: [moment().subtract(29, "days"), moment()]
-          }
+          type: "rangepicker",
+          label: "通话时间",
+          name: "callDate",
+          
         },
         {
           type: "select",
-          title: "质检状态",
-          key: "qcStatus",
-          defaultValue: "null",
+          label: "质检状态",
+          name: "qcStatus",
           options: [
-            { value: "null", name: "全部" },
-            { value: 0, name: "未质检" },
-            { value: 1, name: "已质检" }
-          ]
+            { key: "null", id: "全部" },
+            { key: 0, id: "未质检" },
+            { key: 1, id: "已质检" }
+          ],
+          optionValue: "key",
+          optionLabel: "id"
         },
         {
           type: "input",
-          title: "质检人",
-          key: "qcAcc",
+          label: "质检人",
+          name: "qcAcc",
           placeholder: "请输入"
         },
         {
           type: "select",
-          title: "通话类型",
-          key: "callType",
-          defaultValue: "null",
+          label: "通话类型",
+          name: "callType",
           options: [
-            { value: "null", name: "全部" },
-            { value: 2, name: "呼出" },
-            { value: 1, name: "呼入" }
-          ]
+            { key: "null", id: "全部" },
+            { key: 2, id: "呼出" },
+            { key: 1, id: "呼入" }
+          ],
+          optionValue: "key",
+          optionLabel: "id"
         },
         {
           type: "select",
-          title: "客服组:",
-          key: "serviceGroupIds"
+          label: "客服组:",
+          name: "serviceGroupIds"
         },
         {
           type: "select",
-          title: "客服",
-          key: "serviceIds",
-          mode: "multiple"
+          label: "客服",
+          name: "serviceIds",
         },
         {
           type: "input",
-          title: "联系号码",
-          key: "telphone",
+          label: "联系号码",
+          name: "telphone",
           placeholder: "请输入"
         }
       ],
@@ -168,7 +172,7 @@ export default {
         }
       ], // 表头
       dataSource: [], // 表格数据
-      params: {
+      searchParams: {
         callDate: "2020-05-01,2020-05-11",
         qcStatus: 0,
         qcAcc: "ldkj001",
@@ -178,15 +182,25 @@ export default {
         telphone: "15606156246",
         currentPage: 1,
         pageSize: 10
-      }
+      },
+      defaultSearchFormValues:{}
     };
   },
 
   mounted() {
-    this.getList(this.params);
+    this.getList();
   },
   methods: {
-    getList(params) {
+    prevHandleSubmit(val){
+      console.log(val,'val')
+      this.searchParams = Object.assign({},this.searchParams,val)
+      this.getList();
+    },
+    getList() {
+      let params = {
+        ...this.searchParams,
+        ...this.pager
+      }
       api.callphoneList(params).then(res => {
         if (res.data.status) {
           this.dataSource = res.data.list;
@@ -209,7 +223,10 @@ export default {
       console.log("values", values);
     },
     onSelectChange() {},
-    paginationChange() {}
+    paginationChange(values) {
+      this.pager = values;
+      this.getList();
+    }
   },
   watch: {},
   computed: {}

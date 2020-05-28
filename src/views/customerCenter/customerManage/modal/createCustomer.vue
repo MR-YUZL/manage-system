@@ -1,100 +1,45 @@
 <template>
   <div>
-    <a-modal v-model="visibles" title="创建客户" :footer="null" @cancel="handleCancel">
-      <a-form-model ref="dynamicValidateForm" :model="dynamicValidateForm">
-        <a-form-model-item
-          v-for="(item,index) in dynamicValidateForm.formList"
-          :key="item.fieldId"
-          :label="item.fieldName"
-          :prop="'formList.' + index + '.fieldValue'"
-          :rules="[{ required: item.isRequired?true:false, message: '不能为空' }]"
-        >
-          <a-input
-            v-if="item.dataType==1"
-            v-model="item.fieldValue"
-            style="width: 200px"
-            placeholder="请输入"
-          />
-
-          <a-select
-            v-if="item.dataType==2"
-            style="width: 170px"
-            @change="onChange($event,item)"
-            v-model="item.fieldValue"
-            placeholder="请选择"
-          >
-            <a-select-option
-              v-for="(item,index) in item.options"
-              :key="index"
-              :value="item.optionId"
-            >{{item.optionName}}</a-select-option>
-          </a-select>
-
-          <a-cascader
-            v-if="item.dataType==3"
-            :options="options"
-            placeholder="请选择省市"
-            @change="cityChange"
-          />
-
-          <a-range-picker
-            v-if="item.dataType==4"
-            format="YYYY-MM-DD"
-            style="width:240px"
-            v-model="item.fieldValue"
-            allowClear
-          />
-        </a-form-model-item>
-        <a-form-model-item>
-          <a-button
-            type="primary"
-            html-type="submit"
-            @click="submitForm('dynamicValidateForm')"
-          >保存</a-button>
-          <a-button style="margin-left: 10px" @click="handleCancel">取消</a-button>
-        </a-form-model-item>
-      </a-form-model>
+    <a-modal
+      v-model="paramsObj.visible"
+      :title="paramsObj.title"
+      :footer="null"
+      @cancel="handleCancel"
+    >
+      <FormModal :formObj="cusFormObj" @cusCloseForm="handleCancel" @cusSubmitForm="cusSubmitForm" />
     </a-modal>
   </div>
 </template>
 <script>
 import api from "@/api/customerCenter";
+import FormModal from "@/views/customerCenter/customerManage/formModal";
 export default {
   data() {
     return {
-      visibles: this.visible,
-      custId:this.detailId,
+      // visibles: this.visible,
+      cusFormObj: {
+        formList: []
+      },
+      paramsObj: this.createCusObj,
+      custId: this.detailId,
       valueObj: {},
       dynamicValidateForm: {
         formList: []
-      },
-      options: [
-        {
-          value: "浙江",
-          label: "浙江",
-          children: [
-            {
-              value: "杭州",
-              label: "杭州",
-              children: [
-                {
-                  value: "西湖",
-                  label: "西湖"
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      }
     };
+  },
+  components: {
+    FormModal
   },
   props: {
     visible: Boolean,
-    detailId:String
+    detailId: String,
+    createCusObj: Object
   },
   watch: {
-    visible(val) {
-      this.visibles = val;
+    createCusObj(val) {
+      console.log(val, "编辑还是新增");
+      this.paramsObj = val;
     },
     detailId(val) {
       this.custId = val;
@@ -103,51 +48,53 @@ export default {
 
   mounted() {
     this.getForm();
-    this.getEditInfo()
-    console.log(this.custId,'this.detailId')
+    this.getEditInfo();
+    console.log(this.custId, "this.detailId");
   },
   methods: {
     getForm() {
-      api.setFieldsJson({ state: 0 }).then(res => {
-        console.log(res, "列表字段");
+      api.formFieldsJson({ state: 0 }).then(res => {
+        console.log(res, "列表字段**********-------------");
         if (res.data.status) {
-          this.dynamicValidateForm.formList = res.data.list;
+          this.cusFormObj.formList = res.data.list;
         }
       });
     },
     //编辑客户
-    getEditInfo(){
-      api.customerDetail({custId:this.detailId}).then(res=>{
-        console.log('编辑客户回显',res)
-        // this.dynamicValidateForm.formList = res.data.list;
-      })
+    getEditInfo() {
+      api.customerDetail({ custId: this.detailId }).then(res => {
+        console.log("编辑客户回显", res);
+        let editArray = res.data.list;
+        this.cusFormObj.formList.map((item, index) => {
+          this.cusFormObj.formList[index] = Object.assign(
+            {},
+            item,
+            editArray[index]
+          );
+        });
+        console.log(this.cusFormObj.formList, "aaaaaaaaaaaaaa==========");
+      });
     },
-    cityChange(value) {},
-    submitForm(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-          console.log(this.dynamicValidateForm.formList)
-          let fields = [];
-          this.dynamicValidateForm.formList.map(v=>{
-            fields.push({
-              fieldCode:v.fieldCode,
-              isDefined:v.isDefined,
-              fieldValue:v.fieldValue
-            })
-          })
-          let params = {
-            custId:'',
-            fields:fields
-          }
-          api.createCustomer(params).then(res => {
-            console.log('新建客户保存',res)
-            if(res.data.status){
-              this.$Message.success('保存成功')
-            }
-          });
-        } else {
-          console.log("error submit!!");
-          return false;
+
+    cusSubmitForm(arr) {
+      console.log(arr);
+      let fields = [];
+      // this.dynamicValidateForm.formList.map(v=>{
+      //   fields.push({
+      //     fieldCode:v.fieldCode,
+      //     isDefined:v.isDefined,
+      //     fieldValue:v.fieldValue
+      //   })
+      // })
+      let params = {
+        fields: arr
+      };
+      api.createCustomer(params).then(res => {
+        console.log("新建客户保存", res);
+        if (res.data.status) {
+          this.paramsObj.visible = false;
+          this.$message.success("保存成功");
+          this.$emit("successLoadList");
         }
       });
     },
@@ -157,7 +104,7 @@ export default {
     handleSelectChange() {},
     onChange() {},
     handleCancel() {
-      this.visibles = false;
+      this.paramsObj.visible = false;
       this.$emit("closeUpdate");
     }
   }

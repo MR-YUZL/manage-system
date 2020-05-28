@@ -2,7 +2,12 @@
   <div>
     <a-page-header title="在线质检" style="padding:16px 0;" />
     <div class="box">
-      <Search :tools="searchList" @onSearch="searchFun" />
+      <!-- <Search :tools="searchList" @onSearch="searchFun" /> -->
+      <FormModelSearchForm
+        :defaultFormValues="defaultSearchFormValues"
+        :formList="searchFormList"
+        @prevHandleSubmit="prevHandleSubmit"
+      />
       <div>
         <a-table
           :columns="columns"
@@ -30,12 +35,13 @@
 <script>
 import moment from "moment";
 import api from "@/api/customerCenter";
-import Search from "@/components/Search/index";
+// import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
 import Detail from "@/views/qualityTesting/detail";
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
   components: {
-    Search,
+    FormModelSearchForm,
     TablePagination,
     Detail
   },
@@ -51,81 +57,74 @@ export default {
         totalRecord: 0,
         totalPage: 0
       },
-      searchList: [
+      defaultSearchFormValues:{},
+      searchFormList: [
         {
-          type: "dateRange",
-          title: "会话时间",
-          key: "sessionDate",
-          ranges: {
-            近7天: [moment().subtract(6, "days"), moment()],
-            近30天: [moment().subtract(29, "days"), moment()]
-          }
+          type: "rangepicker",
+          label: "会话时间",
+          name: "sessionDate",
+          
         },
         {
           type: "select",
-          title: "问题解决状态",
-          key: "status",
-          defaultValue: "null",
+          label: "问题解决状态",
+          name: "status",
           options: [
-            { value: "null", name: "全部" },
-            { value: 0, name: "未解决" },
-            { value: 1, name: "已解决" }
-          ]
+            { key: "null", id: "全部" },
+            { key: 0, id: "未解决" },
+            { key: 1, id: "已解决" }
+          ],
+          optionValue: "key",
+          optionLabel: "id"
         },
         {
           type: "input",
-          title: "质检人",
+          label: "质检人",
           placeholder: "请输入",
-          key: "qcAcc"
+          name: "qcAcc"
         },
         {
           type: "input",
-          title: "咨询分类",
+          label: "咨询分类",
           placeholder: "请输入",
-          key: "inputAccs"
+          name: "inputAccs"
         },
         {
           type: "select",
-          title: "接待客服:",
-          key: "serviceAccs",
+          label: "接待客服:",
+          name: "serviceAccs",
           defaultValue: "null",
-          options: [
-            { value: "null", name: "全部" },
-            { value: 0, name: "微信公众号" }
-          ]
+          
         },
         {
           type: "select",
-          title: "客服组",
-          key: "serviceGroupId",
-          defaultValue: "null",
-          options: [
-            { value: "null", name: "所有状态" },
-            { value: 0, name: "微信公众号" }
-          ]
+          label: "客服组",
+          name: "serviceGroupId",
+          
         },
         {
           type: "select",
-          title: "质检状态:",
-          key: "qcStatus",
-          defaultValue: "null",
+          label: "质检状态:",
+          name: "qcStatus",
           options: [
-            { value: "null", name: "全部" },
-            { value: 0, name: "未质检" },
-            { value: 1, name: "已质检" }
-          ]
+            { key: "null", id: "全部" },
+            { key: 0, id: "未质检" },
+            { key: 1, id: "已质检" }
+          ],
+          optionValue: "key",
+          optionLabel: "id"
+        },
+        {
+          type: "inputCompact",
+          label: "会话时长",
+          placeholder: "请输入",
+          name: "sessionTime"
         },
         {
           type: "input",
-          title: "会话时长",
+          label: "会话ID",
           placeholder: "请输入",
-          key: "sessionTime"
-        },
-        {
-          type: "input",
-          title: "会话ID",
-          placeholder: "请输入",
-          key: "sessionId"
+          name: "sessionId"
         }
       ],
       columns: [
@@ -191,7 +190,7 @@ export default {
         }
       ], // 表头
       dataSource: [], // 表格数据
-      params: {
+      searchParams: {
         //客服组ID
         // serviceGroupId:'123',
         //质检状态(1已质检、0未质检)
@@ -201,10 +200,19 @@ export default {
   },
 
   mounted() {
-    this.getList(this.params);
+    this.getList();
   },
   methods: {
-    getList(params) {
+    prevHandleSubmit(val){
+      console.log(val,'val')
+      this.searchParams = Object.assign({},this.searchParams,val)
+      this.getList();
+    },
+    getList() {
+      let params = {
+        ...this.searchParams,
+        ...this.pager
+      }
       api.sessionOnlineList(params).then(res => {
         console.log("会话列表", res);
         this.dataSource = res.data.list;
@@ -222,7 +230,10 @@ export default {
     tabChange() {},
     searchFun() {},
     onSelectChange() {},
-    paginationChange() {}
+    paginationChange(values) {
+      this.pager = values;
+      this.getList();
+    }
   },
   watch: {},
   computed: {}

@@ -2,7 +2,12 @@
   <div>
     <a-page-header title="跟进记录" style="padding:16px 0;" />
     <div class="box">
-      <Search :tools="searchList" @onSearch="searchFun" />
+      <!-- <Search :tools="searchList" @onSearch="searchFun" /> -->
+      <FormModelSearchForm
+        :defaultFormValues="defaultSearchFormValues"
+        :formList="searchFormList"
+        @prevHandleSubmit="prevHandleSubmit"
+      />
       <div>
         <a-table
           :columns="columns"
@@ -25,33 +30,33 @@ import moment from "moment";
 import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
   data() {
     return {
-      searchList: [
+      searchFormList: [
         {
-          type: "input",
-          title: "客户名称:",
-          placeholder: "请输入",
-          key: "queryText"
-          // defaultValue: '',
+          type: "compact",
+          name: "queryText",
+          compact: "input",
+          compactName: "queryType",
+          options:[ {
+              label: "客户姓名",
+              value: "1"
+            }]
         },
         {
-          type: "input",
-          title: "客服姓名",
-          placeholder: "请输入",
-          key: "followAccs"
+          type: "selectGroup",
+          label: "客服姓名",
+          name: "followAccs",
+          mode: "multiple",
+          list: []
         },
         {
-          type: "dateRange",
-          title: "跟进时间",
-          key: "queryTimess",
-          ranges: {
-            今日: [moment(), moment()],
-            // 昨天: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-            本周: [moment().subtract(6, "days"), moment()],
-            本月: [moment().subtract(29, "days"), moment()]
-          }
+          type: "rangepicker",
+          label: "跟进时间",
+          name: "queryTimess",
+          
         }
       ],
       columns: [
@@ -108,31 +113,55 @@ export default {
         totalRecord: 0,
         totalPage: 0
       },
-      params:{
+      searchParams:{
         queryText:'测试'
-      }
+      },
+      defaultSearchFormValues: {
+        queryType: "1"
+      },
     };
   },
   components: {
-    Search,
+    FormModelSearchForm,
     TablePagination,
   },
   mounted() {
-    this.getList(this.params);
+    this.getList();
+    this.getStaffSkillGroups()
   },
   methods: {
-    getList(params) {
+    prevHandleSubmit(val) {
+      this.searchParams = Object.assign({}, this.searchParams, val);
+      this.getList();
+    },
+    getList() {
+      let params = {
+        ...this.searchParams,
+        ...this.pager
+      }
       api.followRecordList(params).then(res => {
         console.log('回访记录',res)
         if(res.data.status){
           this.dataSource = res.data.list;
+          this.pager = res.data.pager;
         }
       });
     },
     customerDetail(){},
     searchFun() {},
     onSelectChange() {},
-    paginationChange() {}
+    getStaffSkillGroups() {
+      api.staffSkillGroups({ type: 1 }).then(res => {
+        console.log("客服姓名有权限", res);
+        if (res.data.status) {
+          this.searchFormList[1].list = res.data.list;
+        }
+      });
+    },
+    paginationChange(values) {
+      this.pager = values;
+      this.getList();
+    }
   }
 };
 </script>

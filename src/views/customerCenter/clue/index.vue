@@ -2,11 +2,15 @@
   <div>
     <a-page-header title="线索管理" style="padding:16px 0;" />
     <div class="box">
-      <Search :tools="searchList" @onSearch="searchFun" />
+      <!-- <Search :tools="searchList" @onSearch="searchFun" /> -->
+      <FormModelSearchForm
+        :defaultFormValues="defaultSearchFormValues"
+        :formList="searchFormList"
+        @prevHandleSubmit="prevHandleSubmit"
+      />
       <!-- 按钮区 -->
       <div class="button-area">
-        <div class="left-side">
-        </div>
+        <div class="left-side"></div>
         <div class="right-side">
           <a-button @click="exportClue">导出</a-button>
         </div>
@@ -21,6 +25,13 @@
         ></a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
+      <ExportCustomerModal
+        :visible="visible"
+        v-if="visible"
+        :totalRecord="pager.totalRecord"
+        @closeUpdate="closeUpdate"
+        @exportUrl="exportUrl"
+      />
     </div>
   </div>
 </template>
@@ -29,6 +40,8 @@
 import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import ExportCustomerModal from "@/views/customerCenter/customerManage/modal/exportCustomer";
 export default {
   data() {
     return {
@@ -39,11 +52,13 @@ export default {
         totalRecord: 0,
         totalPage: 0
       },
-      searchList: [
+      searchFormList: [
         {
           type: "compact",
-          name: "queryType",
-          child: [
+          name: "queryText",
+          compact: "input",
+          compactName: "queryType",
+          options: [
             {
               label: "姓名",
               value: "1"
@@ -72,122 +87,154 @@ export default {
         },
         {
           type: "input",
-          title: "所在地区:",
-          placeholder: "请输入",
-          key: "guestName"
-          // defaultValue: '',
+          name: "guestName",
+          label: "所在地区:",
+          placeholder: "请输入"
         },
         {
-          type: "input",
-          title: "创建人",
-          placeholder: "请输入",
-          key: "inputAccs"
+          type: "selectGroup",
+          name: "inputAccs",
+          label: "创建人",
+          mode: "multiple",
+          list: []
         },
         {
           type: "select",
-          title: "创建来源:",
-          key: "clueSource",
-          defaultValue: "null",
+          label: "创建来源:",
+          name: "clueSource",
           options: [
-            { value: "null", name: "全部" },
-            { value: 0, name: "微信公众号" },
-            { value: 1, name: "微信小程序" },
-            { value: 2, name: "网址咨询" },
-            { value: 3, name: "电话咨询" },
-            { value: 4, name: "微信" },
-            { value: 5, name: "qq" }
-          ]
+            { key: "null", id: "全部" },
+            { key: 0, id: "微信公众号" },
+            { key: 1, id: "微信小程序" },
+            { key: 2, id: "网址咨询" },
+            { key: 3, id: "电话咨询" },
+            { key: 4, id: "微信" },
+            { key: 5, id: "qq" }
+          ],
+          optionValue: "key",
+          optionLabel: "id"
         }
       ],
       columns: [
-          {
-            title: "姓名",
-            dataIndex: "clueName",
-            key: "clueName"
-          },
-          {
-            title: "手机号",
-            dataIndex: "cluePhone",
-            key: "cluePhone"
-          },
-          {
-            title: "微信号",
-            dataIndex: "clueWechat",
-            key: "clueWechat"
-          },
-          {
-            title: "邮箱",
-            dataIndex: "clueEmail",
-            key: "clueEmail"
-          },
-          {
-            title: "qq",
-            dataIndex: "clueQq",
-            key: "clueQq"
-          },
-          {
-            title: "钉钉",
-            dataIndex: "clueDingding",
-            key: "clueDingding"
-          },
-          {
-            title: "所在地区",
-            dataIndex: "clueArea",
-            key: "clueArea"
-          },
-          {
-            title: "创建来源",
-            dataIndex: "clueSource",
-            key: "clueSource"
-          },
-          {
-            title: "创建人",
-            dataIndex: "inputAcc",
-            key: "inputAcc"
-          },
-          {
-            title: "咨询备注",
-            dataIndex: "clueRemarks",
-            key: "clueRemarks"
-          },
-          {
-            title: "创建时间",
-            dataIndex: "inputDate",
-            key: "inputDate"
-          }
-        ], // 表头
-        dataSource: [], // 表格数据
-        params:{
-          queryText:'1',
-          queryType:1,
-          totalRecord:'20'
+        {
+          title: "姓名",
+          dataIndex: "clueName",
+          key: "clueName"
         },
+        {
+          title: "手机号",
+          dataIndex: "cluePhone",
+          key: "cluePhone"
+        },
+        {
+          title: "微信号",
+          dataIndex: "clueWechat",
+          key: "clueWechat"
+        },
+        {
+          title: "邮箱",
+          dataIndex: "clueEmail",
+          key: "clueEmail"
+        },
+        {
+          title: "qq",
+          dataIndex: "clueQq",
+          key: "clueQq"
+        },
+        {
+          title: "钉钉",
+          dataIndex: "clueDingding",
+          key: "clueDingding"
+        },
+        {
+          title: "所在地区",
+          dataIndex: "clueArea",
+          key: "clueArea"
+        },
+        {
+          title: "创建来源",
+          dataIndex: "clueSource",
+          key: "clueSource"
+        },
+        {
+          title: "创建人",
+          dataIndex: "inputAcc",
+          key: "inputAcc"
+        },
+        {
+          title: "咨询备注",
+          dataIndex: "clueRemarks",
+          key: "clueRemarks"
+        },
+        {
+          title: "创建时间",
+          dataIndex: "inputDate",
+          key: "inputDate"
+        }
+      ], // 表头
+      dataSource: [], // 表格数据
+      searchParams: {
+        queryText: "1",
+        queryType: 1,
+        totalRecord: "20"
+      },
+      defaultSearchFormValues: {
+        queryType: "1"
+      },
+      visible:false
     };
   },
   components: {
-    Search,
+    FormModelSearchForm,
     TablePagination,
+    ExportCustomerModal
   },
-  mounted(){
-      this.getList(this.params)
+  mounted() {
+    this.getList();
+    this.getStaffSkillGroups();
   },
   methods: {
-    getList(params){
-      api.clueManageList(params).then(res=>{
-        console.log('线索管理列表',res)
-        if(res.data.status){
-          this.dataSource = res.data.list
-        }
-      })
+    prevHandleSubmit(val) {
+      this.searchParams = Object.assign({}, this.searchParams, val);
+      this.getList();
     },
-    exportClue(){
-      api.exportClue(this.params).then(res=>{
-        console.log('导出线索成功',res)
-      })
+    exportUrl(){
+      let url = '/customers/hfwCustomersClue/exportJson?dataSource='+ this.dataSource + '&queryType=';
+      // document.location = url;
+    },
+    getList() {
+      let params = {
+        ...this.searchParams,
+        ...this.pager
+      };
+      api.clueManageList(params).then(res => {
+        console.log("线索管理列表", res);
+        if (res.data.status) {
+          this.dataSource = res.data.list;
+          this.pager = res.data.pager;
+        }
+      });
+    },
+    getStaffSkillGroups(type) {
+      api.staffSkillGroups({ type: 0 }).then(res => {
+        console.log("创建人没有权限", res);
+        if (res.data.status) {
+          this.searchFormList[2].list = res.data.list;
+        }
+      });
+    },
+    exportClue() {
+     this.visible = true
+    },
+    closeUpdate(){
+      this.visible = false
     },
     searchFun() {},
     onSelectChange() {},
-    paginationChange() {}
+    paginationChange(values) {
+      this.pager = values;
+      this.getList();
+    }
   }
 };
 </script>
@@ -196,17 +243,17 @@ export default {
 .button-area {
   display: flex;
   justify-content: space-between;
-  padding:10px 0;
+  padding: 10px 0;
   .left-side {
     text-align: left;
-    button{
+    button {
       margin-left: 10px;
     }
   }
   .right-side {
     flex-shrink: unset;
     text-align: right;
-    button{
+    button {
       margin-right: 10px;
     }
   }

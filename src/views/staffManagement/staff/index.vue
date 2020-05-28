@@ -42,7 +42,7 @@
         <a-select
           v-model="editRole"
           style="width: 200px">
-          <a-select-option v-for="(item,index) in roleList" value="item.roleType" :key="index">{{item.roleName}}</a-select-option>
+          <a-select-option v-for="(item,index) in roleList" :value="item.roleId" :key="index">{{item.roleName}}</a-select-option>
         </a-select>
       </div>
     </a-modal>
@@ -64,7 +64,7 @@ export default {
     data() {
       return {
           SHOW_PARENT:TreeSelect.SHOW_PARENT,
-          value:'',
+          value:[],
           addCustomerShow:false,
           editStaffShow:false,
           formList:[
@@ -105,8 +105,8 @@ export default {
           columns:[
             {
               title: "姓名",
-              dataIndex: "userName",
-              key: "userName"
+              dataIndex: "name",
+              key: "name"
             },
              {
               title: "手机号",
@@ -147,42 +147,7 @@ export default {
           pager:{
             currentPage:1
           },
-          treeData:[ {
-          title: 'Node1',
-          value: '0-0',
-          key: '0-0',
-          children: [
-            {
-              title: 'Child Node1',
-              value: '0-0-0',
-              key: '0-0-0',
-            },
-            ],
-            },
-            {
-              title: 'Node2',
-              value: '0-1',
-              key: '0-1',
-              children: [
-                {
-                  title: 'Child Node3',
-                  value: '0-1-0',
-                  key: '0-1-0',
-                  disabled: true,
-                },
-                {
-                  title: 'Child Node4',
-                  value: '0-1-1',
-                  key: '0-1-1',
-                },
-                {
-                  title: 'Child Node5',
-                  value: '0-1-2',
-                  key: '0-1-2',
-                },
-              ],
-            }
-          ],
+          treeData:[],
           roleList:[],
           editData:{
             name:'',
@@ -195,19 +160,18 @@ export default {
     created(){
       this.getRoleList()
       this.getStaffList()
-
+      this.getMemberList()
     },
     mounted(){}, 
     methods: {
       // 获取角色
       getRoleList(){
         this.Request.post('/staff/hfwStaffRole/listJson',{}).then(res=>{
-          console.log(res.data.list,'角色列表')
           let list = res.data.list
           this.roleList = list
           list.map(item=>{
             this.formList[0].options.push({
-              value:item.roleType,
+              value:item.roleId,
               name:item.roleName
             })
           })
@@ -218,17 +182,20 @@ export default {
           ...this.pager,
           ...this.searchField
         }
-         this.Request.post('/staff/hfwStaffMember/listPageJson',params).then(res=>{
-          console.log(res.data.list)
+        this.Request.post('/staff/hfwStaffMember/listPageJson',params).then(res=>{
           this.dataSource = res.data.list
           this.pager = res.data.pager
+        })
+      },
+      getMemberList(){
+        this.Request.post('/staff/hfwStaffMemberRole/addressJson',{}).then(res=>{
+          this.treeData = this.treeChangeData(res.data.list)
         })
       },
       searchFun(data){
         console.log(data)
       },
       editStaff(row){
-        console.log(row,'编辑员工角色')
         let {roleName,roleType,userName} = row
         this.editData={
           roleName,roleType,userName
@@ -260,7 +227,16 @@ export default {
       handleCancelAdd(){
         this.addCustomerShow = false
       },
-      handleOkAdd(){},
+      handleOkAdd(){
+        // let params = {
+        //   userId:'',
+        //   roleId:''
+        // }
+        // this.Request.post('/staff/hfwStaffMember/batchSaveJson').then(res=>{
+        //   console.log(res)
+        // })
+        // console.log('选中的成员列表',this.value)
+      },
       handleCancelEditStaff(){
         this.editStaffShow = false
       },
@@ -268,7 +244,21 @@ export default {
       paginationChange(page){
         this.pager = {...page}
         this.getStaffList()
-      }
+      },
+      treeChangeData(array){
+        array.map((item) => {
+        item['value'] = item.dId;
+        item['key'] = item.dId;
+        item['title'] = item.dName;
+        item['children'] = item.childDeparments;
+        // // delete item['id'];
+        // delete item['name'];
+        if(item.childDeparments.length>0){
+          this.treeChangeData(item.childDeparments);
+        }
+      })
+      return array;
+    },
     }
 }
 </script>

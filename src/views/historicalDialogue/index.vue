@@ -3,7 +3,12 @@
     <a-page-header title="历史会话" style="padding:16px 0;" />
 
     <div class="box">
-      <Search :tools="searchList" @onSearch="searchFun" />
+      <!-- <Search :tools="searchList" @onSearch="searchFun" /> -->
+      <FormModelSearchForm
+        :defaultFormValues="defaultSearchFormValues"
+        :formList="searchFormList"
+        @prevHandleSubmit="prevHandleSubmit"
+      />
       <div>
         <a-table
           :columns="columns"
@@ -53,11 +58,12 @@
 <script>
 import moment from "moment";
 import api from "@/api/customerCenter";
-import Search from "@/components/Search/index";
+// import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
 import UserInformation from "@/components/userInf";
 // import MessageDetail from "@/views/messageRecord/messageDetail";
 import BaseForm from "@/components/BaseForm";
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
   data() {
     return {
@@ -68,57 +74,52 @@ export default {
         totalRecord: 0,
         totalPage: 0
       },
-      searchList: [
+      searchFormList: [
         {
           type: "input",
-          title: "会话ID",
+          label: "会话ID",
           placeholder: "请输入",
-          key: "id"
-          // defaultValue: '',
+          name: "id"
         },
         {
-          type: "dateRange",
-          title: "会话时间",
-          key: "queryTime",
-          ranges: {
-            今日: [moment(), moment()],
-            // 昨天: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-            本周: [moment().subtract(6, "days"), moment()],
-            本月: [moment().subtract(29, "days"), moment()]
-          }
+          type: "rangepicker",
+          label: "会话时间",
+          name: "queryTime",
+          
         },
         {
           type: "select",
-          title: "会话来源:",
-          key: "channelType",
-          defaultValue: "null",
+          label: "会话来源:",
+          name: "channelType",
           options: [
-            { value: "null", name: "全部" },
-            { value: 2, name: "网站咨询" },
-            { value: 0, name: "微信公众号" },
-            { value: 1, name: "微信小程序" },
-            { value: 3, name: "app" },
-            { value: 5, name: "QQ" },
-            { value: 4, name: "微信" }
-          ]
+            { key: "null", id: "全部" },
+            { key: 2, id: "网站咨询" },
+            { key: 0, id: "微信公众号" },
+            { key: 1, id: "微信小程序" },
+            { key: 3, id: "app" },
+            { key: 5, id: "QQ" },
+            { key: 4, id: "微信" }
+          ],
+          optionValue: "key",
+          optionLabel: "id"
         },
         {
           type: "input",
-          title: "接待客服",
+          label: "接待客服",
           placeholder: "请输入",
-          key: "serviceAccs"
+          name: "serviceAccs"
         },
         {
           type: "input",
-          title: "姓名",
+          label: "姓名",
           placeholder: "请输入",
-          key: "name"
+          name: "name"
         },
         {
           type: "input",
-          title: "咨询分类",
+          label: "咨询分类",
           placeholder: "请输入",
-          key: "consultType"
+          name: "consultType"
         }
       ],
       columns: [
@@ -214,13 +215,14 @@ export default {
         name: "",
         con: ""
       },
-      params: {
+      searchParams: {
         id: "",
         queryTime: "",
         channelType: "",
         serviceAccs: "",
         name: ""
       },
+      defaultSearchFormValues:{},
       formAxiosReturnValues: {
         id: "id_123",
         test: "hello"
@@ -270,32 +272,45 @@ export default {
     };
   },
   components: {
-    Search,
+    FormModelSearchForm,
     TablePagination,
     UserInformation,
     // MessageDetail
     BaseForm
   },
   mounted() {
-    this.getList(this.params);
+    this.getList();
   },
   methods: {
+    prevHandleSubmit(val){
+      console.log(val,'val')
+      this.searchParams = Object.assign({},this.searchParams,val)
+      this.getList();
+    },
     toggleModal() {},
     formSubmit(data) {
       console.log(data,'data')
     },
-    getList(params) {
+    getList() {
+      let params = {
+        ...this.searchParams,
+        ...this.pager
+      }
       api.sessionList(params).then(res => {
         console.log("=========", res);
         if (res.data.status) {
           this.dataSource = res.data.list;
+          this.pager = res.data.pager;
         }
       });
     },
 
     searchFun() {},
     onSelectChange() {},
-    paginationChange() {},
+    paginationChange(values) {
+      this.pager = values;
+      this.getList();
+    },
     //弹窗
     skipDetail(id) {
       console.log(id, "==========id");

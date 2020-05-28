@@ -9,7 +9,7 @@
           <a-button type="primary" @click="createContactModalShow($event,'contactModalInner')">新建联系人</a-button>
           <a-button type="primary" @click="customerFollow">客户跟进</a-button>
         </div>
-        <ul class="flex">
+        <ul class="lastFollowFlex">
           <li>
             <span>客服负责人</span>
             <span>{{infos.principalAcc}}</span>
@@ -30,23 +30,23 @@
         <a-tabs default-active-key="1" @change="tabChange">
           <a-tab-pane key="1" tab="客户相关">
             <div class="contactFlex">
-              <div class="contactHead">联系人(2)</div>
+              <div class="contactHead">联系人({{contactLength}})</div>
               <div style="cursor: pointer;" @click="createContactModalShow($event,'contactModalInner')">
                 <a-icon type="plus" />添加联系人
               </div>
             </div>
             <ul class="contactUl">
-              <li>
+              <li v-for="(item,index) in infoContactsJson" :key="item.contactsId">
                 <span>
-                  吴鹏
+                  {{item.contactsName}}
                   <a-button icon="edit" type="link" @click="editContact"></a-button>
                   <a-button icon="delete" type="link" @click="deleteContact"></a-button>
                 </span>
                 <span>
-                  <i>手机号18767137823</i>
-                  <i>职务：产品经理</i>
-                  <i>电话来访333</i>
-                  <i>会话来访0</i>
+                  <i>手机号：{{item.phone}}</i>
+                  <i>职务：{{item.duty}}</i>
+                  <i>电话来访：{{item.phoneVisitCount}}</i>
+                  <i>会话来访：{{item.sessionVisitCount}}</i>
                 </span>
               </li>
             </ul>
@@ -73,7 +73,7 @@
         </a-tabs>
         <Modal :currentModal="contactModalInner">
           <template v-slot:content>
-            <CreateContact @closeCreateContact="closeCreateContact" />
+            <CreateContact @closeCreateContact="closeCreateContact" :custIdParams="obj" @successLoadList="successLoadList" />
           </template>
         </Modal>
       </template>
@@ -91,6 +91,7 @@ import CreateContact from "@/views/customerCenter/customerManage/modal/createCon
 export default {
   data() {
     return {
+      infoContactsJson:[],
       infos:{},
       questionList: [],//服务小结
       followList:[],
@@ -102,6 +103,7 @@ export default {
       contactModalInner: { title: "新建联系人", visible: false },
       materialList: [],
       logList:[],
+      contactLength:'',
     };
   },
   components: {
@@ -125,6 +127,10 @@ export default {
     this.getLogJson(this.obj);
   },
   methods: {
+    successLoadList(){
+      this.contactModalInner.visible = false;
+      this.getContactJson(this.obj);
+    },
     getInfoTitle(params){
       api.infoTitle(params).then(res=>{
         console.log('头部',res)
@@ -137,6 +143,10 @@ export default {
     getContactJson(params) {
       api.contactInfo(params).then(res => {
         console.log("联系人列表", res);
+        if(res.data.status){
+          this.infoContactsJson = res.data.list;
+          this.contactLength = res.data.list.length;
+        }
       });
     },
     getMaterialInfo(params) {
@@ -166,8 +176,13 @@ export default {
     customerFollow(){
       this.$emit("customerFollowShow",this.obj)
     },
-    editContact(){},
-    deleteContact(){},
+    editContact(){
+      this.contactModalInner.title = '编辑联系人';
+      this.contactModalInner.visible = true
+    },
+    deleteContact(){
+
+    },
     editCustomer() {},
     // createLinkman() {},
     toggleModal(value) {
@@ -224,10 +239,11 @@ export default {
     margin-left: 10px;
   }
 }
-.flex {
+.lastFollowFlex {
   display: flex;
   justify-content: space-around;
   text-align: center;
+  margin-top:20px;
   li {
     flex: 1;
     span {

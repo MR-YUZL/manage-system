@@ -4,9 +4,13 @@ export default {
   custManageList(params) {
     return axios.get('/customers/hfwCustomersInfo/listPageJson', {params})
   },
-  //设置列表字段 
+  //设置列表字段  
   setFieldsJson(params) {
     return axios.get('/config/hfwConfigFields/fieldsJson', {params})
+  },
+  //列表字段-表单(新建客户，新建联系人)
+  formFieldsJson(params) {
+    return axios.get('/config/hfwConfigFields/formFieldsJson', {params})
   },
   //客户管理-设置负责人 
   setPrincipalJson(params){
@@ -21,9 +25,9 @@ export default {
     return axios.post('/customers/hfwCustomersInfo/saveJson', params)
   },
   //客户管理-导出  
-  exportCustomer(params){
-    return axios.post('/customers/hfwCustomersInfo/exportJson', params)
-  },
+  // exportCustomer(params){
+  //   return axios.get('/customers/hfwCustomersInfo/exportJson', {params})
+  // },
   //客户管理-导入数据 
   importJson(params) {
     return axios.post('/imp/hfwImportFile/importJson', params)
@@ -76,14 +80,22 @@ export default {
   infoTitle(params) {
     return axios.get('/customers/hfwCustomersInfo/InfoTitleJson', {params})
   },
+  //客户管理-客户标签  
+  customerLabel(params) {
+    return axios.get('/customers/hfwCustomersInfo/searchListJson', {params})
+  },
+  //客户管理-创建人/负责人   
+  staffSkillGroups(params) {
+    return axios.get('/staff/hfwStaffSkillGroupsMember/staffSkillGroups', {params})
+  },
   //线索管理list 
   clueManageList(params){
     return axios.get('/customers/hfwCustomersClue/listPageJson', {params})
   },
   //线索管理-导出 
-  exportClue(params){
-    return axios.post('/customers/hfwCustomersClue/exportJson', params)
-  },
+  // exportClue(params){
+  //   return axios.post('/customers/hfwCustomersClue/exportJson', params)
+  // },
   //跟进记录list有分页 
   followRecordList(params){
     return axios.post('/customers/hfwCustomersFollow/listPageJson', params)
@@ -95,6 +107,10 @@ export default {
   //质量检测-会话质检-在线质检 
   sessionOnlineList(params) {
     return axios.get('/session/qc/search', {params})
+  },
+  //会话质检-单位客服人员  
+  sessionAccMember(params) {
+    return axios.get('/staff/hfwStaffMember/service/acc/list', {params})
   },
   //质量检测-电话质检 
   callphoneList(params) {
