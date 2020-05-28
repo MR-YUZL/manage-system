@@ -126,6 +126,10 @@ const routes = [
             path:'role',
             component: () => import("@/views/staffManagement/role/index.vue"),
           },
+          {
+            path:'role/addRole',
+            component: () => import("@/views/staffManagement/role/addRole.vue"),
+          },
         ]
       },
       {
@@ -173,7 +177,6 @@ const routes = [
             path: "informationSafety",
             component: () => import("@/views/setting/informationSafety/index.vue")
           }
-         
         ]
       }
     ]
