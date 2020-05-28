@@ -169,6 +169,7 @@ export default {
   methods: {
     handleSubmit(e) {
       console.log(this.formInline);
+      this.$emit('prevHandleSubmit',this.formInline)
     }
   }
 };

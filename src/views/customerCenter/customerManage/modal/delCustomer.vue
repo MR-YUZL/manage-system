@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-modal v-model="visible" title="删除" @ok="handleOk" @cancel="handleCancel">
+    <a-modal v-model="visibles" title="删除" @ok="handleOk" @cancel="handleCancel">
       <p>删除客户后将无法回复，是否确认删除所选客户</p>
     </a-modal>
   </div>

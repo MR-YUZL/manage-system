@@ -8,16 +8,16 @@
       </a-steps>
       <div class="firstStep" v-if="step=='first'">
         <div>
-          <p>下载员工导入模板，批量填写员工信息</p>
+          <p>一：下载员工导入模板，批量填写员工信息</p>
           <p>注意事项：</p>
-          <div>
+          <div class="announcements">
             <p>1.模板中的表头名称不可更改，表头行不能删除</p>
             <p>2.其中必填项必须保留</p>
             <p>3.导入文件请勿超过3mb</p>
             <p>4.日期字段格式要求为yyyy-mm-dd</p>
             <p>5.单选多选字段必须填写已维护的数据项</p>
           </div>
-          <p>上传需要导入的文件</p>
+          <p>二：上传需要导入的文件</p>
           <a-upload
             name="file"
             action="/imp/hfwImportFile/importJson"
@@ -26,25 +26,31 @@
             @change="handleChange"
             accept=".xls, .xlsx"
           >
-            <a-button>
+            <a-button class="uploadBtn">
               <a-icon type="upload" />上传文件
             </a-button>
           </a-upload>
         </div>
 
-        <a-button type="primary" @click="step='second'">下一步</a-button>
+        <div class="bottomBtn">
+          <a-button type="primary" @click="uploadSuccessNext">下一步</a-button>
+        </div>
+        <div class="downloadTemplate">
+          <a-button type="link" icon="download">点击下载模板</a-button>
+        </div>
       </div>
       <div class="secondStep" v-if="step=='second'">
+        <p class="matchTotals">数据字段匹配(共2条)</p>
         <div class="importFlex">
           <span>导入字段</span>
-          <span>匹配字段</span>
+          <span class="secFlex">匹配字段</span>
           <span>首条数据</span>
         </div>
         <div>
           <!-- listMatchCode -->
           <div class="tableFlex" v-for="(item,index) in fileInfos.listTitle" :key="index">
             <div>{{item}}</div>
-            <div>
+            <div class="secFlex">
               <a-select
                 style="width: 120px"
                 @change="selectChange(index,$event)"
@@ -63,18 +69,25 @@
             <a-checkbox @change="checkBoxChange">是否忽略第一行</a-checkbox>
           </p>
         </div>
-        <a-button-group>
-          <a-button type="primary" @click="step='first'">上一步</a-button>
-          <a-button type="primary" @click="nexStep">下一步</a-button>
-        </a-button-group>
+        <div class="btnGroups">
+          <a-button-group>
+            <a-button type="primary" @click="prevStep">上一步</a-button>
+            <a-button type="primary" @click="nexStep">下一步</a-button>
+          </a-button-group>
+        </div>
       </div>
 
       <div class="thirdStep" v-if="step=='third'">
-        <div>
-          <a-icon type="check-circle" theme="filled" />
-          <p>提交完成</p>
-        </div>
-        <a-button type="primary" @click="handleCancel">完成</a-button>
+        <a-result
+          status="success"
+          title="提交完成"
+          sub-title=""
+        >
+          <template #extra>
+            <a-button key="console" type="primary" @click="handleCancel">完成</a-button>
+          </template>
+        </a-result>
+        
       </div>
     </a-modal>
   </div>
@@ -84,7 +97,7 @@ import api from "@/api/customerCenter";
 export default {
   data() {
     return {
-      current: 1,
+      current: 0,
       fileList: [],
       selects: "",
       step: "first",
@@ -141,12 +154,23 @@ export default {
           fieldName: "不导入该字段"
         });
         this.fileInfos = fileInfo;
+      }
+    },
+    uploadSuccessNext() {
+      if (JSON.stringify(this.fileInfos) == "{}") {
+        this.$message.error("请上传文件");
+      } else {
+        this.current++;
         this.step = "second";
       }
     },
     selectChange(something, $event) {
       let fieldCodes = this.fileInfos.listMatchCode;
       this.fileInfos.listMatchCode[something] = $event;
+    },
+    prevStep(){
+      this.step = "first";
+      this.current--;
     },
     nexStep() {
       this.current++;
@@ -155,7 +179,7 @@ export default {
       arr = arr.sort();
       for (var i = 0; i < arr.length; i++) {
         if (arr[i] && arr[i] == arr[i + 1]) {
-          this.$message.error(arr[i]+"重复选择");
+          this.$message.error(arr[i] + "重复选择");
           return;
         }
       }
@@ -178,24 +202,84 @@ export default {
     handleCancel() {
       this.visibles = false;
       this.step = "first";
+      this.current = 0;
       this.$emit("closeUpdate");
     }
   }
 };
 </script>
 <style lang="less" scoped>
-.importFlex {
-  display: flex;
-  justify-content: space-between;
-  span {
-    display: block;
+.firstStep {
+  position: relative;
+  margin-top: 30px;
+  .downloadTemplate {
+    position: absolute;
+    right: 0;
+    top: 0;
+  }
+  .announcements {
+    padding-left: 20px;
+  }
+  .uploadBtn {
+    margin: 10px 0;
+  }
+  .bottomBtn {
+    text-align: right;
+  }
+  p {
+    margin-bottom: 0;
+    line-height: 22px;
   }
 }
-.tableFlex {
-  display: flex;
-  justify-content: space-between;
-  div {
-    flex: 1;
+.secondStep {
+  .btnGroups {
+    text-align: right;
+    button {
+      margin-right: 10px;
+    }
   }
+  .matchTotals {
+    margin-bottom: 0;
+    padding: 20px 0 10px 20px;
+  }
+  .importFlex {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin-bottom: 10px;
+    span {
+      display: block;
+      flex: 1;
+    }
+    .secFlex {
+      flex: 2;
+    }
+  }
+  .tableFlex {
+    display: flex;
+    justify-content: space-between;
+    text-align: center;
+    margin-bottom: 10px;
+    div {
+      flex: 1;
+    }
+    .secFlex {
+      flex: 2;
+    }
+  }
+}
+.thirdStep {
+  
+}
+
+</style>
+
+
+<style>
+.ant-result-success .ant-result-icon > .anticon{
+  font-size: 40px;
+}
+.ant-result-title{
+  font-size: 12px;
 }
 </style>

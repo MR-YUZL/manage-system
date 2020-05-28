@@ -72,7 +72,7 @@ export default {
 <style lang="less" scoped>
 .resultUl {
   li {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
     position: relative;
     .p1 {
       display: block;

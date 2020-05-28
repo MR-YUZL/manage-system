@@ -3,12 +3,13 @@
     <a-page-header title="客户管理" style="padding:16px 0;" />
     <div class="box">
       <!-- 普通客服没有tab 记得判断 -->
-      <a-tabs :activeKey="params.dataSource" @change="changeTabFn">
+      <a-tabs :activeKey="searchParams.dataSource" @change="changeTabFn">
         <a-tab-pane key="1" tab="未分配的客户"></a-tab-pane>
         <a-tab-pane key="2" tab="我负责的客户" force-render></a-tab-pane>
         <a-tab-pane key="3" tab="下属成员负责的客户"></a-tab-pane>
       </a-tabs>
-      <Search :tools="searchList" @onSearch="searchFun" />
+      <!-- <Search :tools="searchList" @onSearch="searchFun" /> -->
+      <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" @prevHandleSubmit="prevHandleSubmit" />
       <!-- 按钮区 -->
       <div class="button-area">
         <div class="left-side">
@@ -36,7 +37,7 @@
             <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
           </div>
           <div slot="action" slot-scope="record,row">
-            <span class="blue" style="margin-right:10px;" @click="followCustomer(row.custId)">跟进客户</span>
+            <span v-if="searchParams.dataSource=='2' || searchParams.dataSource=='3'" class="blue" style="margin-right:10px;" @click="followCustomer(row.custId)">跟进客户</span>
             <span class="blue" @click="createOrder(row.custId)">创建工单</span>
           </div>
         </a-table>
@@ -44,20 +45,73 @@
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
     <!-- 弹窗 -->
-    <SetManagerModal :visible="modals.setManagerVisible" :custIds="custIds" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <DelCustomerModal :visible="modals.delCustomerVisible" :custIds="custIds" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <ExportCustomerModal :visible="modals.exportCustomerVisible" v-if="modals.exportCustomerVisible" :totalRecord="pager.totalRecord" :dataSource="params.dataSource" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <ImportCustomerModal :visible="modals.importCustomerVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <ImportResultModal :visible="modals.importResultVisible" v-if="modals.importResultVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <CreateCustomerModal :visible="modals.createCustomerVisible" v-if="modals.createCustomerVisible" :detailId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <setLabelModal :visible="modals.setLabelVisible" v-if="modals.setLabelVisible" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <followCustomerModal :visible="modals.followCustomerVisible" v-if="modals.followCustomerVisible" :followId="detailId" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
-    <DetailModal :visibleProps="detailObj" :detailId="detailId" v-if="detailObj.visible" @customerFollowShow="followCustomer" @editCustomerShow="editCustomerShow" @delUpdate="delUpdate" @closeUpdate="closeUpdate" />
+    <SetManagerModal
+      v-if="modals.setManagerVisible"
+      :visible="modals.setManagerVisible"
+      :custIds="custIds"
+      @delUpdate="delUpdate"
+      @closeUpdate="closeUpdate"
+    />
+    <DelCustomerModal
+      :visible="modals.delCustomerVisible"
+      :custIds="custIds"
+      @delUpdate="delUpdate"
+      @closeUpdate="closeUpdate"
+    />
+    <ExportCustomerModal
+      :visible="modals.exportCustomerVisible"
+      v-if="modals.exportCustomerVisible"
+      :totalRecord="pager.totalRecord"
+      @delUpdate="delUpdate"
+      @closeUpdate="closeUpdate"
+      @exportUrl="exportUrl"
+    />
+    <ImportCustomerModal
+      :visible="modals.importCustomerVisible"
+      @delUpdate="delUpdate"
+      @closeUpdate="closeUpdate"
+    />
+    <ImportResultModal
+      :visible="modals.importResultVisible"
+      v-if="modals.importResultVisible"
+      @delUpdate="delUpdate"
+      @closeUpdate="closeUpdate"
+    />
+    <CreateCustomerModal
+      :createCusObj="createCusObj"
+      v-if="createCusObj.visible"
+      :detailId="detailId"
+      @delUpdate="delUpdate"
+      @closeUpdate="closeUpdate"
+      @successLoadList="successLoadList"
+    />
+    <setLabelModal
+      :visible="modals.setLabelVisible"
+      v-if="modals.setLabelVisible"
+      @delUpdate="delUpdate"
+      @closeUpdate="closeUpdate"
+    />
+    <followCustomerModal
+      :visible="modals.followCustomerVisible"
+      v-if="modals.followCustomerVisible"
+      :followId="detailId"
+      @delUpdate="delUpdate"
+      @closeUpdate="closeUpdate"
+    />
+    <DetailModal
+      :visibleProps="detailObj"
+      :detailId="detailId"
+      v-if="detailObj.visible"
+      @customerFollowShow="followCustomer"
+      @editCustomerShow="editCustomerShow"
+      @delUpdate="delUpdate"
+      @closeUpdate="closeUpdate"
+    />
   </div>
 </template>
 <script>
 import moment from "moment";
-import Search from "@/components/Search/index2";
+// import Search from "@/components/Search/index2";
 import TablePagination from "@/components/Table/TablePagination";
 import api from "@/api/customerCenter";
 import SetManagerModal from "@/views/customerCenter/customerManage/modal/setManager";
@@ -69,10 +123,10 @@ import CreateCustomerModal from "@/views/customerCenter/customerManage/modal/cre
 import setLabelModal from "@/views/customerCenter/customerManage/modal/setLabel";
 import followCustomerModal from "@/views/customerCenter/customerManage/modal/followCustomer";
 import DetailModal from "@/views/customerCenter/customerManage/detail";
-
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
   components: {
-    Search,
+    FormModelSearchForm,
     TablePagination,
     SetManagerModal,
     DelCustomerModal,
@@ -86,7 +140,11 @@ export default {
   },
   data() {
     return {
-      detailId:'',
+      createCusObj:{
+        title:'新建客户',
+        visible:false
+      },
+      detailId: "",
       exportJson: [],
       custIds: [],
       columns: [
@@ -94,7 +152,7 @@ export default {
           title: "客户名称",
           dataIndex: "custName",
           key: "custName",
-          scopedSlots: { customRender: 'detailSkip' },
+          scopedSlots: { customRender: "detailSkip" }
         },
         {
           title: "客户标签",
@@ -156,13 +214,15 @@ export default {
             return (
               <div>
                 操作
-                <span style="padding-left:2px"><AIcon onClick={this.setLabelClick} type="setting" /></span>
+                <span style="padding-left:2px">
+                  <AIcon onClick={this.setLabelClick} type="setting" />
+                </span>
               </div>
             );
           },
           dataIndex: "status",
           key: "3",
-          scopedSlots: { customRender: 'action' },
+          scopedSlots: { customRender: "action" }
         }
       ], // 表头
       tableList: [], // 表格数据
@@ -174,92 +234,11 @@ export default {
         importResultVisible: false,
         createCustomerVisible: false,
         setLabelVisible: false,
-        followCustomerVisible:false,
-        detailVisible:false
+        followCustomerVisible: false,
+        detailVisible: false
       },
       // activeKey: "1",
-      searchList: [
-        {
-          type: "compact",
-          key: "queryType",
-          defaultValue:'1',
-          name:'queryText',
-          defaultName: null,
-          options: [
-            {
-              name: "客户名称",
-              value: "1"
-            },
-            {
-              name: "联系人",
-              value: "2"
-            },
-            {
-              name: "联系电话",
-              value: "3"
-            }
-          ]
-        },
-        {
-          type: "select",
-          title: "客户标签",
-          key: "queryTime",
-          mode: "multiple",
-          options:[]
-        },
-        {
-          type: "select",
-          title: "创建人",
-          key: "status",
-          mode: "multiple",
-          options:[]
-        },
-        {
-          type: "input",
-          title: "负责人",
-          key: "source"
-        },
-        {
-          type: "dateRange",
-          title: "创建时间",
-          key: "queryTime",
-          ranges: {
-            今日: [moment(), moment()],
-            // 昨天: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-            本周: [moment().subtract(6, "days"), moment()],
-            本月: [moment().subtract(29, "days"), moment()]
-          }
-        },
-        {
-          type: "dateRange",
-          title: "最近跟进时间",
-          key: "queryTime",
-          ranges: {
-            今日: [moment(), moment()],
-            本周: [moment().subtract(6, "days"), moment()],
-            本月: [moment().subtract(29, "days"), moment()]
-          }
-        },
-        {
-          type: "dateRange",
-          title: "下次跟进时间",
-          key: "queryTime",
-          ranges: {
-            今日: [moment(), moment()],
-            本周: [moment().subtract(6, "days"), moment()],
-            本月: [moment().subtract(29, "days"), moment()]
-          }
-        },
-        {
-          type: "input",
-          title: "客户分组"
-        },
-        {
-          type: "search",
-          title: "筛选",
-          btnType: "primary"
-        }
-      ],
+      
       pager: {
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         currentPage: 1,
@@ -267,36 +246,131 @@ export default {
         totalRecord: 0,
         totalPage: 0
       },
-      params: {
+      searchParams: {
         dataSource: "1",
-        queryType: 1
       },
-      selectedRowKeys:[],
-      detailObj:{
+      selectedRowKeys: [],
+      detailObj: {
         title: "客户详情",
         visible: false,
-        width:'720px'
+        width: "720px"
+      },
+      searchFormList: [
+        {
+          type: "compact",
+          name: "queryText",
+          compact: "input",
+          compactName: "queryType",
+          options: [
+            { label: "客户名称", value: "1" },
+            { label: "联系人", value: "2" },
+            { label: "联系电话", value: "3" },
+          ]
+        },
+        
+        {
+          type: "select",
+          name: "custLabels",
+          mode: "multiple",
+          label: "客户标签",
+          options: [],
+        },
+        {
+          type: "selectGroup",
+          name: "inputAccs",
+          label: "创建人",
+          mode: "multiple",
+          list: [],
+        },
+        {
+          type: "selectGroup",
+          name: "principalAccs",
+          label: "负责人",
+          mode: "multiple",
+          list:[]
+        },
+        
+        {
+          type: "rangepicker",
+          name: "inputDateStart",
+          label: "创建时间"
+        },
+        {
+          type: "rangepicker",
+          name: "lastFollowDateStart",
+          label: "最近跟进时间"
+        },
+        {
+          type: "rangepicker",
+          name: "nextFollowDateStart",
+          label: "下次跟进时间"
+        },
+        
+      ],
+      defaultSearchFormValues: {
+        queryType:'1',
       }
     };
   },
   mounted() {
-    this.getList(this.params);
+    this.getList();
+    this.getCustomerLabel();
+    this.getStaffSkillGroups(0);
+    this.getStaffSkillGroups(1);
   },
   methods: {
-    getList(params) {
+    prevHandleSubmit(val){
+      console.log(val,'val')
+      this.searchParams = Object.assign({},this.searchParams,val)
+      this.getList();
+    },
+    successLoadList(){
+      this.getList();
+    },
+    getList() {
+      let params = {
+        ...this.searchParams,
+        ...this.pager
+      }
+      console.log(params,'你对不对')
       api.custManageList(params).then(res => {
         console.log(res, "res-----");
         if (res.data.status) {
           this.tableList = res.data.list;
-          this.pager = res.data.pager
+          this.pager = res.data.pager;
         }
       });
     },
-    delUpdate(){
-      this.custIds = [];
-      this.getList(this.params);
+    getCustomerLabel(){
+      api.customerLabel().then(res=>{
+        console.log('客户标签',res)
+        if(res.data.status){
+          let labels = JSON.parse(JSON.stringify(res.data.labels).replace(/name/g, 'label'));
+          this.searchFormList[1].options = labels;
+        }
+      })
     },
-    closeUpdate(){
+    getStaffSkillGroups(type){
+      
+      api.staffSkillGroups({type:type}).then(res=>{
+        console.log('创建人',res)
+        if(res.data.status){
+          if(type == 0){
+            this.searchFormList[2].list = res.data.list;
+          }
+          if(type==1){
+            this.searchFormList[3].list = res.data.list;
+          }
+        }
+      })
+
+
+    },
+    delUpdate() {
+      this.custIds = [];
+      this.getList();
+    },
+    closeUpdate() {
       this.modals.delCustomerVisible = false;
       this.modals.setManagerVisible = false;
       this.modals.exportCustomerVisible = false;
@@ -310,31 +384,34 @@ export default {
     onSelectChange(selectedRowKeys, selectedRows) {
       this.custIds = [];
       this.selectedRowKeys = selectedRowKeys;
-      selectedRows.map(v=>{
-        this.custIds.push(v.custId)
-      })
+      selectedRows.map(v => {
+        this.custIds.push(v.custId);
+      });
     },
-    onPageChange(){},
+    onPageChange() {},
     customerDetail(custId) {
-      console.log(custId,'客户详情')
+      console.log(custId, "客户详情");
       this.detailId = custId;
-      this.detailObj.visible = true
+      this.detailObj.visible = true;
     },
-    editCustomerShow(custId){
+    editCustomerShow(custId) {
       this.detailId = custId.custId;
-      this.modals.createCustomerVisible = true
+      // this.modals.createCustomerVisible = true;
+      this.createCusObj.visible = true;
+      this.createCusObj.title = '编辑客户';
     },
     // customerFollowShow(){
     //   this.modals.followCustomerVisible = true
     // },
     followCustomer(custId) {
-      console.log(custId)
+      console.log(custId);
       this.detailId = custId.custId;
-      this.modals.followCustomerVisible = true
+      this.modals.followCustomerVisible = true;
     },
     createOrder() {},
     changeTabFn(key) {
-      this.params.dataSource = key;
+      this.searchParams.dataSource = key;
+      this.getList();
     },
     //按钮区start
     setManager() {
@@ -351,6 +428,10 @@ export default {
       }
       this.modals.delCustomerVisible = true;
     },
+    exportUrl(){
+      let url = '/customers/hfwCustomersInfo/exportJson?dataSource='+ this.dataSource + '&queryType=';
+      // document.location = url;
+    },
     exportCustomer() {
       this.modals.exportCustomerVisible = true;
     },
@@ -361,7 +442,10 @@ export default {
       this.modals.importResultVisible = true;
     },
     createCustomer() {
-      this.modals.createCustomerVisible = true;
+      // this.modals.createCustomerVisible = true;
+      this.detailId = '';
+      this.createCusObj.visible = true;
+      this.createCusObj.title = '新增客户';
     },
     setLabelClick() {
       this.modals.setLabelVisible = true;
@@ -379,11 +463,11 @@ export default {
       console.log("values", values);
       this.pager.currentPage = 1;
       this.searchField = values;
-      //   this.getList();
     },
     paginationChange(values) {
+      console.log(values,'你是什么')
       this.pager = values;
-      //   this.getList();
+      this.getList();
     }
   }
 };
@@ -392,17 +476,17 @@ export default {
 .button-area {
   display: flex;
   justify-content: space-between;
-  padding:10px 0;
+  padding: 10px 0;
   .left-side {
     text-align: left;
-    button{
+    button {
       margin-left: 10px;
     }
   }
   .right-side {
     flex-shrink: unset;
     text-align: right;
-    button{
+    button {
       margin-right: 10px;
     }
   }

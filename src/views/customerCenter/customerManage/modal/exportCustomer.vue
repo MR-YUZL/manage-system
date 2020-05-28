@@ -16,7 +16,6 @@ export default {
   },
   props: {
     visible: Boolean,
-    dataSource:String,
     totalRecord: Number
   },
   watch: {
@@ -26,14 +25,14 @@ export default {
   },
   methods: {
     handleOk() {
-      let params = {
-        dataSource:this.dataSource,
-        queryType:'1',
-        totalRecord:this.totalRecord
-      }
-      api.exportCustomer(params).then(res=>{
-        console.log(res,'7777')
-      })
+      // let params = {
+      //   dataSource:this.dataSource,
+      //   queryType:'1',
+      //   totalRecord:this.totalRecord
+      // }
+      // let url = '/customers/hfwCustomersInfo/exportJson?dataSource='+ this.dataSource + '&queryType='
+      // document.location = url
+      this.$emit('exportUrl')
     },
     handleCancel() {
       this.visibles = false
