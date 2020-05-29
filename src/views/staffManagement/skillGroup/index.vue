@@ -42,76 +42,26 @@
                   <span>13065884521</span>
                 </div>
               </li>
-             
             </ul>
           </div>
         </div>
       </div>
-      <a-modal title="成员管理（小组名称）" :visible="staffManageShow" v-if="staffManageShow" @cancel="handleCancelStaff">
+      <a-modal title="成员管理（小组名称）" :visible="staffManageShow" v-if="staffManageShow" @cancel="handleCancelStaff" @ok="handleOkStaff">
         <a-transfer
-          :data-source="dataSource"
+          :data-source="staffListAll"
+           show-search
           :target-keys="targetKeys"
           :render="item => item.title"
           :show-select-all="false"
-           @change="onChange"
-        >
-        <template
-          slot="children"
-          slot-scope="{
-          props: { direction, selectedKeys },
-          on: { itemSelect },
-          }"
-        >
-        <a-tree
-          v-if="direction === 'left'"
-          blockNode
-          checkable
-          checkStrictly
-          defaultExpandAll
-          :checkedKeys="[...selectedKeys, ...targetKeys]"
-          :treeData="treeData"
-          @check="(_, props) => {onChecked(_, props, [...selectedKeys, ...targetKeys],itemSelect)}"
-          @select="(_, props) => {onChecked(_, props, [...selectedKeys, ...targetKeys],itemSelect)}"
+          @change="handleChange"
+          @search="handleSearch"
         />
-        </template>
-          
-        </a-transfer>
+     
       </a-modal>
     </div>
 </template>
 <script>
-const treeData = [
-  { key: '0-0', title: '0-0' },
-  {
-    key: '0-1',
-    title: '0-1',
-    children: [{ key: '0-1-0', title: '0-1-0' }, { key: '0-1-1', title: '0-1-1' }],
-  },
-  { key: '0-2', title: '0-3' },
-];
 
-const transferDataSource = [];
-function flatten(list = []) {
-  list.forEach(item => {
-    transferDataSource.push(item);
-    flatten(item.children);
-  });
-}
-flatten(JSON.parse(JSON.stringify(treeData)))
-
-function isChecked(selectedKeys, eventKey) {
-  return selectedKeys.indexOf(eventKey) !== -1;
-}
-
-function handleTreeData(data, targetKeys = []) {
-  data.forEach(item => {
-    item['disabled'] = targetKeys.includes(item.key)
-    if(item.children) {
-      handleTreeData(item.children, targetKeys)
-    }
-  })
-  return data
-}
 export default {
     name: "",
     components: {},
@@ -121,21 +71,20 @@ export default {
           staffManageShow:false,
           searchText:'',
           addSkillShow:false,
-          targetKeys: [],
-          dataSource: transferDataSource,
           skillGroups:[],
           eidtName:'',
           addGroupName:'',
-          staffList:[]
+          staffList:[],
+          targetKeys:[],
+          dataSource:[],
+          staffListAll:[]
       } 
     },
     computed:{
-      treeData() {
-        return handleTreeData(treeData, this.targetKeys)
-      }
     },
     created(){
       this.getStaffSkillGroups()
+      this.getStaffListAll()
     },
     mounted(){},
     methods: {
@@ -182,6 +131,7 @@ export default {
       // 获取技能组
       getStaffSkillGroups(){
         this.skillGroups = []
+        console.log('咋地没东西了')
         this.Request.get('/staff/hfwStaffSkillGroups/listJson').then(res=>{
           console.log('技能组列表',res.data)
           let list = res.data.list
@@ -199,13 +149,21 @@ export default {
       },
       // 获取技能组员工列表
       getStaffList(groupId){
-        let params = {
-          groupId
-        }
+        let params = {}
+          params = {
+            groupId, 
+            userName:''
+          }
         this.Request.get('/staff/hfwStaffSkillGroupsMember/staffList',params).then(res=>{
           console.log(res.data.list,'技能组员工列表')
-          this.staffList = res.data.list
+          let list = res.data.list
+          this.staffList = list
         })
+      },
+      getStaffListAll(){
+         this.Request.get('/staff/hfwStaffSkillGroupsMember/staffList',{}).then(res=>{
+                 console.log('所有的员工列表管理',res.data.list)
+         })
       },
       changeGroups(index,id){
         this.skillGroups.map(item=>{
@@ -217,15 +175,17 @@ export default {
       handleCancelStaff(){
         this.staffManageShow = false
       },
-      //穿梭框
-      onChange(targetKeys) {
-        console.log('Target Keys:', targetKeys);
-        this.targetKeys = targetKeys;
+      handleOkStaff(){
+        let params = {
+          groupId:'',
+          staffs:[]
+        }
+        this.Request.get('/staff/hfwStaffSkillGroupsMember/staffGroupEdit',params).then(res=>{
+          console.log(res.data,'保存成员管理')
+        })
       },
-      onChecked(_, e, checkedKeys, itemSelect){
-        const { eventKey } = e.node
-        itemSelect(eventKey, !isChecked(checkedKeys, eventKey));
-      }
+      handleChange(){},
+      handleSearch(){}
     }
 }
 </script>

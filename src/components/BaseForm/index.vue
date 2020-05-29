@@ -8,6 +8,14 @@
       {{item.ruleName}}-->
       <a-form-model-item
         :label="item.label"
+        v-if="item.label && item.type == 'defaultText'"
+      
+      >
+        <span>{{item.value}}</span>
+      </a-form-model-item>
+
+      <a-form-model-item
+        :label="item.label"
         v-if="item.label && item.type == 'textarea'"
         :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"

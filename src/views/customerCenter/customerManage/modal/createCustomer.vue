@@ -64,14 +64,15 @@ export default {
     getEditInfo() {
       api.customerDetail({ custId: this.detailId }).then(res => {
         console.log("编辑客户回显", res);
-        let editArray = res.data.list;
-        this.cusFormObj.formList.map((item, index) => {
-          this.cusFormObj.formList[index] = Object.assign(
-            {},
-            item,
-            editArray[index]
-          );
-        });
+        this.cusFormObj.formList = res.data.list;
+        // let editArray = res.data.list;
+        // this.cusFormObj.formList.map((item, index) => {
+        //   this.cusFormObj.formList[index] = Object.assign(
+        //     {},
+        //     item,
+        //     editArray[index]
+        //   );
+        // });
         console.log(this.cusFormObj.formList, "aaaaaaaaaaaaaa==========");
       });
     },

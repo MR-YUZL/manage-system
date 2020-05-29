@@ -107,7 +107,7 @@
       <!-- treeselect -->
     </a-form-model-item>
     <a-form-model-item>
-      <a-button type="primary" html-type="submit">search</a-button>
+      <a-button type="primary" html-type="submit">搜索</a-button>
     </a-form-model-item>
   </a-form-model>
 </template>

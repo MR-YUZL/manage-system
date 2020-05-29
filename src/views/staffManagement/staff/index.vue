@@ -2,7 +2,7 @@
   <div class="">
     <a-page-header title="员工管理" />
     <div>
-        <Search ref="searchHeader" :tools="formList" @onSearch="searchFun" />
+        <div class="search"><FormModelSearchForm :formList="formList"  @prevHandleSubmit="prevHandleSubmit"  :defaultFormValues="defaultSearchFormValues"></FormModelSearchForm></div>
         <div style="padding:10px;text-align:right">
           <a-button type="primary" @click="addCustmoer">添加客服</a-button>
         </div>
@@ -29,8 +29,8 @@
                   tree-checkable
                   :show-checked-strategy="SHOW_PARENT"
                   search-placeholder="请选择"
+                  @change="changeTree"
                 />
-
       </div>
     </a-modal>
     <a-modal title="编辑成员" :visible="editStaffShow" v-if="editStaffShow" @cancel="handleCancelEditStaff" @ok="handleOkEditStaff">
@@ -53,11 +53,13 @@
 import { TreeSelect } from 'ant-design-vue';
 // const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 import TablePagination from "@/components/Table/TablePagination";
-import Search from "@/components/Search/index2";
+// import Search from "@/components/Search/index2";
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
     name: "staff",
     components: {
-      Search,
+      // Search,
+      FormModelSearchForm,
       TablePagination
     },
     props:{},
@@ -70,37 +72,26 @@ export default {
           formList:[
              {
               type: "select",
-              title: "角色",
-              key: "roleId",
+              label: "角色",
+              name: "roleId",
+              placeholder: "请输入",
               options:[
-                { value: "null", name: "所有角色" },
-                { value: 0, name: "未质检" },
-                { value: 1, name: "已质检" }
               ]
             },
             {
               type: "compact",
-              key: "queryType", //s1:姓名,2:手机号
-              defaultValue:'1',
-              name:'queryText',
-              defaultName: null,
+              name: "queryText",
+              compact: "input",
+              compactName: "queryType",
               options: [
-                {
-                  name: "客服姓名",
-                  value: "1"
-                },
-                {
-                  name: "手机号",
-                  value: "2"
-                }
+                { label: "客服姓名", value: "1" },
+                { label: "手机号", value: "2" },
               ]
-            },
-            {
-              type: 'search',
-              title: '查询',
-               btnType:'primary'
             }
           ],
+          defaultSearchFormValues: {
+            queryType:'1',
+          },
           dataSource:[{}],
           columns:[
             {
@@ -149,7 +140,7 @@ export default {
           },
           treeData:[],
           roleList:[],
-          editData:{
+          editData:{ 
             name:'',
             roleName:'',
             roleType:''
@@ -187,12 +178,15 @@ export default {
           this.pager = res.data.pager
         })
       },
+      //添加成员列表
       getMemberList(){
         this.Request.post('/staff/hfwStaffMemberRole/addressJson',{}).then(res=>{
-          this.treeData = this.treeChangeData(res.data.list)
+          let list = res.data.list
+          this.treeData = this.treeChangeData(list)
+          console.log('批量匹配成员列表',list)
         })
       },
-      searchFun(data){
+      prevHandleSubmit(data){
         console.log(data)
       },
       editStaff(row){
@@ -228,13 +222,12 @@ export default {
         this.addCustomerShow = false
       },
       handleOkAdd(){
-        // let params = {
-        //   userId:'',
-        //   roleId:''
-        // }
-        // this.Request.post('/staff/hfwStaffMember/batchSaveJson').then(res=>{
-        //   console.log(res)
-        // })
+        let params = {
+          userAccounts:[]
+        }
+        this.Request.post('/staff/hfwStaffMember/batchSaveJson',params).then(res=>{
+          console.log(res)
+        })
         // console.log('选中的成员列表',this.value)
       },
       handleCancelEditStaff(){
@@ -247,18 +240,20 @@ export default {
       },
       treeChangeData(array){
         array.map((item) => {
-        item['value'] = item.dId;
-        item['key'] = item.dId;
-        item['title'] = item.dName;
-        item['children'] = item.childDeparments;
-        // // delete item['id'];
-        // delete item['name'];
-        if(item.childDeparments.length>0){
-          this.treeChangeData(item.childDeparments);
-        }
-      })
-      return array;
-    },
+          item['value'] = item.dId;
+          item['key'] = item.dId;
+          item['title'] = item.dName;
+          item['children'] = item.staffsDtos;
+          if(item.childDeparments.length>0){
+            this.treeChangeData(item.childDeparments);
+          }
+        })
+        return array;
+      },
+      changeTree(value,label){
+        console.log(value,label)
+        this.userAccounts = []
+      }
     }
 }
 </script>
@@ -274,4 +269,7 @@ export default {
     line-height:30px;
   }
 }
+  .search{
+    padding:20px 0 0 10px;
+  }
 </style>

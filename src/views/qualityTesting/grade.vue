@@ -74,7 +74,9 @@ export default {
         if (valid) {
             console.log(this.gradeForm,'this.gradeForm.gradelist')
             api.saveQc().then(res=>{
-
+              if(res.data.status){
+                this.$message.success('提交评分成功');
+              }
             })
         }
       });
@@ -85,9 +87,10 @@ export default {
 
 <style lang="less" scoped>
 .totalScore{
+  text-align: center;
     span{
-        color: red;
-        font-size: 18px;
+        color:#fd6769;
+        font-size: 36px;
     }
 }
 .materialFlex {
@@ -95,7 +98,8 @@ export default {
   flex-wrap: wrap;
   justify-content: space-between;
   li {
-    width: 45%;
+    width: 50%;
+    margin-bottom: 10px;
   }
 }
 </style>
