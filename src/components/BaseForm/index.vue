@@ -6,11 +6,7 @@
       </div>
       <!-- {{item.rules}}
       {{item.ruleName}}-->
-      <a-form-model-item
-        :label="item.label"
-        v-if="item.label && item.type == 'defaultText'"
-      
-      >
+      <a-form-model-item :label="item.label" v-if="item.label && item.type == 'defaultText'">
         <span>{{item.value}}</span>
       </a-form-model-item>
 
@@ -44,6 +40,8 @@
         <a-select
           v-model="formObject.defaultValues[item.ruleName]"
           :placeholder="item.placeholder"
+          :showSearch="item.showSearch?item.showSearch:false"
+          option-filter-prop="children"
         >
           <a-select-option
             v-for="(val,index) in item.options"
@@ -160,6 +158,23 @@
           >{{ tag.value }}</a-checkable-tag>
         </template>
       </a-form-model-item>
+
+      <a-form-model-item
+        :label="item.label"
+        v-if="item.label && item.type == 'areaCascader'"
+        :prop="'defaultValues.'+item.ruleName"
+        :rules="item.rules"
+      >
+        <!-- 省市区联动 -->
+        <a-cascader
+          v-if="item.type == 'areaCascader'"
+          :options="areaDictionary"
+          :field-names="item.fieldNames"
+          v-model="formObject.defaultValues[item.ruleName]"
+          change-on-select
+          @change="areaOnChange"
+        />
+      </a-form-model-item>
     </div>
     <a-form-model-item
       :wrapper-col="{ span: 24 }"
@@ -177,6 +192,7 @@
 
 <script>
 import Upload from "@/components/Upload";
+import { areaDictionary } from "@/utils/areaDictionary";
 export default {
   props: {
     formObject: {
@@ -197,7 +213,8 @@ export default {
       formItemLayout: {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 }
-      }
+      },
+      areaDictionary
     };
   },
   created() {},
@@ -225,9 +242,6 @@ export default {
     },
     handleModalState() {
       this.$emit("toggleModal", false);
-    },
-    handleChangeEvent(value,option) {
-      console.log(value,option)
     }
   }
 };
