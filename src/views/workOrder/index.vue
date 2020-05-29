@@ -5,14 +5,19 @@
       <FormModelSearchForm :formList="searchFormList"  @prevHandleSubmit="prevHandleSubmit"></FormModelSearchForm>
       <div class="flex-between">
         <div>
-          <a-button>批量完结</a-button><a-button>批量重启</a-button><a-button>批量转交</a-button>
+          <a-button @click="closeWorkOrderModal">批量完结</a-button><a-button @click="batchRestartModal">批量重启</a-button><a-button @click="batchTransmitModal">批量转交</a-button>
         </div>
         <div>
-          <a-button>当前数据导出</a-button><a-button type="primary">新建工单</a-button>
+          <a-button @click="exportDataModal">当前数据导出</a-button><a-button type="primary" @click="createdWorkOrderModal">新建工单</a-button>
         </div>
       </div>
       <div>
-        <a-table :columns="columns"  :data-source="dataSource"  :pagination="false" :rowKey="record => record.id">
+        <a-table 
+        :columns="columns"  
+        :data-source="dataSource"  
+        :pagination="false" 
+        :row-selection="rowSelection"  
+        :rowKey="record => record.id">
           <div slot="action" slot-scope="record,row">
             <span class="blue">{{record.code}}</span>
           </div>
@@ -20,21 +25,148 @@
       </div>
     </div>
     <div style="padding:10px 0 20px 0;"><TablePagination :parentPager="pager" @paginationChange="paginationChange" /></div>
+    <a-modal title="完结工单" :visible="closeWorkOrderShow" v-if="closeWorkOrderShow" @cancel="handleCancelCloseOrder" @ok="handleBatch(3)">
+      <p>确认完结工单嘛？完结后，可重新开启工单</p>
+       <a-textarea
+        v-model="closeOrderRemark"
+        placeholder="若有备注请填写，若无请直接完结"
+        :auto-size="{ minRows: 3, maxRows: 5 }"
+        />
+    </a-modal>
+    <a-modal title="批量重启" :visible="batchRestartShow" v-if="batchRestartShow" @cancel="handleCancelBatchRestart" @ok="handleBatch(4)">
+      <a-textarea
+        v-model="batchRestartValue"
+        placeholder="请输入备注"
+        :auto-size="{ minRows: 3, maxRows: 5 }"/>
+    </a-modal>
+    <Modal :currentModal="batchTransmit">
+      <div slot='content'>
+        <BaseForm 
+          :formObject="formObject"
+          :defaultValues="formAxiosReturnValues"
+          @toggleModal="toggleModal"
+          @formSubmit="formSubmit"
+        ></BaseForm>
+      </div>
+    </Modal>
+    <a-modal title="导出" :visible="exportDataShow" v-if="exportDataShow" @cancel="handleCancelExport" @ok="handleOkExport">
+         是否确认导出当前条件下的工单数据？
+         <br />
+         本次导出工XXX条数据
+    </a-modal>
+    <Modal :currentModal="createdWorkOrder">
+      <div slot='content'>
+        <BaseForm 
+          :formObject="formObjectCreated"
+          @toggleModal="createdToggleModal"
+          @formSubmit="formSubmitWorkOrder"
+        ></BaseForm>
+      </div>
+    </Modal>
   </div>
 </template>
 <script>
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import TablePagination from "@/components/Table/TablePagination";
+import Modal from "@/components/Modal/index";
+import BaseForm from "@/components/BaseForm/index";
 export default {
     name: "worlOrder",
     components: {
       FormModelSearchForm,
-      TablePagination
+      TablePagination,
+      Modal,
+      BaseForm
     },
     props:{},
     data() {
       return {
-        searchFormList: [
+        closeOrderRemark:'',
+        closeWorkOrderShow:false,
+        batchRestartShow:false,
+        batchRestartValue:'',
+        batchTransmit:{
+          visible:false,
+          title:'批量转交'
+        },
+        createdWorkOrder:{
+          visible:false,
+          title:'创建工单'
+        },
+        exportDataShow:false,
+        formObject:{
+          type:'modalForm',
+          ref: "testModal",
+          sureBtn:'确定',
+          modelList: [
+            {
+              type: "select",
+              label: "工单受理组",
+              placeholder: "请选择",
+              ruleName: "receiverGroupId",
+              options: [
+                  {
+              label: "客户名称",
+              value: "1"
+            },
+            {
+              label: "联系人",
+              value: "2"
+            },
+            {
+              label: "联系电话",
+              value: "3"
+            }],
+              rules: [{
+                required: true,
+                message: "请选择",
+                trigger: "change"
+              }]
+            },
+            {
+              type: "select",
+              label: "工单受理人",
+              placeholder: "请选择",
+              ruleName: "receiverAcc",
+              options: [ { key: 2, value: "网站咨询" },
+                  { key: 0, value: "微信公众号" },
+                  { key: 1, value: "微信小程序" },],
+              rules: {
+                required: true,
+                message: "请选择",
+                trigger: "change"
+              }
+            },
+            {
+              type: "textarea",
+              label: "备注",
+              placeholder: "请输入备注内容",
+              ruleName: "remark",
+            }
+          ]
+        },
+        formObjectCreated:{
+          type:'modalForm',
+          ref: "createdModal",
+          sureBtn:'确定',
+            modelList: [
+              {
+                type: "select",
+                label: "工单受理组",
+                placeholder: "请选择",
+                ruleName: "receiverGroupId",
+                options: [
+                    {
+                    key: "客户名称",
+                    value: "客户名称"
+                  }
+                ]
+              }
+            ]        
+        },
+        formAxiosReturnValues:{},
+        
+       searchFormList: [
           {
             type:'select',
             label: "优先级",
@@ -184,8 +316,25 @@ export default {
         ],
         dataSource:[],
         searchField:{},
-        pager:{}
+        pager:{},
+        selectedRowKeys: [],
       }
+    },
+    computed:{
+      rowSelection(){
+        return {
+          onChange: (selectedRowKeys, selectedRows) => {
+            console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+          },
+          onSelect: (record, selected, selectedRows) => {
+            console.log(record, selected, selectedRows);
+            this.selectedRowKeys = selectedRows
+          },
+          onSelectAll: (selected, selectedRows, changeRows) => {
+            console.log(selected, selectedRows, changeRows);
+          },
+        }
+      },
     },
     created(){
       this.getList()
@@ -202,8 +351,71 @@ export default {
           let list = res.data.list
           this.dataSource = list
         })
+      },
+      // 完结工单
+      closeWorkOrderModal(){
+        this.closeWorkOrderShow = true
+      },
+      handleCancelCloseOrder(){
+        this.closeWorkOrderShow = false
+      },
+      handleBatch(type){
+        let params = {
+          type, //0-创建，1-跟进，2-转交，3-完结,
+        }
+        if(type == 3){
+          params.remark = this.closeOrderRemark
+        }else if(type == 4){
+          params.remark = this.batchRestartValue
+        }else if(type == 2){
+          let transParams = {
+            receiverAcc:'',
+            receiverGroupId:'',
+            remark:''
+          }
+          params = {...params,transParams}
+        }
+        this.Request.get('/workflow/follow/saveWorkflowBatchFollow',params).then(res=>{
+          console.log(res,'工单完结')
+        })
+      },
+      //批量重启
+      batchRestartModal(){
+        this.batchRestartShow = true
+      },
+      handleCancelBatchRestart(){
+        this.batchRestartShow = false
+      },
+      //批量转交
+      batchTransmitModal(){ 
+        this.batchTransmit.visible = true
+      },
+      toggleModal(){
+        this.batchTransmit.visible = false
+      },
+      formSubmit(data){
+        console.log(data)
+      },
+      // 导出当前数据
+      exportDataModal(){
+        this.exportDataShow= true
+      },
+      handleCancelExport(){
+        this.exportDataShow= false
+      },
+      handleOkExport(){},
+      //创建工单
+      createdWorkOrderModal(){
+        this.createdWorkOrder.visible = true
+      },
+      createdToggleModal(){
 
       },
+      formSubmitWorkOrder(){},
+
+
+
+
       prevHandleSubmit(){
 
       },
