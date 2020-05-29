@@ -215,7 +215,7 @@ export default {
           //   // }
           // });
           console.log(_that.formObject.defaultValues);
-          // _that.$emit("formSubmit", obj);
+          _that.$emit("formSubmit", _that.formObject.defaultValues);
         } else {
           return false;
         }

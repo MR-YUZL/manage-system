@@ -242,7 +242,7 @@ export default {
         array.map((item) => {
           item['value'] = item.dId;
           item['key'] = item.dId;
-          item['title'] = item.dName;
+          item['title'] = item.dName; 
           item['children'] = item.staffsDtos;
           if(item.childDeparments.length>0){
             this.treeChangeData(item.childDeparments);
