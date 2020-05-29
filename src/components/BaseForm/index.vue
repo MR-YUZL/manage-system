@@ -9,26 +9,47 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'textarea'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <a-input type="textarea" v-model="formData[item.ruleName]" :placeholder="item.placeholder" />
+        <a-input
+          type="textarea"
+          v-model="formObject.defaultValues[item.ruleName]"
+          :placeholder="item.placeholder"
+        />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'input'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <a-input v-model="formData[item.ruleName]" :placeholder="item.placeholder" />
+        <a-input v-model="formObject.defaultValues[item.ruleName]" :placeholder="item.placeholder" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'select'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <a-select v-model="formData[item.ruleName]" :placeholder="item.placeholder">
+        <a-select
+          v-model="formObject.defaultValues[item.ruleName]"
+          :placeholder="item.placeholder"
+        >
+          <a-select-option
+            v-for="(val,index) in item.options"
+            :key="index"
+            :value="val.key"
+          >{{val.value}}</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <a-form-model-item
+        :label="item.label"
+        v-if="item.label && item.type == 'selectCascader' && formObject.defaultValues[item.cascaderName]"
+        :prop="'defaultValues.'+item.ruleName"
+        :rules="item.rules"
+      >
+        <a-select v-model="formObject.defaultValues[item.ruleName]" :placeholder="item.placeholder">
           <a-select-option
             v-for="(val,index) in item.options"
             :key="index"
@@ -39,21 +60,25 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'radio'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <a-radio-group v-model="formData[item.ruleName]" v-for="(val,index) in item.options" :key="index">
+        <a-radio-group
+          v-model="formObject.defaultValues[item.ruleName]"
+          v-for="(val,index) in item.options"
+          :key="index"
+        >
           <a-radio :value="val.key">{{val.value}}</a-radio>
         </a-radio-group>
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'checkbox'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
         <a-checkbox-group
-          v-model="formData[item.ruleName]"
+          v-model="formObject.defaultValues[item.ruleName]"
           v-for="(val,index) in item.options"
           :key="index"
           :placeholder="item.placeholder"
@@ -64,36 +89,36 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'upload'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <Upload :list="formData[item.ruleName]" />
+        <Upload :list="formObject.defaultValues[item.ruleName]" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'date'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
         <a-date-picker
           show-time
           type="date"
           style="width: 100%;"
-          v-model="formData[item.ruleName]"
+          v-model="formObject.defaultValues[item.ruleName]"
           :placeholder="item.placeholder"
         />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'treeSelect'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
         <a-tree-select
           style="width: 100%"
           :dropdownStyle="{ maxHeight: '400px', overflow: 'auto' }"
           allowClear
-          v-model="formData[item.ruleName]"
+          v-model="formObject.defaultValues[item.ruleName]"
           :treeData="item.options"
           :placeholder="item.placeholder"
         ></a-tree-select>
@@ -101,15 +126,20 @@
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'cascader'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <a-cascader v-model="formData[item.ruleName]" :options="item.options" :placeholder="item.placeholder" />
+        <a-cascader
+          v-model="formObject.defaultValues[item.ruleName]"
+          :options="item.options"
+          :placeholder="item.placeholder"
+          :field-names="item.fieldNames"
+        />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'tag'"
-        :prop="item.ruleName"
+        :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
         <template v-for="tag in item.options">
@@ -126,7 +156,11 @@
       :style="formObject.type == 'modalForm'?{'text-align':'center'}:{'text-align':'right'}"
     >
       <a-button v-if="formObject.type == 'modalForm'" @click="handleModalState">取消</a-button>
-      <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">{{formObject.sureBtn || '确定'}}</a-button>
+      <a-button
+        style="margin-left: 10px;"
+        type="primary"
+        @click="onSubmit"
+      >{{formObject.sureBtn || '确定'}}</a-button>
     </a-form-model-item>
   </a-form-model>
 </template>
@@ -137,26 +171,14 @@ export default {
   props: {
     formObject: {
       type: Object
-    },
-    defaultValues: {
-      type: Object,
-      default: ()=>{
-        return {}
-      }
     }
   },
   components: {
     Upload
   },
   watch: {
-    // 'defaultValues.updateTime': (val, oldVal) => {
-    //   console.log("defaultValues======", val, oldVal);
-    // }
-    defaultValues: {
-      handler(val,oldVal){
-        this.formData = Object.assign({},this.formData,val)
-        console.log(this.formData,"=====this.formData=====")
-      },
+    formObject: {
+      handler(val, oldVal) {},
       deep: true
     }
   },
@@ -165,14 +187,10 @@ export default {
       formItemLayout: {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 }
-      },
-      formData: {}
+      }
     };
   },
-  created() {
-    this.formData = this.defaultValues
-    console.log(this.formData,"=====this.formData=====")
-  },
+  created() {},
   mounted() {},
   methods: {
     onSubmit(e) {
@@ -188,8 +206,8 @@ export default {
           //   obj[item.ruleName] = item.model;
           //   // }
           // });
+          console.log(_that.formObject.defaultValues);
           // _that.$emit("formSubmit", obj);
-          console.log(_that.formData)
         } else {
           return false;
         }
@@ -197,6 +215,9 @@ export default {
     },
     handleModalState() {
       this.$emit("toggleModal", false);
+    },
+    handleChangeEvent(value,option) {
+      console.log(value,option)
     }
   }
 };
