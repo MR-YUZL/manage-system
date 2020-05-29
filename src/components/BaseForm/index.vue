@@ -8,6 +8,14 @@
       {{item.ruleName}}-->
       <a-form-model-item
         :label="item.label"
+        v-if="item.label && item.type == 'defaultText'"
+      
+      >
+        <span>{{item.value}}</span>
+      </a-form-model-item>
+
+      <a-form-model-item
+        :label="item.label"
         v-if="item.label && item.type == 'textarea'"
         :prop="item.ruleName"
         :rules="item.rules"
@@ -104,7 +112,7 @@
         :prop="item.ruleName"
         :rules="item.rules"
       >
-        <a-cascader v-model="formData[item.ruleName]" :options="item.options" :placeholder="item.placeholder" />
+        <a-cascader v-model="formData[item.ruleName]" :options="item.options" :placeholder="item.placeholder" :field-names="item.fieldNames" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"

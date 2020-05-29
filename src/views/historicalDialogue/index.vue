@@ -236,7 +236,7 @@ export default {
             label: "咨询分类",
             placeholder: "请选择",
             model: undefined,
-            ruleName: "receiverGroupId",
+            ruleName: "consuleId",
             options: [],
             rules: {
               required: true,
@@ -280,6 +280,7 @@ export default {
   },
   mounted() {
     this.getList();
+    this.getReferClassify();
   },
   methods: {
     prevHandleSubmit(val){
@@ -290,6 +291,15 @@ export default {
     toggleModal() {},
     formSubmit(data) {
       console.log(data,'data')
+    },
+    getReferClassify() {
+      api.referClassify().then(res => {
+        console.log("咨询分类", res);
+        if (res.data.status) {
+          this.formObject.modelList[0].options = res.data.list;
+          console.log(this.formObject.modelList[0],'this.formObject.modelList[0]')
+        }
+      });
     },
     getList() {
       let params = {

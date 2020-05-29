@@ -23,7 +23,7 @@
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
     <Detail
-      v-if="qcId"
+      v-if="detailsShow"
       :detailsShow="detailsShow"
       :qcId="qcId"
       :type="qcType"

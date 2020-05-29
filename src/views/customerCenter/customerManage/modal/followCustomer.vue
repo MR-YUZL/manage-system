@@ -58,6 +58,7 @@ export default {
   },
   watch: {
     visible(val) {
+      console.log(val)
       this.visibles = val;
     }
   },
@@ -88,6 +89,7 @@ export default {
     handleOk(e) {
       e.preventDefault();
       this.form.validateFields((err, values) => {
+        values.nextFollowDate = moment(values.nextFollowDate).format("YYYY-MM-DD HH:SS:MM")
         let params = {
           custId:this.followId,
           ...values
@@ -99,6 +101,7 @@ export default {
             if(res.data.status){
               this.$message.success('保存成功')
               this.visibles = false
+              this.$emit("successLoadList");
             }
           })
         }
