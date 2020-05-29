@@ -97,6 +97,7 @@ export default {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
+  margin-top: 10px;
   li {
     width: 50%;
     margin-bottom: 10px;

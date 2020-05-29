@@ -5,54 +5,8 @@
         <div class="d-head">
           <h5>质检详情</h5>
         </div>
-        <!-- <a-form-model v-if="type==1" ref="qualityForm" v-bind="formItemLayout" :model="qualityForm">
-          <a-form-model-item label="主叫号码">
-            <p>{{qualityForm.caller}}</p>
-          </a-form-model-item>
-          <a-form-model-item label="被叫号码">
-            <p>{{qualityForm.called}}</p>
-          </a-form-model-item>
-          <a-form-model-item label="通话类型">
-            <p>{{qualityForm.callType}}</p>
-          </a-form-model-item>
-          <a-form-model-item label="归属地">
-            <p>{{qualityForm.attribution}}</p>
-          </a-form-model-item>
-          <a-form-model-item label="时间">
-            <p>{{qualityForm.callDate}}</p>
-          </a-form-model-item>
-          <a-form-model-item label="客服">
-            <p>{{qualityForm.serviceName}}</p>
-          </a-form-model-item>
-          <a-form-model-item label="所属客服组">
-            <p>{{qualityForm.skillName}}</p>
-          </a-form-model-item>
-          <a-form-model-item label="通话时长">
-            <p>{{qualityForm.callLength}}</p>
-          </a-form-model-item>
-          <a-form-model-item label="挂断原因">
-            <p>{{qualityForm.hangUpType}}</p>
-          </a-form-model-item>
-          <a-form-model-item label="通话录音">
-            <a-button block>播放</a-button>
-          </a-form-model-item>
-          <a-form-model-item label="咨询分类">
-            <a-cascader :options="referOptions" placeholder="请选择" />
-          </a-form-model-item>
-          <a-form-model-item label="问题解决">
-            <a-select placeholder="请选择" v-model="qualityForm.solveStatus">
-              <a-select-option value="1">已解决</a-select-option>
-              <a-select-option value="0">未解决</a-select-option>
-            </a-select>
-          </a-form-model-item>
-          <a-form-model-item label="备注" prop>
-            <a-input type="textarea" :maxLength="200" v-model="qualityForm.consuleRemark"  />
-          </a-form-model-item>
-          <a-form-model-item>
-            <a-button style="margin-left: 10px;" @click="onSubmit">保存</a-button>
-          </a-form-model-item>
-        </a-form-model>-->
-        <div v-if="type==1">
+        
+        <div v-if="type==1" class="calledLeft">
           <BaseForm
             :formObject="defaultObject"
             @toggleModal="toggleModal"
@@ -114,6 +68,7 @@ export default {
         test: "hello"
       },
       defaultObject: {
+        ref:'callForm',
         sureBtn: "保存",
         modelList: [
           {
@@ -174,7 +129,7 @@ export default {
             type: "defaultText",
             label: "通话录音",
             value: "",
-            ruleName: "hangUpType"
+            ruleName: "callRecordUrl"
           },
           {
             type: "cascader",
@@ -213,7 +168,8 @@ export default {
             model: undefined,
             ruleName: "consuleRemark"
           }
-        ]
+        ],
+        defaultValues:{}
       },
       sessionObject: {
         ref: "testModal",
@@ -255,7 +211,8 @@ export default {
             model: undefined,
             ruleName: "receiverGroupId"
           }
-        ]
+        ],
+        defaultValues:{}
       }
     };
   },
@@ -287,6 +244,28 @@ export default {
           this.defaultObject.modelList.map(v => {
             if (v.type == "defaultText") {
               v.value = res.data.data[v.ruleName];
+              if (v.ruleName == "callType") {
+                v.value = v.value == 0 ? "呼入" : "呼出";
+              }
+              if (v.ruleName == "hangUpType") {
+                switch (v.value) {
+                  case "0":
+                    v.value = "正常";
+                    break;
+                  case "1":
+                    v.value = "未接通";
+                    break;
+                  case "2":
+                    v.value = "中断放弃";
+                    break;
+                  case "3":
+                    v.value = "振铃放弃";
+                    break;
+                  case "4":
+                    v.value = "排队放弃";
+                    break;
+                }
+              }
             }
           });
         }
@@ -300,11 +279,13 @@ export default {
         }
       });
     },
-    calledSubmit(values){
-      console.log(values)
-      // api.saveServiceSummary().then(res=>{
-
-      // })
+    calledSubmit(values) {
+      api.saveServiceSummary({...values}).then(res=>{
+        console.log(res,'保存通话检测详情左侧')
+        if(res.data.status){
+          this.$message.success('保存成功')
+        }
+      })
     },
     toggleModal() {},
     sessionSubmit() {},
@@ -333,6 +314,11 @@ export default {
       p {
         font-size: 16px;
         color: #353535;
+      }
+    }
+    .calledLeft{
+      /deep/button{
+        margin-right: 20px;
       }
     }
   }

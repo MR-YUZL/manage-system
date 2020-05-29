@@ -37,6 +37,7 @@
 </template>
 
 <script>
+import qs from 'qs';
 import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
@@ -199,8 +200,10 @@ export default {
       this.getList();
     },
     exportUrl(){
-      let url = '/customers/hfwCustomersClue/exportJson?dataSource='+ this.dataSource + '&queryType=';
-      // document.location = url;
+      this.visible = false;
+      let param = qs.stringify(this.searchParams);
+      let url =`/customers/hfwCustomersClue/exportJson?${param}`;
+      window.location.href = url;
     },
     getList() {
       let params = {

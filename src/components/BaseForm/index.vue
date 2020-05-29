@@ -24,6 +24,7 @@
           type="textarea"
           v-model="formObject.defaultValues[item.ruleName]"
           :placeholder="item.placeholder"
+          :maxLength="item.maxLength"
         />
       </a-form-model-item>
       <a-form-model-item
@@ -113,6 +114,7 @@
           type="date"
           style="width: 100%;"
           v-model="formObject.defaultValues[item.ruleName]"
+          :valueFormat="item.format?item.format:'YYYY-MM-DD'"
           :placeholder="item.placeholder"
         />
       </a-form-model-item>
@@ -215,7 +217,7 @@ export default {
           //   // }
           // });
           console.log(_that.formObject.defaultValues);
-          // _that.$emit("formSubmit", obj);
+          _that.$emit("formSubmit", _that.formObject.defaultValues);
         } else {
           return false;
         }

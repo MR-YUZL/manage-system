@@ -33,7 +33,6 @@ export default {
       })
     },
     handleCancel() {
-      this.visibles = false
       this.$emit('closeUpdate')
     }
   }

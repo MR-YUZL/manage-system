@@ -42,8 +42,6 @@
           />-->
           <BaseForm
             :formObject="formObject"
-            :defaultValues="formAxiosReturnValues"
-            @toggleModal="toggleModal"
             @formSubmit="formSubmit"
           />
         </div>
@@ -223,10 +221,6 @@ export default {
         name: ""
       },
       defaultSearchFormValues:{},
-      formAxiosReturnValues: {
-        id: "id_123",
-        test: "hello"
-      },
       formObject: {
         ref: "testModal",
         sureBtn:'保存并更新',
@@ -236,8 +230,9 @@ export default {
             label: "咨询分类",
             placeholder: "请选择",
             model: undefined,
-            ruleName: "consuleId",
+            ruleName: "consultType",
             options: [],
+            fieldNames: { label: "name", value: "id", children: "childrens" },
             rules: {
               required: true,
               message: "请选择咨询分类",
@@ -249,7 +244,7 @@ export default {
             label: "解决问题",
             placeholder: "请选择",
             model: undefined,
-            ruleName: "receiverGroupId", 
+            ruleName: "receiver", 
             options: [
               { key: "1", value: "已解决" },
               { key: "2", value: "未解决" }
@@ -265,9 +260,11 @@ export default {
             label: "咨询备注",
             placeholder: "请选择",
             model: undefined,
-            ruleName: "receiverGroupId" //receiverGroupId 工单受理组id
+            ruleName: "GroupId",
+            maxLength:256
           }
-        ]
+        ],
+        defaultValues:{}
       }
     };
   },

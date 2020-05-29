@@ -68,6 +68,14 @@ export default {
   contactInfo(params) {
     return axios.get('/customers/hfwCustomersInfo/InfoContactsJson', {params})
   },
+  //客户管理-客户详情-编辑联系人  
+  editContactsInfo(params) {
+    return axios.get('/customers/hfwCustomersContacts/editInfoJson', {params})
+  },
+  //客户管理-客户详情-删除联系人  
+  deleteContacts(params){
+    return axios.get('/customers/hfwCustomersContacts/delete', {params})
+  },
   //客户管理-客户详情-tab资料 
   // materialInfo(params) {
   //   return axios.get('/customers/hfwCustomersInfo/editInfoJson', {params})
