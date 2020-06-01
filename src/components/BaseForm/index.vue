@@ -242,6 +242,9 @@ export default {
     },
     handleModalState() {
       this.$emit("toggleModal", false);
+    },
+    areaOnChange(value) {
+      console.log(value)
     }
   }
 };
