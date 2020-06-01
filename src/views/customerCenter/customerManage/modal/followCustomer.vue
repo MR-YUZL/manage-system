@@ -31,7 +31,6 @@ export default {
             type: "select",
             label: "有效联系",
             placeholder: "请选择",
-            model: undefined,
             ruleName: "followValid",
             options: [
               { key: 1, value: "否" },
@@ -47,15 +46,13 @@ export default {
             type: "textarea",
             label: "本次跟进记录",
             placeholder: "",
-            model: undefined,
             ruleName: "followRecord",
-            maxLength:100
+            maxLength: 100
           },
           {
             type: "date",
             label: "下次跟进时间",
             placeholder: "请选择",
-            model: undefined,
             ruleName: "followDate",
             format: "YYYY-MM-DD HH:mm:ss",
             options: [],
@@ -67,7 +64,7 @@ export default {
           }
         ],
         defaultValues: {
-          followValid: "0"
+          followValid: 0
         }
       },
       visibles: this.visible,
@@ -101,11 +98,10 @@ export default {
           this.$message.success("保存成功");
           this.visibles = false;
           this.$emit("successLoadList");
-        }else{
+        } else {
           this.$message.error(res.data.msg);
         }
       });
-      
     },
     toggleModal(val) {
       this.$emit("closeUpdate");
@@ -114,8 +110,11 @@ export default {
       api.lastInfo(params).then(res => {
         console.log(res, "最近跟进记录");
         if (res.data.status) {
-          this.lastInfo = res.data.data;
-          this.formObject.defaultValues = res.data.data;
+          // todo 当跟进内容为空时，data都不返回。
+          if (res.data.data) {
+            this.lastInfo = res.data.data;
+            this.formObject.defaultValues = res.data.data;
+          }
         }
       });
     },
