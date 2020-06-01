@@ -234,7 +234,7 @@ export default {
                 options: []
               },
               {
-                type: "select",
+                type: "cascader",
                 label: "工单分类",
                 placeholder: "请选择",
                 ruleName: "typeId",
@@ -489,6 +489,7 @@ export default {
            let list = res.data.list
            this.classifyList  = this.treeChangeData(list)
            this.searchFormList[6].options = this.classifyList
+           this.formObjectCreated.modelList[6].options = this.classifyList
          })
       },
       getRelatedCustomerList(){

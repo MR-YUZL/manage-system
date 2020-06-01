@@ -9,7 +9,9 @@
       <a-button type="primary" @click="handleWorkOrder(4)">重启</a-button>
     </div>
     <p class="text">{{info.content}}</p>
+    <div v-if="info.status!=2">
     <BaseForm ref="replayForm" :formObject="replayFormObject"   @formSubmit="replyWorkOrder"></BaseForm>
+    </div>
   </div>
 </template>
 
@@ -76,8 +78,6 @@ export default {
      
     },
     mounted(){ 
-      
-      console.log(11)
     },
     methods: {
       getWorkOrderDetails(){
@@ -91,24 +91,24 @@ export default {
       },
       handleWorkOrder(type){  // 这里的参数需要再看下
         let params = {
-          workflowId:this.workflowId,
+          workflowId:this.workOrderId,
           type,
           remark:''
         }
-        this.Request.get('/workflow/follow/saveWorkflowFollow',params).then(res=>{
+        this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(()=>{
            this.$message.success('操作成功')
+           this.getWorkOrderDetails()
         })
       },
       // 回复
       replyWorkOrder(data){
-       
         console.log(data,'====')
         let params = {
-          workflowId:this.workflowId,
+          workflowId:this.workOrderId,
           type:1,
           ...data,
         }
-        this.Request.get('/workflow/follow/saveWorkflowFollow',params).then(res=>{
+        this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(res=>{
            this.$message.success('操作成功')
            this.replayFormObject.defaultValues.content  = ''
            this.replayFormObject.defaultValues.fileList = []

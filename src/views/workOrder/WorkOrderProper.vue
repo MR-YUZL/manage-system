@@ -3,7 +3,7 @@
         <a-tabs default-active-key="1" :animated="false">
           <a-tab-pane key="1" tab="工单属性">
             <div class="workOrder">
-              <div class="title"><p>工单信息</p><p><a-button type="primary">提交</a-button></p></div>
+              <div class="title"><p>工单信息</p><p><a-button type="primary" @click="modifyWorkOrder">提交</a-button></p></div>
               <ul>
                 <li>
                   <span>工单编号</span>
@@ -24,10 +24,10 @@
                  <li>
                   <span>优先级</span>
                   <p> 
-                    <a-select v-model="level" default-value="低" style="width:150px;">
-                      <a-select-option value="0">低</a-select-option>
-                      <a-select-option value="1">中</a-select-option>
-                      <a-select-option value="2">高</a-select-option>
+                    <a-select v-model="level" style="width:150px;">
+                      <a-select-option :value="0">低</a-select-option>
+                      <a-select-option :value="1">中</a-select-option>
+                      <a-select-option :value="2">高</a-select-option>
                     </a-select>
                   </p>
                 </li>
@@ -35,19 +35,19 @@
                   <span>受理组</span>
                   <p>{{info.receiverGroupId}}</p>
                 </li>
-                <li> 
+                <li>  
                   <span>受理人</span>
                   <p>{{info.receiverAcc}}</p>
                 </li>
                  <li>
                   <span>工单分类</span>
                   <p>
-                    <a-select v-model="typeId" default-value="低" style="width:150px;">
-                      <a-select-option value="0">低</a-select-option>
-                      <a-select-option value="1">中</a-select-option>
-                      <a-select-option value="2">高</a-select-option>
-                    </a-select>
+                    <a-cascader v-model="typeId" :options="classifyList" placeholder="请选择" style="width:200px;" />
                   </p>
+                </li>
+                <li v-for="(item,index) in filedValue" :key="index">
+                  <span>{{item.key}}</span>
+                  <p>{{item.value}}</p>
                 </li>
               </ul>
               <div class="title"><p>客户信息</p></div>
@@ -110,8 +110,11 @@ export default {
         return {
           info:{},
           level:'',
-          typeId:'',
-          customerInfo:{}
+          typeId:[],
+          customerInfo:{},
+          classifyList:[],
+          classify:'',
+          filedValue:[]
         }
     },
     watch:{
@@ -125,6 +128,7 @@ export default {
     created(){
       this.getWorkOrderDetails()
       this.getCustomerList()
+      this.getClassification()
     },
     mounted(){},
     methods: {
@@ -136,7 +140,8 @@ export default {
           console.log('工单信息',res.data,'=====================')
           this.info = res.data.data
           this.level = this.info.level
-          this.typeId = this.info.typeId
+          this.typeId[0] = this.info.typeId
+          this.filedValue = this.info.filedValue
         })
       },
       getCustomerList(){
@@ -146,7 +151,14 @@ export default {
         this.Request.get('/customers/hfwCustomersInfo/infoJson',params).then(res=>{
           console.log('客户信息',res.data,'=====================')
           this.customerInfo = res.data.data
-     
+        })
+      },
+       // 查询分类
+      getClassification(){
+        this.Request.get('/config/system/findTypeListJson',{}).then(res=>{
+          console.log('分类列表',res.data)
+          let list = res.data.list
+          this.classifyList  = this.treeChangeData(list)
         })
       },
       changeType(type){  //操作类型,0-创建，1-跟进，2-转交，3-完结，4-重启
@@ -158,6 +170,26 @@ export default {
 
         return obj[type]    
       },
+      treeChangeData(array){
+        array.map((item) => {
+          item['value'] = item.id;
+          item['label'] = item.name; 
+          item['children'] = item.childList;
+          if(item.childList.length>0){
+            this.treeChangeData(item.childList);
+          }
+        })
+        return array;
+      },
+      modifyWorkOrder(){
+        let params = {
+          level:this.level,
+          typeId:this.typeId.join(',')
+        }
+        this.Request.post('/workflow/updateWorkflow',params).then(res=>{
+            this.$message.success('修改成功')
+        })
+      }
     }
 }
 </script>
