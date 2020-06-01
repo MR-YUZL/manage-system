@@ -9,141 +9,137 @@
       <a-button type="primary" @click="handleWorkOrder(4)">重启</a-button>
     </div>
     <p class="text">{{info.content}}</p>
-    <BaseForm ref="replayForm" :formObject="replayFormObject"   @formSubmit="replyWorkOrder"></BaseForm>
+    <BaseForm ref="replayForm" :formObject="replayFormObject" @formSubmit="replyWorkOrder"></BaseForm>
   </div>
 </template>
 
 <script>
 import BaseForm from "@/components/BaseForm/index";
 export default {
-    name: "replayWorkOrder",
-    components: {
-      BaseForm
-    },
-    props:{
-      workOrderId:{
-        type:String,
-        default:function(){
-          return ''
-        }
-      }
-    },
-    data() {
-        return {
-          info:{},
-          replayCon:'',
-          replayFormObject:{
-            ref: "replayWorkOrderModal",
-            sureBtn:'回复',
-            modelList:[
-               {
-                type: "textarea",
-                label: "跟进结果",
-                placeholder: "请输入你的跟进结果",
-                ruleName: "content",
-                rules: [{
-                  required: true,
-                  message: "请输入你的跟进结果",
-                  trigger: "blur"
-                }]
-              },
+  name: "replayWorkOrder",
+  components: {
+    BaseForm
+  },
+  props: {
+    workOrderId: {
+      type: String,
+      default: ""
+    }
+  },
+  data() {
+    return {
+      info: {},
+      replayCon: "",
+      replayFormObject: {
+        ref: "replayWorkOrderModal",
+        sureBtn: "回复",
+        modelList: [
+          {
+            type: "textarea",
+            label: "跟进结果",
+            placeholder: "请输入你的跟进结果",
+            ruleName: "content",
+            rules: [
               {
-                type: "upload",
-                label: "上传附件",
-                placeholder: "请选择",
-                ruleName: "fileList ",
-              },
-            ],
-            defaultValues:{
-              content:'',
-              fileList:[]
-            }
+                required: true,
+                message: "请输入你的跟进结果",
+                trigger: "blur"
+              }
+            ]
+          },
+          {
+            type: "upload",
+            label: "上传附件",
+            placeholder: "请选择",
+            ruleName: "fileList"
           }
-        }
-    },
-     watch:{
-      workOrderId(value){
-        if(value){
-          this.getWorkOrderDetails()
+        ],
+        defaultValues: {
+          content: "",
+          fileList: []
         }
       }
-    },
-    created(){
-      this.getWorkOrderDetails()
-      setTimeout(()=>{
-        this.$refs.replayForm.$refs.replayWorkOrderModal.resetFields()
-      })
-     
-    },
-    mounted(){ 
-      
-      console.log(11)
-    },
-    methods: {
-      getWorkOrderDetails(){
-        let params = {
-          id:this.workOrderId
-        }
-        this.Request.get('/workflow/infoJson',params).then(res=>{
-          console.log('工单信息',res.data,'=====================')
-          this.info = res.data.data
-        })
-      },
-      handleWorkOrder(type){  // 这里的参数需要再看下
-        let params = {
-          workflowId:this.workflowId,
-          type,
-          remark:''
-        }
-        this.Request.get('/workflow/follow/saveWorkflowFollow',params).then(res=>{
-           this.$message.success('操作成功')
-        })
-      },
-      // 回复
-      replyWorkOrder(data){
-       
-        console.log(data,'====')
-        let params = {
-          workflowId:this.workflowId,
-          type:1,
-          ...data,
-        }
-        this.Request.get('/workflow/follow/saveWorkflowFollow',params).then(res=>{
-           this.$message.success('操作成功')
-           this.replayFormObject.defaultValues.content  = ''
-           this.replayFormObject.defaultValues.fileList = []
-        })
+    };
+  },
+  watch: {
+    workOrderId(value,oldVal) {
+      if (value) {
+        this.getWorkOrderDetails();
+        this.$refs.replayForm.$refs.replayWorkOrderModal.resetFields();
       }
     }
-}
+  },
+  created() {
+    this.getWorkOrderDetails();
+  },
+  mounted() {},
+  methods: {
+    getWorkOrderDetails() {
+      let params = {
+        id: this.workOrderId
+      };
+      this.Request.get("/workflow/infoJson", params).then(res => {
+        console.log("工单信息", res.data, "=====================");
+        this.info = res.data.data;
+      });
+    },
+    handleWorkOrder(type) {
+      // 这里的参数需要再看下
+      let params = {
+        workflowId: this.workflowId,
+        type,
+        remark: ""
+      };
+      this.Request.get("/workflow/follow/saveWorkflowFollow", params).then(
+        res => {
+          this.$message.success("操作成功");
+        }
+      );
+    },
+    // 回复
+    replyWorkOrder(data) {
+      console.log(data, "====");
+      let params = {
+        workflowId: this.workflowId,
+        type: 1,
+        ...data
+      };
+      this.Request.get("/workflow/follow/saveWorkflowFollow", params).then(
+        res => {
+          this.$message.success("操作成功");
+          this.replayFormObject.defaultValues.content = "";
+          this.replayFormObject.defaultValues.fileList = [];
+        }
+      );
+    }
+  }
+};
 </script>
 
 <style lang="less" scoped>
-.ReplayWorkOrder{
-  margin-bottom:50px;
-  .funBtn{
-    display:flex;
+.ReplayWorkOrder {
+  margin-bottom: 50px;
+  .funBtn {
+    display: flex;
     flex-direction: row-reverse;
-    button{
-      margin-left:10px;
+    button {
+      margin-left: 10px;
     }
   }
-  .text{
-    margin-top:10px;
-    
+  .text {
+    margin-top: 10px;
   }
 }
-
 </style>
 <style lang="less">
-.ReplayWorkOrder .ant-form-item-label{
-  display:none
+.ReplayWorkOrder .ant-form-item-label {
+  display: none;
 }
-.ReplayWorkOrder .ant-form-item{
-  text-align:left!important;
-  margin-bottom:5px;
-  button{
-    margin-left:0!important;
+.ReplayWorkOrder .ant-form-item {
+  text-align: left !important;
+  margin-bottom: 5px;
+  button {
+    margin-left: 0 !important;
   }
 }
 </style>

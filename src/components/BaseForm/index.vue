@@ -99,7 +99,7 @@
         :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <Upload :list="formObject.defaultValues[item.ruleName]" />
+        <Upload @change="handleUploadChange" :list="formObject.defaultValues[item.ruleName]" :propName="item.ruleName" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
@@ -240,8 +240,17 @@ export default {
         }
       });
     },
+    resetForm() {
+      let _that = this;
+      _that.$refs[_that.formObject.ref].resetFields();
+    },
     handleModalState() {
       this.$emit("toggleModal", false);
+    },
+    handleUploadChange(value, propName) {
+      if(propName) {
+        this.formObject.defaultValues[propName] = value
+      }
     },
     areaOnChange(value) {
       console.log(value)
