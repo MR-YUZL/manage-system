@@ -1,16 +1,16 @@
 <template>
-    <div class="ReplayWorkOrder">
-      <div class="funBtn" v-if="info.status == 1">
-        <a-button type="primary" @click="handleWorkOrder(2)">接单</a-button>
-        <a-button type="primary" @click="handleWorkOrder(2)">转接</a-button>
-        <a-button type="primary" @click="handleWorkOrder(3)">完结</a-button>
-      </div>
-      <div else class="funBtn">
-        <a-button type="primary" @click="handleWorkOrder(4)">重启</a-button>
-      </div>
-      <p class="text">{{info.content}}</p>
-      <BaseForm :formObject="replayFormObject"></BaseForm>
+  <div class="ReplayWorkOrder">
+    <div class="funBtn" v-if="info.status == 1">
+      <a-button type="primary" @click="handleWorkOrder(2)">接单</a-button>
+      <a-button type="primary" @click="handleWorkOrder(2)">转接</a-button>
+      <a-button type="primary" @click="handleWorkOrder(3)">完结</a-button>
     </div>
+    <div class="funBtn" v-else>
+      <a-button type="primary" @click="handleWorkOrder(4)">重启</a-button>
+    </div>
+    <p class="text">{{info.content}}</p>
+    <BaseForm ref="replayForm" :formObject="replayFormObject"   @formSubmit="replyWorkOrder"></BaseForm>
+  </div>
 </template>
 
 <script>
@@ -35,7 +35,6 @@ export default {
           replayFormObject:{
             ref: "replayWorkOrderModal",
             sureBtn:'回复',
-            defaultValues:{},
             modelList:[
                {
                 type: "textarea",
@@ -52,9 +51,13 @@ export default {
                 type: "upload",
                 label: "上传附件",
                 placeholder: "请选择",
-                ruleName: "receiverGroupId",
+                ruleName: "fileList ",
               },
-            ]
+            ],
+            defaultValues:{
+              content:'',
+              fileList:[]
+            }
           }
         }
     },
@@ -67,8 +70,15 @@ export default {
     },
     created(){
       this.getWorkOrderDetails()
+      setTimeout(()=>{
+        this.$refs.replayForm.$refs.replayWorkOrderModal.resetFields()
+      })
+     
     },
-    mounted(){},
+    mounted(){ 
+      
+      console.log(11)
+    },
     methods: {
       getWorkOrderDetails(){
         let params = {
@@ -87,6 +97,21 @@ export default {
         }
         this.Request.get('/workflow/follow/saveWorkflowFollow',params).then(res=>{
            this.$message.success('操作成功')
+        })
+      },
+      // 回复
+      replyWorkOrder(data){
+       
+        console.log(data,'====')
+        let params = {
+          workflowId:this.workflowId,
+          type:1,
+          ...data,
+        }
+        this.Request.get('/workflow/follow/saveWorkflowFollow',params).then(res=>{
+           this.$message.success('操作成功')
+           this.replayFormObject.defaultValues.content  = ''
+           this.replayFormObject.defaultValues.fileList = []
         })
       }
     }
