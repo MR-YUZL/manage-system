@@ -299,7 +299,7 @@ export default {
             options: [],
           },
           {
-            type:'select',
+            type:'cascader',
             label: "分类",
             placeholder: "请选择",
             name: "typeId",
@@ -396,7 +396,8 @@ export default {
         pager:{},
         selectedRowKeys: [],
         batchTaransParams:{},
-        workOrderId:''
+        workOrderId:'',
+        classifyList:[] //分类列表
       }
     },
     computed:{
@@ -419,6 +420,7 @@ export default {
       this.getList()
       this.getSkillGroup()
       this.getStaffListAll()
+      this.getClassification()
     },
     mounted(){},
     methods: {
@@ -479,6 +481,15 @@ export default {
             })
           })
         })
+      },
+      // 查询分类
+      getClassification(){
+         this.Request.get('/config/system/findTypeListJson',{}).then(res=>{
+           console.log('分类列表',res.data)
+           let list = res.data.list
+           this.classifyList  = this.treeChangeData(list)
+           this.searchFormList[6].options = this.classifyList
+         })
       },
       getRelatedCustomerList(){
         let params = {
@@ -600,6 +611,7 @@ export default {
       },
       // 搜索
       prevHandleSubmit(data){
+        console.log('搜索条件',data)
         let {sessionDate,...others} = data
         this.searchField = {...others}
         if(sessionDate&&sessionDate.length>0){
@@ -612,7 +624,18 @@ export default {
         console.log(data)
         this.pager.currentPage = data.currentPage
         this.getList()
-      }
+      },
+      treeChangeData(array){
+        array.map((item) => {
+          item['value'] = item.id;
+          item['label'] = item.name; 
+          item['children'] = item.childList;
+          if(item.childList.length>0){
+            this.treeChangeData(item.childList);
+          }
+        })
+        return array;
+      },
     }
 }
 </script>
