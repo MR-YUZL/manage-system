@@ -60,7 +60,7 @@
         <a-tab-pane key="3" tab="Tab 3">Content of Tab Pane 3</a-tab-pane>
       </a-tabs>
     </div>
-    <Upload />
+    <!-- <Upload /> -->
     <!-- upload有初始值，这样应该可以 -->
     <!-- <a-form-item label="订单附件" :label-col="{ span: 2}" :wrapper-col="{ span: 10}">
       <Upload v-decorator="['accessoryArr']" :list="defaultFileList" />
@@ -79,12 +79,20 @@
       </template>
     </Modal>
     <!-- <BaseForm :formObject="formObject" /> -->
-    <BaseForm
-      :formObject="formObject"
-      :defaultValues="formAxiosReturnValues"
-      @toggleModal="toggleModal"
-      @formSubmit="formSubmit"
-    />
+    <BaseForm :formObject="formObject" @toggleModal="toggleModal" @formSubmit="formSubmit" />
+    <a-checkbox-group :options="optionsWithDisabled" :default-value="['Apple','Pear']">
+      <span slot="label" slot-scope="option" style="color: red">{{ option.value }}222</span>
+    </a-checkbox-group>
+    <a-select
+      show-search
+      placeholder="Select a person"
+      option-filter-prop="children"
+      style="width: 200px"
+    >
+      <a-select-option value="jack">Jack</a-select-option>
+      <a-select-option value="lucy">Lucy</a-select-option>
+      <a-select-option value="tom">Tom</a-select-option>
+    </a-select>
   </div>
 </template>
 
@@ -148,6 +156,11 @@ const data = [
     address: "Sidney No. 1 Lake Park",
     tags: ["cool", "teacher"]
   }
+];
+const optionsWithDisabled = [
+  { label: "Apple2", value: "Apple" },
+  { label: "Pear2", value: "Pear" },
+  { label: "Orange2", value: "Orange" }
 ];
 export default {
   props: {},
@@ -241,7 +254,6 @@ export default {
             type: "input",
             label: "test",
             ruleName: "test",
-            model: "sss",
             rules: [
               {
                 required: true,
@@ -249,8 +261,113 @@ export default {
                 trigger: "blur"
               }
             ]
+          },
+          {
+            type: "select",
+            label: "有效联系",
+            placeholder: "请选择",
+            ruleName: "followValid",
+            options: [
+              { key: 1, value: "否" },
+              { key: 0, value: "是" }
+            ],
+            rules: {
+              required: true,
+              message: "请选择有效联系",
+              trigger: "change"
+            }
+          },
+          {
+            type: "textarea",
+            label: "本次跟进记录",
+            placeholder: "",
+            ruleName: "followRecord",
+            maxLength: 100
+          },
+          {
+            type: "date",
+            label: "下次跟进时间",
+            placeholder: "请选择",
+            ruleName: "followDate",
+            format: "YYYY-MM-DD HH:mm:ss",
+            options: [],
+            rules: {
+              required: true,
+              message: "请选择跟进时间",
+              trigger: "change"
+            }
+          },
+          {
+            type: "select",
+            label: "baseFormSelect",
+            ruleName: "baseFormSelect",
+            options: [{ key: "0", value: "test" }],
+            rules: [
+              {
+                required: true,
+                message: "Please input Activity name",
+                trigger: "blur"
+              }
+            ]
+          },
+          {
+            type: "select",
+            label: "testSelect",
+            ruleName: "testSelect",
+            showSearch: true,
+            options: [{ key: "test", value: "test" }]
+          },
+          {
+            type: "selectCascader",
+            cascaderName: "baseFormSelect",
+            label: "baseFormSelectCascader",
+            ruleName: "baseFormSelectCascader",
+            options: [{ key: "testInner", value: "testInner" }]
+          },
+          {
+            type: "areaCascader",
+            label: "areaCascader",
+            ruleName: "areaCascader",
+            fieldNames: {
+              label: "name",
+              value: "adcode",
+              children: "districts"
+            }
+          },
+          {
+            type: "cascader",
+            label: "cascader",
+            ruleName: "cascader",
+            fieldNames: {
+              label: "name",
+              value: "id",
+              children: "childrens"
+            },
+            options: [
+              {
+                id: "241cf8dcda0d49dc91be9309d74d8da6",
+                pid: "0",
+                name: "一级分类1",
+                inputAcc: "cszh01",
+                childrens: [
+                  {
+                    id: "3fa56a87067240efb19134378a9e45b2",
+                    pid: "241cf8dcda0d49dc91be9309d74d8da6",
+                    name: "1-4",
+                    inputAcc: "cszh01",
+                    childrens: []
+                  }
+                ]
+              }
+            ]
           }
-        ]
+        ],
+        defaultValues: {
+          followValid: 0
+        },
+        testFunction() {
+          alert(22222);
+        }
       },
       formAxiosReturnValues: {
         id: "id_123",
@@ -355,6 +472,12 @@ export default {
               ]
             }
           ]
+        },
+        {
+          type: "areaCascader",
+          name: "areaCascader",
+          label: "areaCascader",
+          fieldNames: { label: "name", value: "adcode", children: "districts" }
         }
       ],
       defaultSearchFormValues: {
@@ -363,7 +486,8 @@ export default {
         datepicker: "2020-05-19"
         // monthpicker: moment("2019-02").format("YYYY-MM"),
         // weekpicker: "2020-05-19"
-      }
+      },
+      optionsWithDisabled
     };
   },
   methods: {
@@ -405,8 +529,12 @@ export default {
   },
   mounted() {
     setTimeout(() => {
-      this.formAxiosReturnValues.test = 333;
-      this.formAxiosReturnValues["updateTime"] = new Date().getTime();
+      this.formObject.defaultValues = Object.assign(
+        {},
+        this.formObject.defaultValues,
+        { test: 333, areaCascader: ["130000", "131000", "131022"] }
+      );
+      this.formObject.defaultValues["updateTime"] = new Date().getTime();
       let filterItem = this.searchFormList.filter(it => it.name == "select2");
       if (filterItem) {
         filterItem[0].options = [
