@@ -67,6 +67,7 @@ export default {
       workOrderId(value){
         if(value){
           this.getWorkOrderDetails()
+          this.$refs.replayForm.$refs.replayWorkOrderModal.resetFields();
         }
       }
     },
