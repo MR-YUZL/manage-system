@@ -224,10 +224,15 @@ export default {
       api.sessionAccMember().then(res=>{
         console.log('质检人和接待客服',res)
         if(res.data.status){
-          let labels = JSON.parse(JSON.stringify(res.data.list).replace(/userName/g, "label"));
-          let  lists= JSON.parse(JSON.stringify(labels).replace(/userAccount/g, "value"));
-          this.searchFormList[2].options = lists;
-          this.searchFormList[4].options = lists;
+          let newArr = res.data.list.map((item)=>{
+            return{
+              ...item,
+              label:item.userName,
+              value:item.userAccount
+            }
+          })
+          this.searchFormList[2].options = newArr;
+          this.searchFormList[4].options = newArr;
         }
       })
     },
@@ -235,9 +240,14 @@ export default {
       api.sessionServiceGroups().then(res=>{
         console.log('客服组',res)
         if(res.data.status){
-          let labels = JSON.parse(JSON.stringify(res.data.list).replace(/groupName/g, "label"));
-          let  lists= JSON.parse(JSON.stringify(labels).replace(/groupId/g, "value"));
-          this.searchFormList[5].options = lists;
+          let newArr = res.data.list.map((item)=>{
+            return{
+              ...item,
+              label:item.groupName,
+              value:item.groupId
+            }
+          })
+          this.searchFormList[5].options = newArr;
         }
       })
     },

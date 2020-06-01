@@ -9,7 +9,7 @@
     >
       <a-transfer
         :titles="['隐藏字段', '显示字段']"
-        :data-source="mockData"
+        :dataSource="mockData"
         :list-style="{
       width: '300px',
       height: '300px',
@@ -47,10 +47,14 @@ export default {
     getList() {
       api.setFieldsJson({ state: 0 }).then(res => {
         console.log("操作设置", res);
-        let newArr = JSON.parse(
-          JSON.stringify(res.data.list).replace(/fieldCode/g, "key")
-        );
-        console.log(newArr, "newArr");
+        
+        let newArr = res.data.list.map((item) => {
+          return {
+            ...item,
+            key: item.fieldId,
+            title: item.fieldName
+          }
+        })
         this.mockData = newArr;
         this.targetKeys = newArr.filter(v => v.isShow == 1).map(item => item.key);
       });

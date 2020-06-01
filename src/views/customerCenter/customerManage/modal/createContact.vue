@@ -45,7 +45,8 @@ export default {
     };
   },
   props: {
-    custIdParams: Object
+    custIdParams: Object,
+    contactsId:String
   },
   components: {
     FormModal
@@ -58,8 +59,17 @@ export default {
 
   mounted() {
     this.getForm();
+    this.getEditContactsInfo();
   },
   methods: {
+    getEditContactsInfo(){
+      api.editContactsInfo({ contactsId: this.contactsId }).then(res=>{
+        console.log("编辑联系人回显", res);
+        if(res.data.status){
+          this.contactFormObj.formList = res.data.list;
+        }
+      })
+    },
     getForm() {
       api.formFieldsJson({ state: 1 }).then(res => {
         console.log(res, "创建联系人");
@@ -80,7 +90,8 @@ export default {
       // })
       let params = {
         fields: arr,
-        ...this.custIdParams
+        ...this.custIdParams,
+        contactsId:this.contactsId
       };
       api.createLinkMan(params).then(res => {
         console.log("新建联系人保存", res);

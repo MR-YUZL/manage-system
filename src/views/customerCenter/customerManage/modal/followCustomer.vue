@@ -1,114 +1,128 @@
 <template>
   <div>
-    <a-modal v-model="visibles" title="跟进客户" @ok="handleOk" @cancel="handleCancel">
+    <a-modal v-model="visibles" title="跟进客户" :footer="null" @cancel="handleCancel">
       <div>
         <p>最近跟进记录</p>
         <p class="info">
           <span>{{lastInfo.followDate}}</span>
-          <span>{{followValid}}联系</span>
+          <span>{{lastInfo.followValid==0?'有效':'无效'}}联系</span>
           <span>回访客服：{{lastInfo.followAcc}}</span>
         </p>
         <p>{{lastInfo.followRecord}}</p>
       </div>
-      <a-form :form="form" :label-col="{ span: 6 }" :wrapper-col="{ span: 16 }" @submit="handleOk">
-        <a-form-item label="有效联系">
-          <a-select
-            v-decorator="[
-          'followValid',{initialValue:0}
-        ]"
-            placeholder
-            @change="handleSelectChange"
-          >
-            <a-select-option :value="0">是</a-select-option>
-            <a-select-option :value="1">否</a-select-option>
-          </a-select>
-        </a-form-item>
-        <a-form-item label="本次跟进记录">
-          <a-textarea
-            v-decorator="['followRecord',{ rules: [{ required: true, message: '请输入' }] }]"
-            placeholder="请输入"
-            allow-clear
-            :maxLength="100"
-          />
-        </a-form-item>
-        <a-form-item label="下次跟进时间">
-          <a-date-picker show-time :disabledDate="disabledDate" v-decorator="[
-              'nextFollowDate',
-            ]" />
-        </a-form-item>
-      </a-form>
+      <BaseForm :formObject="formObject" @toggleModal="toggleModal" @formSubmit="formSubmit" />
     </a-modal>
   </div>
 </template>
 
 <script>
 import api from "@/api/customerCenter";
-import moment from 'moment';
+import moment from "moment";
+import BaseForm from "@/components/BaseForm";
 export default {
   data() {
     return {
+      formObject: {
+        ref: "followForm",
+        type: "modalForm",
+        sureBtn: "保存",
+        modelList: [
+          {
+            type: "select",
+            label: "有效联系",
+            placeholder: "请选择",
+            model: undefined,
+            ruleName: "followValid",
+            options: [
+              { key: 1, value: "否" },
+              { key: 0, value: "是" }
+            ],
+            rules: {
+              required: true,
+              message: "请选择有效联系",
+              trigger: "change"
+            }
+          },
+          {
+            type: "textarea",
+            label: "本次跟进记录",
+            placeholder: "",
+            model: undefined,
+            ruleName: "followRecord",
+            maxLength:100
+          },
+          {
+            type: "date",
+            label: "下次跟进时间",
+            placeholder: "请选择",
+            model: undefined,
+            ruleName: "followDate",
+            format: "YYYY-MM-DD HH:mm:ss",
+            options: [],
+            rules: {
+              required: true,
+              message: "请选择跟进时间",
+              trigger: "change"
+            }
+          }
+        ],
+        defaultValues: {
+          followValid: "0"
+        }
+      },
       visibles: this.visible,
-      form: this.$form.createForm(this, { name: "followCustomer" }),
-      lastInfo:{}
+      lastInfo: {}
     };
+  },
+  components: {
+    BaseForm
   },
   props: {
     visible: Boolean,
-    followId:String
+    followId: String
   },
   watch: {
     visible(val) {
-      console.log(val)
       this.visibles = val;
     }
   },
-  computed:{
-    followValid(){
-      var obj = {
-        "0": "有效",
-        "1": "无效",
-      }
-      return obj[this.lastInfo.followValid];
-    }
-  },
-  mounted(){
-    this.getlastInfo({custId:this.followId});
+  mounted() {
+    this.getlastInfo({ custId: this.followId });
   },
   methods: {
-    getlastInfo(params){
-      api.lastInfo(params).then(res=>{
-        console.log(res,'最近跟进记录')
-        if(res.data.status){
+    formSubmit(values) {
+      let params = {
+        custId: this.followId,
+        ...values
+      };
+      api.saveCustomerFollow(params).then(res => {
+        console.log("跟进记录");
+        if (res.data.status) {
+          this.$message.success("保存成功");
+          this.visibles = false;
+          this.$emit("successLoadList");
+        }else{
+          this.$message.error(res.data.msg);
+        }
+      });
+      
+    },
+    toggleModal(val) {
+      this.$emit("closeUpdate");
+    },
+    getlastInfo(params) {
+      api.lastInfo(params).then(res => {
+        console.log(res, "最近跟进记录");
+        if (res.data.status) {
           this.lastInfo = res.data.data;
-        }
-      })
-    },
-    disabledDate(current){
-      return current && current < moment().endOf("day")
-    },
-    handleOk(e) {
-      e.preventDefault();
-      this.form.validateFields((err, values) => {
-        values.nextFollowDate = moment(values.nextFollowDate).format("YYYY-MM-DD HH:SS:MM")
-        let params = {
-          custId:this.followId,
-          ...values
-        }
-        if (!err) {
-          console.log(params, "values");
-          api.saveCustomerFollow(params).then(res=>{
-            console.log('跟进记录')
-            if(res.data.status){
-              this.$message.success('保存成功')
-              this.visibles = false
-              this.$emit("successLoadList");
-            }
-          })
+          this.formObject.defaultValues = res.data.data;
         }
       });
     },
+    disabledDate(current) {
+      return current && current < moment().endOf("day");
+    },
     handleCancel() {
-      this.visibles = false
       this.$emit("closeUpdate");
     },
     handleSelectChange() {}
@@ -117,9 +131,9 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.info{
-  span{
-    padding-right:15px;
+.info {
+  span {
+    padding-right: 15px;
   }
 }
 </style>

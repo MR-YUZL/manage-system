@@ -11,7 +11,7 @@
       <div>
         <a-table :columns="columns" :dataSource="dataSource" :pagination='false' :rowKey="record => record.id">
           <div slot="guestName" slot-scope="record,row">
-             <span class="blue" @click="checkMessage(row.id,row.status)">{{row.guestName}}22</span>
+             <span class="blue" @click="checkMessage(row.id,row.status)">{{row.name}}</span>
           </div>
         </a-table>
       </div>
@@ -166,7 +166,7 @@ export default {
   },
   methods: {
     getList(){
-      this.Request.get('hfw/tsmHfwLeaveComments/listPageJson',{ ...this.pager,...this.searchField}).then(res => {
+      this.Request.get('hfw/hfwSessionInfo/leave/listPageJson',{ ...this.pager,...this.searchField}).then(res => {
         let data = res.data
         let page = data.pager
         this.dataSource =  data.list
