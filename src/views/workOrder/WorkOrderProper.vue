@@ -46,8 +46,8 @@
                   </p>
                 </li>
                 <li v-for="(item,index) in filedValue" :key="index" >
-                  <span>{{item.key}}</span>
-                  <p>{{item.value}}</p>
+                  <span>{{item.fieldName}}</span>
+                  <p>{{item.fieldValue}}</p>
                 </li>
               </ul>
               <div class="title"><p>客户信息</p></div>
@@ -146,7 +146,7 @@ export default {
       },
       getCustomerList(){
         let params = {
-          custId:''
+          custId:''  // 工单信息中取这个值
         }
         this.Request.get('/customers/hfwCustomersInfo/infoJson',params).then(res=>{
           console.log('客户信息',res.data,'=====================')

@@ -10,7 +10,7 @@
               </div>
             </div>
             <div class="searchGroup">
-              <a-input-search v-model="searchText" placeholder="搜索技能组名称" style="width: 100%" @search="onSearch" />
+              <a-input-search v-model="groupName" placeholder="搜索技能组名称" style="width: 100%" @search="onSearch" />
             </div>
             <p class="title">技能组列表（{{skillGroups.length}}）</p>
             <ul>
@@ -24,7 +24,7 @@
             </ul>
         </div>
         <div class="skillGroupMain">
-          <div class="flex-between"><a-input-search placeholder="请输入名称" style='width:250px;' /><a-button type="primary" @click="staffManage">成员管理</a-button></div>
+          <div class="flex-between"><a-input-search placeholder="请输入名称" v-model="userName" style='width:250px;' @search="searchMemmber"/><a-button type="primary" @click="staffManage">成员管理</a-button></div>
           <div class="ulstyle">
             <strong>成员：{{staffList.length}}人</strong>
             <ul>
@@ -35,20 +35,13 @@
                   <span>{{item.phone}}</span>
                 </div>
               </li>
-                <li>
-                <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1590558204971&di=de9560ccc4f34b204cf3c25379f94404&imgtype=0&src=http%3A%2F%2Ft7.baidu.com%2Fit%2Fu%3D3616242789%2C1098670747%26fm%3D79%26app%3D86%26f%3DJPEG%3Fw%3D900%26h%3D1350" alt="">
-                <div>
-                  <p>张三</p>
-                  <span>13065884521</span>
-                </div>
-              </li>
             </ul>
           </div>
         </div>
       </div>
       <a-modal title="成员管理（小组名称）" :visible="staffManageShow" v-if="staffManageShow" @cancel="handleCancelStaff" @ok="handleOkStaff">
         <a-transfer
-          :data-source="staffListAll"
+          :data-source="allStaffList"
            show-search
           :target-keys="targetKeys"
           :render="item => item.title"
@@ -69,31 +62,40 @@ export default {
     data() {
         return {
           staffManageShow:false,
-          searchText:'',
+          groupName:'',
           addSkillShow:false,
           skillGroups:[],
           eidtName:'',
           addGroupName:'',
           staffList:[],
           targetKeys:[],
-          dataSource:[],
-          staffListAll:[]
+          // dataSource:[],
+          // staffListAll:[],
+          userName:'',
+          currentGroupId:'',
+          allStaffList:[]
       } 
     },
     computed:{
     },
     created(){
       this.getStaffSkillGroups()
-      this.getStaffListAll()
+      this.getStaffList('','all')
     },
     mounted(){},
     methods: {
-      onSearch(){},
+      onSearch(){
+        this.getStaffSkillGroups()
+      },
+      searchMemmber(){
+        this.getStaffList(this.currentGroupId)
+      },
       addSkill(){
         this.addSkillShow =  true
       },
+      // 新增技能组
       addSkillGroup(){
-         let params = {
+        let params = {
           groupName:this.addGroupName
         }
         this.Request.post('/staff/hfwStaffSkillGroups/editJson',params).then(()=>{
@@ -103,6 +105,7 @@ export default {
       deleteAddSkillGroup(){
         this.addSkillShow =  false
       },
+      // 编辑技能组
       okSkillGroup(id){
         let params = {
           groupId:id,
@@ -130,9 +133,12 @@ export default {
       },
       // 获取技能组
       getStaffSkillGroups(){
+        let params = {
+          groupName:this.groupName
+        }
         this.skillGroups = []
         console.log('咋地没东西了')
-        this.Request.get('/staff/hfwStaffSkillGroups/listJson').then(res=>{
+        this.Request.get('/staff/hfwStaffSkillGroups/listJson',params).then(res=>{
           console.log('技能组列表',res.data)
           let list = res.data.list
           list.map(item=>{
@@ -145,25 +151,51 @@ export default {
           })
           this.skillGroups[0].active = true
           this.getStaffList(this.skillGroups[0].groupId)
+          this.currentGroupId = this.skillGroups[0].groupId
         })
       },
       // 获取技能组员工列表
-      getStaffList(groupId){
+      getStaffList(groupId,type){
         let params = {}
+        if(type&&type=="all"){
+             params = {}
+        }else{
           params = {
             groupId, 
-            userName:''
+            userName:this.userName
           }
+        }
         this.Request.get('/staff/hfwStaffSkillGroupsMember/staffList',params).then(res=>{
           console.log(res.data.list,'技能组员工列表')
           let list = res.data.list
-          this.staffList = list
+          if(type&&type=="all"){
+            this.allStaffList = list
+            console.log('所有列表',list)
+            this.allStaffList.map(item=>{
+              item.title = item.userName
+              item.key = item.userAccount
+            })
+          }else{
+            this.staffList = list
+            this.staffList.map(item=>{
+              this.targetKeys.push(item.userAccount)
+            })
+          }
+          this.$forceUpdate()
         })
       },
-      getStaffListAll(){
-         this.Request.get('/staff/hfwStaffSkillGroupsMember/staffList',{}).then(res=>{
-                 console.log('所有的员工列表管理',res.data.list)
-         })
+      // getStaffListAll(){
+      //    this.Request.get('/staff/hfwStaffSkillGroupsMember/staffList',{}).then(res=>{
+      //       console.log('所有的员工列表管理',res.data.list)
+      //    })
+      // },
+      // 成员列表
+       getMemberList(){
+        this.Request.post('/staff/hfwStaffMemberRole/addressJson',{}).then(res=>{
+          let list = res.data.list
+          this.treeData = this.treeChangeData(list)
+          console.log('批量匹配成员列表',list)
+        })
       },
       changeGroups(index,id){
         this.skillGroups.map(item=>{
@@ -171,20 +203,27 @@ export default {
         })
         this.skillGroups[index].active = true
         this.getStaffList(id)
+        this.currentGroupId = id
+        this.userName = ''
       },
       handleCancelStaff(){
         this.staffManageShow = false
       },
       handleOkStaff(){
         let params = {
-          groupId:'',
-          staffs:[]
+          groupId:this.currentGroupId,
+          staffs:[...this.targetKeys]
         }
-        this.Request.get('/staff/hfwStaffSkillGroupsMember/staffGroupEdit',params).then(res=>{
+        this.Request.post('/staff/hfwStaffSkillGroupsMember/staffGroupEdit',params).then(res=>{
           console.log(res.data,'保存成员管理')
+          this.$message.success('成员保存成功!')
+          this.getStaffList(this.currentGroupId)
+          this.staffManageShow = false
         })
       },
-      handleChange(){},
+      handleChange(targetKeys, direction, moveKeys){
+        this.targetKeys = targetKeys;
+      },
       handleSearch(){}
     }
 }

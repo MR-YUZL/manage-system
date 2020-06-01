@@ -74,14 +74,14 @@ export default {
       }
     },
     created(){
-      this.getLst({})
+      this.getList({})
     },
     mounted(){},
     methods: {
-      getLst(params){
+      getList(params){
         this.Request.get('/staff/hfwStaffRole/listPageJson',params).then(res=>{
           console.log('角色列表',res.data.list)
-          // this.dataSource = res.data.list
+          this.dataSource = res.data.list
           this.pager = res.data.pager
         })
       },
@@ -89,7 +89,7 @@ export default {
         let params = {
           roleType:this.roleType
         }
-        this.getLst(params)
+        this.getList(params)
       },
       editRole(){},
       deleteRole(){

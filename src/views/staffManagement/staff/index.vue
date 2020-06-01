@@ -13,8 +13,8 @@
           :pagination="false"
           :rowKey="record => record.userAccount">
           <div slot="action" slot-scope="record,row">
-            <span class="blue" style="margin-right:10px;" @click="editStaff(row)">编辑</span>
-            <span class="blue" @click="deleteStaff(record.userAccount)">删除</span>
+            <span class="blue" style="margin-right:10px;" @click="editStaff(record)">编辑</span>
+            <span class="blue" @click="deleteStaff(record)">删除</span>
           </div>
           </a-table>
         </div>
@@ -23,7 +23,7 @@
     <a-modal title="添加成员" :visible="addCustomerShow" v-if="addCustomerShow" @cancel="handleCancelAdd" @ok="handleOkAdd" >
       <div>
         选择成员：<a-tree-select
-                  v-model="value"
+                  v-model="addStaffValue"
                   style="width: 80%"
                   :tree-data="treeData"
                   tree-checkable
@@ -51,9 +51,7 @@
 
 <script>
 import { TreeSelect } from 'ant-design-vue';
-// const SHOW_PARENT = TreeSelect.SHOW_PARENT;
 import TablePagination from "@/components/Table/TablePagination";
-// import Search from "@/components/Search/index2";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
     name: "staff",
@@ -66,7 +64,7 @@ export default {
     data() {
       return {
           SHOW_PARENT:TreeSelect.SHOW_PARENT,
-          value:[],
+          addStaffValue:[],
           addCustomerShow:false,
           editStaffShow:false,
           formList:[
@@ -75,8 +73,7 @@ export default {
               label: "角色",
               name: "roleId",
               placeholder: "请输入",
-              options:[
-              ]
+              options:[]
             },
             {
               type: "compact",
@@ -92,12 +89,12 @@ export default {
           defaultSearchFormValues: {
             queryType:'1',
           },
-          dataSource:[{}],
+          dataSource:[],
           columns:[
             {
               title: "姓名",
-              dataIndex: "name",
-              key: "name"
+              dataIndex: "userName",
+              key: "userName"
             },
              {
               title: "手机号",
@@ -140,11 +137,7 @@ export default {
           },
           treeData:[],
           roleList:[],
-          editData:{ 
-            name:'',
-            roleName:'',
-            roleType:''
-          },
+          editData:{},
           editRole:''
       }
     },
@@ -158,16 +151,19 @@ export default {
       // 获取角色
       getRoleList(){
         this.Request.post('/staff/hfwStaffRole/listJson',{}).then(res=>{
+          console.log('角色列表',res.data.list)
           let list = res.data.list
           this.roleList = list
           list.map(item=>{
             this.formList[0].options.push({
               value:item.roleId,
-              name:item.roleName
+              label:item.roleName
             })
           })
+          this.$forceUpdate()
         })
       },
+     // 员工列表
       getStaffList(){
         let params = {
           ...this.pager,
@@ -176,6 +172,7 @@ export default {
         this.Request.post('/staff/hfwStaffMember/listPageJson',params).then(res=>{
           this.dataSource = res.data.list
           this.pager = res.data.pager
+          this.$forceUpdate()
         })
       },
       //添加成员列表
@@ -187,33 +184,40 @@ export default {
         })
       },
       prevHandleSubmit(data){
-        console.log(data)
+        console.log(data,'搜索参数')
+        this.searchField = {...data}
+        this.getStaffList()
       },
       editStaff(row){
-        let {roleName,roleType,userName} = row
-        this.editData={
-          roleName,roleType,userName
-        }
-        this.editRole = roleType
-        this.editStaffShow = true
 
+
+        console.log(row,'拿不到数据的am')
+
+        let {roleId} = row
+        this.editData=row
+        this.editRole = roleId
+        this.editStaffShow = true
       },
-      deleteStaff(userAccount){
-        this.$error({
-          title: '该客服有未处理的工单，请完成相关的工 单操作后再进行修改删除',
-        });
-         this.$confirm({
-          title: '确认删除此客服？删除后不可恢复，但会保留历史  数据。',
-          onOk() {
-            let params = {
-              userAccount
-            }
-            this.Request.post('/staff/hfwStaffMember/delJson',params).then(res=>{
-                this.$message.success('删除成功!')
-            })
-          },
-        });
-        
+      deleteStaff(record){
+        let that = this
+        if(record.canDel == 0){
+          that.$error({
+            title: '该客服有未处理的工单，请完成相关的工 单操作后再进行修改删除',
+          });
+        }else{
+          that.$confirm({
+            title: '确认删除此客服？删除后不可恢复，但会保留历史  数据。',
+            onOk() {
+              let params = {
+                userAccount:record.userAccount
+              }
+              that.Request.post('/staff/hfwStaffMember/delJson',params).then(()=>{
+                that.$message.success('删除成功!')
+                
+              })
+            },
+          });
+        }
       },
       addCustmoer(){
         this.addCustomerShow = true
@@ -222,30 +226,41 @@ export default {
         this.addCustomerShow = false
       },
       handleOkAdd(){
-        let params = {
-          userAccounts:[]
-        }
+        console.log('addStaffValue',this.addStaffValue)
+        let params = [...this.addStaffValue]
         this.Request.post('/staff/hfwStaffMember/batchSaveJson',params).then(res=>{
           console.log(res)
+          this.$message.success('添加成功')
         })
         // console.log('选中的成员列表',this.value)
       },
       handleCancelEditStaff(){
         this.editStaffShow = false
       },
-      handleOkEditStaff(){},
+      handleOkEditStaff(){
+        console.log(this.editData,'sdafasdfadsf')
+        let params = {
+          userId:this.editData.userId,
+          roleId:this.editRole
+        }
+        this.Request.post('/staff/hfwStaffMemberRole/saveJson',params).then(()=>{
+          this.$message.success('编辑成功')
+          this.editStaffShow = false
+          this.getStaffList()
+        })
+      },
       paginationChange(page){
         this.pager = {...page}
         this.getStaffList()
       },
       treeChangeData(array){
         array.map((item) => {
-          item['value'] = item.dId;
-          item['key'] = item.dId;
-          item['title'] = item.dName; 
-          item['children'] = item.staffsDtos;
-          if(item.childDeparments.length>0){
-            this.treeChangeData(item.childDeparments);
+          item['value'] = item.id;
+          item['key'] = item.id;
+          item['title'] = item.name; 
+          item['children'] = item.childs;
+          if(item.childs.length>0){
+            this.treeChangeData(item.childs);
           }
         })
         return array;

@@ -156,7 +156,7 @@ export default {
           ]
         },
         formObjectCreated:{
-          type:'modalForm',
+          type:'modalFormCreated',
           ref: "createdModal",
           sureBtn:'确定',
           defaultValues:{},
@@ -596,8 +596,12 @@ export default {
       },
       formSubmitWorkOrder(data){
         console.log('创建工单参数',data)
+        let {typeId,...others} = data
         let params = {
-          ...data
+          ...others,
+        }
+        if(typeId.length>0){
+            params.typeId = typeId[typeId.length-1]
         }
         this.Request.post('/workflow/saveWorkflow',params).then(res=>{
           console.log('工单创建成功',res)
