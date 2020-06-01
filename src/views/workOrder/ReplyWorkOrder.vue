@@ -72,10 +72,6 @@ export default {
     },
     created(){
       this.getWorkOrderDetails()
-      setTimeout(()=>{
-        this.$refs.replayForm.$refs.replayWorkOrderModal.resetFields()
-      })
-     
     },
     mounted(){ 
     },
@@ -95,7 +91,7 @@ export default {
           type,
           remark:''
         }
-        this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(()=>{
+        this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(res=>{
            this.$message.success('操作成功')
            this.getWorkOrderDetails()
         })

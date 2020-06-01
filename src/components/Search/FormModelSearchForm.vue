@@ -113,6 +113,7 @@
         :field-names="item.fieldNames"
         change-on-select
         @change="areaOnChange"
+        v-model="formInline[item.name]"
       />
 
       <!-- 普通级联 -->
@@ -122,6 +123,7 @@
         :placeholder="item.placeholder"
         :field-names="item.fieldNames"
         change-on-select
+        v-model="formInline[item.name]"
       />
     </a-form-model-item>
     <a-form-model-item>

@@ -45,7 +45,7 @@
                     <a-cascader v-model="typeId" :options="classifyList" placeholder="请选择" style="width:200px;" />
                   </p>
                 </li>
-                <li v-for="(item,index) in filedValue" :key="index">
+                <li v-for="(item,index) in filedValue" :key="index" >
                   <span>{{item.key}}</span>
                   <p>{{item.value}}</p>
                 </li>
