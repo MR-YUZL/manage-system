@@ -171,7 +171,9 @@ export default {
       currentUnreadCount: state =>
         state.conversation.currentConversation.unreadCount,
       currentMessageList: state => {
+        console.log('*----------------------------------*')
         state.conversation.currentMessageList.forEach(item => {
+          console.log(item)
           if (item.type == "TIMCustomElem") {
             item.payload.data =
               typeof item.payload.data == "string"

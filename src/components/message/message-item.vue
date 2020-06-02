@@ -42,7 +42,10 @@
           <div v-else-if="message.type === TIM.TYPES.MSG_CUSTOM">
             <span
               v-if="message.payload.data.subMsgType === 'prompts'"
-            >{{message.payload.data.msgText}}</span>  
+            >{{message.payload.data.msgText}}</span> 
+            <span
+              v-if="message.payload.data.subMsgType === 'repository'" v-html="message.payload.data.msgText"
+            ></span>  
              <custom-text
               v-else-if="message.payload.data.subMsgType === 'text'"
               :isMine="isMine"
@@ -133,7 +136,7 @@ import GeoElement from "./message-elements/geo-element.vue";
 import customText from "./custom-message/custom-text";
 import customImage from "./custom-message/custom-image";
 import customFile from "./custom-message/custom-file";
-import customvideo from "./custom-message/custom-video";
+import customVideo from "./custom-message/custom-video";
 
 export default {
   name: "MessageItem",
@@ -159,7 +162,7 @@ export default {
     customText,
     customImage,
     customFile,
-    customvideo
+    customVideo
   },
   data() {
     return {

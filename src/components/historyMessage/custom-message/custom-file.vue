@@ -8,7 +8,7 @@
           <img src="./../../../assets/imgs/current_session/file_b.jpg" alt="">
         </div>
         <div class="file_del">
-          <div class="file-name">{{ fileName }}</div>
+          <div class="file-name">{{ fileName || '文件' }}</div>
           <div class="file-size"><span>{{ size }}</span><span></span></div>
         </div>
         
@@ -46,13 +46,14 @@ export default {
   },
   computed: {
     fileName() {
-      return this.payload.fileName
+      return this.payload.fileName ? this.payload.fileName : '文件'
     },
     fileUrl() {
-      return this.payload.fileUrl
+    //   return this.payload.fileUrl
+        return this.payload.url
     },
     size() {
-      const size = this.payload.fileSize
+      const size = this.payload.fileSize ? this.payload.fileSize : 0
       if (size > 1024) {
         if (size / 1024 > 1024) {
           return `${this.toFixed(size / 1024 / 1024)} Mb`
