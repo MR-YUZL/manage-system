@@ -116,6 +116,10 @@ export default {
   sessionList(params) {
     return axios.get('/hfw/hfwSessionInfo/listPageJson', {params})
   },
+  //历史会话-保存咨询备注 
+  saveReferRemark(params){
+    return axios.post('/hfw/hfwSessionInfo/updateStatus', params)
+  },
   //质量检测-会话质检-在线质检 
   sessionOnlineList(params) {
     return axios.get('/session/qc/search', {params})
@@ -127,6 +131,10 @@ export default {
   //会话质检-员工管理-技能组列表  
   sessionServiceGroups(params) {
     return axios.get('/staff/hfwStaffSkillGroups/listJson', {params})
+  },
+  //质量检测-会话质检-质检详情  
+  sessionDetail(params) {
+    return axios.get('/session/qc/detail', {params})
   },
   //质量检测-电话质检 
   callphoneList(params) {

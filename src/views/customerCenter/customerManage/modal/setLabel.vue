@@ -29,7 +29,9 @@ export default {
     return {
       mockData: [],
       targetKeys: [],
-      visibles: this.visible
+      visibles: this.visible,
+      direction:'',
+      moveKeys:''
     };
   },
   props: {
@@ -45,13 +47,13 @@ export default {
   },
   methods: {
     getList() {
-      api.setFieldsJson({ state: 0 }).then(res => {
+      api.setFieldsJson().then(res => {
         console.log("操作设置", res);
         
         let newArr = res.data.list.map((item) => {
           return {
             ...item,
-            key: item.fieldId,
+            key: item.fieldCode,
             title: item.fieldName
           }
         })
@@ -68,22 +70,28 @@ export default {
     handleChange(targetKeys, direction, moveKeys) {
       console.log(targetKeys, direction, moveKeys);
       this.targetKeys = targetKeys;
+      this.direction = direction
+      this.moveKeys = moveKeys
     },
     handleSubmit() {
-      this.mockData.map(v=>{
-        this.targetKeys.map(item=>{
-          if(v.key == item){
-            v.isShow = 1
-          }else{
-            v.isShow = 0
+      this.mockData = this.mockData.map(v=>{
+        let flag = 0;
+        this.targetKeys.forEach((tar) => {
+          if(tar == v.fieldCode) {
+            flag = 1;
           }
         })
-      })
+        return {
+          ...v,
+          isShow: flag
+        }
+      });
+      console.log(this.mockData,'this.mockData78455')
       api.fieldsShowSave({list:this.mockData}).then(res => {
         if(res.data.status){
           this.$message.success("保存成功");
           this.visibles = false;
-          this.$emit('successLoadList')
+          this.$emit('successLoadList','setLable')
         }
       });
     },

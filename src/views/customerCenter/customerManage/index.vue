@@ -103,6 +103,7 @@
       :visibleProps="detailObj"
       :detailId="detailId"
       v-if="detailObj.visible"
+      :dataSource="searchParams.dataSource"
       @customerFollowShow="followCustomer"
       @editCustomerShow="editCustomerShow"
       @closeUpdate="closeUpdate"
@@ -126,7 +127,7 @@ import DetailModal from "@/views/customerCenter/customerManage/detail";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import Modal from "@/components/Modal";
 import BaseForm from "@/components/BaseForm";
-import qs from 'qs';
+import qs from "qs";
 export default {
   components: {
     FormModelSearchForm,
@@ -183,67 +184,6 @@ export default {
       exportJson: [],
       custIds: [],
       columns: [
-        {
-          title: "客户名称",
-          dataIndex: "custName",
-          key: "custName",
-          scopedSlots: { customRender: "detailSkip" }
-        },
-        {
-          title: "客户标签",
-          dataIndex: "custLabels",
-          key: "custLabels"
-        },
-        {
-          title: "客户分组",
-          dataIndex: "custGroup",
-          key: "custGroup"
-        },
-        {
-          title: "地址",
-          dataIndex: "custAddress",
-          key: "custAddress"
-        },
-        {
-          title: "联系人",
-          dataIndex: "custLinkMan",
-          key: "custLinkMan"
-        },
-        {
-          title: "电话",
-          dataIndex: "custPhone",
-          key: "custPhone"
-        },
-        {
-          title: "客户经理",
-          dataIndex: "custManager",
-          key: "custManager"
-        },
-        {
-          title: "负责人",
-          dataIndex: "custPrincipals",
-          key: "custPrincipals"
-        },
-        {
-          title: "创建人",
-          dataIndex: "inputAcc",
-          key: "inputAcc"
-        },
-        {
-          title: "创建时间",
-          dataIndex: "inputDate",
-          key: "inputDate"
-        },
-        {
-          title: "最近跟进时间",
-          dataIndex: "lastFollowDate",
-          key: "lastFollowDate"
-        },
-        {
-          title: "下次跟进时间",
-          dataIndex: "nextFollowDate",
-          key: "nextFollowDate"
-        },
         {
           title: currentPageData => {
             return (
@@ -351,8 +291,53 @@ export default {
     this.getCustomerLabel();
     this.getStaffSkillGroups(0);
     this.getStaffSkillGroups(1);
+    this.getColumns();
   },
   methods: {
+    getColumns() {
+      api.setFieldsJson().then(res => {
+        console.log("操作设置", res);
+        let list = res.data.list;
+        this.columns = [
+          {
+            title: currentPageData => {
+              return (
+                <div>
+                  操作
+                  <span style="padding-left:2px">
+                    <AIcon onClick={this.setLabelClick} type="setting" />
+                  </span>
+                </div>
+              );
+            },
+            dataIndex: "status",
+            key: "3",
+            scopedSlots: { customRender: "action" }
+          }
+        ];
+        res.data.list.map(item => {
+          if (item.isShow == 1) {
+            if (item.fieldCode == "custName") {
+              this.columns.unshift({
+                title: item.fieldName,
+                dataIndex: item.fieldCode,
+                key: item.fieldCode,
+                scopedSlots: { customRender: "detailSkip" }
+              });
+            } else {
+              this.columns.unshift({
+                title: item.fieldName,
+                dataIndex: item.fieldCode,
+                key: item.fieldCode
+              });
+            }
+          }
+        });
+
+        // this.mockData = newArr;
+        // this.targetKeys = newArr.filter(v => v.isShow == 1).map(item => item.key);
+      });
+    },
     followFormSubmit() {},
     toggleModal(data) {
       this["followObj"]["visible"] = data.visible;
@@ -362,12 +347,16 @@ export default {
       this.searchParams = Object.assign({}, this.searchParams, val);
       this.getList();
     },
-    successLoadList() {
+    successLoadList(val) {
       this.modals.delCustomerVisible = false;
       this.modals.followCustomerVisible = false;
       this.modals.setManagerVisible = false;
+      this.modals.setLabelVisible = false;
       this.custIds = [];
       this.getList();
+      if (val == "setLable") {
+        this.getColumns();
+      }
     },
     getList() {
       let params = {
@@ -468,7 +457,7 @@ export default {
     exportUrl() {
       this.modals.exportCustomerVisible = false;
       let param = qs.stringify(this.searchParams);
-      let url =`/customers/hfwCustomersInfo/exportJson?${param}`;
+      let url = `/customers/hfwCustomersInfo/exportJson?${param}`;
       window.location.href = url;
       // document.location = url;
     },
