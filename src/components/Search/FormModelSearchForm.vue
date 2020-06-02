@@ -111,6 +111,7 @@
         v-if="item.type == 'areaCascader'"
         :options="areaDictionary"
         :field-names="item.fieldNames"
+        :placeholder="item.placeholder"
         change-on-select
         @change="areaOnChange"
         v-model="formInline[item.name]"
@@ -124,6 +125,7 @@
         :field-names="item.fieldNames"
         change-on-select
         v-model="formInline[item.name]"
+        @change="referOnChange"
       />
     </a-form-model-item>
     <a-form-model-item>
@@ -195,7 +197,13 @@ export default {
     },
     areaOnChange(value) {
       console.log(value);
-    }
+      this.$emit("prevAreaOnChange", value);
+    },
+    //普通级联
+    referOnChange(value){
+      console.log(value);
+      this.$emit("prevReferOnChange", value);
+    },
   }
 };
 </script>

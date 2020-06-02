@@ -80,10 +80,11 @@ export default {
           optionLabel: "id"
         },
         {
-          type: "input",
+          type: "select",
           label: "质检人",
           name: "qcAcc",
-          placeholder: "请输入"
+          placeholder: "请输入",
+          options: []
         },
         {
           type: "select",
@@ -100,12 +101,14 @@ export default {
         {
           type: "select",
           label: "客服组:",
-          name: "serviceGroupIds"
+          name: "serviceGroupIds",
+          options: []
         },
         {
           type: "select",
           label: "客服",
           name: "serviceIds",
+          options: []
         },
         {
           type: "input",
@@ -189,8 +192,43 @@ export default {
 
   mounted() {
     this.getList();
+    this.getStaffSkillGroups();
+    this.getSessionServiceGroups();
   },
   methods: {
+    //客服组列表
+    getSessionServiceGroups(){
+      api.sessionServiceGroups().then(res=>{
+        console.log('客服组',res)
+        if(res.data.status){
+          let newArr = res.data.list.map((item)=>{
+            return{
+              ...item,
+              label:item.groupName,
+              value:item.groupId
+            }
+          })
+          this.searchFormList[4].options = newArr;
+        }
+      })
+    },
+    //质检人和客服
+    getStaffSkillGroups(type) {
+      api.staffSkillGroups({ type: 0 }).then(res => {
+        console.log("质检人和客服没有权限", res);
+        if (res.data.status) {
+          let newArr = res.data.list.map((item)=>{
+            return{
+              ...item,
+              label:item.groupName,
+              value:item.groupId
+            }
+          })
+          this.searchFormList[2].options = newArr;
+          this.searchFormList[5].options = newArr;
+        }
+      });
+    },
     prevHandleSubmit(val){
       // console.log(val,'val')
       this.searchParams = Object.assign({},this.searchParams,val)

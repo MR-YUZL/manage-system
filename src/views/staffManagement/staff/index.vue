@@ -189,10 +189,6 @@ export default {
         this.getStaffList()
       },
       editStaff(row){
-
-
-        console.log(row,'拿不到数据的am')
-
         let {roleId} = row
         this.editData=row
         this.editRole = roleId
@@ -223,14 +219,14 @@ export default {
         this.addCustomerShow = true
       },
       handleCancelAdd(){
-        this.addCustomerShow = false
+        this.addCustomerShow = false 
       },
       handleOkAdd(){
         console.log('addStaffValue',this.addStaffValue)
         let params = [...this.addStaffValue]
-        this.Request.post('/staff/hfwStaffMember/batchSaveJson',params).then(res=>{
-          console.log(res)
+        this.Request.post('/staff/hfwStaffMember/batchSaveJson',params).then(()=>{
           this.$message.success('添加成功')
+           this.addCustomerShow = false
         })
         // console.log('选中的成员列表',this.value)
       },
@@ -240,7 +236,7 @@ export default {
       handleOkEditStaff(){
         console.log(this.editData,'sdafasdfadsf')
         let params = {
-          userId:this.editData.userId,
+          userAccount:this.editData.userAccount,
           roleId:this.editRole
         }
         this.Request.post('/staff/hfwStaffMemberRole/saveJson',params).then(()=>{
@@ -250,7 +246,7 @@ export default {
         })
       },
       paginationChange(page){
-        this.pager = {...page}
+        this.pager = page
         this.getStaffList()
       },
       treeChangeData(array){

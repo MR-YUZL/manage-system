@@ -6,6 +6,7 @@
       <FormModelSearchForm
         :defaultFormValues="defaultSearchFormValues"
         :formList="searchFormList"
+        @prevReferOnChange="prevReferOnChange"
         @prevHandleSubmit="prevHandleSubmit"
       />
       <div>
@@ -84,9 +85,16 @@ export default {
           options: []
         },
         {
-          type: "input",
+          type: "cascader",
           label: "咨询分类",
-          name: "inputAccs"
+          name: "inputAccs",
+          placeholder:'请选择',
+          options:[],
+          fieldNames: {
+            label: "name",
+            value: "id",
+            children: "childrens"
+          },
         },
         {
           type: "select",
@@ -194,19 +202,38 @@ export default {
         // serviceGroupId:'123',
         //质检状态(1已质检、0未质检)
         // qcStatus:'0',
-      }
+      },
+      sessionRefer:{},
     };
   },
 
   mounted() {
     this.getList();
     this.getSessionAccMember();
-    this.getSessionServiceGroups()
+    this.getSessionServiceGroups();
+    this.getReferClassify();
   },
   methods: {
+    prevReferOnChange(val){
+      this.sessionRefer = {
+        firstConsultId:val[0],
+        secondConsultId:val[1],
+        threeConsultId:val[2]
+      }
+    },
+    getReferClassify() {
+      api.referClassify().then(res => {
+        console.log("咨询分类", res);
+        if (res.data.status) {
+          this.searchFormList[3].options = res.data.list;
+        }
+      });
+    },
     prevHandleSubmit(val){
-      console.log(val,'val')
-      this.searchParams = Object.assign({},this.searchParams,val)
+      val.sessionTime = val.sessionTime.join();
+      console.log(val,'sessionTimeval')
+      this.searchParams = Object.assign({},this.searchParams,this.sessionRefer,val)
+      console.log(val,this.searchParams,'val45444444444444')
       this.getList();
     },
     getList() {
@@ -252,6 +279,7 @@ export default {
       })
     },
     qualityDetail(id) {
+      console.log(id,'会话质检的id')
       this.qcId = id;
       this.detailsShow = true;
       // this.getDetailInfo({id:id})
