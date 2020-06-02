@@ -1,6 +1,13 @@
 import TIM from 'tim-js-sdk';
 import COS from "cos-js-sdk-v5";
-
+import Request from './../api/api'
+console.log(Request)
+Request.get('/api/chat/customer/status/query').then(res => {
+  console.log(res)
+  if(res.data.status){
+    SDKAppID = res.data.imAccount  //请求IM账号
+  }
+})
 let options = {
   SDKAppID: 1400355416 // 接入时需要将0替换为您的即时通信 IM 应用的 SDKAppID
 };

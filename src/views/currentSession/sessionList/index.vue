@@ -1,7 +1,7 @@
 <template>
   <div class="session_list_l">
     <div class="list_count">会话列表 ( {{55}} )</div>
-    <div class="list_inf">
+    <div class="list_inf" v-if="conversationList && conversationList.length">
       <session-item
         :conversation="item"
         v-for="item in conversationList"
@@ -48,7 +48,6 @@ export default {
   },
   watch: {
     isSDKReady(a, b) {
-      console.log(a, b);
       if (a) {
         this.getIsSDKReady();
       }

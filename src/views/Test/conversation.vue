@@ -4,9 +4,17 @@
     <a-modal title="咨询问题分类" :visible="visible" :footer="null" :closable="false">
       <p>请点击选择问题，我们将安排专业人员与您沟通！</p>
       <div>
-        <div v-for="(item,index) in getNavigationList" :key="index" class="list" :class="{'active': index == select}" @click="selectQuestion(item.id,index)">{{item.question}}</div>
+        <div
+          v-for="(item,index) in getNavigationList"
+          :key="index"
+          class="list"
+          :class="{'active': index === select}"
+          @click="selectQuestion(item.id,index)"
+        >{{item.question}}</div>
       </div>
-      <div class="btn"><a-button type="primary" @click="onOK()">点击咨询客服</a-button></div>
+      <div class="btn">
+        <a-button type="primary" @click="onOK()">点击咨询客服</a-button>
+      </div>
     </a-modal>
   </div>
 </template>
@@ -22,8 +30,8 @@ export default {
       getNavigationStatus: false,
       uuid: "",
       visible: true,
-      select:0,
-      questionId:''
+      select: "",
+      questionId: ""
     };
   },
   computed: {},
@@ -89,11 +97,16 @@ export default {
         }
       });
     },
-    selectQuestion(id,index){
-        this.select = index
+    selectQuestion(id, index) {
+      this.select = index;
+      this.questionId = id;
     },
-    onOK(){
-        this.visible = false
+    onOK() {
+      if (this.questionId) {
+        this.visible = false;
+      } else {
+        this.$message.warning("请选择咨询问题！");
+      }
     }
   },
   created() {},
@@ -106,27 +119,26 @@ export default {
     }
     this.getNavigation();
     // this.customerService()
-    // this.createIM()
+    this.createIM()
   }
 };
 </script>
 <style lang='less' scoped>
-    .conversation{
-      
-    }
-    .btn{
-        margin-top: 48px;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-    .list{
-        padding:8px 10px;
-        margin:10px 0; 
-        border: 1px solid #EFEFEF;
-        border-radius: 5px;
-        cursor: pointer;
-    }
-    .active{
-        background: #F7F7F7;
-    }
+.conversation {
+}
+.btn {
+  margin-top: 48px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+.list {
+  padding: 8px 10px;
+  margin: 10px 0;
+  border: 1px solid #efefef;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.active {
+  background: #f7f7f7;
+}
 </style>
