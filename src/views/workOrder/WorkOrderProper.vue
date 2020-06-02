@@ -88,16 +88,21 @@
             </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="咨询记录">
-            咨询记录
+            <div style="padding:10px;">
+              <historyMessage />
+            </div>
           </a-tab-pane>
         </a-tabs>
     </div>
 </template>
 
 <script>
+import historyMessage from "@/components/historyMessage"
 export default {
     name: "wor",
-    components: {},
+    components: {
+      historyMessage
+    },
     props:{
       workOrderId:{
         type:String,
