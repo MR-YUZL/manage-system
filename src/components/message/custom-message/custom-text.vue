@@ -31,7 +31,10 @@ export default {
   },
   computed: {
     contentList() {
-      return decodeText(this.payload)
+      let obj = {
+          text: this.payload.data.msgText
+      }
+      return decodeText(obj)
     }
   }
 }

@@ -15,34 +15,28 @@
         <div class="content-wrapper">
           <message-status-icon v-if="isMine" :message="message" />
           <text-element
-            v-if="message.type === TIM.TYPES.MSG_TEXT"
+            v-if="message.imMsgType === TIM.TYPES.MSG_TEXT"
             :isMine="isMine"
-            :payload="message.payload"
+            :payload="message.msgContent"
             :message="message"
           />
           <image-element
-            v-else-if="message.type === TIM.TYPES.MSG_IMAGE"
+            v-else-if="message.imMsgType === TIM.TYPES.MSG_IMAGE"
             :isMine="isMine"
-            :payload="message.payload"
+            :payload="message.msgContent"
             :message="message"
           />
           <file-element
-            v-else-if="message.type === TIM.TYPES.MSG_FILE"
+            v-else-if="message.imMsgType === TIM.TYPES.MSG_FILE"
             :isMine="isMine"
-            :payload="message.payload"
+            :payload="message.msgContent"
             :message="message"
           />
-          <!-- <sound-element
-            v-else-if="message.type === TIM.TYPES.MSG_SOUND"
-            :isMine="isMine"
-            :payload="message.payload"
-            :message="message"
-          /> -->
 
-          <div v-else-if="message.type === TIM.TYPES.MSG_CUSTOM">
+          <div v-else-if="message.imMsgType === TIM.TYPES.MSG_CUSTOM">
             <span
               v-if="message.payload.data.subMsgType === 'prompts'"
-            >{{message.payload.data.msgText}}</span>  
+            >{{message.payload.data.msgText}}</span>
              <custom-text
               v-else-if="message.payload.data.subMsgType === 'text'"
               :isMine="isMine"
@@ -75,24 +69,11 @@
             :payload="message.payload"
             :message="message"
           />-->
-          <!-- <face-element
-            v-else-if="message.type === TIM.TYPES.MSG_FACE"
-            :isMine="isMine"
-            :payload="message.payload"
-            :message="message"
-          /> -->
-
-          <!-- <geo-element
-            v-else-if="message.type === TIM.TYPES.MSG_GEO"
-            :isMine="isMine"
-            :payload="message.payload"
-            :message="message"
-          /> -->
-
+        
           <video-element
-            v-else-if="message.type === TIM.TYPES.MSG_VIDEO"
+            v-else-if="message.imMsgType === TIM.TYPES.MSG_VIDEO"
             :isMine="isMine"
-            :payload="message.payload"
+            :payload="message.msgContent"
             :message="message"
           />
           <span v-else>暂未支持的消息类型：{{message.type}}</span>
@@ -119,21 +100,10 @@ import { mapState } from "vuex";
 import MessageStatusIcon from "./message-status-icon.vue";
 import MessageHeader from "./message-header";
 import MessageFooter from "./message-footer";
-import FileElement from "./message-elements/file-element.vue";
-import FaceElement from "./message-elements/face-element.vue";
-import ImageElement from "./message-elements/image-element.vue";
-import TextElement from "./message-elements/text-element.vue";
-import SoundElement from "./message-elements/sound-element.vue";
-import VideoElement from "./message-elements/video-element.vue";
-
-import CustomElement from "./message-elements/custom-element.vue";
-import GeoElement from "./message-elements/geo-element.vue";
-
-// 自定义消息类组件
-import customText from "./custom-message/custom-text";
-import customImage from "./custom-message/custom-image";
-import customFile from "./custom-message/custom-file";
-import customvideo from "./custom-message/custom-video";
+import textElement from './message-item/text-element'
+import fileElement from './message-item/file-element'
+import imageElement from './message-item/image-element'
+import videoElement from './message-item/video-element'
 
 export default {
   name: "MessageItem",
@@ -147,19 +117,10 @@ export default {
     MessageHeader,
     MessageFooter,
     MessageStatusIcon,
-    FileElement,
-    FaceElement,
-    ImageElement,
-    TextElement,
-    SoundElement,
-    VideoElement,
-    CustomElement,
-    GeoElement,
-
-    customText,
-    customImage,
-    customFile,
-    customvideo
+    textElement,
+    fileElement,
+    imageElement,
+    videoElement
   },
   data() {
     return {
@@ -167,7 +128,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.message);
+    console.log(this.message,'--------------------------');
   },
   created() {},
   computed: {
@@ -200,7 +161,10 @@ export default {
     avatar() {
       if (this.currentConversation.type === "C2C") {
         if (this.isMine) {
-          return this.currentUserProfile.avatar
+          return this.currentUserProfile.avatar  
+
+
+            
             ? this.currentUserProfile.avatar
             : require("./../../assets/imgs/current_session/customer_header.jpg");
         } else {
