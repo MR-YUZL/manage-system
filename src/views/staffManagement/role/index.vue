@@ -16,9 +16,9 @@
           :columns="columns"
           :dataSource="dataSource"
           :pagination="false"
-          :rowKey="record => record.id">
+          :rowKey="record => record.roleId">
           <div slot="action" slot-scope="record,row">
-            <router-link :to="'role/addRole?roleId='+record.id"><span class="blue" style="margin-right:10px;" @click="editRole(row)" >编辑</span></router-link>
+            <router-link :to="'role/addRole?roleId='+record.orgId+'&roleDesc='+record.roleDesc+'&roleName='+record.roleName"><span class="blue" style="margin-right:10px;" >编辑</span></router-link>
             <span class="blue" @click="deleteRole(record.userAccount)">删除</span>
           </div>
         </a-table>
@@ -78,7 +78,11 @@ export default {
     },
     mounted(){},
     methods: {
-      getList(params){
+      getList(data){
+        let params = {
+          ...this.pager,
+          ...data
+        }
         this.Request.get('/staff/hfwStaffRole/listPageJson',params).then(res=>{
           console.log('角色列表',res.data.list)
           this.dataSource = res.data.list
@@ -91,13 +95,16 @@ export default {
         }
         this.getList(params)
       },
-      editRole(){},
       deleteRole(){
+        let that = this
         this.$confirm({
           title: '确定删除该角色？',
           content: '',
           onOk() {
-            console.log('OK');
+            that.Request.get('/staff/hfwStaffRole/delete',{roleId:row.roleId}).then(()=>{
+              that.$message.success('删除成功')
+              that.getList()
+            })
           },
           onCancel() {
             console.log('Cancel');
@@ -105,7 +112,10 @@ export default {
           class: 'test',
         });
       },
-      paginationChange(){}
+      paginationChange(page){
+        this.pager = page
+        this.getList()
+      }
     }
 }
 </script>

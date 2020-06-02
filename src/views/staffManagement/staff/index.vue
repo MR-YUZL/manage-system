@@ -189,10 +189,6 @@ export default {
         this.getStaffList()
       },
       editStaff(row){
-
-
-        console.log(row,'拿不到数据的am')
-
         let {roleId} = row
         this.editData=row
         this.editRole = roleId
@@ -240,7 +236,7 @@ export default {
       handleOkEditStaff(){
         console.log(this.editData,'sdafasdfadsf')
         let params = {
-          userId:this.editData.userId,
+          userAccount:this.editData.userAccount,
           roleId:this.editRole
         }
         this.Request.post('/staff/hfwStaffMemberRole/saveJson',params).then(()=>{

@@ -617,6 +617,7 @@ export default {
       // 搜索
       prevHandleSubmit(data){
         console.log('搜索条件',data)
+        this.pager.currentPage = 1
         let {sessionDate,...others} = data
         this.searchField = {...others}
         if(sessionDate&&sessionDate.length>0){
@@ -627,7 +628,7 @@ export default {
       },
       paginationChange(data){
         console.log(data)
-        this.pager.currentPage = data.currentPage
+        this.pager = data
         this.getList()
       },
       treeChangeData(array){
