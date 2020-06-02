@@ -219,14 +219,14 @@ export default {
         this.addCustomerShow = true
       },
       handleCancelAdd(){
-        this.addCustomerShow = false
+        this.addCustomerShow = false 
       },
       handleOkAdd(){
         console.log('addStaffValue',this.addStaffValue)
         let params = [...this.addStaffValue]
-        this.Request.post('/staff/hfwStaffMember/batchSaveJson',params).then(res=>{
-          console.log(res)
+        this.Request.post('/staff/hfwStaffMember/batchSaveJson',params).then(()=>{
           this.$message.success('添加成功')
+           this.addCustomerShow = false
         })
         // console.log('选中的成员列表',this.value)
       },
@@ -246,7 +246,7 @@ export default {
         })
       },
       paginationChange(page){
-        this.pager = {...page}
+        this.pager = page
         this.getStaffList()
       },
       treeChangeData(array){

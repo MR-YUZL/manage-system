@@ -6,7 +6,7 @@
             <div class="addGroup">
               <div v-if="!addSkillShow" @click="addSkill" style="height:32px"><a-icon type="plus" />添加技能组</div>
               <div class="flex-between" v-if="addSkillShow">
-                <a-input placeholder="请输入名称" style='width:150px;' v-model="addGroupName" /><a-icon type="check" @click="addSkillGroup"/><a-icon type="delete"  @click="deleteAddSkillGroup"/>
+                <a-input placeholder="请输入名称" style='width:150px;' v-model="eidtName" /><a-icon type="check" @click="editOkSkillGroup('','add')"/><a-icon type="delete"  @click="deleteAddSkillGroup"/>
               </div>
             </div>
             <div class="searchGroup">
@@ -17,7 +17,7 @@
               <li v-for="(item,index) in skillGroups" :key="index" :class="{'active':item.active}" @click="changeGroups(index,item.groupId)">
                 <span v-if="!item.editShow">{{item.groupName}}</span>
                 <span v-if="item.editShow"><a-input v-model="eidtName"  /></span>
-                <a-icon v-if="item.editShow" type="check" @click='okSkillGroup(item.groupId)'/>
+                <a-icon v-if="item.editShow" type="check" @click='editOkSkillGroup(item.groupId)'/>
                 <a-icon v-if="!item.editShow" type="edit" @click="editSkillGroup(index,item.groupName)"/>
                 <a-icon type="delete"  @click="deleteSkillGroup(item.groupId)"/>
               </li>
@@ -91,22 +91,23 @@ export default {
         this.getStaffList(this.currentGroupId)
       },
       addSkill(){
+        this.eidtName = ''
         this.addSkillShow =  true
       },
       // 新增技能组
-      addSkillGroup(){
-        let params = {
-          groupName:this.addGroupName
-        }
-        this.Request.post('/staff/hfwStaffSkillGroups/editJson',params).then(()=>{
-          this.getStaffSkillGroups()
-        })
-      },
+      // addSkillGroup(){
+      //   let params = {
+      //     groupName:this.addGroupName
+      //   }
+      //   this.Request.post('/staff/hfwStaffSkillGroups/editJson',params).then(()=>{
+      //     this.getStaffSkillGroups()
+      //   })
+      // },
       deleteAddSkillGroup(){
         this.addSkillShow =  false
       },
       // 编辑技能组
-      okSkillGroup(id){
+      editOkSkillGroup(id){
         let params = {
           groupId:id,
           groupName:this.eidtName
@@ -141,17 +142,21 @@ export default {
         this.Request.get('/staff/hfwStaffSkillGroups/listJson',params).then(res=>{
           console.log('技能组列表',res.data)
           let list = res.data.list
-          list.map(item=>{
-            this.skillGroups.push({
-              groupId:item.groupId,
-              groupName:item.groupName,
-              active:false,
-              editShow:false
+          if(list.length>0){
+            list.map(item=>{
+              this.skillGroups.push({
+                groupId:item.groupId,
+                groupName:item.groupName,
+                active:false,
+                editShow:false
+              })
             })
-          })
-          this.skillGroups[0].active = true
-          this.getStaffList(this.skillGroups[0].groupId)
-          this.currentGroupId = this.skillGroups[0].groupId
+            this.skillGroups[0].active = true
+            this.getStaffList(this.skillGroups[0].groupId)
+            this.currentGroupId = this.skillGroups[0].groupId
+          }else{
+            this.staffList = []
+          }
         })
       },
       // 获取技能组员工列表
@@ -258,6 +263,7 @@ export default {
         display: flex;
         justify-content:space-between;
         align-items: center;
+        cursor: pointer;
         span{
           display:block;
           width:140px;

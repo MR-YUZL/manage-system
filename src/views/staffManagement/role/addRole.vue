@@ -40,7 +40,6 @@
               :tree-data="treeData"
               checkable
               placeholder="请选择"
-              :selected-keys="selectedKeys"
               :autoExpandParent="true"
               :defaultExpandAll='true'
               :checkStrictly="true"
@@ -79,13 +78,10 @@ export default {
             roleDesc:{ required: true, message: '请输入描述', trigger: 'blur'},
             roleName:{ required: true, message: '请输入名称', trigger: 'blur'},
           },
-          selectedKeys: [],
-           autoExpandParent: true,
-           roleId:''
+          roleId:''
         }
     },
     created(){
-      this.getRoleFiled()
       let query = this.$route.query
       if(JSON.stringify(query)!='{}'){
          this.roleId = this.$route.query.roleId
@@ -93,6 +89,7 @@ export default {
          this.formData.roleName = this.$route.query.roleName
       }
       console.log(this.$route.query)
+      this.getRoleFiled()
     },
     mounted(){},
     methods: {
@@ -104,6 +101,7 @@ export default {
         this.Request.get('/staff/hfwStaffRole/resourcesJson',params).then(res=>{
           let list = res.data.data.resrouces
           this.treeData = this.treeChangeData(list)
+          this.formData.resourceIds = res.data.data.resourceIds || []
         })
       },
       saveRoleFiled(){
