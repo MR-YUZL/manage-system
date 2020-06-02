@@ -1,23 +1,20 @@
 <template>
   <div class="base" :class="[ isMine ? 'right' : 'left']">
-    <div class="name text-ellipsis">{{ from }}</div>
+    <!-- <div class="name text-ellipsis">{{ from }}</div> -->
     <div class="date">{{ date }}</div>
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import {getFullDate} from './../../utils/date'
+import { getFullDate } from './../../utils/date'
 export default {
-  name: 'MessageHeader',
+  name: 'MessageFooter',
   props: {
     message: {
       type: Object,
       required: true
     }
-  },
-  mounted(){
-    
   },
   computed: {
     ...mapState({
@@ -26,7 +23,7 @@ export default {
       currentMemberList: state => state.group.currentMemberList
     }),
     date() {
-      return getFullDate(new Date(this.message.time * 1000))
+      return getFullDate(new Date(this.message.msgTime))
     },
     from() {
       const isC2C = this.currentConversation.type === this.TIM.TYPES.CONV_C2C
@@ -40,10 +37,6 @@ export default {
           this.currentConversation.userProfile.nick ||
           this.currentConversation.userProfile.userID
         )
-      } else if (this.currentConversation.type === this.TIM.TYPES.CONV_SYSTEM) {
-        return this.message.type === this.TIM.TYPES.MSG_GRP_SYS_NOTICE
-          ? '群系统通知'
-          : '系统通知'
       }
       // 2. 群组消息，用消息体中的 nick 渲染。nameCard暂时支持不完善
       return this.message.nick || this.message.from
@@ -59,18 +52,17 @@ export default {
 .right {
   display: flex;
   flex-direction: row-reverse;
+  margin-right: 15px;
 }
-
 .left {
   display: flex;
   flex-direction: row;
+  margin-left: 15px;
 }
-
 .base {
-  color: red;
+  color: #BABABA;
   font-size: 12px;
 }
-
 .name {
   padding: 0 4px;
   max-width: 100px;

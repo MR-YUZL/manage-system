@@ -13,7 +13,7 @@
             @formSubmit="calledSubmit"
           />
         </div>
-        <div v-if="type==0">
+        <div v-if="type==0" class="calledLeft">
           <BaseForm
             :formObject="sessionObject"
             @toggleModal="toggleModal"
@@ -180,7 +180,7 @@ export default {
             label: "咨询分类",
             placeholder: "请选择",
             model: undefined,
-            ruleName: "receiverGroupId",
+            ruleName: "consuleId",
             options: [],
             rules: {
               required: true,
@@ -232,50 +232,65 @@ export default {
     }
   },
   mounted() {
-    this.getDetailInfo({ id: this.qcId });
+    this.getDetailInfo();
     this.getReferClassify();
   },
   methods: {
-    getDetailInfo(params) {
-      api.QcDetail(params).then(res => {
-        console.log("质检详情info+++++++++++", res);
-        if (res.data.status) {
-          this.qualityForm = res.data.data;
-          this.defaultObject.modelList.map(v => {
-            if (v.type == "defaultText") {
-              v.value = res.data.data[v.ruleName];
-              if (v.ruleName == "callType") {
-                v.value = v.value == 0 ? "呼入" : "呼出";
-              }
-              if (v.ruleName == "hangUpType") {
-                switch (v.value) {
-                  case "0":
-                    v.value = "正常";
-                    break;
-                  case "1":
-                    v.value = "未接通";
-                    break;
-                  case "2":
-                    v.value = "中断放弃";
-                    break;
-                  case "3":
-                    v.value = "振铃放弃";
-                    break;
-                  case "4":
-                    v.value = "排队放弃";
-                    break;
+    getDetailInfo() {
+      //type 1代表通话详情
+      //type 0代表会话详情
+      if(this.type==1){
+        api.QcDetail({ id: this.qcId }).then(res => {
+          console.log("通话质检的详情", res);
+          if (res.data.status) {
+            this.qualityForm = res.data.data;
+            this.defaultObject.modelList.map(v => {
+              if (v.type == "defaultText") {
+                v.value = res.data.data[v.ruleName];
+                if (v.ruleName == "callType") {
+                  v.value = v.value == 0 ? "呼入" : "呼出";
+                }
+                if (v.ruleName == "hangUpType") {
+                  switch (v.value) {
+                    case "0":
+                      v.value = "正常";
+                      break;
+                    case "1":
+                      v.value = "未接通";
+                      break;
+                    case "2":
+                      v.value = "中断放弃";
+                      break;
+                    case "3":
+                      v.value = "振铃放弃";
+                      break;
+                    case "4":
+                      v.value = "排队放弃";
+                      break;
+                  }
                 }
               }
-            }
-          });
-        }
-      });
+            });
+          }else{
+            this.$message.error(res.data.msg)
+          }
+        });
+      }
+      if(this.type==0){
+        api.sessionDetail({ sessionId: this.qcId }).then(res=>{
+          console.log('会话质检的详情',res)
+          if(res.data.status){
+            this.qualityForm = res.data.data;
+          }
+        })
+      }
     },
     getReferClassify() {
       api.referClassify().then(res => {
         console.log("咨询分类", res);
         if (res.data.status) {
           this.defaultObject.modelList[10].options = res.data.list;
+          this.sessionObject.modelList[0].options = res.data.list;
         }
       });
     },

@@ -7,7 +7,7 @@
         <div class="btn-area">
           <a-button type="primary" @click="editCustomerModalShow">编辑</a-button>
           <a-button type="primary" @click="createContactModalShow($event,'contactModalInner')">新建联系人</a-button>
-          <a-button type="primary" @click="customerFollow">客户跟进</a-button>
+          <a-button v-if="dataSource=='2' || dataSource=='3'" type="primary" @click="customerFollow">客户跟进</a-button>
         </div>
         <ul class="lastFollowFlex">
           <li>
@@ -54,7 +54,7 @@
               </li>
             </ul>
             <!-- 服务小结 -->
-            <ServiceSummary :questionList="questionList" v-if="questionList.length" />
+            <ServiceSummary :questionList="questionList" />
             <!-- 跟进记录 -->
             <ServiceRecord :questionList="followList" v-if="followList.length" />
             <!-- 工单信息 -->
@@ -124,7 +124,8 @@ export default {
   },
   props: {
     detailId: String,
-    visibleProps: Object
+    visibleProps: Object,
+    dataSource:String
   },
   mounted() {
     this.getServiceList();
@@ -183,7 +184,7 @@ export default {
       this.$emit("editCustomerShow", this.obj);
     },
     customerFollow() {
-      this.$emit("customerFollowShow", this.obj);
+      this.$emit("customerFollowShow", this.obj.custId);
     },
     editContact(contactsId) {
       this.contactsId = contactsId;
@@ -236,7 +237,9 @@ export default {
         "/hfw/workbench/getServiceSummary?guestId=" + this.detailId
       ).then(res => {
         console.log("服务小结", res.data.list);
-        this.questionList = res.data.list;
+        if(res.data.list){
+          this.questionList = res.data.list;
+        }
       });
     },
     //获取跟进记录
@@ -244,7 +247,9 @@ export default {
       api.detailFollowRecord(params).then(res => {
         console.log("跟进记录", res);
         if (res.data.status) {
-          this.followList = res.data.list;
+          if(res.data.list){
+            this.followList = res.data.list;
+          }
         }
       });
     },

@@ -20,9 +20,9 @@ Vue.prototype.$bus = new Vue() // event Bus 用于无关系组件间的通信。
 Vue.use(Antd);
 Vue.config.productionTip = false;
 Vue.prototype.Request = Request;
-Vue.prototype.validateRules = validateRules
+Vue.prototype.validateRules = validateRules;
 
-document.cookie = "JSESSIONID=CC56A6E9DED6D67FEA53C90DB3D69A69";
+document.cookie = "JSESSIONID=5BA0B23C3291948B0A7371DB27C2D343";
 
 new Vue({
   router,

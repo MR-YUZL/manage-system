@@ -7,6 +7,7 @@
         :defaultFormValues="defaultSearchFormValues"
         :formList="searchFormList"
         @prevHandleSubmit="prevHandleSubmit"
+        @prevAreaOnChange="prevAreaOnChange"
       />
       <!-- 按钮区 -->
       <div class="button-area">
@@ -87,10 +88,11 @@ export default {
           ]
         },
         {
-          type: "input",
-          name: "guestName",
+          type: "areaCascader",
+          name: "areaCascader",
           label: "所在地区:",
-          placeholder: "请输入"
+          placeholder:'请选择',
+          fieldNames: { label: "name", value: "adcode", children: "districts" }
         },
         {
           type: "selectGroup",
@@ -182,7 +184,8 @@ export default {
       defaultSearchFormValues: {
         queryType: "1"
       },
-      visible:false
+      visible:false,
+      clueArea:{}
     };
   },
   components: {
@@ -195,8 +198,15 @@ export default {
     this.getStaffSkillGroups();
   },
   methods: {
+    prevAreaOnChange(val){
+      this.clueArea = {
+        clueAreaProvince:val[0],
+        clueAreaCity:val[1],
+        clueAreaCounty:val[2],
+      }
+    },
     prevHandleSubmit(val) {
-      this.searchParams = Object.assign({}, this.searchParams, val);
+      this.searchParams = Object.assign({}, this.searchParams, this.clueArea,val);
       this.getList();
     },
     exportUrl(){

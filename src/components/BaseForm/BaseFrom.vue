@@ -81,6 +81,8 @@
           style="width: 100%;"
           v-model="item.model"
           :placeholder="item.placeholder"
+          :disabled-date="disabledDate"
+          :disabled-time="disabledDateTime"
         />
       </a-form-model-item>
       <a-form-model-item
@@ -104,11 +106,12 @@
         :prop="'modelList.' + index + '.model'"
         :rules="item.rules"
       >
-        <a-cascader v-model="item.model" 
-        :options="item.options" 
-        :placeholder="item.placeholder"  
-        :field-names="item.fieldNames"
-       />
+        <a-cascader
+          v-model="item.model"
+          :options="item.options"
+          :placeholder="item.placeholder"
+          :field-names="item.fieldNames"
+        />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
@@ -125,7 +128,10 @@
         </template>
       </a-form-model-item>
     </div>
-    <a-form-model-item :wrapper-col="{ span: 24 }" :style="dataObj.type == 'modalForm'?{'text-align':'center'}:{'text-align':'right'}">
+    <a-form-model-item
+      :wrapper-col="{ span: 24 }"
+      :style="dataObj.type == 'modalForm'?{'text-align':'center'}:{'text-align':'right'}"
+    >
       <a-button v-if="dataObj.type == 'modalForm'" @click="handleModalState">取消</a-button>
       <a-button style="margin-left: 10px;" type="primary" @click="onSubmit">确定</a-button>
     </a-form-model-item>
@@ -134,6 +140,7 @@
 
 <script>
 import Upload from "@/components/Upload";
+import moment from "moment";
 export default {
   props: {
     formObject: {
@@ -141,8 +148,7 @@ export default {
     }
   },
   components: {
-    Upload,
-    
+    Upload
   },
   watch: {},
   data() {
@@ -151,18 +157,19 @@ export default {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 }
       },
-      dataObj:{}
+      dataObj: {}
     };
   },
   mounted() {
-      this.dataObj = Object.assign({},this.formObject) 
+    this.dataObj = Object.assign({}, this.formObject);
   },
   methods: {
+    moment,
     //重置传入的值
-    resetVal(){
-        this.formObject.modelList.map(item => {
-            item.model = undefined
-        })
+    resetVal() {
+      this.formObject.modelList.map(item => {
+        item.model = undefined;
+      });
     },
     onSubmit(e) {
       e.preventDefault();
@@ -178,31 +185,69 @@ export default {
             // }
           });
           let data = {
-              ref:this.dataObj.ref,
-              visible:false,
-              obj
-          }
+            ref: this.dataObj.ref,
+            visible: false,
+            obj
+          };
           _that.$emit("formSubmit", data);
-          this.resetVal()
+          this.resetVal();
         } else {
           return false;
         }
       });
     },
     handleModalState() {
-     let obj = {
-         ref:this.dataObj.ref,
-         visible:false
-     }
+      let obj = {
+        ref: this.dataObj.ref,
+        visible: false
+      };
       this.$emit("toggleModal", obj);
-      this.resetVal()
+      this.resetVal();
     },
-    loadData(selectedOptions){
-        console.log(selectedOptions)
-        this.$emit("onChange", selectedOptions);
+    loadData(selectedOptions) {
+      this.$emit("onChange", selectedOptions);
     },
-    onChange(val){
-        // this.$emit("onChange", val);
+    onChange(val) {
+      // this.$emit("onChange", val);
+    },
+    disabledDate(current) {
+      // Can not select days before today and today
+      return current && current < moment().startOf("day");
+    },
+
+    disabledDateTime(current) {
+      if (current && moment(current).format("l") == moment().format("l")) {
+        let timeArr = moment()
+          .format("LTS")
+          .split(":");
+        if (timeArr[2] >= 58) {
+          timeArr[1] = Number(timeArr[1]) + 3;
+        } else {
+          timeArr[1] = Number(timeArr[1]) + 2;
+        }
+
+        if (timeArr[1] >= 58) {
+          timeArr[0] = timeArr[0] + 1;
+        }
+        if (timeArr[0] == 24) {
+          timeArr[0] = 0;
+        }
+
+        return {
+          disabledHours: () =>
+            this.range(0, 24).filter(item => item < timeArr[0]),
+          disabledMinutes: () =>
+            this.range(0, 60).filter(item => item < timeArr[1])
+          // disabledSeconds: () => [55, 56]
+        };
+      }
+    },
+    range(start, end) {
+      const result = [];
+      for (let i = start; i < end; i++) {
+        result.push(i);
+      }
+      return result;
     }
   }
 };

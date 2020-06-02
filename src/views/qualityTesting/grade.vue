@@ -12,12 +12,12 @@
     <a-form-model ref="gradeForm" v-bind="formItemLayout" :model="gradeForm">
       <a-form-model-item
         v-for="(item,index) in gradeForm.gradelist"
-        :label="item.geadeName"
-        :key="item.geadeId"
-        :prop="'gradelist.' + index + '.geadeValue'"
+        :label="item.gradeName"
+        :key="item.id"
+        :prop="'gradelist.' + index + '.gradeValue'"
         :rules="[{ required: true, message: '不能为空'}]"
       >
-        <a-input v-model="item.geadeValue" placeholder="请输入" />
+        <a-input v-model="item.gradeValue" placeholder="请输入" />
       </a-form-model-item>
       <a-form-model-item label="评语">
         <a-input v-model="gradeForm.reniews" type="textarea" />
@@ -59,15 +59,15 @@ export default {
     }
   },
   methods: {
-    getInfo(params) {
-      api.QcDetail(params).then(res => {
-        console.log("质检详情评分", res);
-        if (res.data.status) {
-          this.qcObj = res.data.data;
-          this.gradeForm.gradelist = res.data.data.gradelist;
-        }
-      });
-    },
+    // getInfo(params) {
+    //   api.QcDetail(params).then(res => {
+    //     console.log("质检详情评分", res);
+    //     if (res.data.status) {
+    //       this.qcObj = res.data.data;
+    //       this.gradeForm.gradelist = res.data.data.gradelist;
+    //     }
+    //   });
+    // },
     submitGrade(formName) {
       this.$refs[formName].validate(valid => {
           console.log(valid)

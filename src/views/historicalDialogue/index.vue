@@ -7,6 +7,7 @@
       <FormModelSearchForm
         :defaultFormValues="defaultSearchFormValues"
         :formList="searchFormList"
+        @prevReferOnChange="prevReferOnChange"
         @prevHandleSubmit="prevHandleSubmit"
       />
       <div>
@@ -102,10 +103,12 @@ export default {
           optionLabel: "id"
         },
         {
-          type: "input",
+          type: "selectGroup",
           label: "接待客服",
           placeholder: "请输入",
-          name: "serviceAccs"
+          name: "serviceAccs",
+          mode: "multiple",
+          list: []
         },
         {
           type: "input",
@@ -114,10 +117,16 @@ export default {
           name: "name"
         },
         {
-          type: "input",
+          type: "cascader",
           label: "咨询分类",
           placeholder: "请输入",
-          name: "consultType"
+          name: "consultType",
+          options:[],
+          fieldNames: {
+            label: "name",
+            value: "id",
+            children: "childrens"
+          },
         }
       ],
       columns: [
@@ -244,10 +253,10 @@ export default {
             label: "解决问题",
             placeholder: "请选择",
             model: undefined,
-            ruleName: "receiver", 
+            ruleName: "status", 
             options: [
               { key: "1", value: "已解决" },
-              { key: "2", value: "未解决" }
+              { key: "0", value: "未解决" }
             ],
             rules: {
               required: true,
@@ -260,12 +269,14 @@ export default {
             label: "咨询备注",
             placeholder: "请选择",
             model: undefined,
-            ruleName: "GroupId",
+            ruleName: "advisoryRemark",
             maxLength:256
           }
         ],
         defaultValues:{}
-      }
+      },
+      detailId:'',
+      historicalRefer:{}
     };
   },
   components: {
@@ -278,23 +289,50 @@ export default {
   mounted() {
     this.getList();
     this.getReferClassify();
+    this.getService();
   },
   methods: {
+    prevReferOnChange(val){
+      this.consultType = val.join();
+    },
+    getService(){
+      api.staffSkillGroups({type:1}).then(res=>{
+        console.log(res,'接待客服')
+        this.searchFormList[3].list = res.data.list
+      })
+    },
     prevHandleSubmit(val){
       console.log(val,'val')
-      this.searchParams = Object.assign({},this.searchParams,val)
+      this.searchParams = Object.assign({},this.searchParams,{consultType:this.consultType},val)
       this.getList();
     },
     toggleModal() {},
     formSubmit(data) {
       console.log(data,'data')
+      let consultArr = data.consultType;
+      let consultObj = {
+        firstConsultId:consultArr[0],
+        secondConsultId:consultArr[1],
+        threeConsultId:consultArr[2]
+      }
+      let obj = {
+        ...data,
+        id:this.detailId,
+        ...consultObj
+      }
+      api.saveReferRemark(obj).then(res=>{
+        console.log('历史会话保存咨询备注',res)
+        if(res.data.status){
+          this.$message.success('保存成功')
+        }
+      })
     },
     getReferClassify() {
       api.referClassify().then(res => {
         console.log("咨询分类", res);
         if (res.data.status) {
           this.formObject.modelList[0].options = res.data.list;
-          console.log(this.formObject.modelList[0],'this.formObject.modelList[0]')
+          this.searchFormList[5].options = res.data.list;
         }
       });
     },
@@ -320,6 +358,7 @@ export default {
     },
     //弹窗
     skipDetail(id) {
+      this.detailId = id;
       console.log(id, "==========id");
       this.Request.get("/hfw/tsmHfwLeaveComments/infoJson?id=" + id).then(
         res => {
@@ -346,6 +385,9 @@ export default {
   .message {
     width: 380px;
     border-right: 1px solid #e6e6e6;
+    /deep/button{
+        margin-right: 20px;
+      }
   }
   .information {
     margin-left: 48px;
