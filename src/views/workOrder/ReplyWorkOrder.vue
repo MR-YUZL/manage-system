@@ -28,6 +28,10 @@ export default {
         default:function(){
           return ''
         }
+      },
+      orderInfo:{
+        type:Object,
+        defautl:{}
       }
     },
     data() {
@@ -66,26 +70,30 @@ export default {
      watch:{
       workOrderId(value){
         if(value){
-          this.getWorkOrderDetails()
+          // this.getWorkOrderDetails()
           this.$refs.replayForm.$refs.replayWorkOrderModal.resetFields();
         }
+      },
+      orderInfo(){
+        this.info  = this.orderInfo
       }
     },
     created(){
-      this.getWorkOrderDetails()
+      // this.getWorkOrderDetails()
+      this.info  = this.orderInfo
     },
     mounted(){ 
     },
     methods: {
-      getWorkOrderDetails(){
-        let params = {
-          id:this.workOrderId
-        }
-        this.Request.get('/workflow/infoJson',params).then(res=>{
-          console.log('工单信息',res.data,'=====================')
-          this.info = res.data.data
-        })
-      },
+      // getWorkOrderDetails(){
+      //   let params = {
+      //     id:this.workOrderId
+      //   }
+      //   this.Request.get('/workflow/infoJson',params).then(res=>{
+      //     console.log('工单信息',res.data,'=====================')
+      //     this.info = res.data.data
+      //   })
+      // },
       handleWorkOrder(type){  // 这里的参数需要再看下
         let params = {
           workflowId:this.workOrderId,
@@ -105,10 +113,11 @@ export default {
           type:1,
           ...data,
         }
-        this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(res=>{
+        this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(()=>{
            this.$message.success('操作成功')
            this.replayFormObject.defaultValues.content  = ''
            this.replayFormObject.defaultValues.fileList = []
+           this.$emit('updataOrderRecord')
         })
       }
     }
