@@ -32,7 +32,7 @@ export default {
    login(){
        this.tim.login({
           userID: 'user1',
-          userSig:'eJwtzEELgjAYxvHvsnPI69zmErqUSInkYUFdoy15qTWZVmb03RP1*Pwe*H-JoVDBy3iSEBoAWYwbtXm0eMWRn43x4Xw0*naua9QkCRlAxDkLxfS0aM2gfAmcSyqiSU1Xox9cAJMAcwOrodq7bZdncbVzd5umZR-n74-aSH0yZcYVbfeuOEaNpXZ9WZHfH8ooMSU_'
+          userSig:'eJyrVgrxCdYrSy1SslIy0jNQ0gHzM1NS80oy0zLBwqXFqUWGUInilOzEgoLMFCUrQxMDA2NTUxNDM4hMSWZuKlDU1NLAzMTcwAQqmlpRkFkEFDczMLEwMICakZkONNXUzzfIODsjuCwozT8qOMlTO82rojIoRz-CsCq41MLANTI8VdvA1b-QtdjTVqkWALbHMIc_'
         })
         .then(() => {
           console.log('成功')
@@ -121,9 +121,9 @@ export default {
     async onUpdateConversationList(event) {
       console.log('会话列表更新')
       
-      let res = await this.Request.get('/session/guest/my/all/list')
-      console.log(res)
-      console.log('res----------------------')
+      // let res = await this.Request.get('/session/guest/my/all/list')
+      // console.log(res)
+      // console.log('res----------------------')
 
        this.$store.commit('updateConversationList', event.data)
       

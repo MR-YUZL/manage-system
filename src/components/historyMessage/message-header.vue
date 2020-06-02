@@ -17,7 +17,8 @@ export default {
     }
   },
   mounted(){
-    
+    console.log(this.message)
+    console.log('this.message++++++++++++++')
   },
   computed: {
     ...mapState({
@@ -26,7 +27,7 @@ export default {
       currentMemberList: state => state.group.currentMemberList
     }),
     date() {
-      return getFullDate(new Date(this.message.time * 1000))
+      return getFullDate(new Date(this.message.msgTime))
     },
     from() {
       const isC2C = this.currentConversation.type === this.TIM.TYPES.CONV_C2C
