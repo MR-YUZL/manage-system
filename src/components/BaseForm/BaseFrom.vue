@@ -1,5 +1,5 @@
 <template>
-  <a-form-model :ref="dataObj.ref" v-bind="formItemLayout" :model="dataObj">
+  <a-form-model :ref="dataObj.ref" v-bind="formItemLayout" :model="dataObj" :validateOnRuleChange="false">
     <div v-for="(item,index) in dataObj.modelList" :key="index">
       <div v-if="item.type == 'font'" :style="{textAlign:'center'}">
         <p v-for="(value,ind) in item.content" :key="ind">{{value}}</p>

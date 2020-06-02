@@ -23,7 +23,7 @@
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
     <Detail
-      v-if="qcId"
+      v-if="detailsShow"
       :detailsShow="detailsShow"
       :qcId="qcId"
       :type="qcType"
@@ -192,7 +192,7 @@ export default {
   },
   methods: {
     prevHandleSubmit(val){
-      console.log(val,'val')
+      // console.log(val,'val')
       this.searchParams = Object.assign({},this.searchParams,val)
       this.getList();
     },
@@ -220,7 +220,7 @@ export default {
       this.detailsShow = false;
     },
     searchFun(values) {
-      console.log("values", values);
+      // console.log("values", values);
     },
     onSelectChange() {},
     paginationChange(values) {

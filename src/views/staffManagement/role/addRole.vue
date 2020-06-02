@@ -15,7 +15,7 @@
            <a-form-model-item label="角色类型">
              <a-radio-group @change="onChange">
               <a-radio :style="radioStyle" :value="1">
-                管理员 <span style="font-size:12px;color:#acacac">(可以选取使用管理端，客服端的所有工鞥呢，适用于客服主管，小组长，质检员等)</span>
+                管理员 <span style="font-size:12px;color:#acacac">(可以选取使用管理端，客服端的所有功能呢，适用于客服主管，小组长，质检员等)</span>
               </a-radio>
               <br />
               <a-radio :style="radioStyle" :value="2">

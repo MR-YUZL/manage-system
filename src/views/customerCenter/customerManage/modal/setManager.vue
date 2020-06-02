@@ -70,7 +70,7 @@ export default {
             if(res.data.status){
               this.$message.success('设置成功');
               this.visibles = false
-              this.$emit('delUpdate');
+              this.$emit('successLoadList');
             }
           });
         }

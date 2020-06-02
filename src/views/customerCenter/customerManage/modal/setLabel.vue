@@ -8,8 +8,8 @@
       @cancel="handleCancel"
     >
       <a-transfer
-      :titles="['隐藏字段', '显示字段']"
-        :data-source="mockData"
+        :titles="['隐藏字段', '显示字段']"
+        :dataSource="mockData"
         :list-style="{
       width: '300px',
       height: '300px',
@@ -41,22 +41,23 @@ export default {
     }
   },
   mounted() {
-    this.getMock();
     this.getList();
   },
   methods: {
     getList() {
       api.setFieldsJson({ state: 0 }).then(res => {
         console.log("操作设置", res);
-        let newArr = JSON.parse(JSON.stringify(res.data.list).replace(/fieldId/g, 'key'))
+        
+        let newArr = res.data.list.map((item) => {
+          return {
+            ...item,
+            key: item.fieldId,
+            title: item.fieldName
+          }
+        })
         this.mockData = newArr;
+        this.targetKeys = newArr.filter(v => v.isShow == 1).map(item => item.key);
       });
-    },
-    getMock() {
-      const targetKeys = [];
-      const mockData = [];
-      api.setFieldsJson().then(res => {});
-      this.targetKeys = targetKeys;
     },
     renderItem(item) {
       return {
@@ -69,7 +70,22 @@ export default {
       this.targetKeys = targetKeys;
     },
     handleSubmit() {
-      api.setFieldsJson().then(res => {});
+      this.mockData.map(v=>{
+        this.targetKeys.map(item=>{
+          if(v.key == item){
+            v.isShow = 1
+          }else{
+            v.isShow = 0
+          }
+        })
+      })
+      api.fieldsShowSave({list:this.mockData}).then(res => {
+        if(res.data.status){
+          this.$message.success("保存成功");
+          this.visibles = false;
+          this.$emit('successLoadList')
+        }
+      });
     },
     handleCancel() {
       this.visibles = false;

@@ -36,6 +36,9 @@ export default {
       default: function(){
         return []
       }
+    },
+    propName: {
+      type: String
     }
   },
   created() {
@@ -82,7 +85,7 @@ export default {
         }
       });
       // this.fileList = paramsFile
-      this.$emit("change", paramsFile);
+      this.$emit("change", paramsFile, this.propName);
     }
   }
 };

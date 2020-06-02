@@ -2,11 +2,16 @@
   <div>
     <a-page-header title="留言记录" style="padding:16px 0;" />
     <div class="box">
-      <Search :tools="formList" @onSearch="searchFun" /> 
+      <!-- <Search :tools="formList" @onSearch="searchFun" />  -->
+      <FormModelSearchForm
+        :defaultFormValues="defaultSearchFormValues"
+        :formList="searchFormList"
+        @prevHandleSubmit="prevHandleSubmit"
+      />
       <div>
         <a-table :columns="columns" :dataSource="dataSource" :pagination='false' :rowKey="record => record.id">
           <div slot="guestName" slot-scope="record,row">
-             <span class="blue" @click="checkMessage(row.id,row.status)">{{row.guestName}}22</span>
+             <span class="blue" @click="checkMessage(row.id,row.status)">{{row.name}}</span>
           </div>
         </a-table>
       </div>
@@ -27,60 +32,53 @@
 </template>
 
 <script>
+import moment from "moment";
 import UserInformation from './../../components/userInf'
-import Search from './../../components/Search/index'
+// import Search from './../../components/Search/index'
 import MessageDetail from './messageDetail'
 import TablePagination from "../../components/Table/TablePagination"
-
-import moment from "moment";
+import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
   components: {
-    Search,
+    FormModelSearchForm,
     MessageDetail,
     UserInformation,
     TablePagination
   },
   data(){
     return {
-      formList: [
+      defaultSearchFormValues:{},
+      searchFormList: [
         {
           type: 'input',
-          title: '用户名:',
+          label: '用户名:',
           placeholder: '请输入',
-          key: 'guestName',
+          name: 'guestName',
           // defaultValue: '',
         },
         {
-          type: 'dateRange',
-          title: '留言时间:',
-          key: 'queryTime',
-          // defaultValue:null,
-          ranges: {
-            今天: [moment(), moment()],
-            昨天: [moment().subtract(1, "days"), moment().subtract(1, "days")],
-            近7天: [moment().subtract(6, "days"), moment()],
-            近30天: [moment().subtract(29, "days"), moment()]
-          }
+          type: 'rangepicker',
+          label: '留言时间:',
+          name: 'queryTime',
+          
         },
         {
           type: 'select',
-          title: '留言状态:',
-          key: 'status',
-          defaultValue: "null",
-          options:[{ value: "null", name: "全部" },{value:0,name:"未处理"},{value:1,name:'已处理'}]
+          label: '留言状态:',
+          name: 'status',
+          options:[{ key: "null", id: "全部" },{key:0,id:"未处理"},{key:1,id:'已处理'}],
+          optionValue: "key",
+          optionLabel: "id"
         },
         {
           type: 'select',
-          title: '来源终端:',
-          key: 'source',
-          defaultValue: "null",
-          options:[{ value:'null', name: "全部" },{value:0,name:"网页"},{value:1,name:'微信小程序'},{value:2,name:'微信公众号'},{value:3,name:'安卓'},{value:4,name:'ios'}]
+          label: '来源终端:',
+          name: 'source',
+          options:[{ key:'null', id: "全部" },{key:0,id:"网页"},{key:1,id:'微信小程序'},{key:2,id:'微信公众号'},{key:3,id:'安卓'},{key:4,id:'ios'}],
+          optionValue: "key",
+          optionLabel: "id"
         },
-        {
-          type: 'search',
-          title: '筛选',
-          btnType:'primary'
-        }
+        
       ],
       searchField: {},
       columns:[
@@ -168,12 +166,17 @@ export default {
   },
   methods: {
     getList(){
-      this.Request.get('hfw/tsmHfwLeaveComments/listPageJson',{ ...this.pager,...this.searchField}).then(res => {
+      this.Request.get('hfw/hfwSessionInfo/leave/listPageJson',{ ...this.pager,...this.searchField}).then(res => {
         let data = res.data
         let page = data.pager
         this.dataSource =  data.list
         this.pager = Object.assign({},this.pager,page)
       })
+    },
+    prevHandleSubmit(val) {
+      console.log(val, "val");
+      this.searchField = Object.assign({}, this.searchField, val);
+      this.getList();
     },
     checkMessage(id,status){   // 调取接口
     //  "0":'未处理',  "1":'已处理'

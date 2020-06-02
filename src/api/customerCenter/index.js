@@ -8,6 +8,10 @@ export default {
   setFieldsJson(params) {
     return axios.get('/config/hfwConfigFields/fieldsJson', {params})
   },
+  //保存列表字段设置  
+  fieldsShowSave(params){
+    return axios.post('/config/hfwConfigFields/fieldsShowSaveJson', params)
+  },
   //列表字段-表单(新建客户，新建联系人)
   formFieldsJson(params) {
     return axios.get('/config/hfwConfigFields/formFieldsJson', {params})
@@ -64,6 +68,14 @@ export default {
   contactInfo(params) {
     return axios.get('/customers/hfwCustomersInfo/InfoContactsJson', {params})
   },
+  //客户管理-客户详情-编辑联系人  
+  editContactsInfo(params) {
+    return axios.get('/customers/hfwCustomersContacts/editInfoJson', {params})
+  },
+  //客户管理-客户详情-删除联系人  
+  deleteContacts(params){
+    return axios.get('/customers/hfwCustomersContacts/delete', {params})
+  },
   //客户管理-客户详情-tab资料 
   // materialInfo(params) {
   //   return axios.get('/customers/hfwCustomersInfo/editInfoJson', {params})
@@ -112,6 +124,10 @@ export default {
   sessionAccMember(params) {
     return axios.get('/staff/hfwStaffMember/service/acc/list', {params})
   },
+  //会话质检-员工管理-技能组列表  
+  sessionServiceGroups(params) {
+    return axios.get('/staff/hfwStaffSkillGroups/listJson', {params})
+  },
   //质量检测-电话质检 
   callphoneList(params) {
     return axios.post('/callphone/qc/serach', params)
@@ -123,5 +139,13 @@ export default {
   //质量检测-电话质检-保存评分 
   saveQc(params) {
     return axios.post('/callphone/qc/saveQc', params)
+  },
+  //质量检测-电话质检-咨询分类 
+  referClassify(params) {
+    return axios.get('/hfw/workbench/getSummarySort', {params})
+  },
+  //添加服务小结 
+  saveServiceSummary(params) {
+    return axios.post('/hfw/workbench/saveServiceSummary', params)
   },
 }

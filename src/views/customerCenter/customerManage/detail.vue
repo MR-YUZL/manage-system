@@ -31,7 +31,10 @@
           <a-tab-pane key="1" tab="客户相关">
             <div class="contactFlex">
               <div class="contactHead">联系人({{contactLength}})</div>
-              <div style="cursor: pointer;" @click="createContactModalShow($event,'contactModalInner')">
+              <div
+                style="cursor: pointer;"
+                @click="createContactModalShow($event,'contactModalInner')"
+              >
                 <a-icon type="plus" />添加联系人
               </div>
             </div>
@@ -39,8 +42,8 @@
               <li v-for="(item,index) in infoContactsJson" :key="item.contactsId">
                 <span>
                   {{item.contactsName}}
-                  <a-button icon="edit" type="link" @click="editContact"></a-button>
-                  <a-button icon="delete" type="link" @click="deleteContact"></a-button>
+                  <a-button icon="edit" type="link" @click="editContact(item.contactsId)"></a-button>
+                  <a-button icon="delete" type="link" @click="deleteContact(item.contactsId)"></a-button>
                 </span>
                 <span>
                   <i>手机号：{{item.phone}}</i>
@@ -73,7 +76,12 @@
         </a-tabs>
         <Modal :currentModal="contactModalInner">
           <template v-slot:content>
-            <CreateContact @closeCreateContact="closeCreateContact" :custIdParams="obj" @successLoadList="successLoadList" />
+            <CreateContact
+              @closeCreateContact="closeCreateContact"
+              :contactsId="contactsId"
+              :custIdParams="obj"
+              @successLoadList="successLoadList"
+            />
           </template>
         </Modal>
       </template>
@@ -85,16 +93,16 @@
 import Modal from "@/components/Modal";
 import api from "@/api/customerCenter";
 import OrderInf from "@/components/userInf/OrderInf";
-import ServiceSummary from '@/components/userInf/ServiceSummary'
+import ServiceSummary from "@/components/userInf/ServiceSummary";
 import ServiceRecord from "@/components/userInf/ServiceRecord";
 import CreateContact from "@/views/customerCenter/customerManage/modal/createContact";
 export default {
   data() {
     return {
-      infoContactsJson:[],
-      infos:{},
-      questionList: [],//服务小结
-      followList:[],
+      infoContactsJson: [],
+      infos: {},
+      questionList: [], //服务小结
+      followList: [],
       userInfList: [],
       obj: {
         custId: this.detailId
@@ -102,8 +110,9 @@ export default {
       currentModal: this.visibleProps,
       contactModalInner: { title: "新建联系人", visible: false },
       materialList: [],
-      logList:[],
-      contactLength:'',
+      logList: [],
+      contactLength: "",
+      contactsId: ""
     };
   },
   components: {
@@ -127,24 +136,24 @@ export default {
     this.getLogJson(this.obj);
   },
   methods: {
-    successLoadList(){
+    successLoadList() {
       this.contactModalInner.visible = false;
       this.getContactJson(this.obj);
     },
-    getInfoTitle(params){
-      api.infoTitle(params).then(res=>{
-        console.log('头部',res)
-        if(res.data.status){
+    getInfoTitle(params) {
+      api.infoTitle(params).then(res => {
+        console.log("头部", res);
+        if (res.data.status) {
           this.infos = res.data.infos;
         }
-
-      })
+      });
     },
     getContactJson(params) {
       api.contactInfo(params).then(res => {
         console.log("联系人列表", res);
-        if(res.data.status){
+        if (res.data.status) {
           this.infoContactsJson = res.data.list;
+          console.log(this.infoContactsJson, "this.infoContactsJson");
           this.contactLength = res.data.list.length;
         }
       });
@@ -157,31 +166,46 @@ export default {
         }
       });
     },
-    getLogJson(params){
-      api.logJson(params).then(res=>{
+    getLogJson(params) {
+      api.logJson(params).then(res => {
         console.log("日志", res);
-        if(res.data.status){
+        if (res.data.status) {
           this.logList = res.data.list;
           // this.logList = [{
           //   logDate:'2020-2-11 16:22:33',
           //   logContent:'客户名称设置'
           // }]
         }
-      })
+      });
     },
-    editCustomerModalShow(){
-      console.log(this.obj,'详情的custId')
-      this.$emit("editCustomerShow",this.obj)
+    editCustomerModalShow() {
+      console.log(this.obj, "详情的custId");
+      this.$emit("editCustomerShow", this.obj);
     },
-    customerFollow(){
-      this.$emit("customerFollowShow",this.obj)
+    customerFollow() {
+      this.$emit("customerFollowShow", this.obj);
     },
-    editContact(){
-      this.contactModalInner.title = '编辑联系人';
-      this.contactModalInner.visible = true
+    editContact(contactsId) {
+      this.contactsId = contactsId;
+      this.contactModalInner.title = "编辑联系人";
+      this.contactModalInner.visible = true;
     },
-    deleteContact(){
+    deleteContact(contactId) {
+      let that = this
+      this.$confirm({
+        content: <div>删除联系人后将无法回复，是否确认删除该联系人</div>,
+        onOk() {
+          api.deleteContacts({ contactId: contactId }).then(res => {
+            if (res.data.status) {
+              that.$message.success("删除成功");
+              that.getContactJson(that.obj);
+            }
+          });
+        },
+        onCancel() {
 
+        }
+      });
     },
     editCustomer() {},
     // createLinkman() {},
@@ -189,7 +213,7 @@ export default {
       // this.currentModal.visible = value;
       // this.$emit("closeUpdate");
     },
-    closeCreateContact(){
+    closeCreateContact() {
       this.contactModalInner.visible = false;
     },
     createContactModalShow(e, name) {
@@ -215,14 +239,14 @@ export default {
         this.questionList = res.data.list;
       });
     },
-    //获取跟进记录  
-    getFollowRecord(params){
-      api.detailFollowRecord(params).then(res=>{
-        console.log('跟进记录',res)
-        if(res.data.status){
+    //获取跟进记录
+    getFollowRecord(params) {
+      api.detailFollowRecord(params).then(res => {
+        console.log("跟进记录", res);
+        if (res.data.status) {
           this.followList = res.data.list;
         }
-      })
+      });
     },
     handleSubmit() {},
     handleCancel(e) {
@@ -243,7 +267,7 @@ export default {
   display: flex;
   justify-content: space-around;
   text-align: center;
-  margin-top:20px;
+  margin-top: 20px;
   li {
     flex: 1;
     span {
@@ -286,11 +310,13 @@ export default {
   justify-content: space-between;
   li {
     width: 45%;
+    padding-top: 10px;
   }
 }
 .logFlex {
-  li{
-    span:last-child{
+  li {
+    padding-top: 10px;
+    span:last-child {
       padding-left: 10px;
     }
   }

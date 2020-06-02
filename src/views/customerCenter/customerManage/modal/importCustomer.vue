@@ -36,7 +36,7 @@
           <a-button type="primary" @click="uploadSuccessNext">下一步</a-button>
         </div>
         <div class="downloadTemplate">
-          <a-button type="link" icon="download">点击下载模板</a-button>
+          <a-button type="link" icon="download" @click="downloadTemplate">点击下载模板</a-button>
         </div>
       </div>
       <div class="secondStep" v-if="step=='second'">
@@ -204,7 +204,10 @@ export default {
       this.step = "first";
       this.current = 0;
       this.$emit("closeUpdate");
-    }
+    },
+    downloadTemplate(){
+      window.location.href = '/customers/hfwCustomersInfo/expTempExcel'
+    },
   }
 };
 </script>

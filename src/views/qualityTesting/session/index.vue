@@ -78,29 +78,28 @@ export default {
           optionLabel: "id"
         },
         {
-          type: "input",
+          type: "select",
           label: "质检人",
-          placeholder: "请输入",
-          name: "qcAcc"
+          name: "qcAcc",
+          options: []
         },
         {
           type: "input",
           label: "咨询分类",
-          placeholder: "请输入",
           name: "inputAccs"
         },
         {
           type: "select",
           label: "接待客服:",
           name: "serviceAccs",
-          defaultValue: "null",
+          options: []
           
         },
         {
           type: "select",
           label: "客服组",
           name: "serviceGroupId",
-          
+          options: []
         },
         {
           type: "select",
@@ -201,6 +200,8 @@ export default {
 
   mounted() {
     this.getList();
+    this.getSessionAccMember();
+    this.getSessionServiceGroups()
   },
   methods: {
     prevHandleSubmit(val){
@@ -218,6 +219,37 @@ export default {
         this.dataSource = res.data.list;
         this.pager = res.data.pager;
       });
+    },
+    getSessionAccMember(){
+      api.sessionAccMember().then(res=>{
+        console.log('质检人和接待客服',res)
+        if(res.data.status){
+          let newArr = res.data.list.map((item)=>{
+            return{
+              ...item,
+              label:item.userName,
+              value:item.userAccount
+            }
+          })
+          this.searchFormList[2].options = newArr;
+          this.searchFormList[4].options = newArr;
+        }
+      })
+    },
+    getSessionServiceGroups(){
+      api.sessionServiceGroups().then(res=>{
+        console.log('客服组',res)
+        if(res.data.status){
+          let newArr = res.data.list.map((item)=>{
+            return{
+              ...item,
+              label:item.groupName,
+              value:item.groupId
+            }
+          })
+          this.searchFormList[5].options = newArr;
+        }
+      })
     },
     qualityDetail(id) {
       this.qcId = id;

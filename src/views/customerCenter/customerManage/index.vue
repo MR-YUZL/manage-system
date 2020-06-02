@@ -9,7 +9,11 @@
         <a-tab-pane key="3" tab="下属成员负责的客户"></a-tab-pane>
       </a-tabs>
       <!-- <Search :tools="searchList" @onSearch="searchFun" /> -->
-      <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" @prevHandleSubmit="prevHandleSubmit" />
+      <FormModelSearchForm
+        :defaultFormValues="defaultSearchFormValues"
+        :formList="searchFormList"
+        @prevHandleSubmit="prevHandleSubmit"
+      />
       <!-- 按钮区 -->
       <div class="button-area">
         <div class="left-side">
@@ -29,15 +33,19 @@
           :columns="columns"
           :dataSource="tableList"
           :pagination="false"
-          :rowKey="record => record.id"
+          :rowKey="record => record.custId"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-          @change="onPageChange"
         >
           <div slot="detailSkip" slot-scope="record,row">
             <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
           </div>
           <div slot="action" slot-scope="record,row">
-            <span v-if="searchParams.dataSource=='2' || searchParams.dataSource=='3'" class="blue" style="margin-right:10px;" @click="followCustomer(row.custId)">跟进客户</span>
+            <span
+              v-if="searchParams.dataSource=='2' || searchParams.dataSource=='3'"
+              class="blue"
+              style="margin-right:10px;"
+              @click="followCustomer(row.custId)"
+            >跟进客户</span>
             <span class="blue" @click="createOrder(row.custId)">创建工单</span>
           </div>
         </a-table>
@@ -49,54 +57,47 @@
       v-if="modals.setManagerVisible"
       :visible="modals.setManagerVisible"
       :custIds="custIds"
-      @delUpdate="delUpdate"
       @closeUpdate="closeUpdate"
+      @successLoadList="successLoadList"
     />
     <DelCustomerModal
       :visible="modals.delCustomerVisible"
       :custIds="custIds"
-      @delUpdate="delUpdate"
       @closeUpdate="closeUpdate"
+      @successLoadList="successLoadList"
     />
     <ExportCustomerModal
       :visible="modals.exportCustomerVisible"
       v-if="modals.exportCustomerVisible"
       :totalRecord="pager.totalRecord"
-      @delUpdate="delUpdate"
       @closeUpdate="closeUpdate"
       @exportUrl="exportUrl"
     />
-    <ImportCustomerModal
-      :visible="modals.importCustomerVisible"
-      @delUpdate="delUpdate"
-      @closeUpdate="closeUpdate"
-    />
+    <ImportCustomerModal :visible="modals.importCustomerVisible" @closeUpdate="closeUpdate" />
     <ImportResultModal
       :visible="modals.importResultVisible"
       v-if="modals.importResultVisible"
-      @delUpdate="delUpdate"
       @closeUpdate="closeUpdate"
     />
     <CreateCustomerModal
       :createCusObj="createCusObj"
       v-if="createCusObj.visible"
       :detailId="detailId"
-      @delUpdate="delUpdate"
       @closeUpdate="closeUpdate"
       @successLoadList="successLoadList"
     />
     <setLabelModal
       :visible="modals.setLabelVisible"
       v-if="modals.setLabelVisible"
-      @delUpdate="delUpdate"
       @closeUpdate="closeUpdate"
+      @successLoadList="successLoadList"
     />
     <followCustomerModal
       :visible="modals.followCustomerVisible"
       v-if="modals.followCustomerVisible"
       :followId="detailId"
-      @delUpdate="delUpdate"
       @closeUpdate="closeUpdate"
+      @successLoadList="successLoadList"
     />
     <DetailModal
       :visibleProps="detailObj"
@@ -104,7 +105,6 @@
       v-if="detailObj.visible"
       @customerFollowShow="followCustomer"
       @editCustomerShow="editCustomerShow"
-      @delUpdate="delUpdate"
       @closeUpdate="closeUpdate"
     />
   </div>
@@ -124,6 +124,9 @@ import setLabelModal from "@/views/customerCenter/customerManage/modal/setLabel"
 import followCustomerModal from "@/views/customerCenter/customerManage/modal/followCustomer";
 import DetailModal from "@/views/customerCenter/customerManage/detail";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import Modal from "@/components/Modal";
+import BaseForm from "@/components/BaseForm";
+import qs from 'qs';
 export default {
   components: {
     FormModelSearchForm,
@@ -136,13 +139,45 @@ export default {
     CreateCustomerModal,
     setLabelModal,
     followCustomerModal,
-    DetailModal
+    DetailModal,
+    Modal,
+    BaseForm
   },
   data() {
     return {
-      createCusObj:{
-        title:'新建客户',
-        visible:false
+      currentModal: {
+        visible: false
+      },
+      formAxiosReturnValues: {},
+      followObj: {
+        title: "跟进客户",
+        visible: false,
+        modelList: [
+          {
+            type: "date",
+            label: "预约时间：",
+            placeholder: "请选择",
+            model: undefined,
+            ruleName: "appointmentsTime", //receiverGroupId 工单受理组id
+            options: [],
+            rules: {
+              required: true,
+              message: "请指定客服人员",
+              trigger: "change"
+            }
+          },
+          {
+            type: "textarea",
+            label: "备注",
+            placeholder: "",
+            model: undefined,
+            ruleName: "remark" //receiverGroupId 工单受理组id
+          }
+        ]
+      },
+      createCusObj: {
+        title: "新建客户",
+        visible: false
       },
       detailId: "",
       exportJson: [],
@@ -238,7 +273,7 @@ export default {
         detailVisible: false
       },
       // activeKey: "1",
-      
+
       pager: {
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         currentPage: 1,
@@ -247,7 +282,7 @@ export default {
         totalPage: 0
       },
       searchParams: {
-        dataSource: "1",
+        dataSource: "1"
       },
       selectedRowKeys: [],
       detailObj: {
@@ -264,32 +299,32 @@ export default {
           options: [
             { label: "客户名称", value: "1" },
             { label: "联系人", value: "2" },
-            { label: "联系电话", value: "3" },
+            { label: "联系电话", value: "3" }
           ]
         },
-        
+
         {
           type: "select",
           name: "custLabels",
           mode: "multiple",
           label: "客户标签",
-          options: [],
+          options: []
         },
         {
           type: "selectGroup",
           name: "inputAccs",
           label: "创建人",
           mode: "multiple",
-          list: [],
+          list: []
         },
         {
           type: "selectGroup",
           name: "principalAccs",
           label: "负责人",
           mode: "multiple",
-          list:[]
+          list: []
         },
-        
+
         {
           type: "rangepicker",
           name: "inputDateStart",
@@ -304,11 +339,10 @@ export default {
           type: "rangepicker",
           name: "nextFollowDateStart",
           label: "下次跟进时间"
-        },
-        
+        }
       ],
       defaultSearchFormValues: {
-        queryType:'1',
+        queryType: "1"
       }
     };
   },
@@ -319,20 +353,28 @@ export default {
     this.getStaffSkillGroups(1);
   },
   methods: {
-    prevHandleSubmit(val){
-      console.log(val,'val')
-      this.searchParams = Object.assign({},this.searchParams,val)
+    followFormSubmit() {},
+    toggleModal(data) {
+      this["followObj"]["visible"] = data.visible;
+    },
+    prevHandleSubmit(val) {
+      console.log(val, "val");
+      this.searchParams = Object.assign({}, this.searchParams, val);
       this.getList();
     },
-    successLoadList(){
+    successLoadList() {
+      this.modals.delCustomerVisible = false;
+      this.modals.followCustomerVisible = false;
+      this.modals.setManagerVisible = false;
+      this.custIds = [];
       this.getList();
     },
     getList() {
       let params = {
         ...this.searchParams,
         ...this.pager
-      }
-      console.log(params,'你对不对')
+      };
+      console.log(params, "你对不对");
       api.custManageList(params).then(res => {
         console.log(res, "res-----");
         if (res.data.status) {
@@ -341,34 +383,29 @@ export default {
         }
       });
     },
-    getCustomerLabel(){
-      api.customerLabel().then(res=>{
-        console.log('客户标签',res)
-        if(res.data.status){
-          let labels = JSON.parse(JSON.stringify(res.data.labels).replace(/name/g, 'label'));
+    getCustomerLabel() {
+      api.customerLabel().then(res => {
+        console.log("客户标签", res);
+        if (res.data.status) {
+          let labels = JSON.parse(
+            JSON.stringify(res.data.labels).replace(/name/g, "label")
+          );
           this.searchFormList[1].options = labels;
         }
-      })
+      });
     },
-    getStaffSkillGroups(type){
-      
-      api.staffSkillGroups({type:type}).then(res=>{
-        console.log('创建人',res)
-        if(res.data.status){
-          if(type == 0){
+    getStaffSkillGroups(type) {
+      api.staffSkillGroups({ type: type }).then(res => {
+        console.log("创建人", res);
+        if (res.data.status) {
+          if (type == 0) {
             this.searchFormList[2].list = res.data.list;
           }
-          if(type==1){
+          if (type == 1) {
             this.searchFormList[3].list = res.data.list;
           }
         }
-      })
-
-
-    },
-    delUpdate() {
-      this.custIds = [];
-      this.getList();
+      });
     },
     closeUpdate() {
       this.modals.delCustomerVisible = false;
@@ -398,15 +435,15 @@ export default {
       this.detailId = custId.custId;
       // this.modals.createCustomerVisible = true;
       this.createCusObj.visible = true;
-      this.createCusObj.title = '编辑客户';
+      this.createCusObj.title = "编辑客户";
     },
     // customerFollowShow(){
     //   this.modals.followCustomerVisible = true
     // },
     followCustomer(custId) {
-      console.log(custId);
-      this.detailId = custId.custId;
+      this.detailId = custId; //此处有问题，记得修改
       this.modals.followCustomerVisible = true;
+      // this.followObj.visible = true;
     },
     createOrder() {},
     changeTabFn(key) {
@@ -428,8 +465,11 @@ export default {
       }
       this.modals.delCustomerVisible = true;
     },
-    exportUrl(){
-      let url = '/customers/hfwCustomersInfo/exportJson?dataSource='+ this.dataSource + '&queryType=';
+    exportUrl() {
+      this.modals.exportCustomerVisible = false;
+      let param = qs.stringify(this.searchParams);
+      let url =`/customers/hfwCustomersInfo/exportJson?${param}`;
+      window.location.href = url;
       // document.location = url;
     },
     exportCustomer() {
@@ -443,9 +483,9 @@ export default {
     },
     createCustomer() {
       // this.modals.createCustomerVisible = true;
-      this.detailId = '';
+      this.detailId = "";
       this.createCusObj.visible = true;
-      this.createCusObj.title = '新增客户';
+      this.createCusObj.title = "新增客户";
     },
     setLabelClick() {
       this.modals.setLabelVisible = true;
@@ -465,7 +505,8 @@ export default {
       this.searchField = values;
     },
     paginationChange(values) {
-      console.log(values,'你是什么')
+      console.log(values, "你是什么");
+      this.custIds = [];
       this.pager = values;
       this.getList();
     }

@@ -105,15 +105,36 @@
       <a-week-picker v-if="item.type=='weekpicker'" v-model="formInline[item.name]" />
 
       <!-- treeselect -->
+
+      <!-- 省市区联动 -->
+      <a-cascader
+        v-if="item.type == 'areaCascader'"
+        :options="areaDictionary"
+        :field-names="item.fieldNames"
+        change-on-select
+        @change="areaOnChange"
+        v-model="formInline[item.name]"
+      />
+
+      <!-- 普通级联 -->
+      <a-cascader
+        v-if="item.type == 'cascader'"
+        :options="item.options"
+        :placeholder="item.placeholder"
+        :field-names="item.fieldNames"
+        change-on-select
+        v-model="formInline[item.name]"
+      />
     </a-form-model-item>
     <a-form-model-item>
-      <a-button type="primary" html-type="submit">search</a-button>
+      <a-button type="primary" html-type="submit">搜索</a-button>
     </a-form-model-item>
   </a-form-model>
 </template>
 <script>
 // :ranges=""
 import moment from "moment";
+import { areaDictionary } from "@/utils/areaDictionary";
 export default {
   props: {
     formList: {
@@ -139,7 +160,8 @@ export default {
         本周: [moment().startOf("week"), moment().endOf("week")],
         本月: [moment().startOf("month"), moment().endOf("month")],
         本季度: [moment().startOf("quarter"), moment().endOf("quarter")]
-      }
+      },
+      areaDictionary
     };
   },
   created() {
@@ -169,7 +191,10 @@ export default {
   methods: {
     handleSubmit(e) {
       console.log(this.formInline);
-      this.$emit('prevHandleSubmit',this.formInline)
+      this.$emit("prevHandleSubmit", this.formInline);
+    },
+    areaOnChange(value) {
+      console.log(value);
     }
   }
 };
