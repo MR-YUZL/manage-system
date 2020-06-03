@@ -88,22 +88,31 @@
             </div>
           </a-tab-pane>
           <a-tab-pane key="2" tab="咨询记录">
-            咨询记录
+            <div style="padding:10px;">
+              <historyMessage />
+            </div>
           </a-tab-pane>
         </a-tabs>
     </div>
 </template>
 
 <script>
+import historyMessage from "@/components/historyMessage"
 export default {
     name: "wor",
-    components: {},
+    components: {
+      historyMessage
+    },
     props:{
       workOrderId:{
         type:String,
         default:function(){
           return ''
         }
+      },
+      orderInfo:{
+        type:Object,
+        defautl:{}
       }
     },
     data() {
@@ -114,36 +123,47 @@ export default {
           customerInfo:{},
           classifyList:[],
           classify:'',
-          filedValue:[]
+          filedValue:[],
+          custId:''
         }
     },
     watch:{
       workOrderId(value){
         if(value){
-          this.getWorkOrderDetails()
+          // this.getWorkOrderDetails()
           this.getCustomerList()
         }
+      },
+      orderInfo(){
+        this.info  = this.orderInfo
+        this.level = this.orderInfo.level
+        this.typeId[0] = this.orderInfo.typeId
+        this.filedValue = this.orderInfo.filedValue
       }
     },
     created(){
-      this.getWorkOrderDetails()
+      // this.getWorkOrderDetails()
       this.getCustomerList()
       this.getClassification()
+      this.info = this.orderInfo
+      this.level = this.orderInfo.level
+      this.typeId[0] = this.orderInfo.typeId
+      this.filedValue = this.orderInfo.filedValue
     },
     mounted(){},
     methods: {
-      getWorkOrderDetails(){
-        let params = {
-          id:this.workOrderId
-        }
-        this.Request.get('/workflow/infoJson',params).then(res=>{
-          console.log('工单信息',res.data,'=====================')
-          this.info = res.data.data
-          this.level = this.info.level
-          this.typeId[0] = this.info.typeId
-          this.filedValue = this.info.filedValue
-        })
-      },
+      // getWorkOrderDetails(){
+      //   let params = {
+      //     id:this.workOrderId
+      //   }
+      //   this.Request.get('/workflow/infoJson',params).then(res=>{
+      //     console.log('工单信息222',res.data,'=====================')
+      //     this.info = res.data.data
+      //     this.level = this.info.level
+      //     this.typeId[0] = this.info.typeId
+      //     this.filedValue = this.info.filedValue
+      //   })
+      // },
       getCustomerList(){
         let params = {
           custId:''  // 工单信息中取这个值

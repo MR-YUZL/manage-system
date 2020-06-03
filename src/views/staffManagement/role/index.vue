@@ -19,7 +19,7 @@
           :rowKey="record => record.roleId">
           <div slot="action" slot-scope="record,row">
             <router-link :to="'role/addRole?roleId='+record.roleId+'&roleDesc='+record.roleDesc+'&roleName='+record.roleName"><span class="blue" style="margin-right:10px;" >编辑</span></router-link>
-            <span class="blue" @click="deleteRole(record)">删除</span>
+            <span v-if="record.canDel==1" class="blue" @click="deleteRole(record)">删除</span>
           </div>
         </a-table>
       </div>

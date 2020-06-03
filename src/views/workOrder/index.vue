@@ -66,11 +66,11 @@
       <div slot="content">
         <div class="workOrderDetail">
           <div class="left">
-            <ReplyWorkOrder :workOrderId="workOrderId"></ReplyWorkOrder>
-            <RecordList :workOrderId="workOrderId"></RecordList>
+            <ReplyWorkOrder :workOrderId="workOrderId" :orderInfo="info" @updataOrderRecord="updataOrderRecord"></ReplyWorkOrder>
+            <RecordList ref="RecordList" :workOrderId="workOrderId"></RecordList>
           </div>
           <div class="right">
-            <WorkOrderProper :workOrderId="workOrderId"></WorkOrderProper>
+            <WorkOrderProper :workOrderId="workOrderId" :orderInfo="info"></WorkOrderProper>
           </div>
         </div>
       </div>
@@ -397,7 +397,8 @@ export default {
         selectedRowKeys: [],
         batchTaransParams:{},
         workOrderId:'',
-        classifyList:[] //分类列表
+        classifyList:[], //分类列表
+        info:{}
       }
     },
     computed:{
@@ -510,6 +511,17 @@ export default {
            
         })
       },
+      // 获取工单信息
+      getWorkOrderDetails(){
+        let params = {
+          id:this.workOrderId
+        }
+        this.Request.get('/workflow/infoJson',params).then(res=>{
+          console.log('工单信息',res.data,'=====================')
+          this.info = res.data.data
+        })
+        this.$forceUpdate()
+      },
       // 完结工单
       closeWorkOrderModal(){
         if(this.selectedRowKeys.length==0){
@@ -583,7 +595,7 @@ export default {
       handleOkExport(){
         let searchField = {...this.searchField}
         this.Request.post('/workflow/export/workflow',searchField).then(res=>{
-            
+          this.$message.success('导出成功')
         })
       },
       //创建工单
@@ -613,6 +625,7 @@ export default {
       workOrderDetailModal(id){
         this.workOrderDetail.visible = true
         this.workOrderId = id
+        this.getWorkOrderDetails()
       },
       // 搜索
       prevHandleSubmit(data){
@@ -642,6 +655,10 @@ export default {
         })
         return array;
       },
+      // 更新工单记录
+      updataOrderRecord(){
+        this.$refs.RecordList.getList()
+      }
     }
 }
 </script>
