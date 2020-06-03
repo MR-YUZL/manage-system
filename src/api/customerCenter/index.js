@@ -148,6 +148,10 @@ export default {
   saveQc(params) {
     return axios.post('/callphone/qc/saveQc', params)
   },
+  //质量检测-会话质检-保存评分 
+  saveSessionGrade(params) {
+    return axios.post('/session/qc/score', params)
+  },
   //质量检测-电话质检-咨询分类 
   referClassify(params) {
     return axios.get('/hfw/workbench/getSummarySort', {params})

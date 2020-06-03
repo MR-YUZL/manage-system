@@ -5,38 +5,19 @@
         <div class="d-head">
           <h5>质检详情</h5>
         </div>
-        
-        <div v-if="type==1" class="calledLeft">
+
+        <div class="calledLeft">
           <BaseForm
             :formObject="defaultObject"
             @toggleModal="toggleModal"
             @formSubmit="calledSubmit"
           />
         </div>
-        <div v-if="type==0" class="calledLeft">
-          <BaseForm
-            :formObject="sessionObject"
-            @toggleModal="toggleModal"
-            @formSubmit="sessionSubmit"
-          />
-          <div class="customerGrading">客户评级:满意</div>
-          <div class="sessionCard">
-            <dl>
-              <dt>
-                <img src alt />
-              </dt>
-              <dd>
-                <span>您好，我有事要咨询</span>
-                <span>08-02 14:30</span>
-              </dd>
-            </dl>
-          </div>
-        </div>
       </div>
       <div class="information">
         <a-tabs default-active-key="1" @change="tabChange">
           <a-tab-pane key="1" tab="质检评分">
-            <Grade :qcObj="qualityForm" v-if="qualityForm" />
+            <Grade :qualityType="qualityType" :qcObj="qualityForm" v-if="JSON.stringify(qualityForm) != '{}'" />
           </a-tab-pane>
           <a-tab-pane key="2" tab="用户信息">
             <UserInformation :guestId="guestId" />
@@ -55,6 +36,7 @@ import BaseForm from "@/components/BaseForm";
 export default {
   data() {
     return {
+      qualityType:'conversation',
       guestId: "",
       formItemLayout: {
         labelCol: { span: 6 },
@@ -68,7 +50,7 @@ export default {
         test: "hello"
       },
       defaultObject: {
-        ref:'callForm',
+        ref: "callForm",
         sureBtn: "保存",
         modelList: [
           {
@@ -169,50 +151,7 @@ export default {
             ruleName: "consuleRemark"
           }
         ],
-        defaultValues:{}
-      },
-      sessionObject: {
-        ref: "testModal",
-        sureBtn: "保存",
-        modelList: [
-          {
-            type: "cascader",
-            label: "咨询分类",
-            placeholder: "请选择",
-            model: undefined,
-            ruleName: "consuleId",
-            options: [],
-            rules: {
-              required: true,
-              message: "请选择咨询分类",
-              trigger: "change"
-            }
-          },
-          {
-            type: "select",
-            label: "解决问题",
-            placeholder: "请选择",
-            model: undefined,
-            ruleName: "receiverGroupId",
-            options: [
-              { key: "1", value: "已解决" },
-              { key: "2", value: "未解决" }
-            ],
-            rules: {
-              required: true,
-              message: "请选择咨询分类",
-              trigger: "change"
-            }
-          },
-          {
-            type: "textarea",
-            label: "咨询备注",
-            placeholder: "请选择",
-            model: undefined,
-            ruleName: "receiverGroupId"
-          }
-        ],
-        defaultValues:{}
+        defaultValues: {}
       }
     };
   },
@@ -239,68 +178,57 @@ export default {
     getDetailInfo() {
       //type 1代表通话详情
       //type 0代表会话详情
-      if(this.type==1){
-        api.QcDetail({ id: this.qcId }).then(res => {
-          console.log("通话质检的详情", res);
-          if (res.data.status) {
-            this.qualityForm = res.data.data;
-            this.defaultObject.modelList.map(v => {
-              if (v.type == "defaultText") {
-                v.value = res.data.data[v.ruleName];
-                if (v.ruleName == "callType") {
-                  v.value = v.value == 0 ? "呼入" : "呼出";
-                }
-                if (v.ruleName == "hangUpType") {
-                  switch (v.value) {
-                    case "0":
-                      v.value = "正常";
-                      break;
-                    case "1":
-                      v.value = "未接通";
-                      break;
-                    case "2":
-                      v.value = "中断放弃";
-                      break;
-                    case "3":
-                      v.value = "振铃放弃";
-                      break;
-                    case "4":
-                      v.value = "排队放弃";
-                      break;
-                  }
+      api.QcDetail({ id: this.qcId }).then(res => {
+        console.log("通话质检的详情", res);
+        if (res.data.status) {
+          this.qualityForm = res.data.data;
+          this.defaultObject.modelList.map(v => {
+            if (v.type == "defaultText") {
+              v.value = res.data.data[v.ruleName];
+              if (v.ruleName == "callType") {
+                v.value = v.value == 0 ? "呼入" : "呼出";
+              }
+              if (v.ruleName == "hangUpType") {
+                switch (v.value) {
+                  case "0":
+                    v.value = "正常";
+                    break;
+                  case "1":
+                    v.value = "未接通";
+                    break;
+                  case "2":
+                    v.value = "中断放弃";
+                    break;
+                  case "3":
+                    v.value = "振铃放弃";
+                    break;
+                  case "4":
+                    v.value = "排队放弃";
+                    break;
                 }
               }
-            });
-          }else{
-            this.$message.error(res.data.msg)
-          }
-        });
-      }
-      if(this.type==0){
-        api.sessionDetail({ sessionId: this.qcId }).then(res=>{
-          console.log('会话质检的详情',res)
-          if(res.data.status){
-            this.qualityForm = res.data.data;
-          }
-        })
-      }
+            }
+          });
+        } else {
+          this.$message.error(res.data.msg);
+        }
+      });
     },
     getReferClassify() {
       api.referClassify().then(res => {
         console.log("咨询分类", res);
         if (res.data.status) {
           this.defaultObject.modelList[10].options = res.data.list;
-          this.sessionObject.modelList[0].options = res.data.list;
         }
       });
     },
     calledSubmit(values) {
-      api.saveServiceSummary({...values}).then(res=>{
-        console.log(res,'保存通话检测详情左侧')
-        if(res.data.status){
-          this.$message.success('保存成功')
+      api.saveServiceSummary({ ...values }).then(res => {
+        console.log(res, "保存通话检测详情左侧");
+        if (res.data.status) {
+          this.$message.success("保存成功");
         }
-      })
+      });
     },
     toggleModal() {},
     sessionSubmit() {},
@@ -331,8 +259,8 @@ export default {
         color: #353535;
       }
     }
-    .calledLeft{
-      /deep/button{
+    .calledLeft {
+      /deep/button {
         margin-right: 20px;
       }
     }

@@ -24,7 +24,7 @@
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
     <Detail
-      v-if="qcId"
+      v-if="detailsShow"
       :detailsShow="detailsShow"
       :qcId="qcId"
       :type="qcType"
@@ -38,7 +38,7 @@ import moment from "moment";
 import api from "@/api/customerCenter";
 // import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
-import Detail from "@/views/qualityTesting/detail";
+import Detail from "@/views/qualityTesting/session/detail";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
   components: {

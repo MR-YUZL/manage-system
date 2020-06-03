@@ -13,7 +13,7 @@
       <a-form-model-item
         v-for="(item,index) in gradeForm.gradelist"
         :label="item.gradeName"
-        :key="item.id"
+        :key="index"
         :prop="'gradelist.' + index + '.gradeValue'"
         :rules="[{ required: true, message: '不能为空'}]"
       >
@@ -21,7 +21,7 @@
       </a-form-model-item>
       <a-form-model-item label="评语">
         <a-input v-model="gradeForm.reniews" type="textarea" />
-        </a-form-model-item>
+      </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
         <a-button type="primary" html-type="submit" @click="submitGrade('gradeForm')">提交</a-button>
       </a-form-model-item>
@@ -37,25 +37,31 @@ export default {
     return {
       gradeForm: {
         gradelist: [],
-        reniews:''
+        reniews: ""
       },
       formItemLayout: {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 }
-      },
+      }
     };
   },
   components: {
     BaseForm
   },
   props: {
-    qcObj:Object
+    qcObj: Object,
+    qualityType: String
   },
   mounted() {
+    this.gradeForm.gradelist = this.qcObj.gradelist;
   },
-  watch:{
-    qcObj(val){
-      this.gradeForm.gradelist = val.gradelist
+  watch: {
+    qcObj(val) {
+      console.log(val, "无法读取");
+      // this.gradeForm.gradelist = val.gradelist
+    },
+    qualityType(val){
+      console.log(val, "qualityType你有值");
     }
   },
   methods: {
@@ -70,14 +76,39 @@ export default {
     // },
     submitGrade(formName) {
       this.$refs[formName].validate(valid => {
-          console.log(valid)
         if (valid) {
-            console.log(this.gradeForm,'this.gradeForm.gradelist')
-            api.saveQc().then(res=>{
-              if(res.data.status){
-                this.$message.success('提交评分成功');
+          console.log(this.gradeForm,this.qualityType, "this.gradeForm.gradelist提交");
+
+
+          if (this.qualityType == "session") {
+
+            let sessionJson = {
+              sessionId: this.qcObj.session.id,
+              ...this.gradeForm
+            };
+            console.log(sessionJson,this.qualityType,'sessionJson')
+            api.saveSessionGrade(sessionJson).then(res => {
+              if (res.data.status) {
+                this.$message.success("提交评分成功");
               }
-            })
+            });
+          } 
+
+
+
+          if(this.qualityType == "conversation"){
+
+            let conversationJson = {
+              callId: this.qcObj.data.callId,
+              ...this.gradeForm
+            };
+            console.log(conversationJson, this.qcObj, "conversationJson");
+            api.saveQc(conversationJson).then(res => {
+              if (res.data.status) {
+                this.$message.success("提交评分成功");
+              }
+            });
+          }
         }
       });
     }
@@ -86,12 +117,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.totalScore{
+.totalScore {
   text-align: center;
-    span{
-        color:#fd6769;
-        font-size: 36px;
-    }
+  span {
+    color: #fd6769;
+    font-size: 36px;
+  }
 }
 .materialFlex {
   display: flex;

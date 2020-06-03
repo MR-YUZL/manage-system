@@ -37,7 +37,7 @@ import moment from "moment";
 import api from "@/api/customerCenter";
 import Search from "@/components/Search/index";
 import TablePagination from "@/components/Table/TablePagination";
-import Detail from "@/views/qualityTesting/detail";
+import Detail from "@/views/qualityTesting/conversation/detail";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
   components: {
