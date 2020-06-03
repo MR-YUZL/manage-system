@@ -34,34 +34,32 @@
           />
 
           <div v-else-if="message.imMsgType === TIM.TYPES.MSG_CUSTOM">
-            <span
-              v-if="message.payload.data.subMsgType === 'prompts'"
-            >{{message.payload.data.msgText}}</span>
-             <custom-text
-              v-else-if="message.payload.data.subMsgType === 'text'"
+            <span v-if="message.msgContent.subMsgType === 'prompts'">{{message.msgContent.msgText}}</span>
+            <span v-if="message.subMsgType === 'repository'" v-html="message.msgContent.text"></span>
+            <custom-text
+              v-else-if="message.subMsgType === 'text'"
               :isMine="isMine"
-              :payload="message.payload"
+              :payload="message.msgContent"
               :message="message"
             />
             <custom-image
-              v-else-if="message.payload.data.subMsgType === 'image'"
+              v-else-if="message.subMsgType === 'image'"
               :isMine="isMine"
-              :payload="message.payload"
+              :payload="message.msgContent"
               :message="message"
             />
             <custom-file
-              v-else-if="message.payload.data.subMsgType === 'file'"
+              v-else-if="message.subMsgType === 'file'"
               :isMine="isMine"
-              :payload="message.payload"
+              :payload="message.msgContent"
               :message="message"
             />
             <custom-video
-              v-else-if="message.payload.data.subMsgType === 'video'"
+              v-else-if="message.subMsgType === 'video'"
               :isMine="isMine"
-              :payload="message.payload"
+              :payload="message.msgContent"
               :message="message"
             />
-           
           </div>
           <!-- <custom-element
             v-else-if="message.type === TIM.TYPES.MSG_CUSTOM"
@@ -69,7 +67,7 @@
             :payload="message.payload"
             :message="message"
           />-->
-        
+
           <video-element
             v-else-if="message.imMsgType === TIM.TYPES.MSG_VIDEO"
             :isMine="isMine"
@@ -100,10 +98,15 @@ import { mapState } from "vuex";
 import MessageStatusIcon from "./message-status-icon.vue";
 import MessageHeader from "./message-header";
 import MessageFooter from "./message-footer";
-import textElement from './message-item/text-element'
-import fileElement from './message-item/file-element'
-import imageElement from './message-item/image-element'
-import videoElement from './message-item/video-element'
+import textElement from "./message-item/text-element";
+import fileElement from "./message-item/file-element";
+import imageElement from "./message-item/image-element";
+import videoElement from "./message-item/video-element";
+// 自定义消息类组件
+import customText from "./custom-message/custom-text";
+import customImage from "./custom-message/custom-image";
+import customFile from "./custom-message/custom-file";
+import customVideo from "./custom-message/custom-video";
 
 export default {
   name: "MessageItem",
@@ -120,7 +123,11 @@ export default {
     textElement,
     fileElement,
     imageElement,
-    videoElement
+    videoElement,
+    customText,
+    customImage,
+    customFile,
+    customVideo
   },
   data() {
     return {
@@ -128,7 +135,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.message,'--------------------------');
+   
   },
   created() {},
   computed: {
@@ -138,11 +145,19 @@ export default {
     }),
     // 是否显示头像，群提示消息不显示头像
     showAvatar() {
-      if (
-        this.message.type == "TIMCustomElem" &&
-        this.message.payload.data.subMsgType == "prompts"
-      ) {
-        return false;
+      if (this.message.imMsgType == "TIMCustomElem") {
+          console.log(this.message.imMsgType,this.message.subMsgType)
+        if (
+          this.message.subMsgType == "prompts" ||
+          this.message.subMsgType == "transfer" ||
+          this.message.subMsgType == "reception" ||
+          this.message.subMsgType == "stopsession" ||
+          this.message.subMsgType == "createsession"
+        ) {
+          return false;
+        }else{
+            return true
+        }
       } else if (
         this.currentConversation.type === "C2C" &&
         !this.message.isRevoked
@@ -161,10 +176,7 @@ export default {
     avatar() {
       if (this.currentConversation.type === "C2C") {
         if (this.isMine) {
-          return this.currentUserProfile.avatar  
-
-
-            
+          return this.currentUserProfile.avatar
             ? this.currentUserProfile.avatar
             : require("./../../assets/imgs/current_session/customer_header.jpg");
         } else {

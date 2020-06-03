@@ -13,12 +13,10 @@ const user = {
       state.currentUserProfile = userProfile
     },
     toggleIsLogin(state, isLogin) {
-      console.log(state, isLogin)
-      console.log('---------------')
+      
       state.isLogin = typeof isLogin === 'undefined' ? !state.isLogin : isLogin
     },
     toggleIsSDKReady(state, isSDKReady) {
-      console.log('**************')
       state.isSDKReady = typeof isSDKReady === 'undefined' ? !state.isSDKReady : isSDKReady
     },
     reset(state) {

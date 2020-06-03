@@ -2,11 +2,7 @@
   <div class="session_list_l">
     <div class="list_count">会话列表 ( {{55}} )</div>
     <div class="list_inf">
-      <session-item
-        :conversation="item"
-        v-for="item in conversationList"
-        :key="item.conversationID"
-      />
+      <session-item :conversation="item" v-for="item in sessionList" :key="item.conversationID" />
     </div>
   </div>
 </template>
@@ -15,16 +11,48 @@
 import { mapState } from "vuex";
 import sessionItem from "./sessionItem";
 export default {
-  data: () => ({}),
+  data: () => ({
+    list: [
+      {
+        sendAppraiseFlag: 0,
+        latestMsgType: "TIMTextElem",
+        latestMsgTime: "45645465",
+        latestMsgContent: "",
+        latestMsgAccount: "",
+        id: "",
+        serviceAcc: "",
+        guestName: "",
+        status: "",
+        round: "",
+        guestAvatar: "",
+        serviceAvatar: ""
+      },
+      {
+        sendAppraiseFlag: 0,
+        latestMsgType: "TIMTextElem",
+        latestMsgTime: "45645465",
+        latestMsgContent: "",
+        latestMsgAccount: "",
+        id: "C2Cuser0",
+        serviceAcc: "",
+        guestName: "",
+        status: "",
+        round: "",
+        guestAvatar: "",
+        serviceAvatar: ""
+      }
+    ]
+  }),
   components: {
     sessionItem
   },
   mounted() {
     // console.log(this.conversationList)
-    // this.getSessionList()
+    this.getSessionList();
   },
   methods: {
     getIsSDKReady() {
+      console.log(this.sessionList, "**-*-*--*-*--*-*");
       if (this.conversationList && this.conversationList.length) {
         this.isCheckouting = true;
         this.$store
@@ -48,7 +76,6 @@ export default {
   },
   watch: {
     isSDKReady(a, b) {
-      console.log(a, b);
       if (a) {
         this.getIsSDKReady();
       }
@@ -64,7 +91,22 @@ export default {
       conversationList: state => state.conversation.conversationList,
       currentConversation: state => state.conversation.currentConversation,
       isSDKReady: state => state.user.isSDKReady
-    })
+    }),
+    sessionList: function() {
+      console.log(this.conversationList);
+      let arr = []
+      this.list.map(item => {
+        this.conversationList.map(val => {
+          if (item.id == val.conversationID) {
+            let obj = {
+              ...item,...val
+            }
+            arr.push(obj)
+          }
+        });
+      });
+      return arr
+    }
   }
 };
 </script>

@@ -30,6 +30,7 @@
                   :show-checked-strategy="SHOW_PARENT"
                   search-placeholder="请选择"
                   @change="changeTree"
+                  :maskClosable="false"
                 />
       </div>
     </a-modal>
@@ -50,6 +51,7 @@
 </template>
 
 <script>
+	// 17342053413
 import { TreeSelect } from 'ant-design-vue';
 import TablePagination from "@/components/Table/TablePagination";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
@@ -81,13 +83,13 @@ export default {
               compact: "input",
               compactName: "queryType",
               options: [
-                { label: "客服姓名", value: "1" },
-                { label: "手机号", value: "2" },
+                { label: "客服姓名", value: 1 },
+                { label: "手机号", value: 2 },
               ]
             }
           ],
           defaultSearchFormValues: {
-            queryType:'1',
+            queryType:1,
           },
           dataSource:[],
           columns:[
@@ -130,7 +132,7 @@ export default {
           searchField:{
             roleId:'',
             queryText:'',
-            queryType:''
+            queryType:null
           },
           pager:{
             currentPage:1
@@ -144,7 +146,7 @@ export default {
     created(){
       this.getRoleList()
       this.getStaffList()
-      this.getMemberList()
+     
     },
     mounted(){}, 
     methods: {
@@ -169,7 +171,7 @@ export default {
           ...this.pager,
           ...this.searchField
         }
-        this.Request.post('/staff/hfwStaffMember/listPageJson',params).then(res=>{
+        this.Request.get('/staff/hfwStaffMember/listPageJson',params).then(res=>{
           this.dataSource = res.data.list
           this.pager = res.data.pager
           this.$forceUpdate()
@@ -186,13 +188,10 @@ export default {
       prevHandleSubmit(data){
         console.log(data,'搜索参数')
         this.searchField = {...data}
+        this.page.currentPage = 1
         this.getStaffList()
       },
       editStaff(row){
-
-
-        console.log(row,'拿不到数据的am')
-
         let {roleId} = row
         this.editData=row
         this.editRole = roleId
@@ -200,7 +199,7 @@ export default {
       },
       deleteStaff(record){
         let that = this
-        if(record.canDel == 0){
+        if(record.existWorkOrder == 0){
           that.$error({
             title: '该客服有未处理的工单，请完成相关的工 单操作后再进行修改删除',
           });
@@ -211,26 +210,29 @@ export default {
               let params = {
                 userAccount:record.userAccount
               }
-              that.Request.post('/staff/hfwStaffMember/delJson',params).then(()=>{
+              that.Request.get('/staff/hfwStaffMember/delJson',params).then(()=>{
                 that.$message.success('删除成功!')
-                
+                that.getStaffList()
               })
             },
           });
         }
       },
       addCustmoer(){
+        this.addStaffValue = []
         this.addCustomerShow = true
+        this.getMemberList()
       },
       handleCancelAdd(){
-        this.addCustomerShow = false
+        this.addCustomerShow = false 
       },
       handleOkAdd(){
         console.log('addStaffValue',this.addStaffValue)
         let params = [...this.addStaffValue]
-        this.Request.post('/staff/hfwStaffMember/batchSaveJson',params).then(res=>{
-          console.log(res)
+        this.Request.post('/staff/hfwStaffMember/batchSaveJson',params).then(()=>{
           this.$message.success('添加成功')
+           this.addCustomerShow = false
+           this.getStaffList()
         })
         // console.log('选中的成员列表',this.value)
       },
@@ -240,7 +242,7 @@ export default {
       handleOkEditStaff(){
         console.log(this.editData,'sdafasdfadsf')
         let params = {
-          userId:this.editData.userId,
+          userAccount:this.editData.userAccount,
           roleId:this.editRole
         }
         this.Request.post('/staff/hfwStaffMemberRole/saveJson',params).then(()=>{
@@ -250,7 +252,7 @@ export default {
         })
       },
       paginationChange(page){
-        this.pager = {...page}
+        this.pager = page
         this.getStaffList()
       },
       treeChangeData(array){
@@ -259,6 +261,9 @@ export default {
           item['key'] = item.id;
           item['title'] = item.name; 
           item['children'] = item.childs;
+          if(item.type==0){
+            item.disabled = true
+          }
           if(item.childs.length>0){
             this.treeChangeData(item.childs);
           }

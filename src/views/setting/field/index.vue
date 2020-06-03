@@ -61,19 +61,18 @@
           <a-radio-group v-model="addFormData.dataType" @change="changeDataType">
             <div class="radioStyle">
               <div v-for="(item,index) in dataTypeList" :key="index">
-                <a-radio v-if="item.show" :value="item.value">{{item.name}}</a-radio>
+                <a-radio v-if="item.show" :disabled="item.disabled" :value="item.value">{{item.name}}</a-radio>
               </div>
             </div>
           </a-radio-group>
         </a-form-model-item>
-        <div class="addChoice" v-if="addOptionsShow">
+        <div class="addChoice" v-show="addFormData.dataType==2||addFormData.dataType==3">
           <div v-for="(it,idx) in addFormData.options" :key="idx">
             <a-form-model-item
               :wrapperCol="{ span: 20 }"
               :labelCol="{ span: 4 }"
               :prop="'options.'+idx+'.optionName'"
-              :rules="{required: true, message: '请输入添加的选项', trigger: 'blur' }"
-            >
+              :rules="{required: true, message: '请输入添加的选项', trigger: 'blur' }">
               <div class="singleChoice">
                 <a-input v-model="addFormData.options[idx].optionName" placeholder="请输入要增加的字段" />
                 <a-form-model-item>
@@ -86,7 +85,7 @@
               </div>
             </a-form-model-item>
           </div>
-          <a-button class="addBtn" type="primary" @click="addDomain">添加选项</a-button>
+          <a-button v-if="addFormData.options.length>0" class="addBtn" type="primary" @click="addDomain">添加选项</a-button>
         </div>
       </a-form-model>
     </a-modal>
@@ -133,8 +132,8 @@ export default {
           }
         },
         {
-          title: "必填字段",
-          dataIndex: "isDefined",
+          title: "必填属性",
+          dataIndex: "isRequired",
           key: "3",
           customRender: value => {
             let obj = {
@@ -171,10 +170,13 @@ export default {
         isRequired: 0, //是否必填：0-否；1-是
         dataType: 1, //1:文本字段，2：单选字段，3：多选字段，4：日期字段，5：数字字段
         enable: 0, //是否启用：0-否；1-是
-        options: [],
+        options: [ {
+            isDefault: false,
+            optionName: ""
+          }],
         isDefined: "" // 所有新增的字段 这个值为1
       },
-      addOptionsShow: false,
+      // addOptionsShow: false,
       rules: {
         fieldName: [
           {
@@ -194,27 +196,32 @@ export default {
         {
           name: "文本字段",
           value: 1,
-          show: true
+          show: true,
+          disabled:false
         },
         {
           name: "单选字段",
           value: 2,
-          show: true
+          show: true,
+          disabled:false
         },
         {
           name: "多选字段",
           value: 3,
-          show: true
+          show: true,
+          disabled:false
         },
         {
           name: "日期字段",
           value: 4,
-          show: true
+          show: true,
+          disabled:false
         },
         {
           name: "数字字段",
           value: 5,
-          show: true
+          show: true,
+          disabled:false
         }
       ],
       addType: ""
@@ -245,6 +252,21 @@ export default {
       this.addFieldShow = true;
       this.addType = "edit";
       let { fieldName, isRequired, dataType, enable, isDefined, options, fieldId} = row;
+      if(options.length>0){
+        options.map(item=>{
+          item.isDefault = item.isDefault==1?true:false
+        })
+      }
+      //isDefined==1 自定义字段  字段类型才能编辑  0  字段类型不能编辑
+      if(isDefined==0){
+        this.dataTypeList.map(item=>{
+          item.disabled = true
+        })
+      }else{
+         this.dataTypeList.map(item=>{
+          item.disabled = false
+        })
+      }
       this.addFormData = {
         fieldName,
         isRequired, //是否必填：0-否；1-是
@@ -255,6 +277,8 @@ export default {
         stata: this.activeKey,
         fieldId
       };
+      this.$forceUpdate()
+      console.log(this.addFormData,'lalalalal')
     },
     deleteField(row) {
       let params = {
@@ -286,21 +310,28 @@ export default {
         isDefined: 1,
         options:[]
       };
+      this.dataTypeList.map(item=>{
+        item.disabled = false
+      })
     },
     handleCancelAddField() {
       this.addFieldShow = false;
       this.$refs.addForm.resetFields();
     },
     handleOkAddfield() {
-      let options = this.addFormData.options
+      let {options,...others} = this.addFormData
       let params = {
         state: this.activeKey,
-        ...this.addFormData
-      };
-      options.map(item=>{
+        ...others
+      };  
+      let optionsNews = JSON.parse(JSON.stringify(options));
+      optionsNews.map((item)=>{
         item.isDefault=item.isDefault?1:0
       })
-      console.log(this.addFormData,'this.addFormData')
+      params.options = optionsNews
+      if(!(this.addFormData.dataType==2||this.addFormData.dataType==3)){
+        params.options = []
+      }
       if (this.addType == "add") {
         params.isDefined = 1; // 所有新增 这个字段都为0
       }
@@ -308,16 +339,15 @@ export default {
         if (valid) {
           console.log("表单数据", params);
            // 先进行字段名称查重复
-          // this.Request.get("/config/hfwConfigFields/detectJson", { state:this.activeKey, fieldName:this.addFormData.fieldName}).then( () => {
+          this.Request.get("/config/hfwConfigFields/detectJson", { state:this.activeKey, fieldName:this.addFormData.fieldName}).then( () => {
             this.Request.post("/config/hfwConfigFields/edit", {
               ...params
-            }).then(res => {
+            }).then(() => {
               this.$message.success("添加成功");
               this.getList();
               this.addFieldShow = false;
-              console.log("添加字段", res.data);
             });
-          // });
+          });
         }
       });
     },
@@ -325,16 +355,14 @@ export default {
     changeDataType() {
       let dataType = this.addFormData.dataType;
       if (dataType == 2 || dataType == 3) {
-        this.addFormData.options = [
-          {
-            isDefault: false,
-            optionName: ""
-          }
-        ];
-        this.addOptionsShow = true;
-      } else {
-        this.addOptionsShow = false;
-        this.addFormData.options = [];
+        if(this.addFormData.options.length==0){
+          this.addFormData.options = [
+            {
+              isDefault: false,
+              optionName: ""
+            }
+          ];
+        }
       }
       this.$forceUpdate()
     },
@@ -360,16 +388,16 @@ export default {
     },
     // 字段查重
     fieldNameBlur() {
-      console.log('我来查重啦')
-      let params = {
-        state: this.activeKey,
-        fieldName: this.addFormData.fieldName
-      };
-      this.Request.post("/config/hfwConfigFields/detectJson", {
-        ...params
-      }).then(res => {
-        console.log("字段查重", res.data);
-      });
+    //   console.log('我来查重啦')
+    //   let params = {
+    //     state: this.activeKey,
+    //     fieldName: this.addFormData.fieldName
+    //   };
+    //   this.Request.post("/config/hfwConfigFields/detectJson", {
+    //     ...params
+    //   }).then(res => {
+    //     console.log("字段查重", res.data);
+    //   });
     },
     paginationChange() {}
   }

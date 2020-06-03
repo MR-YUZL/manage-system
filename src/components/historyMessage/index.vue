@@ -14,7 +14,7 @@ export default {
   },
   data() {
     return {
-      historyList: [
+      historyList1: [
         {
           id: "MjA4MTQ1NTM1Ng==",
           sessionId: "LTEzNDEyMzA3NDU=",
@@ -129,11 +129,84 @@ export default {
           msgSeq: 64993,
           msgTime: 1587460051000,
           msgKey: "64993_4259378746_1587460051"
+        },
+        //自定义视频类消息：
+        {
+          id: "LTQ0MzkwOTE4",
+          sessionId: "MTUyNzA2ODA3Mw==",
+          orgId: "qftx",
+          imMsgType: "TIMCustomElem",
+          subMsgType: "video",
+          sendType: "manual",
+          msgContent: {
+            fileSize: 33862,
+            url:
+              "https://cos.ap-shanghai.myqcloud.com/7923-shanghai-007-shared-04-1256635546/7693-1400328287/6844-13800571550/951ee7cb8ceacd39f215adf26216c76d.mp4"
+          },
+          fromAccount: "13800571550",
+          toAccount: "13800571501",
+          msgRandom: 4259378746,
+          msgSeq: 64993,
+          msgTime: 1587460051000,
+          msgKey: "64993_4259378746_1587460051"
+        },
+
+        //自定义文本类消息：
+        {
+          id: "LTQzMTQyODI1MQ==",
+          sessionId: "LTEzOTM1NzU3NDY=",
+          orgId: "qftx",
+          imMsgType: "TIMCustomElem",
+          subMsgType: "text",
+          sendType: "automatic",
+          msgContent: {
+            text: "您好，有什么可以帮助您的？"
+          },
+          fromAccount: "13800571550",
+          toAccount: "13800571501",
+          msgRandom: 4259378746,
+          msgSeq: 64993,
+          msgTime: 1587460051000,
+          msgKey: "64993_4259378746_1587460051"
+        },
+        //自定义创建会话消息（通知客服（包括：分配流程后接入访客、排除中接入访客、转接后接入访客））：
+        {
+          id: "MjIzNDY0OTE=",
+          sessionId: "LTYzNTcxMzc1NQ==",
+          orgId: "qftx",
+          imMsgType: "TIMCustomElem",
+          subMsgType: "createsession",
+          sendType: "automatic",
+          msgContent: {
+            text: "访客帐号"
+          },
+          fromAccount: "13800571550",
+          toAccount: "13800571501",
+          msgRandom: 4259378746,
+          msgSeq: 64993,
+          msgTime: 1587460051000,
+          msgKey: "64993_4259378746_1587460051"
         }
       ]
     };
   },
-  computed: {},
+  computed: {
+    historyList: function() {
+      console.log(this.historyList1, "++++++++++++++++++");
+      let arr = []
+      this.historyList1.map(item => {
+        if (
+          item.subMsgType != "transfer" &&
+          item.subMsgType != "reception" &&
+          item.subMsgType != "stopsession" &&
+          item.subMsgType != "createsession"
+        ) {
+           arr.push(item) 
+        }
+      });
+       return arr
+    }
+  },
   watch: {},
   //方法集合
   methods: {},

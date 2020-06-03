@@ -1,6 +1,6 @@
 <template>
   <div class="record">
-    <h2 class="TitleH2">通话记录</h2>
+    <a-page-header title="留言记录" style="padding:16px 0;" />
     <div class="box">
       <Search :tools="formList" @onSearch="searchFun" /> 
       <div class="btn">
@@ -209,7 +209,6 @@ export default {
   
     //检索组件传参接收
     searchFun(values){
-      console.log('values',values)
       this.pager.currentPage = 1
       this.searchField = values
       this.getList();
@@ -230,6 +229,7 @@ export default {
   .record{
     .btn{
       padding: 20px;
+      
     }
   }
   .page_pagination{

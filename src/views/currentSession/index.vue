@@ -36,6 +36,8 @@ export default {
         })
         .then(() => {
           console.log('成功')
+          this.$store.commit('toggleIsLogin', true)
+          this.$store.commit('startComputeCurrent')
         })
         .catch(error => {
           this.loading = false
