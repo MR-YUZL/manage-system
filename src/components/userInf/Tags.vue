@@ -13,61 +13,115 @@
           </div>
         </div>
         <div class="aaa">
-          <Model :modelObj="modelObj" :formList="formList" @formData="formData" />
+          <Modal  :currentModal="tagsModal">
+              <div slot="content">
+                <BaseForm 
+                  :formObject="formObjectTags"
+                  @toggleModal="clueToggleModal"
+                  @formSubmit="formSubmitTags">
+                </BaseForm>
+              </div>
+          </Modal>
         </div>
     </div>
 </template>
 <script>
-import Model from './../Modal'
+import Modal from '../Modal/index'
+import BaseForm from '../BaseForm/index'
 export default {
   name:'tags',
   props:{
-    tagsList:{
-      type:Array
-    },
-    selectTagList:{
-      type:Array
+    guestId:{  // 访客id
+      type:String,
+      default:''
     }
+  },
+  components:{
+    Modal,
+    BaseForm
   },
   data(){
       return{
-          // tagsList:['标签11','标签2222','标签2','标签2','标签2'],
+          allTags:[],
+          tagsList:[],
           visible:false,
           active:true,
-          formList:['tagsList'],
-          modelObj:{
-            title:'访客标签',
-            visible:false,
+          tagsModal:{
+            title:'',
+            visible:false
+          },
+          formObjectTags:{
+            type:'modalForm',
+            ref: "modalFormTags",
+            sureBtn:'确定',
+            defaultValues:{},
             modelList:[
-                {
-                  type:'tag' ,
-                  label:'标签',
-                  model:[],
-                  ruleName:'tag',
-                  options:[{key:'111',value:'111'},{key:'222',value:'222'}]
-                },
-            ]
+              {
+                type: "tag",
+                label: "访客标签",
+                ruleName: "linkName",
+                options:[]
+              },
+             ]
           }
       }
     },
-    components:{
-      Model
-    },
     created(){
-      this.modelObj.modelList[0].options = this.selectTagList
+      
     },
     methods:{
+      //访客设置标签时获取单位下所有维护的访客标签
+      getAllTags(){
+        this.allTags=[]
+        this.Request.get('/hfw/workbench/getAllGuestLabel').then(res => {
+          let data = res.data.list
+          if(data.length>0){
+            data.map((item)=>{
+              this.allTags.push({
+                key:item.id,
+                value:item.name,
+              })
+            })
+          }
+          this.formObjectTags.modelList[0].options =  this.allTags
+          console.log('所有标签',data)
+        })
+      },
+      //获取tags  参数  guestId  访客id
+      getTags(){
+        this.Request.get('/hfw/workbench/getGuestLabel?guestId='+this.guestId).then(res => {
+          console.log('标签tags',res.data)
+          this.tagsList = res.data.data
+        })
+      },
       tagsFn(){
-        // this.$store.commit('getVisible',true)
-        this.modelObj.visible = true
+       this.getAllTags()
+       this.tagsModal.visible = true
       },
       showFn(){
         this.active = !this.active
       },
-      formData(data){
-        this.$emit('submitTags',data.data)
-        this.modelObj.visible = data.visible
-        console.log('传过去提交的数据',data.data)
+      // formData(data){
+      //   this.$emit('submitTags',data.data)
+      //   this.modelObj.visible = data.visible
+      // },
+      formSubmitTags(data){
+        console.log('提交的数据',data)
+        // let obj = data
+        // let params = {
+        //   guestId:this.guestId,
+        //   tagIds:[]
+        // }
+        // obj.tag.map( item => {
+        //   params.tagIds.push(item.key)
+        // })
+        // this.Request.post('/hfw/workbench/saveGuestLabel',{...params}).then(res => {
+        //   console.log('标签selectTags',res.data)
+        //   this.getTags()
+        // })
+      },
+      clueToggleModal(){
+        this.tagsModal.visible = false
       }
     }
 }
