@@ -41,7 +41,10 @@
       </ul>
     </div>
     <div>
-      <a-table :columns="columns" :dataSource="dataSource" :pagination="false"></a-table>
+      <a-table :columns="columns" :dataSource="dataSource" :pagination="false">
+        <span slot="out" slot-scope="text, record">{{record.callOutAllNum}}/{{record.callOutAnswerNum}}</span>
+        <span slot="in" slot-scope="text, record">{{record.inCallAllNum}}/{{record.inCallAnswerNum}}</span>
+      </a-table>
     </div>
   </div>
 </template>
@@ -69,29 +72,21 @@ export default {
           key: "serviceName"
         },
         {
-          title: "话务总量",
+          title: "话务量总数",
           dataIndex: "callTotalNum",
           key: "callTotalNum"
         },
         {
-          title: "呼出量",
+          title: "呼出量/已接",
           dataIndex: "callOutAllNum",
-          key: "callOutAllNum"
+          key: "callOutAllNum",
+          scopedSlots: { customRender: 'out' },
         },
         {
-          title: "呼出已接",
-          dataIndex: "callOutAnswerNum",
-          key: "callOutAnswerNum"
-        },
-        {
-          title: "呼入量",
+          title: "呼入量/已接",
           dataIndex: "inCallAllNum",
-          key: "inCallAllNum"
-        },
-        {
-          title: "呼入已接",
-          dataIndex: "inCallAnswerNum",
-          key: "inCallAnswerNum"
+          key: "inCallAllNum",
+          scopedSlots: { customRender: 'in' },
         },
         {
           title: "通话总时长",
@@ -129,7 +124,18 @@ export default {
           key: "summaryRate"
         }
       ],
-      dataSource: [],
+      dataSource: [
+        {
+          key: "1",
+          inputtime: "0",
+          serviceName: "inputtime"
+        },
+        {
+          key: "2",
+          inputtime: "0",
+          serviceName: "inputtime"
+        }
+      ],
       searchFormList: [
         {
           type: "rangepicker",
@@ -154,7 +160,7 @@ export default {
   ul {
     display: flex;
     li {
-        flex: 1;
+      flex: 1;
       text-align: center;
       span {
         display: block;
@@ -179,8 +185,8 @@ export default {
       .style4 {
         color: #fd6769;
       }
-      .style5{
-          color: #9bd06e;
+      .style5 {
+        color: #9bd06e;
       }
       .rece3 {
         font-size: 12px;
