@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-page-header title="服务总览" style="padding:16px 0;" />
-    <div class>
+    <div>
       <FormModelSearchForm
         :defaultFormValues="defaultSearchFormValues"
         :formList="searchFormList"
@@ -37,10 +37,19 @@
     </div>
     <a-page-header title="消费概况" style="padding:16px 0;" />
     <div>
-      <div id="consumeChart" :style="{width: '100%', height: '300px'}"></div>
+      <LineChart id="consumeChart" :echartObj="echartObj" />
     </div>
+    <a-page-header title="接待量趋势" style="padding:16px 0;" />
     <div>
-      <div id="receptionChart" :style="{width: '100%', height: '300px'}"></div>
+      <LineChart id="receptionChart" :echartObj="echartObj2" />
+    </div>
+    <a-page-header title="接待来源" style="padding:16px 0;" />
+    <CircleChart id="circleChart" :echartObj="circleObj" styles="width:600px;height:300px;margin:auto" />
+    <a-page-header title="咨询分类" style="padding:16px 0;" />
+    <div class="circleFlex">
+      <CircleChart id="circleChart1" :echartObj="circleObj1" styles="width:100%;height:300px;margin:auto" />
+      <CircleChart id="circleChart2" :echartObj="circleObj2" styles="width:100%;height:300px;margin:auto" />
+      <CircleChart id="circleChart3" :echartObj="circleObj3" styles="width:100%;height:300px;margin:auto" />
     </div>
   </div>
 </template>
@@ -48,6 +57,9 @@
 <script>
 import api from "@/api/customerCenter";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import LineChart from "@/views/dataAnalysis/lineChart";
+import CircleChart from "@/views/dataAnalysis/circleChart";
+
 export default {
   data() {
     return {
@@ -68,71 +80,140 @@ export default {
           optionLabel: "id"
         }
       ],
-      defaultSearchFormValues: {}
-    };
-  },
-  components: {
-    FormModelSearchForm
-  },
-  mounted() {
-    this.drawLine();
-  },
-  methods: {
-    drawLine() {
-      // 基于准备好的dom，初始化echarts实例
-      let myChart = this.$echarts.init(document.getElementById("consumeChart"));
-      // 绘制图表
-      myChart.setOption({
-        tooltip: {
-          trigger: "axis"
-        },
-        legend: {
-          data: ["客户发出消息", "访客发出消息", "消息总数"]
-        },
-        grid: {
-          left: "3%",
-          right: "4%",
-          bottom: "3%",
-          containLabel: true
-        },
-        toolbox: {
-          feature: {
-            saveAsImage: {}
-          }
-        },
+      defaultSearchFormValues: {},
+      echartObj: {
+        legend: ["消息总数", "访客发出消息", "客服发出消息"],
         xAxis: {
-          type: "category",
-          boundaryGap: false,
           data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
-        },
-        yAxis: {
-          type: "value"
         },
         series: [
           {
-            name: "客户发出消息",
+            name: "消息总数",
             type: "line",
-            stack: "总量",
-            data: [120, 132, 101, 134, 90, 230, 210]
+            data: [120, 132, 101, 134, 90, 230, 210],
+            smooth: true
           },
           {
             name: "访客发出消息",
             type: "line",
-            stack: "总量",
-            data: [220, 182, 191, 234, 290, 330, 310]
+            data: [220, 182, 191, 234, 290, 330, 310],
+            smooth: true
           },
           {
-            name: "消息总数",
+            name: "客服发出消息",
             type: "line",
-            stack: "总量",
-            data: [150, 232, 201, 154, 190, 330, 410]
+            data: [150, 232, 201, 154, 190, 330, 410],
+            smooth: true
           }
         ]
-      });
-      window.addEventListener("resize", function() {
-        consumeChart.resize();
-      });
-    },
+      },
+      echartObj2: {
+        legend: ["总接待量", "电话接待", "会话接待"],
+        xAxis: {
+          data: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"]
+        },
+        series: [
+          {
+            name: "总接待量",
+            type: "line",
+            data: [120, 132, 101, 134, 90, 230, 210],
+            smooth: true
+          },
+          {
+            name: "电话接待",
+            type: "line",
+            data: [220, 182, 191, 234, 290, 330, 310],
+            smooth: true
+          },
+          {
+            name: "会话接待",
+            type: "line",
+            data: [150, 232, 201, 154, 190, 330, 410],
+            smooth: true
+          }
+        ]
+      },
+      circleObj: {
+        legend: ["电话接待", "网页接待", "微信公众号", "微信个人号", "微信小程序", "QQ接待"],
+        series: [
+          { value: 335, name: "电话接待" },
+          { value: 310, name: "网页接待" },
+          { value: 234, name: "微信公众号" },
+          { value: 135, name: "微信个人号" },
+          { value: 1548, name: "微信小程序" },
+          { value: 1548, name: "QQ接待" },
+        ],
+        total:[
+          {
+             value: 0,
+             name: "总接待量",
+             itemStyle: { normal: { color: "#ffffff" } }
+          }
+        ]
+      },
+      circleObj1:{
+        legend: ["电话接待", "网页接待", "微信公众号", "微信个人号", "微信小程序", "QQ接待"],
+        series: [
+          { value: 335, name: "电话接待" },
+          { value: 310, name: "网页接待" },
+          { value: 234, name: "微信公众号" },
+          { value: 135, name: "微信个人号" },
+          { value: 1548, name: "微信小程序" },
+          { value: 1548, name: "QQ接待" },
+        ],
+        total:[
+          {
+             value: 0,
+             name: "总接待量",
+             itemStyle: { normal: { color: "#ffffff" } }
+          }
+        ]
+      },
+      circleObj2:{
+        legend: ["电话接待", "网页接待", "微信公众号", "微信个人号", "微信小程序", "QQ接待"],
+        series: [
+          { value: 335, name: "电话接待" },
+          { value: 310, name: "网页接待" },
+          { value: 234, name: "微信公众号" },
+          { value: 135, name: "微信个人号" },
+          { value: 1548, name: "微信小程序" },
+          { value: 1548, name: "QQ接待" },
+        ],
+        total:[
+          {
+             value: 0,
+             name: "总接待量",
+             itemStyle: { normal: { color: "#ffffff" } }
+          }
+        ]
+      },
+      circleObj3:{
+        legend: ["电话接待", "网页接待", "微信公众号", "微信个人号", "微信小程序", "QQ接待"],
+        series: [
+          { value: 335, name: "电话接待" },
+          { value: 310, name: "网页接待" },
+          { value: 234, name: "微信公众号" },
+          { value: 135, name: "微信个人号" },
+          { value: 1548, name: "微信小程序" },
+          { value: 1548, name: "QQ接待" },
+        ],
+        total:[
+          {
+             value: 0,
+             name: "总接待量",
+             itemStyle: { normal: { color: "#ffffff" } }
+          }
+        ]
+      }
+    };
+  },
+  components: {
+    FormModelSearchForm,
+    LineChart,
+    CircleChart
+  },
+  mounted() {},
+  methods: {
     prevHandleSubmit(val) {
       //   this.searchParams = Object.assign(
       //     {},
@@ -147,6 +228,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.circleFlex{
+  display: flex;
+  div{
+    flex: 1;
+  }
+}
 .receptionList {
   ul {
     display: flex;
