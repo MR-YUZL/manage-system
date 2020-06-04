@@ -11,8 +11,9 @@ import './api/index'
 import validateRules from './utils/validateRules'
 import tim from './utils/tim'
 import TIM from 'tim-js-sdk'
+import echarts from 'echarts'
 
-
+Vue.prototype.$echarts = echarts
 Vue.prototype.tim = tim
 Vue.prototype.TIM = TIM
 Vue.prototype.$bus = new Vue() // event Bus 用于无关系组件间的通信。
@@ -22,7 +23,7 @@ Vue.config.productionTip = false;
 Vue.prototype.Request = Request;
 Vue.prototype.validateRules = validateRules;
 
-document.cookie = "JSESSIONID=364C011188A3471D260FB20434487E29";
+document.cookie = "JSESSIONID=E169AD2BAC87D2CC13D428224A3B2B49";
 
 new Vue({
   router,
