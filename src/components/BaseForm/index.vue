@@ -151,7 +151,7 @@
         :rules="item.rules"
       >
         <template v-for="tag in item.options">
-          <a-checkable-tag
+          <a-checkable-tag 
             :key="tag.key"
             :checked="selectedTags.indexOf(tag) > -1"
             @change="checked => handleChange(tag, checked,index)"

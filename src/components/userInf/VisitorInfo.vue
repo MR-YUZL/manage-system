@@ -70,7 +70,7 @@ export default {
     data(){
         return{
           relateRadio:[],
-          vistorInfoObj:{},
+          vistorInfoObj:{existClue:''},
           radioStyle: {
             display: 'block',
             height: '30px',
@@ -156,7 +156,7 @@ export default {
     methods:{
         // 获取访客信息
         getVisitorInfo(){
-          this.Request.get('/hfw/workbench/getGuestInfo?guestId=8c730589aa1d41a19d2ce8ca23f9fb1e').then(res => {
+          this.Request.get('/hfw/workbench/getGuestInfo?guestId='+this.guestId).then(res => {
             console.log('访客信息',res.data)
             this.vistorInfoObj = res.data.data
           })   
@@ -207,8 +207,7 @@ export default {
         formSubmitClue(formData){
           let data = formData
           let params = {
-            // guestId:this.guestId,
-            guestId:'8c730589aa1d41a19d2ce8ca23f9fb1e',
+            guestId:this.guestId,
             ...data,
           }
           // if(address&&address.length>0){
@@ -239,7 +238,9 @@ export default {
               this.saveClueModal.visible = false
             })
           }
+          this.$forceUpdate()
         },
+        // 关联客户
         relatedCustomers(){
           this.custId = ''
           this.relatedCusModal = true
@@ -251,10 +252,8 @@ export default {
           if(this.custId==''){
             this.$message.info('请选择要关联的客户')
           }
- 
           let params = {
-            // guestId:this.guestId,
-            guestId:'8c730589aa1d41a19d2ce8ca23f9fb1e',
+            guestId:this.guestId,
             custId:this.custId
           }
           this.Request.post('/hfw/workbench/associatedCustomers',params).then(res => {  // 关联客户Ok

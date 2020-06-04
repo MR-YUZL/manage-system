@@ -602,6 +602,8 @@ export default {
       createdWorkOrderModal(){
         this.createdWorkOrder.visible = true
         this.getRelatedCustomerList()
+        console.log('获取自定义工单')
+        this.getFormFields()
       },
       createdToggleModal(){
         this.createdWorkOrder.visible = false
@@ -612,13 +614,13 @@ export default {
         let params = {
           ...others,
         }
-        if(typeId.length>0){
+        if(typeId&&typeId.length>0){
             params.typeId = typeId[typeId.length-1]
         }
         this.Request.post('/workflow/saveWorkflow',params).then(res=>{
           console.log('工单创建成功',res)
-           this.createdWorkOrder.visible = false
-           this.getList()
+          this.createdWorkOrder.visible = false
+          this.getList()
         })
       },
       //工单详情
@@ -658,8 +660,76 @@ export default {
       // 更新工单记录
       updataOrderRecord(){
         this.$refs.RecordList.getList()
+      },
+      // 获取工单的自定义字段
+      getFormFields(){
+        let obj = {
+          '1':'input',
+          '2':'radio',
+          '3':'checkbox',
+          '4':'date',
+          '5':'input'
+        }
+        let objStatus = {
+          '1':'blur',
+          '2':'blur',
+          '3':'change',
+          '4':'change',
+          '5':'blur'
+        }
+        this.Request.get('/config/hfwConfigFields/formFieldsJson',{state:2}).then(res=>{
+          console.log('自定义字段列表',res.data)
+          this.formFields = res.data.list
+          let formFieldsDefault = this.formObjectCreated.defaultValues
+          let formFieldsObj = []
+          this.formFields.map(item=>{
+            if(item.isDefined == 1){
+              formFieldsObj.push({
+                type: obj[item.dataType],
+                label: item.fieldName,
+                placeholder: "请选择",
+                ruleName: item.fieldCode,
+                options: item.options,
+                rules: [{
+                  required: item.isRequired==1?true:false,
+                  message: "请输入",
+                  trigger: objStatus[item.dataType]
+                }]
+              })
+              if(item.dataType == 3){
+                formFieldsDefault[item.fieldCode] = []
+              }
+              if(item.dataType == 2&&item.options.length>0){
+                item.options.map(it=>{
+                  if(it.isDefault==1){
+                    formFieldsDefault[item.fieldCode] = it.optionId
+                  }
+                })
+              }
+              if(item.dataType == 3&&item.options.length>0){
+                item.options.map(it=>{
+                  if(it.isDefault==1){
+                    formFieldsDefault[item.fieldCode].push(it.optionId)
+                  }
+                })
+              }
+
+            }
+          })
+          formFieldsObj.map(item=>{
+            if(item.options.length>0){
+              item.options.map(it=>{
+                it.key = it.optionId
+                it.value = it.optionName
+              })
+            }
+          })
+          this.formObjectCreated.modelList = [...this.formObjectCreated.modelList,...formFieldsObj]
+          this.$forceUpdate()
+        })
       }
-    }
+  },
+         
 }
 </script>
 

@@ -2,7 +2,7 @@
     <div class="user_data">
         <div class="header">
             <span class="workOrderIcon">工单信息</span>
-            <span class="save" @click="addWorkOrder">新增工单</span>
+            <span class="save" @click="createdWorkOrderModal">新增工单</span>
         </div>
         <div class="content row_1" v-bind:class="{ expansion : active }">
             <a-icon :type="active ? 'up' : 'down'" class="icon" @click="showFn" v-if="userInfList && userInfList.length" />
@@ -11,253 +11,155 @@
                 <a-col :span="20" v-for="(item,index) in userInfList" :key="index" class="item" @click="viewDetails(item)">
                   <div class="list">
                     <div class="item_left"><router-link to="/" >{{item.title}}</router-link></div>
-                    <div class="item_right item_1" v-if="item.status == 1 ||  item.status == 0">受理中</div>
+                    <div class="item_right item_1" v-if="item.status == 0">未受理</div>
+                    <div class="item_right item_1" v-if="item.status == 1">受理中</div>
                     <div class="item_right item_2" v-else-if="item.status == 2">已完结</div>
                   </div>
                 </a-col>
                 </a-row>  
             </div>
         </div>
-        <Model :modelObj="modelObj1"  @formData="formData" v-if="modelObj1.visible"/>
+          <Modal :currentModal="createdWorkOrder" @toggleModal="createdToggleModal">
+            <div slot='content'>
+              <BaseForm 
+                 ref="baseForm"
+                :formObject="formObjectCreated"
+                @toggleModal="createdToggleModal"
+                @formSubmit="formSubmitWorkOrder"
+              ></BaseForm>
+          </div>
+        </Modal>
     </div>
 </template>
 <script>
-import Model from './../Modal/index'
+import Modal from './../Modal/index'
+import BaseForm from '../BaseForm/index'
 export default {
-  // props:{
-    //   userInfList:{
-    //     type:Array
-    //   }
-    // },
+  props:{
+    guestId:{  // 访客id
+      type:String,
+      default:''
+    }
+  },
     components:{
-      Model
+      Modal,
+      BaseForm
     },
     data(){
-        return{
-            active:false,
-            userInfList:[
+      return{
+        active:false,
+        createdWorkOrder:{
+          visible:false,
+          title:'新增工单'
+        },
+        formObjectCreated:{
+          type:'modalForm',
+          ref: "createdModal",
+          sureBtn:'确定',
+          defaultValues:{},
+          modelList: [
+            {
+              type: "input",
+              label: "工单标题",
+              placeholder: "请选择",
+              ruleName: "title",
+              rules: [{
+                required: true,
+                message: "请输入工单标题",
+                trigger: "blur"
+              }]
+            },
+            {
+              type: "textarea",
+              label: "工单内容",
+              placeholder: "请选择",
+              ruleName: "content",
+              rules: [{
+                required: true,
+                message: "请输入工单内容",
+                trigger: "blur"
+              }]
+            },
+            {
+              type: "upload",
+              label: "上传附件",
+              placeholder: "请选择",
+              ruleName: "fileList",
+            },
+              {
+              type: "radio",
+              label: "工单优先级",
+              placeholder: "请选择",
+              ruleName: "level",
+              options:[
                 {
-                    title:'名字safdffffasfdsafdsa股份的噶的噶阿发的所发生的',
-                    status:'2',
+                  key:'0',
+                  value:'低'
                 },
                 {
-                    title:'名字',
-                    status:'1',
+                  key:'1',
+                  value:'中'
                 },
                 {
-                    title:'名字',
-                    status:'0',  //	工单状态，0-未受理，1-受理中，2-已完成
-                },  
-            ],
-             
-      
-            modelObj1:{
-              title:'新增',
-              visible:false,
-              modelList:[
-              // {
-              //     type:'font', //文字
-              //     content:['确认完结工单吗？完结后，可重新开启工单','共删除xxx条数据'],
-              //     model:'',
-              //     ruleName:'font'
-              // },
-          
-              {
-                  type:'input',
-                  label:'工单标题',
-                  model:'',
-                  ruleName:'title',
-                  rules:{
-                    required: true,
-                    message: '请输入工单标题',
-                    trigger: 'blur',
-                  }
-              },
-              // {
-              //     type:'textarea',
-              //     label:'工单内容',
-              //     model:'',
-              //     ruleName:'content',
-              //     rules:{
-              //       required: true,
-              //       message: '请输入工单内容',
-              //       trigger: 'blur',
-              //     }
-              // },
-                {
-                  type:'upload',
-                  label:'工单内容',
-                  ruleName:'content',
-                  action:'https://www.mocky.io/v2/5cc8019d300000980a055e76',//配置文件上传路径
-                  model:'',
-                  rules:{
-                    required: true,
-                    message: '请输入工单内容',
-                    trigger: 'blur',
-                  }
-              },
-               {
-                  type:'radio',
-                  label:'工单优先级',
-                  model:'1',
-                  ruleName:'radio',
-                  options:[{key:'1',value:'低'},{key:'2',value:'中'},{key:'3',value:'高'}],
-                  rules:{
-                    required: true,
-                    message: '请选择工单优先级',
-                    trigger: 'blur',
-                  }
-              },
-              {
-                  type:'select',
-                  label:'工单受理组',
-                  model:undefined,
-                  ruleName:'receiverGroupId', //receiverGroupId 工单受理组id
-                  options:[{key:'r',value:'111'},{key:'y',value:'222'}],
-                  rules:{
-                    required: true,
-                    message: '请选择工单受理组',
-                    trigger: 'change',
-                  }
-              },
-               {
-                  type:'select',
-                  label:'工单受理人',
-                  model:undefined,
-                  ruleName:'receiverAcc', //receiverAcc 工单受理人账号
-                  options:[{key:'c',value:'111'},{key:'d',value:'222'}],
-                  rules:{
-                    required: true,
-                    message: '请选择工单受理人',
-                    trigger: 'change',
-                  }
-              },
-               {
-                  type:'select',
-                  label:'工单分类',
-                  model:undefined,
-                  ruleName:'typeId', //typeId 分类id
-                  options:[{key:'111',value:'111'},{key:'222',value:'222'}],
-                  // rules:{
-                  //   required: true,
-                  //   message: '请选择工单分类',
-                  //   trigger: 'blur',
-                  // }
-              },
-                 {
-                  type:'select',
-                  label:'关联客户',
-                  model:undefined,
-                  ruleName:'receiverAcc', //receiverAcc 工单受理人账号
-                  options:[{key:'a',value:'111'},{key:'b',value:'222'}],
-                  rules:{
-                    required: true,
-                    message: '请选择工单关联客户',
-                    trigger: 'change',
-                  }
-              },
-              // {
-              //   type:'checkbox' ,
-              //   label:'多选',
-              //   model:[],
-              //   ruleName:'checkbox',
-              //   options:[{key:'111',value:'111'},{key:'222',value:'222'}]
-              // },
-            
-              // {
-              //     type:'date',
-              //     label:'日期',
-              //     model:'',
-              //     ruleName:'date',
-              // },
-              // {
-              //     type:'treeSelect',
-              //     label:'树形选择',
-              //     model:[],
-              //     ruleName:'treeSelect',
-              //     options:[
-              //       {
-              //         title: 'Node1',
-              //         value: '0-0',
-              //         key: '0-0',
-              //         children: [
-              //           {
-              //             value: '0-0-1',
-              //             key: '0-0-1',
-              //             title:'0-0-1',
-              //             children:[
-              //               {
-              //                 value: '0-0-0-1',
-              //                 key: '0-0-0-1',
-              //                 title:'0-0-0-1',
-              //               },
-              //             ]
-              //           },
-              //           {
-              //             title: 'Child Node2',
-              //             value: '0-0-2',
-              //             key: '0-0-2',
-              //           },
-              //         ],
-              //       },
-              //       {
-              //         title: 'Node2',
-              //         value: '0-1',
-              //         key: '0-1',
-              //       },
-              //     ]
-              // },
-              // {
-              //     type:'cascader',
-              //     label:'联级选择',
-              //     model:[],
-              //     ruleName:'cascader',
-              //     options:[
-              //       {
-              //         value: 'zhejiang',
-              //         label: 'Zhejiang',
-              //         children: [
-              //           {
-              //             value: 'hangzhou',
-              //             label: 'Hangzhou',
-              //             children: [
-              //               {
-              //                 value: 'xihu',
-              //                 label: 'West Lake',
-              //               },
-              //             ],
-              //           },
-              //         ],
-              //       },
-              //       {
-              //         value: 'jiangsu',
-              //         label: 'Jiangsu',
-                      
-              //         children: [
-              //           {
-              //             value: 'nanjing',
-              //             label: 'Nanjing',
-              //             children: [
-              //               {
-              //                 value: 'zhonghuamen',
-              //                 label: 'Zhong Hua Men',
-              //               },
-              //             ],
-              //           },
-              //         ],
-              //       },
-              //     ]
-              // },
-              // {
-              //   type:'tag' ,
-              //   label:'标签',
-              //   model:[],
-              //   ruleName:'tag',
-              //   options:[{key:'111',value:'111'},{key:'222',value:'222'}]
-              // },
-            ]
-          },
-        }
+                  key:'2',
+                  value:'高'
+                }
+              ],
+              rules: [{
+                required: true,
+                message: "请选择",
+                trigger: "blur"
+              }]
+            },
+            {
+              type: "select",
+              label: "工单受理组",
+              placeholder: "请选择",
+              ruleName: "receiverGroupId",
+              options: [],
+              rules: [{
+                required: true,
+                message: "请选择",
+                trigger: "change"
+              }]
+            },
+            {
+              type: "select",
+              label: "工单受理人",
+              placeholder: "请选择",
+              ruleName: "receiverAcc",
+              options: []
+            },
+            {
+              type: "cascader",
+              label: "工单分类",
+              placeholder: "请选择",
+              ruleName: "typeId",
+              options: []
+            },
+            // {
+            //   type: "select",
+            //   label: "关联客户",
+            //   placeholder: "请选择",
+            //   ruleName: "customerId",
+            //   options: [],
+            //   rules: [{
+            //     required: true,
+            //     message: "请选择",
+            //     trigger: "change"
+            //   }
+            //   ]
+            // },
+          ]        
+        },
+        userInfList:[],
+        formFields:[],
+        customerId:''
+      }
+    },
+    created(){
+      this.getWorkOrderList()
+      this.getFormFields()
     },
     methods:{
       showFn(){
@@ -266,17 +168,155 @@ export default {
       viewDetails(item){
         console.log(item,'viewDetails(item)')
       },
-      addWorkOrder(){
-        // this.$store.commit('getVisible',true)
-        console.log(this.modelObj1)
-        this.modelObj1.visible = true 
-       
+      // 获取工单信息
+      getWorkOrderList(){
+        this.Request.get('/hfw/workbench/getWorkFlowInfo?guestId='+this.guestId).then(res => {
+          this.userInfList = res.data.list
+          console.log('工单信息' , res.data.list)
+        })
       },
-      formData(data){
-        // this.$emit('',data)
-        this.modelObj1.visible = data.visible
-        console.log(this.modelObj1)
-        console.log('传过去提交的数据',data.data)
+      createdWorkOrderModal(){
+        this.createdWorkOrder.visible = true
+        // this.getRelatedCustomerList()
+        // this.$refs.createdModal.resetFields()
+        this.getClassification()
+        this.getSkillGroup()
+        this.getStaffListAll()
+      },
+       // 查询分类
+      getClassification(){
+         this.Request.get('/config/system/findTypeListJson',{}).then(res=>{
+           console.log('分类列表',res.data)
+           let list = res.data.list
+           this.classifyList  = this.treeChangeData(list)
+           this.formObjectCreated.modelList[6].options = this.classifyList
+         })
+      },
+      getSkillGroup(){  // 获取受理组
+        this.Request.get('/staff/hfwStaffSkillGroups/listJson').then(res => {
+          console.log('受理组',res.data.list)
+          let list = res.data.list
+          list.map(item=>{
+            this.formObjectCreated.modelList[4].options.push({
+              key:item.groupId,
+              value:item.groupName
+            })
+          })
+          this.$forceUpdate()
+        })
+      },
+       getStaffListAll(){ // 受理人，发起人
+        this.Request.get('/staff/hfwStaffSkillGroupsMember/staffList',{}).then(res=>{
+          let list = res.data.list
+          list.map(item=>{
+            this.formObjectCreated.modelList[5].options.push({
+              key:item.userAccount,
+              value:item.userName
+            })
+          })
+        })
+      },
+      // 创建工单
+      createdToggleModal(){
+         console.log(this.$refs.baseForm)
+         this.createdWorkOrder.visible = false
+          this.$refs.baseForm.resetForm()
+      },
+      formSubmitWorkOrder(data){
+        let {typeId,...others} = data
+        let params = {
+          ...others,
+          userType:1,
+          customerId:this.guestId
+        }
+        if(typeId&&typeId.length>0){
+          params.typeId = typeId[typeId.length-1]
+        }
+        console.log('创建工单参数',params)
+        this.Request.post('/workflow/saveWorkflow',params).then(res=>{
+          console.log('工单创建成功',res)
+           this.createdWorkOrder.visible = false
+           this.$refs.baseForm.resetForm()
+           this.getWorkOrderList()
+        })
+      },
+       treeChangeData(array){
+        array.map((item) => {
+          item['value'] = item.id;
+          item['label'] = item.name; 
+          item['children'] = item.childList;
+          if(item.childList.length>0){
+            this.treeChangeData(item.childList);
+          }
+        })
+        return array;
+      },
+      // 获取工单的自定义字段
+      getFormFields(){
+        let obj = {
+          '1':'input',
+          '2':'radio',
+          '3':'checkbox',
+          '4':'date',
+          '5':'input'
+        }
+        let objStatus = {
+          '1':'blur',
+          '2':'blur',
+          '3':'change',
+          '4':'change',
+          '5':'blur'
+        }
+        this.Request.get('/config/hfwConfigFields/formFieldsJson',{state:2}).then(res=>{
+          console.log('自定义字段列表',res.data)
+          this.formFields = res.data.list
+          let formFieldsDefault = this.formObjectCreated.defaultValues
+          let formFieldsObj = []
+          this.formFields.map(item=>{
+            if(item.isDefined == 1){
+              formFieldsObj.push({
+                type: obj[item.dataType],
+                label: item.fieldName,
+                placeholder: "请选择",
+                ruleName: item.fieldCode,
+                options: item.options,
+                rules: [{
+                  required: item.isRequired==1?true:false,
+                  message: "请输入",
+                  trigger: objStatus[item.dataType]
+                }]
+              })
+              if(item.dataType == 3){
+                formFieldsDefault[item.fieldCode] = []
+              }
+              if(item.dataType == 2&&item.options.length>0){
+                item.options.map(it=>{
+                  if(it.isDefault==1){
+                    formFieldsDefault[item.fieldCode] = it.optionId
+                  }
+                })
+              }
+              if(item.dataType == 3&&item.options.length>0){
+                item.options.map(it=>{
+                  if(it.isDefault==1){
+                    formFieldsDefault[item.fieldCode].push(it.optionId)
+                  }
+                })
+              }
+
+            }
+          })
+          formFieldsObj.map(item=>{
+            if(item.options.length>0){
+              item.options.map(it=>{
+                it.key = it.optionId
+                it.value = it.optionName
+              })
+            }
+          })
+          this.formObjectCreated.modelList = [...this.formObjectCreated.modelList,...formFieldsObj]
+          this.$forceUpdate()
+        })
       }
     }
 }
@@ -304,9 +344,6 @@ export default {
            height: 40px;;
         }
         .content{
-            
-            // position: relative;
-            
             .icon{
                 position: absolute;
                 right: 0;
