@@ -16,14 +16,21 @@
         <a-button type="primary" @click="onOK()">点击咨询客服</a-button>
       </div>
     </a-modal>
+    <aa />
+    <current-conversation />
   </div>
 </template>
 
 <script>
+import aa from './../../views/currentSession/sessionCenter/conversation/current-conversation'
+import currentConversation from './../currentSession/sessionCenter/conversation/current-conversation'
 import { v1 as uuidv1 } from "uuid";
 export default {
   name: "",
-  components: {},
+  components: {
+      currentConversation,
+      aa
+  },
   data() {
     return {
       getNavigationList: [],

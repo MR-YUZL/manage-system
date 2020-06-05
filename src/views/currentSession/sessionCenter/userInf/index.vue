@@ -20,15 +20,8 @@
       </div>
     </div>
     <div v-if="isShow" class="information">
-      <visitor-info
-        ref="visitorInfo"
-        :vistorInfoObj="visitorInfoData"
-        :relateRedio="relateRedio"
-        @handleSaveClueOk="handleSaveClueOk"
-        @handleRelatedCusOk="handleRelatedCusOk"
-        @onRelatedCusSearch="relateSearchKey"
-      />
-      <Tags :tags="tagsList" :selectTagList="selectTagList" @submitTags="submitTags" />
+      <visitor-info guestId="8c730589aa1d41a19d2ce8ca23f9fb1e" />
+      <Tags guestId="8c730589aa1d41a19d2ce8ca23f9fb1e" />
     </div>
     <Modal :currentModal="currentModal" @toggleModal="toggleModal" v-if="currentModal.visible">
       <template slot="content">
@@ -255,73 +248,7 @@ export default {
     userInf() {
       this.isShow = !this.isShow;
     },
-    getVisitorInfo() {
-      this.Request.get(
-        "/hfw/workbench/getGuestInfo?guestId=" + this.guestId
-      ).then(res => {
-        console.log("访客信息", res.data);
-        this.visitorInfoData = res.data.data;
-      });
-    },
-    handleSaveClueOk() {
-      // 关闭保存为线索的弹窗
-      this.$refs.visitorInfo.saveClueModal = false;
-    },
-    handleRelatedCusOk(con) {
-      console.log("this.relateValue", con, "===============");
-      this.Request.get(
-        "/hfw/workbench/associatedCustomers?matchKey=" + con
-      ).then(res => {
-        console.log("提交客户关联", res.data);
-      });
-    },
-    relateSearchKey(relateSearchKey) {
-      console.log("=====================", relateSearchKey);
-      this.Request.get(
-        "/hfw/workbench/blurMatchCustName?matchKey=" + relateSearchKey
-      ).then(res => {
-        console.log("模糊搜索", res.data);
-      });
-    },
-    //获取tags  参数  guestId  访客id
-    getTags() {
-      this.Request.get(
-        "/hfw/workbench/getGuestLabel?guestId=" + this.guestId
-      ).then(res => {
-        console.log("标签tags", res.data);
-        this.tagsList = res.data.data;
-      });
-    },
-    //访客设置标签时获取单位下所有维护的访客标签
-    getSelectTags() {
-      this.Request.get("/hfw/workbench/getAllGuestLabel").then(res => {
-        let data = res.data.list;
-        data.map(item => {
-          this.selectTagList.push({
-            key: item.id,
-            value: item.name
-          });
-        });
-        console.log("所有标签", data);
-      });
-    },
-    submitTags(data) {
-      console.log("提交的数据", data);
-      let obj = data;
-      let params = {
-        guestId: this.guestId,
-        tagIds: []
-      };
-      obj.selectedTags.map(item => {
-        params.tagIds.push(item.key);
-      });
-      this.Request.post("/hfw/workbench/saveGuestLabel", { ...params }).then(
-        res => {
-          console.log("标签selectTags", res.data);
-          this.getTags();
-        }
-      );
-    },
+  
     //新增工单
     newAddOrder() {
       this.modelObj1.visible = true;

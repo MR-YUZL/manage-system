@@ -184,6 +184,10 @@ export default {
             obj[item.ruleName] = item.model;
             // }
           });
+          if(obj.appointmentsTime && moment(obj.appointmentsTime).unix() - moment().unix() < 120){
+            this.$message.warning("时间选择有误！");
+            return;
+          }
           let data = {
             ref: this.dataObj.ref,
             visible: false,

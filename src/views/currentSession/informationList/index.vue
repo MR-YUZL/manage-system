@@ -1,6 +1,6 @@
 <template>
   <div class="informationList">
-    <a-tabs default-active-key="1" >
+    <a-tabs default-active-key="1">
       <a-tab-pane key="1" tab="知识库">
         <knowledge-base />
       </a-tab-pane>
@@ -15,35 +15,49 @@
 </template>
 
 <script>
-import knowledgeBase from "./knowledgeBase/index"
-import moreInformation from "./moreInformation/index"
-import commonWords from "./commonWords"
+import knowledgeBase from "./knowledgeBase/index";
+import moreInformation from "./moreInformation/index";
+import commonWords from "./commonWords";
 export default {
-  data: () => ({
-    
-
-    
- 
-  }),
+  data: () => ({}),
   components: {
     knowledgeBase,
     moreInformation,
     commonWords
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
-   callback(key) {
+    callback(key) {
       console.log(key);
-    },
+    }
   },
   watch: {},
-  computed: {
-    
-  }
+  computed: {}
 };
 </script>
 <style lang="less" scoped>
-   
+.informationList {
+  .ant-tabs-tabpane {
+    height: calc(100vh - 70px);
+    overflow-y: auto;
+  }
+  .ant-tabs-tabpane::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background-color: #f5f5f5;
+  }
+  /*定义滚动条轨道 内阴影+圆角*/
+  .ant-tabs-tabpane::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    background-color: #f5f5f5;
+  }
+
+  /*定义滑块 内阴影+圆角*/
+  .ant-tabs-tabpane::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #dedede;
+  }
+}
 </style>

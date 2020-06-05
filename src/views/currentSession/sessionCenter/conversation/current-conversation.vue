@@ -2,7 +2,7 @@
   <div class="current-conversation-wrapper">
     <div class="current-conversation" @scroll="onScroll" v-if="showCurrentConversation">
       <div class="content">
-        <div class="message-list" ref="message-list" @scroll="this.onScroll">
+        <div class="message-list scroll" ref="message-list" @scroll="this.onScroll">
           <div class="more" v-if="!isCompleted">
             <a-button
               @click="$store.dispatch('getMessageList', currentConversation.conversationID)"

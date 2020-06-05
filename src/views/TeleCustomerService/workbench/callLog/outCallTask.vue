@@ -1,6 +1,6 @@
 <!-- 外呼任务 -->
 <template>
-    <div class='outCallTask'>
+    <div class='outCallTask scroll'>
         <div v-if="outCallTaskList && outCallTaskList.length">
              <div v-for="(item,index) in outCallTaskList" :key="index" class="outCallTask_item"  @click="selectCallInf(index)" :class="{ 'choose': index == select }">
                 <div><span>{{item.telephone}}</span><span :class="item.taskStatus == 0 ? 'pending':'expired'">{{item.taskStatus == 0 ? '待处理' : '已过期'}}</span></div>

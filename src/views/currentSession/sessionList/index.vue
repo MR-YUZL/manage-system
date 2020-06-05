@@ -1,7 +1,7 @@
 <template>
   <div class="session_list_l">
     <div class="list_count">会话列表 ( {{this.penddingList.length + this.endList.length}} )</div>
-    <div class="list_inf">
+    <div class="list_inf scroll">
       <session-item :conversation="item" v-for="item in penddingList" :key="item.conversationID" />
       <div class="separate">
         <div></div>以下的会话已结束
