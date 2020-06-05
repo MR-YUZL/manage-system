@@ -17,7 +17,7 @@
     </div>
     <div class="operation" v-else-if="status == '1' && callStatus && callStatus.status == 1">
       <a-button type="primary" ghost @click="addCallTask">添加外呼任务</a-button>
-      <a-button type="primary" ghost>创建工单</a-button>
+      <a-button type="primary" ghost @click="newAddOrder">创建工单</a-button>
       <a-button type="primary" ghost @click="addServer">添加本次服务小结</a-button>
     </div>
     <div class="operation_null" v-else></div>
@@ -35,6 +35,7 @@
     <div class="userInf scroll" v-if="status == '1' && callStatus && callStatus.guestId" ><user-inf :guestId="callStatus.guestId" /></div>
     <div class="userInf scroll" v-else-if="status == '2' && outCallTask && outCallTask.guestId" ><user-inf :guestId="outCallTask.guestId" /></div>
     <div class="noData" v-else><img src="./.././../../../assets/imgs/noData.png" alt=""></div>
+    <createOrder :createdWorkOrderVisible="createdWorkOrderVisible" v-if="createdWorkOrderVisible" @newOrder="newOrder" />
     <!-- <UserInformation  guestId="8c730589aa1d41a19d2ce8ca23f9fb1e"/> -->
   </div>
 </template>
@@ -44,11 +45,13 @@ import userInf from "./../../../../components/userInf/index";
 import BaseForm from "./../../../../components/BaseForm/BaseFrom";
 import Modal from "./../../../../components/Modal";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import createOrder from "./../../../../components/userInf/CreateOrder"
 import moment from "moment";
 import { mapState } from "vuex";
 export default {
   data: () => ({
     transferObj: {},
+    createdWorkOrderVisible:false,
     callTaskObj: {
       title: "添加至外呼任务",
       visible: false,
@@ -198,10 +201,18 @@ export default {
     userInf,
     BaseForm,
     Modal,
-    FormModelSearchForm
+    FormModelSearchForm,
+    createOrder
   },
   mounted() {},
   methods: {
+    //新增工单
+    newAddOrder() {
+      this.createdWorkOrderVisible = true
+    },
+    newOrder(e){
+      this.createdWorkOrderVisible = e
+    },
     addCallTask() {
       this["callTaskObj"]["visible"] = true;
       this.transferObj = this.callTaskObj;
