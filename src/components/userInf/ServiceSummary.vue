@@ -18,33 +18,57 @@
 <script>
 export default {
     props:{
-      questionList:{
-        type:Array
+      guestId:{  // 访客id
+        type:String,
+        default:''
+      },
+      custId:{
+        type:String,
+        default:''
       }
     },
     data(){
         return{
           active:false,
-          questionListArry:[]
+          questionListArry:[],
+          questionList:[]
         }
     },
     watch:{
-      questionList(){
-        this.questionListArry = [this.questionList[0]]
+      guestId(){
+        this.getServiceList()
       }
     },
-    created(){},
+    created(){
+      this.getServiceList()
+    },
     mounted(){},
     components:{},
     methods:{
       showFn(){
         this.active = !this.active
-        if(this.active){
-          this.questionListArry = [...this.questionList]
-        }else{
-          this.questionListArry = [this.questionList[0]]
+        if(this.questionList.length>0){
+          if(this.active){
+            this.questionListArry = [...this.questionList]
+          }else{
+            this.questionListArry = [this.questionList[0]]
+          }
         }
-      }
+      },
+        //获取服务小结
+      getServiceList(){
+        let params = {
+          guestId:this.guestId,
+          custId:this.custId
+        }
+        this.Request.get('/hfw/workbench/getServiceSummary',params).then(res => {
+          console.log('服务小结',res.data)
+          this.questionList = res.data.list?res.data.list:[]
+          if(this.questionList.length>0){
+            this.questionListArry = [this.questionList[0]]
+          }
+        })
+      },
     }
 }
 </script>

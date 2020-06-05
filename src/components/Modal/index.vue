@@ -33,7 +33,7 @@ export default {
     },
     handleCancel() {
       this.modalProps.visible = false
-      // this.$emit("toggleModal",false)
+      this.$emit("toggleModal",false)
     }
   }
 };

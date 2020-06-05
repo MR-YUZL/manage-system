@@ -11,8 +11,9 @@ import './api/index'
 import validateRules from './utils/validateRules'
 import tim from './utils/tim'
 import TIM from 'tim-js-sdk'
+import echarts from 'echarts'
 
-
+Vue.prototype.$echarts = echarts
 Vue.prototype.tim = tim
 Vue.prototype.TIM = TIM
 Vue.prototype.$bus = new Vue() // event Bus 用于无关系组件间的通信。

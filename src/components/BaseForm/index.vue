@@ -151,8 +151,8 @@
         :rules="item.rules"
       >
         <template v-for="tag in item.options">
-          <a-checkable-tag
-            :key="tag.value"
+          <a-checkable-tag 
+            :key="tag.key"
             :checked="selectedTags.indexOf(tag) > -1"
             @change="checked => handleChange(tag, checked,index)"
           >{{ tag.value }}</a-checkable-tag>
@@ -214,7 +214,8 @@ export default {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 }
       },
-      areaDictionary
+      areaDictionary,
+      selectedTags:[]
     };
   },
   created() {},
@@ -254,7 +255,15 @@ export default {
     },
     areaOnChange(value) {
       console.log(value)
-    }
+    },
+    handleChange(tag, checked) {
+      const { selectedTags } = this;
+      const nextSelectedTags = checked
+        ? [...selectedTags, tag]
+        : selectedTags.filter(t => t !== tag);
+      console.log('You are interested in: ', nextSelectedTags);
+      this.selectedTags = nextSelectedTags;
+    },
   }
 };
 </script>

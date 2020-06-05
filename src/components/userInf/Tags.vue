@@ -8,67 +8,127 @@
           <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"  v-if="tagsList && tagsList.length" />
           <div class="tag">
             <a-tag v-for="(item,index) in tagsList" :key="index">
-              {{item}}
+              {{item.name}}
             </a-tag>
           </div>
         </div>
         <div class="aaa">
-          <Model :modelObj="modelObj" :formList="formList" @formData="formData" />
+          <a-modal title="访客标签"  :visible="tagsModalShow" @cancel="handleCancelTags" @ok="handleOkCancelTags">
+              <div class="flex" >
+                <div style="width:150px;">访客标签：</div>
+                <div >
+                  <template v-for="(tag,index) in allTags" style="margin-bottom:10px;">
+                    <a-checkable-tag
+                      :key="tag.id"
+                      v-model="tag.checked"
+                      @change="checked => handleChange(tag, checked,index)"
+                    >
+                    {{ tag.name }}
+                    </a-checkable-tag>
+                  </template>
+                </div>
+              </div>
+          </a-modal>
         </div>
     </div>
 </template>
 <script>
-import Model from './../Modal'
 export default {
   name:'tags',
   props:{
-    tagsList:{
-      type:Array
-    },
-    selectTagList:{
-      type:Array
+    guestId:{  // 访客id
+      type:String,
+      default:''
     }
+  },
+  components:{
   },
   data(){
       return{
-          // tagsList:['标签11','标签2222','标签2','标签2','标签2'],
+          tagsModalShow:false,
+          allTags:[],
+          tagsList:[],
           visible:false,
           active:true,
-          formList:['tagsList'],
-          modelObj:{
+          tagsModal:{
             title:'访客标签',
-            visible:false,
-            modelList:[
-                {
-                  type:'tag' ,
-                  label:'标签',
-                  model:[],
-                  ruleName:'tag',
-                  options:[{key:'111',value:'111'},{key:'222',value:'222'}]
-                },
-            ]
-          }
+            visible:false
+          },
       }
     },
-    components:{
-      Model
+    watch:{
+      guestId(){
+        this.getTags()
+      }
     },
     created(){
-      this.modelObj.modelList[0].options = this.selectTagList
+      this.getTags()
     },
     methods:{
+      //访客设置标签时获取单位下所有维护的访客标签
+      getAllTags(){
+        this.allTags=[]
+        this.Request.get('/hfw/workbench/getAllGuestLabel').then(res => {
+          let data = res.data.list
+          if(data.length>0){
+            this.allTags = data
+           this.allTags.map(it=>{
+             if(this.tagsList.length>0){
+               this.tagsList.map(item=>{
+              if(it.name == item.name){
+                  it.checked = true
+                }
+              })
+             }
+           })
+          }
+        })
+      },
+      //获取tags  参数  guestId  访客id
+      getTags(){
+        this.Request.get('/hfw/workbench/getGuestLabel?guestId='+this.guestId).then(res => {
+          console.log('标签tags',res.data)
+          this.tagsList = res.data.list
+        })
+      },
+      // 设置访客标签
       tagsFn(){
-        // this.$store.commit('getVisible',true)
-        this.modelObj.visible = true
+       this.getAllTags()
+       this.tagsModalShow = true
+      },
+      handleCancelTags(){
+        this.tagsModalShow = false
+      },
+      handleOkCancelTags(){
+       
+        let params = {
+          guestId:this.guestId,
+          tagIds:[]
+        }
+         this.allTags.map(item=>{
+          if(item.checked){
+            params.tagIds.push(item.id)
+          }
+        })
+        console.log('选中的标签',params.tagIds)
+        if( !params.tagIds.length){
+          this.$message.warn('请选择要设置的标签');
+          return false
+        }
+        this.Request.post('/hfw/workbench/saveGuestLabel',params).then(res => {
+          console.log('标签selectTags',res.data)
+          this.$message.success('设置标签成功！')
+          this.tagsModalShow = false
+          this.getTags()
+        })
       },
       showFn(){
         this.active = !this.active
       },
-      formData(data){
-        this.$emit('submitTags',data.data)
-        this.modelObj.visible = data.visible
-        console.log('传过去提交的数据',data.data)
-      }
+      handleChange(tag, checked,index) {
+        this.allTags[index].checked = checked
+        this.$forceUpdate()
+      },
     }
 }
 </script>
@@ -137,4 +197,5 @@ export default {
     background:#3e7bf8;
     color:#fff;
   }
+  .ant-tag-checkable{ margin-bottom:10px;}
 </style>
