@@ -39,9 +39,10 @@
         placeholder="请输入备注"
         :auto-size="{ minRows: 3, maxRows: 5 }"/>
     </a-modal>
-    <Modal :currentModal="batchTransmit">
+    <Modal :currentModal="batchTransmit"  @toggleModal="toggleModal" v-if="batchTransmit.visible">
       <div slot='content'>
         <BaseForm 
+          ref="batchTransmitRef"
           :formObject="formObject"
           @toggleModal="toggleModal"
           @formSubmit="formSubmit"
@@ -53,9 +54,10 @@
          <br />
          本次导出工{{pager.totalRecord}}条数据
     </a-modal>
-    <Modal :currentModal="createdWorkOrder">
+    <Modal :currentModal="createdWorkOrder" v-if="createdWorkOrder.visible">
       <div slot='content'>
         <BaseForm 
+          ref=""
           :formObject="formObjectCreated"
           @toggleModal="createdToggleModal"
           @formSubmit="formSubmitWorkOrder"
@@ -156,7 +158,7 @@ export default {
           ]
         },
         formObjectCreated:{
-          type:'modalFormCreated',
+          type:'modalForm',
           ref: "createdModal",
           sureBtn:'确定',
           defaultValues:{},
@@ -398,7 +400,8 @@ export default {
         batchTaransParams:{},
         workOrderId:'',
         classifyList:[], //分类列表
-        info:{}
+        info:{},
+        // formFieldsDefaultCum:{}  // 自定义字段默认值
       }
     },
     computed:{
@@ -422,6 +425,8 @@ export default {
       this.getSkillGroup()
       this.getStaffListAll()
       this.getClassification()
+      this.getRelatedCustomerList()
+      this.getFormFields()
     },
     mounted(){},
     methods: {
@@ -460,7 +465,7 @@ export default {
           console.log( this.searchFormList[3],'========')
         })
       },
-       getStaffListAll(){ // 受理人，发起人
+      getStaffListAll(){ // 受理人，发起人
         this.Request.get('/staff/hfwStaffSkillGroupsMember/staffList',{}).then(res=>{
           let list = res.data.list
           list.map(item=>{
@@ -485,13 +490,13 @@ export default {
       },
       // 查询分类
       getClassification(){
-         this.Request.get('/config/system/findTypeListJson',{}).then(res=>{
-           console.log('分类列表',res.data)
-           let list = res.data.list
-           this.classifyList  = this.treeChangeData(list)
-           this.searchFormList[6].options = this.classifyList
-           this.formObjectCreated.modelList[6].options = this.classifyList
-         })
+        this.Request.get('/config/system/findTypeListJson',{}).then(res=>{
+          console.log('分类列表',res.data)
+          let list = res.data.list
+          this.classifyList  = this.treeChangeData(list)
+          this.searchFormList[6].options = this.classifyList
+          this.formObjectCreated.modelList[6].options = this.classifyList
+        })
       },
       getRelatedCustomerList(){
         let params = {
@@ -508,7 +513,6 @@ export default {
               value:item.custName
             })
           })
-           
         })
       },
       // 获取工单信息
@@ -577,12 +581,12 @@ export default {
         this.batchTransmit.visible = true
       },
       toggleModal(){
+        this.$refs.batchTransmitRef.resetForm()
         this.batchTransmit.visible = false
       },
       formSubmit(data){
          console.log(this.batchTaransParams,'批量转接')
         this.batchTaransParams = {...data}
-       
         this.handleBatch(2)
       },
       // 导出当前数据
@@ -601,12 +605,11 @@ export default {
       //创建工单
       createdWorkOrderModal(){
         this.createdWorkOrder.visible = true
-        this.getRelatedCustomerList()
         console.log('获取自定义工单')
-        this.getFormFields()
       },
       createdToggleModal(){
         this.createdWorkOrder.visible = false
+        // this.formObjectCreated.defaultValues = this.formFieldsDefaultCum
       },
       formSubmitWorkOrder(data){
         console.log('创建工单参数',data)
@@ -680,7 +683,7 @@ export default {
         this.Request.get('/config/hfwConfigFields/formFieldsJson',{state:2}).then(res=>{
           console.log('自定义字段列表',res.data)
           this.formFields = res.data.list
-          let formFieldsDefault = this.formObjectCreated.defaultValues
+          let formFieldsDefault = {}
           let formFieldsObj = []
           this.formFields.map(item=>{
             if(item.isDefined == 1){
@@ -713,7 +716,6 @@ export default {
                   }
                 })
               }
-
             }
           })
           formFieldsObj.map(item=>{
@@ -724,7 +726,8 @@ export default {
               })
             }
           })
-          this.formObjectCreated.modelList = [...this.formObjectCreated.modelList,...formFieldsObj]
+          this.formObjectCreated.defaultValues = formFieldsDefault
+          this.$set(this.formObjectCreated,'modelList',[...this.formObjectCreated.modelList,...formFieldsObj])
           this.$forceUpdate()
         })
       }

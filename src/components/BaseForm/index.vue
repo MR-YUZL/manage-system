@@ -10,12 +10,12 @@
         <span>{{item.value}}</span>
       </a-form-model-item>
 
-      <a-form-model-item
-        :label="item.label"
-        v-if="item.label && item.type == 'textarea'"
-        :prop="'defaultValues.'+item.ruleName"
-        :rules="item.rules"
-      >
+        <a-form-model-item
+          :label="item.label"
+          v-if="item.label && item.type == 'textarea'"
+          :prop="'defaultValues.'+item.ruleName"
+          :rules="item.rules"
+        >
         <a-input
           type="textarea"
           v-model="formObject.defaultValues[item.ruleName]"
@@ -244,6 +244,8 @@ export default {
     resetForm() {
       let _that = this;
       _that.$refs[_that.formObject.ref].resetFields();
+      _that.formObject.defaultValues = Object.assign({},_that.formObject.defaultValues);
+      _that.formObject = Object.assign({},_that.formObject);
     },
     handleModalState() {
       this.$emit("toggleModal", false);

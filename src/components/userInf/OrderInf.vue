@@ -19,7 +19,7 @@
                 </a-row>  
             </div>
         </div>
-          <Modal :currentModal="createdWorkOrder" @toggleModal="createdToggleModal">
+          <Modal :currentModal="createdWorkOrder" @toggleModal="createdToggleModal" v-if="createdWorkOrder.visible">
             <div slot='content'>
               <BaseForm 
                  ref="baseForm"
@@ -154,7 +154,8 @@ export default {
         },
         userInfList:[],
         formFields:[],
-        customerId:''
+        customerId:'',
+        customFieldsDefault:{}//自定义字段默认值
       }
     },
     created(){
@@ -178,19 +179,20 @@ export default {
       createdWorkOrderModal(){
         this.createdWorkOrder.visible = true
         // this.getRelatedCustomerList()
-        // this.$refs.createdModal.resetFields()
+        // this.$refs.createdModal
+        // this.formObjectCreated.defaultValues = {}
         this.getClassification()
         this.getSkillGroup()
         this.getStaffListAll()
       },
        // 查询分类
       getClassification(){
-         this.Request.get('/config/system/findTypeListJson',{}).then(res=>{
+        this.Request.get('/config/system/findTypeListJson',{}).then(res=>{
            console.log('分类列表',res.data)
            let list = res.data.list
            this.classifyList  = this.treeChangeData(list)
            this.formObjectCreated.modelList[6].options = this.classifyList
-         })
+        })
       },
       getSkillGroup(){  // 获取受理组
         this.Request.get('/staff/hfwStaffSkillGroups/listJson').then(res => {
@@ -220,7 +222,8 @@ export default {
       createdToggleModal(){
          console.log(this.$refs.baseForm)
          this.createdWorkOrder.visible = false
-          this.$refs.baseForm.resetForm()
+         this.formObjectCreated.defaultValues = this.customFieldsDefault
+          // this.$refs.baseForm.resetForm()
       },
       formSubmitWorkOrder(data){
         let {typeId,...others} = data
@@ -236,7 +239,7 @@ export default {
         this.Request.post('/workflow/saveWorkflow',params).then(res=>{
           console.log('工单创建成功',res)
            this.createdWorkOrder.visible = false
-           this.$refs.baseForm.resetForm()
+          //  this.$refs.baseForm.resetForm()
            this.getWorkOrderList()
         })
       },
@@ -270,7 +273,7 @@ export default {
         this.Request.get('/config/hfwConfigFields/formFieldsJson',{state:2}).then(res=>{
           console.log('自定义字段列表',res.data)
           this.formFields = res.data.list
-          let formFieldsDefault = this.formObjectCreated.defaultValues
+          let formFieldsDefault = {};
           let formFieldsObj = []
           this.formFields.map(item=>{
             if(item.isDefined == 1){
@@ -303,7 +306,6 @@ export default {
                   }
                 })
               }
-
             }
           })
           formFieldsObj.map(item=>{
@@ -314,8 +316,12 @@ export default {
               })
             }
           })
-          this.formObjectCreated.modelList = [...this.formObjectCreated.modelList,...formFieldsObj]
+          this.formObjectCreated.defaultValues = formFieldsDefault
+          this.customFieldsDefault = formFieldsDefault
+          this.$set(this.formObjectCreated,'modelList',[...this.formObjectCreated.modelList,...formFieldsObj])
+
           this.$forceUpdate()
+          console.log('新的字段表==============================',this.formObjectCreated)
         })
       }
     }
