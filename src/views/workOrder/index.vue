@@ -426,9 +426,6 @@ export default {
       this.getStaffListAll()
       this.getClassification()
       this.getRelatedCustomerList()
-      setTimeout(()=>{
-        this.getFormFields()
-      })
     },
     mounted(){},
     methods: {
@@ -500,12 +497,12 @@ export default {
           this.formObjectCreated.modelList[6].options = this.classifyList
         })
       },
-      getRelatedCustomerList(){
+      async getRelatedCustomerList(){
         let params = {
           matchKey:''
         }
-        this.Request.get('/hfw/workbench/blurMatchCustName',params).then(res=>{
-          console.log('关联客户',res.data.list)
+        let res = await this.Request.get('/hfw/workbench/blurMatchCustName',params)
+        if(res){
           let list = res.data.list
           let options = this.formObjectCreated.modelList
           console.log( options[options.length-1])
@@ -515,7 +512,8 @@ export default {
               value:item.custName
             })
           })
-        })
+          this.getFormFields()
+        }
       },
       // 获取工单信息
       getWorkOrderDetails(){
