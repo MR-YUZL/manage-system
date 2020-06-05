@@ -1,6 +1,6 @@
 <template>
   <div class="session_item" 
-  :class="{ 'choose': conversation.conversationID === currentConversation.conversationID }"
+  :class="{ 'choose': conversation.conversationID === currentConversation.conversationID,'end': conversation.endTime && conversation.conversationID != currentConversation.conversationID}"
   @click="selectConversation">
     <div class="wrap">
         <div>
@@ -14,7 +14,7 @@
        <div class="content">
             <div class="row-1">
                 <div class="name">{{conversation.userProfile.nick || conversation.userProfile.userID}}</div>
-                
+                <div v-if="conversation.endTime">{{time}}</div>
             </div>
             <div class="row-2">
                 <div class="summary" :title="conversation.lastMessage.messageForShow">{{messageForShow}}</div>
@@ -40,19 +40,56 @@ export default {
     
   },
   mounted() {
-    console.log(this.conversation)
-    console.log(this.currentConversation)
+    // console.log(this.conversation)
+    // console.log(this.currentConversation)
     
   },
   methods: {
    selectConversation() {
-      if (this.conversation.conversationID !== this.currentConversation.conversationID) {
+     console.log(this.conversation.conversationID,this.currentConversation.conversationID)
+      if (this.conversation.conversationID == this.currentConversation.conversationID) {
         this.$store.dispatch(
           'checkoutConversation',
           this.conversation.conversationID
         )
+        let obj = {
+          guestId: this.conversation.guestId,
+          beginTime: this.conversation.beginTime,
+          guestName: this.conversation.guestName,
+          endTime: this.conversation.endTime
+        };
+        console.log(obj)
+        this.$store.commit("getVisitorInf", obj);
       }
     },
+    //将秒转化为时分秒
+    formateSeconds(endTime) {
+      let secondTime = parseInt(endTime); //将传入的秒的值转化为Number
+      let min = 0; // 初始化分
+      let h = 0; // 初始化小时
+      let result = "";
+      if (secondTime > 60) {
+        //如果秒数大于60，将秒数转换成整数
+        min = parseInt(secondTime / 60); //获取分钟，除以60取整数，得到整数分钟
+        secondTime = parseInt(secondTime % 60); //获取秒数，秒数取佘，得到整数秒数
+        if (min > 60) {
+          //如果分钟大于60，将分钟转换成小时
+          h = parseInt(min / 60); //获取小时，获取分钟除以60，得到整数小时
+          min = parseInt(min % 60); //获取小时后取佘的分，获取分钟除以60取佘的分
+        }
+      }
+      if (h.toString().padStart(2, "0") == "00") {
+        result = `${min
+          .toString()
+          .padStart(2, "0")}分${secondTime.toString().padStart(2, "0")}秒`;
+      } else {
+        result = `${h.toString().padStart(2, "0")}时${min
+          .toString()
+          .padStart(2, "0")}分${secondTime.toString().padStart(2, "0")}秒`;
+      }
+
+      return result;
+    }
   },
   watch: {},
   computed: {
@@ -86,6 +123,13 @@ export default {
       }
       return getDate(date)
     },
+    time(){
+      if(this.conversation.endTime){
+        let date = this.conversation.endTime - this.conversation.beginTime;
+        let time = this.formateSeconds(date);
+        return time
+      }
+    }
   }
 };
 </script>
@@ -140,5 +184,8 @@ export default {
     }
     .choose {
         background-color: #EDEDEE;
+    }
+    .end{
+      background-color: #FFFFFF;
     }
 </style>

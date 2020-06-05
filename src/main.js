@@ -22,7 +22,7 @@ Vue.config.productionTip = false;
 Vue.prototype.Request = Request;
 Vue.prototype.validateRules = validateRules;
 
-document.cookie = "JSESSIONID=364C011188A3471D260FB20434487E29";
+document.cookie = "JSESSIONID=C82D668E9AB91F47C7D406A70A88457D";
 
 new Vue({
   router,

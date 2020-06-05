@@ -1,5 +1,5 @@
 <template>
-  <div class="base" :class="[ isMine ? 'right' : 'left']">
+  <div class="base" :class="[ isMine ? 'right' : 'left', center ? 'center':'']">
     <!-- <div class="name text-ellipsis">{{ from }}</div> -->
     <div class="date">{{ date }}</div>
   </div>
@@ -43,6 +43,16 @@ export default {
     },
     isMine() {
       return this.message.flow === 'out'
+    },
+    center(){
+      if(this.message.payload.data.subMsgType === 'prompts' 
+      || this.message.payload.data.subMsgType == 'transfer' 
+      || this.message.payload.data.subMsgType == 'reception' 
+      || this.message.payload.data.subMsgType == 'stopsession'
+      || this.message.payload.data.subMsgType == 'createsession'){
+        return 'center'
+      }
+      return ''
     }
   }
 }
@@ -69,5 +79,9 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.center{
+  justify-content: center;
+      margin-left: 0;
 }
 </style>

@@ -37,16 +37,21 @@
             :isMine="isMine"
             :payload="message.payload"
             :message="message"
-          /> -->
+          />-->
 
           <div v-else-if="message.type === TIM.TYPES.MSG_CUSTOM">
+            <span class="prompts"
+              v-if="message.payload.data.subMsgType === 'prompts'
+              || message.payload.data.subMsgType == 'transfer' 
+              || message.payload.data.subMsgType == 'reception' 
+              || message.payload.data.subMsgType == 'stopsession'
+              || message.payload.data.subMsgType == 'createsession'"
+            >{{message.payload.data.msgText}}</span>
             <span
-              v-if="message.payload.data.subMsgType === 'prompts'"
-            >{{message.payload.data.msgText}}</span> 
-            <span
-              v-if="message.payload.data.subMsgType === 'repository'" v-html="message.payload.data.msgText"
-            ></span>  
-             <custom-text
+              v-if="message.payload.data.subMsgType === 'repository'"
+              v-html="message.payload.data.msgText"
+            ></span>
+            <custom-text
               v-else-if="message.payload.data.subMsgType === 'text'"
               :isMine="isMine"
               :payload="message.payload"
@@ -70,7 +75,6 @@
               :payload="message.payload"
               :message="message"
             />
-           
           </div>
           <!-- <custom-element
             v-else-if="message.type === TIM.TYPES.MSG_CUSTOM"
@@ -83,14 +87,14 @@
             :isMine="isMine"
             :payload="message.payload"
             :message="message"
-          /> -->
+          />-->
 
           <!-- <geo-element
             v-else-if="message.type === TIM.TYPES.MSG_GEO"
             :isMine="isMine"
             :payload="message.payload"
             :message="message"
-          /> -->
+          />-->
 
           <video-element
             v-else-if="message.type === TIM.TYPES.MSG_VIDEO"
@@ -180,11 +184,24 @@ export default {
     }),
     // 是否显示头像，群提示消息不显示头像
     showAvatar() {
-      if (
-        this.message.type == "TIMCustomElem" &&
-        this.message.payload.data.subMsgType == "prompts"
-      ) {
-        return false;
+      // if (
+      //   this.message.type == "TIMCustomElem" &&
+      //   this.message.payload.data.subMsgType == "prompts"
+      // ) {
+      //   return false;
+      // }
+      if (this.message.type == "TIMCustomElem") {
+        if (
+          this.message.payload.data.subMsgType == "prompts" ||
+          this.message.payload.data.subMsgType == "transfer" ||
+          this.message.payload.data.subMsgType == "reception" ||
+          this.message.payload.data.subMsgType == "stopsession" ||
+          this.message.payload.data.subMsgType == "createsession"
+        ) {
+          return false;
+        } else {
+          return true;
+        }
       } else if (
         this.currentConversation.type === "C2C" &&
         !this.message.isRevoked
@@ -235,11 +252,16 @@ export default {
         return "position-center";
       }
 
-      if (
-        this.message.type == "TIMCustomElem" &&
-        this.message.payload.data.subMsgType == "prompts"
-      ) {
-        return "position-center";
+      if (this.message.type == "TIMCustomElem") {
+        if (
+          this.message.payload.data.subMsgType == "prompts" ||
+          this.message.payload.data.subMsgType == "transfer" ||
+          this.message.payload.data.subMsgType == "reception" ||
+          this.message.payload.data.subMsgType == "stopsession" ||
+          this.message.payload.data.subMsgType == "createsession"
+        ) {
+          return "position-center";
+        }
       }
       if (this.message.isRevoked) {
         // 撤回消息
@@ -293,6 +315,9 @@ export default {
   .content-wrapper {
     display: flex;
     align-items: center;
+    .prompts{
+      font-size: 12px;
+    }
   }
 }
 

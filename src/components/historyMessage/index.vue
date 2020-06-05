@@ -14,7 +14,7 @@ export default {
   },
   data() {
     return {
-      historyList1: [
+      historyList: [
         {
           id: "MjA4MTQ1NTM1Ng==",
           sessionId: "LTEzNDEyMzA3NDU=",
@@ -169,6 +169,24 @@ export default {
           msgTime: 1587460051000,
           msgKey: "64993_4259378746_1587460051"
         },
+        //自定义文本类消息：
+        {
+          id: "LTQzMTQyODI1MQ==",
+          sessionId: "LTEzOTM1NzU3NDY=",
+          orgId: "qftx",
+          imMsgType: "TIMCustomElem",
+          subMsgType: "prompts",
+          sendType: "automatic",
+          msgContent: {
+            text: "您好，有什么可以帮助您的？"
+          },
+          fromAccount: "13800571550",
+          toAccount: "13800571501",
+          msgRandom: 4259378746,
+          msgSeq: 64993,
+          msgTime: 1587460051000,
+          msgKey: "64993_4259378746_1587460051"
+        },
         //自定义创建会话消息（通知客服（包括：分配流程后接入访客、排除中接入访客、转接后接入访客））：
         {
           id: "MjIzNDY0OTE=",
@@ -178,7 +196,7 @@ export default {
           subMsgType: "createsession",
           sendType: "automatic",
           msgContent: {
-            text: "访客帐号"
+            text: "fsdfsadfsdafds"
           },
           fromAccount: "13800571550",
           toAccount: "13800571501",
@@ -191,21 +209,20 @@ export default {
     };
   },
   computed: {
-    historyList: function() {
-      console.log(this.historyList1, "++++++++++++++++++");
-      let arr = []
-      this.historyList1.map(item => {
-        if (
-          item.subMsgType != "transfer" &&
-          item.subMsgType != "reception" &&
-          item.subMsgType != "stopsession" &&
-          item.subMsgType != "createsession"
-        ) {
-           arr.push(item) 
-        }
-      });
-       return arr
-    }
+    // historyList: function() {
+    //   let arr = []
+    //   this.historyList1.map(item => {
+    //     if (
+    //       item.subMsgType != "transfer" &&
+    //       item.subMsgType != "reception" &&
+    //       item.subMsgType != "stopsession" &&
+    //       item.subMsgType != "createsession"
+    //     ) {
+    //        arr.push(item) 
+    //     }
+    //   });
+    //    return arr
+    // }
   },
   watch: {},
   //方法集合
