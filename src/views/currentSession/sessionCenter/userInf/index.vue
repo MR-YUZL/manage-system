@@ -31,14 +31,16 @@
           @formSubmit="formSubmit"
           v-if="currentModal.visible"
         />
-      </template>
+      </template> 
     </Modal>
+    <createOrder :createdWorkOrderVisible="createdWorkOrderVisible" v-if="createdWorkOrderVisible" @newOrder="newOrder" />
   </div>
 </template>
 
 <script>
 import VisitorInfo from "./../../../../components/userInf/VisitorInfo";
 import Tags from "./../../../../components/userInf/Tags";
+import createOrder from './../../../../components/userInf/CreateOrder'
 import Modal from "./../../../../components/Modal";
 import baseForm from "./../../../../components/BaseForm/BaseFrom";
 import { mapState } from "vuex";
@@ -47,6 +49,7 @@ export default {
   data: () => ({
     isShow: false,
     visitorInfoData: "",
+    createdWorkOrderVisible:false,
     serviceAcc: "", //客服账号
     arr: [],
     relateRedio: [], // 关联客户rediolist
@@ -125,119 +128,14 @@ export default {
         }
       ]
     },
-    modelObj1: {
-      title: "新增",
-      visible: false,
-      ref: "model",
-      modelList: [
-        {
-          type: "input",
-          label: "工单标题",
-          model: "",
-          ruleName: "title",
-          placeholder: "请输入",
-          rules: {
-            required: true,
-            message: "请输入工单标题",
-            trigger: "blur"
-          }
-        },
-        {
-          type: "upload",
-          label: "工单内容",
-          ruleName: "content",
-          action: "https://www.mocky.io/v2/5cc8019d300000980a055e76", //配置文件上传路径
-          placeholder: "请输入",
-          model: "",
-          rules: {
-            required: true,
-            message: "请输入工单内容",
-            trigger: "blur"
-          }
-        },
-        {
-          type: "radio",
-          label: "工单优先级",
-          model: "1",
-          ruleName: "radio",
-          options: [
-            { key: "1", value: "低" },
-            { key: "2", value: "中" },
-            { key: "3", value: "高" }
-          ],
-          rules: {
-            required: true,
-            message: "请选择工单优先级",
-            trigger: "blur"
-          }
-        },
-        {
-          type: "select",
-          label: "工单受理组",
-          placeholder: "请选择",
-          model: undefined,
-          ruleName: "receiverGroupId", //receiverGroupId 工单受理组id
-          options: [
-            { key: "r", value: "111" },
-            { key: "y", value: "222" }
-          ],
-          rules: {
-            required: true,
-            message: "请选择工单受理组",
-            trigger: "change"
-          }
-        },
-        {
-          type: "select",
-          label: "工单受理人",
-          placeholder: "请选择",
-          model: undefined,
-          ruleName: "receiverAcc", //receiverAcc 工单受理人账号
-          options: [
-            { key: "c", value: "111" },
-            { key: "d", value: "222" }
-          ],
-          rules: {
-            required: true,
-            message: "请选择工单受理人",
-            trigger: "change"
-          }
-        },
-        {
-          type: "select",
-          label: "工单分类",
-          placeholder: "请选择",
-          model: undefined,
-          ruleName: "typeId", //typeId 分类id
-          options: [
-            { key: "111", value: "111" },
-            { key: "222", value: "222" }
-          ]
-        },
-        {
-          type: "select",
-          label: "关联客户",
-          placeholder: "请选择",
-          model: undefined,
-          ruleName: "receiverAcc", //receiverAcc 工单受理人账号
-          options: [
-            { key: "a", value: "111" },
-            { key: "b", value: "222" }
-          ],
-          rules: {
-            required: true,
-            message: "请选择工单关联客户",
-            trigger: "change"
-          }
-        }
-      ]
-    }
+   
   }),
   components: {
     VisitorInfo,
     Tags,
     Modal,
-    baseForm
+    baseForm,
+    createOrder
     // AccessInfo,
     // orderInf,
     // ServiceSummary
@@ -251,8 +149,7 @@ export default {
   
     //新增工单
     newAddOrder() {
-      this.modelObj1.visible = true;
-      this.currentModal = this.modelObj1;
+      this.createdWorkOrderVisible = true
     },
     toggleModal(data) {
       console.log(data);
@@ -267,7 +164,6 @@ export default {
       }
     },
     formSubmit(data) {
-      console.log(data);
       this.currentModal = {};
       let url = "";
       let obj = data.obj;
@@ -400,6 +296,9 @@ export default {
       }
 
       return result;
+    },
+    newOrder(e){
+      this.createdWorkOrderVisible = e
     }
   },
   watch: {
