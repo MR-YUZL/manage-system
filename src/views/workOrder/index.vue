@@ -671,7 +671,7 @@ export default {
         let obj = {
           '1':'input',
           '2':'radio',
-          '3':'checkbox',
+          '3':'selectmultiple',
           '4':'date',
           '5':'input'
         }
