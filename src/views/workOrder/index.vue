@@ -54,10 +54,10 @@
          <br />
          本次导出工{{pager.totalRecord}}条数据
     </a-modal>
-    <Modal :currentModal="createdWorkOrder" v-if="createdWorkOrder.visible">
+    <Modal :currentModal="createdWorkOrder" v-if="createdWorkOrder.visible"  @toggleModal="createdToggleModal">
       <div slot='content'>
         <BaseForm 
-          ref=""
+          ref="formObjectCreated"
           :formObject="formObjectCreated"
           @toggleModal="createdToggleModal"
           @formSubmit="formSubmitWorkOrder"
@@ -426,7 +426,9 @@ export default {
       this.getStaffListAll()
       this.getClassification()
       this.getRelatedCustomerList()
-      this.getFormFields()
+      setTimeout(()=>{
+        this.getFormFields()
+      })
     },
     mounted(){},
     methods: {
@@ -609,7 +611,7 @@ export default {
       },
       createdToggleModal(){
         this.createdWorkOrder.visible = false
-        // this.formObjectCreated.defaultValues = this.formFieldsDefaultCum
+        this.$refs.formObjectCreated.resetForm()
       },
       formSubmitWorkOrder(data){
         console.log('创建工单参数',data)

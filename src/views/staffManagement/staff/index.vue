@@ -228,6 +228,10 @@ export default {
       },
       handleOkAdd(){
         console.log('addStaffValue',this.addStaffValue)
+        if(!this.addStaffValue.length){
+          this.$message.warn('请选择成员！')
+          return false
+        }
         let params = [...this.addStaffValue]
         this.Request.post('/staff/hfwStaffMember/batchSaveJson',params).then(()=>{
           this.$message.success('添加成功')

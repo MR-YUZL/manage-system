@@ -244,8 +244,9 @@ export default {
     resetForm() {
       let _that = this;
       _that.$refs[_that.formObject.ref].resetFields();
-      _that.formObject.defaultValues = Object.assign({},_that.formObject.defaultValues);
-      _that.formObject = Object.assign({},_that.formObject);
+      let tempFormObject = _that.formObject;
+      tempFormObject.defaultValues = Object.assign({},_that.formObject.defaultValues);
+      tempFormObject = Object.assign({},_that.formObject);
     },
     handleModalState() {
       this.$emit("toggleModal", false);

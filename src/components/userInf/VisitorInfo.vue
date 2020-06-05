@@ -41,9 +41,10 @@
         </div>
       </a-modal>
       <!-- 保存为线索 -->
-      <Modal :currentModal="saveClueModal">
+      <Modal :currentModal="saveClueModal" v-if="saveClueModal.visible" @toggleModal="clueToggleModal" >
         <div slot="content">
           <BaseForm
+            ref="baseForm"
             :formObject="formObjectClue"
             @toggleModal="clueToggleModal"
             @formSubmit="formSubmitClue">
@@ -203,6 +204,7 @@ export default {
         },
         clueToggleModal(){
           this.saveClueModal.visible = false
+          this.$refs.baseForm.resetForm()
         },
         formSubmitClue(formData){
           let data = formData

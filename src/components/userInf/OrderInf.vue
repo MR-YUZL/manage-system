@@ -155,7 +155,7 @@ export default {
         userInfList:[],
         formFields:[],
         customerId:'',
-        customFieldsDefault:{}//自定义字段默认值
+        // customFieldsDefault:{}//自定义字段默认值
       }
     },
     created(){
@@ -220,10 +220,10 @@ export default {
       },
       // 创建工单
       createdToggleModal(){
-         console.log(this.$refs.baseForm)
-         this.createdWorkOrder.visible = false
-         this.formObjectCreated.defaultValues = this.customFieldsDefault
-          // this.$refs.baseForm.resetForm()
+        console.log(this.$refs.baseForm)
+        this.createdWorkOrder.visible = false
+        // this.formObjectCreated.defaultValues = this.customFieldsDefault
+        this.$refs.baseForm.resetForm()
       },
       formSubmitWorkOrder(data){
         let {typeId,...others} = data
@@ -317,7 +317,7 @@ export default {
             }
           })
           this.formObjectCreated.defaultValues = formFieldsDefault
-          this.customFieldsDefault = formFieldsDefault
+          // this.customFieldsDefault = formFieldsDefault
           this.$set(this.formObjectCreated,'modelList',[...this.formObjectCreated.modelList,...formFieldsObj])
 
           this.$forceUpdate()
