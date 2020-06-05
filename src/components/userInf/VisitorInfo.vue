@@ -11,7 +11,7 @@
           <ul>
             <li>
               <span>所属客户</span>
-              <p class="blue" @click="relatedCustomers" v-if="!vistorInfoObj.isCustomer">关联客户</p>
+              <p class="blue" @click="relatedCustomers" v-if="!vistorInfoObj.customer">关联客户</p>
               <p v-else>{{vistorInfoObj.custName}}</p>
             </li>
             <li>
@@ -41,9 +41,10 @@
         </div>
       </a-modal>
       <!-- 保存为线索 -->
-      <Modal :currentModal="saveClueModal">
+      <Modal :currentModal="saveClueModal" v-if="saveClueModal.visible" @toggleModal="clueToggleModal" >
         <div slot="content">
           <BaseForm
+            ref="baseForm"
             :formObject="formObjectClue"
             @toggleModal="clueToggleModal"
             @formSubmit="formSubmitClue">
@@ -203,6 +204,7 @@ export default {
         },
         clueToggleModal(){
           this.saveClueModal.visible = false
+          this.$refs.baseForm.resetForm()
         },
         formSubmitClue(formData){
           let data = formData
@@ -264,15 +266,15 @@ export default {
           }) 
         },
         onRelatedCusSearch(){
-            console.log('=====================',this.relateSearchKey)
-            this.relateRadio = []
-            this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+this.relateSearchKey).then(res => {
-              let data = res.data.list
-              if(data.length>0){
-                this.relateRadio = data
-              }
-              console.log('模糊搜索',res.data)
-            }) 
+          console.log('=====================',this.relateSearchKey)
+          this.relateRadio = []
+          this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+this.relateSearchKey).then(res => {
+            let data = res.data.list
+            if(data.length>0){
+              this.relateRadio = data
+            }
+            console.log('模糊搜索',res.data)
+          }) 
         },
     }
 }

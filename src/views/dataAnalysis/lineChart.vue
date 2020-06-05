@@ -47,7 +47,7 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: this.echartObj.xAxis.data
+          data: this.echartObj.xAxis
         },
         yAxis: {
           type: "value"
