@@ -259,7 +259,7 @@ export default {
         let obj = {
           '1':'input',
           '2':'radio',
-          '3':'checkbox',
+          '3':'selectmultiple',
           '4':'date',
           '5':'input'
         }
@@ -319,7 +319,6 @@ export default {
           this.formObjectCreated.defaultValues = formFieldsDefault
           // this.customFieldsDefault = formFieldsDefault
           this.$set(this.formObjectCreated,'modelList',[...this.formObjectCreated.modelList,...formFieldsObj])
-
           this.$forceUpdate()
           console.log('新的字段表==============================',this.formObjectCreated)
         })

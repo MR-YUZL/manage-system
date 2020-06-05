@@ -52,6 +52,26 @@
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
+        v-if="item.label && item.type == 'selectmultiple'"
+        :prop="'defaultValues.'+item.ruleName"
+        :rules="item.rules"
+      >
+        <a-select
+          v-model="formObject.defaultValues[item.ruleName]"
+          :placeholder="item.placeholder"
+           mode="multiple"
+          :showSearch="item.showSearch?item.showSearch:false"
+          option-filter-prop="children"
+        >
+          <a-select-option
+            v-for="(val,index) in item.options"
+            :key="index"
+            :value="val.key"
+          >{{val.value}}</a-select-option>
+        </a-select>
+      </a-form-model-item>
+      <a-form-model-item
+        :label="item.label"
         v-if="item.label && item.type == 'selectCascader' && formObject.defaultValues[item.cascaderName]"
         :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
@@ -131,6 +151,7 @@
           :placeholder="item.placeholder"
         ></a-tree-select>
       </a-form-model-item>
+      
       <a-form-model-item
         :label="item.label"
         v-if="item.label && item.type == 'cascader'"
