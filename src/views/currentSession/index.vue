@@ -32,10 +32,9 @@ export default {
    login(){
        this.tim.login({
           userID: 'user1',
-          userSig:'eJyrVgrxCdYrSy1SslIy0jNQ0gHzM1NS80oy0zLBwqXFqUWGUInilOzEgoLMFCUrQxMDA2NTUxNDM4hMSWZuKlDU1NLAzMTcwAQqmlpRkFkEFDczMLEwMICakZkONNXUzzfIODsjuCwozT8qOMlTO82rojIoRz-CsCq41MLANTI8VdvA1b-QtdjTVqkWALbHMIc_'
+          userSig:'eJwtzMEKgkAUheF3mW0hcx2vjkKbcBHiIjIE2wkz2iXMYZzKit49UZfnO-B-2TkvvKe2LGG*x9l23qT03VFDMz8GbWE9BnWrjSHFEgg4F4gBhMvjqNOTYgw*goxwUT0aspOHPJCcrw1qp*rFZXvsRpkrfeoFlPjua2Fe9moPny4*mmITtVBmVZpWO-b7A8XMMQE_'
         })
         .then(() => {
-          console.log('成功')
           this.$store.commit('toggleIsLogin', true)
           this.$store.commit('startComputeCurrent')
         })
@@ -64,7 +63,6 @@ export default {
     
     },
     onReadyStateUpdate({ name }) {
-      console.log(name)
       const isSDKReady = name === this.TIM.EVENT.SDK_READY ? true : false
       this.$store.commit('toggleIsSDKReady', isSDKReady)
 
@@ -72,7 +70,6 @@ export default {
         this.tim
           .getMyProfile()
           .then(({ data }) => {
-            console.log(data)
             this.$store.commit('updateCurrentUserProfile', data)
           })
           .catch(error => {
@@ -120,7 +117,7 @@ export default {
         })
       }
     },
-    async onUpdateConversationList(event) {
+    onUpdateConversationList(event) {
       console.log('会话列表更新')
       
       // let res = await this.Request.get('/session/guest/my/all/list')

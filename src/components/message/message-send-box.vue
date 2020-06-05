@@ -1,5 +1,5 @@
 <template>
-  <div id="message-send-box-wrapper" :style="focus ? {'backgroundColor': '#F5F5F5'} : {}" >
+  <div id="message-send-box-wrapper" :style="focus ? {'backgroundColor': '#F5F5F5'} : {}">
     <div class="send-header-bar">
       <a-popover placement="top" trigger="click">
         <div class="emojis" slot="content">
@@ -7,11 +7,17 @@
             <img :src="emojiUrl + emojiMap[item]" style="width:30px;height:30px" />
           </div>
         </div>
-        <i class="iconfont icon-smile" title="发表情"><img src="./../../assets/imgs/current_session/expression.jpg" alt=""></i>
+        <i class="iconfont icon-smile" title="发表情">
+          <img src="./../../assets/imgs/current_session/expression.jpg" alt />
+        </i>
       </a-popover>
-      <i class="iconfont icon-tupian" title="发图片" @click="handleSendImageClick"><img src="./../../assets/imgs/current_session/picture.jpg" alt=""></i>
-     
-      <i class="iconfont icon-wenjian" title="发文件" @click="handleSendFileClick"><img src="./../../assets/imgs/current_session/file_s.jpg" alt=""></i>
+      <i class="iconfont icon-tupian" title="发图片" @click="handleSendImageClick">
+        <img src="./../../assets/imgs/current_session/picture.jpg" alt />
+      </i>
+
+      <i class="iconfont icon-wenjian" title="发文件" @click="handleSendFileClick">
+        <img src="./../../assets/imgs/current_session/file_s.jpg" alt />
+      </i>
       <span class="investigation" @click="investigation">发送满意度调查</span>
     </div>
     <div class="bottom">
@@ -27,18 +33,11 @@
         @keyup.ctrl.enter.prevent.exact="handleLine"
         @keydown.up.stop="handleUp"
         @keydown.down.stop="handleDown"
-      >
-      </textarea>
-      <a-tooltip
-        class="item"
-        title="按Enter发送消息，Ctrl+Enter换行"
-        placement="left"
-      >
+      ></textarea>
+      <a-tooltip class="item" title="按Enter发送消息，Ctrl+Enter换行" placement="left">
         <div class="btn-send" @click="sendTextMessage">
           <!-- <div class="tim-icon-send">发送</div> -->
-          <a-button type="primary">
-            发 送
-          </a-button>
+          <a-button type="primary">发 送</a-button>
         </div>
       </a-tooltip>
     </div>
@@ -51,109 +50,115 @@
       style="display:none"
     />
     <input type="file" id="filePicker" ref="filePicker" @change="sendFile" style="display:none" />
-    <input type="file" id="videoPicker" ref="videoPicker" @change="sendVideo" style="display:none" accept=".mp4"/>
+    <input
+      type="file"
+      id="videoPicker"
+      ref="videoPicker"
+      @change="sendVideo"
+      style="display:none"
+      accept=".mp4"
+    />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex'
+import { mapGetters, mapState } from "vuex";
 
-import { emojiMap, emojiName, emojiUrl } from './../../utils/emojiMap'
+import { emojiMap, emojiName, emojiUrl } from "./../../utils/emojiMap";
+import { defaultFormatUtc } from "moment";
 
 export default {
-  name: 'message-send-box',
-  props: ['scrollMessageListToButtom'],
-  components: {
-   
-  },
+  name: "message-send-box",
+  props: ["scrollMessageListToButtom"],
+  components: {},
   data() {
     return {
-      colors: ['#99A9BF', '#F7BA2A', '#FF9900'],
-      messageContent: '',
+      colors: ["#99A9BF", "#F7BA2A", "#FF9900"],
+      messageContent: "",
       isSendCustomMessage: false,
       sendCustomDialogVisible: false,
       surveyDialogVisible: false,
       form: {
-        data: '',
-        description: '',
-        extension: ''
+        data: "",
+        description: "",
+        extension: ""
       },
       rate: 5, // 评分
-      suggestion: '', // 建议
-      file: '',
+      suggestion: "", // 建议
+      file: "",
       emojiMap: emojiMap,
       emojiName: emojiName,
       emojiUrl: emojiUrl,
       showAtGroupMember: false,
-      atUserID: '',
+      atUserID: "",
       focus: false,
-    
-    }
+      status: true,
+    };
   },
   computed: {
-    ...mapGetters(['toAccount', 'currentConversationType']),
+    ...mapGetters(["toAccount", "currentConversationType"]),
     ...mapState({
       memberList: state => state.group.currentMemberList,
       userID: state => state.user.userID
     })
   },
   mounted() {
-    this.$refs['text-input'].addEventListener('paste', this.handlePaste)
-    this.$bus.$on('reEditMessage', this.reEditMessage)
-    this.$bus.$on('message',this.reEditMessage)
+    this.$refs["text-input"].addEventListener("paste", this.handlePaste);
+    this.$bus.$on("reEditMessage", this.reEditMessage);
+    this.$bus.$on("message", this.reEditMessage);
   },
   beforeDestroy() {
-    this.$refs['text-input'].removeEventListener('paste', this.handlePaste)
+    this.$refs["text-input"].removeEventListener("paste", this.handlePaste);
   },
   methods: {
     reEditMessage(payload) {
-      this.messageContent = payload
+      this.messageContent = payload;
     },
     handleSelectAtUser() {
-      this.messageContent += this.atUserID + ' '
-      this.showAtGroupMember = false
+      this.messageContent += this.atUserID + " ";
+      this.showAtGroupMember = false;
     },
     handleUp() {
       const index = this.memberList.findIndex(
         member => member.userID === this.atUserID
-      )
+      );
       if (index - 1 < 0) {
-        return
+        return;
       }
-      this.atUserID = this.memberList[index - 1].userID
+      this.atUserID = this.memberList[index - 1].userID;
     },
     handleDown() {
       const index = this.memberList.findIndex(
         member => member.userID === this.atUserID
-      )
+      );
       if (index + 1 >= this.memberList.length) {
-        return
+        return;
       }
-      this.atUserID = this.memberList[index + 1].userID
+      this.atUserID = this.memberList[index + 1].userID;
     },
     handleEnter() {
       if (this.showAtGroupMember) {
-        this.handleSelectAtUser()
+        this.handleSelectAtUser();
       } else {
-        this.sendTextMessage()
+        this.sendTextMessage();
       }
     },
     handleLine() {
-      this.messageContent += '\n'
+      this.messageContent += "\n";
     },
     handlePaste(e) {
-      let clipboardData = e.clipboardData
-      let file
+      let clipboardData = e.clipboardData;
+      let file;
       if (
         clipboardData &&
         clipboardData.files &&
         clipboardData.files.length > 0
       ) {
-        file = clipboardData.files[0]
+        file = clipboardData.files[0];
       }
 
-      if (typeof file === 'undefined') {
-        return
+      if (typeof file === "undefined") {
+        return;
       }
       // 1. 创建消息实例，接口返回的实例可以上屏
       let message = this.tim.createImageMessage({
@@ -163,47 +168,47 @@ export default {
           file: file
         },
         onProgress: percent => {
-          this.$set(message, 'progress', percent) // 手动给message 实例加个响应式属性: progress
+          this.$set(message, "progress", percent); // 手动给message 实例加个响应式属性: progress
         }
-      })
-      this.$store.commit('pushCurrentMessageList', message)
+      });
+      this.$store.commit("pushCurrentMessageList", message);
 
       // 2. 发送消息
-      let promise = this.tim.sendMessage(message)
+      let promise = this.tim.sendMessage(message);
       promise.catch(error => {
-        this.$store.commit('showMessage', {
-          type: 'error',
+        this.$store.commit("showMessage", {
+          type: "error",
           message: error.message
-        })
-      })
+        });
+      });
     },
 
     sendTextMessage() {
       if (
-        this.messageContent === '' ||
+        this.messageContent === "" ||
         this.messageContent.trim().length === 0
       ) {
-        this.messageContent = ''
-        this.$store.commit('showMessage', {
-          message: '不能发送空消息哦！',
-          type: 'info'
-        })
-        return
+        this.messageContent = "";
+        this.$store.commit("showMessage", {
+          message: "不能发送空消息哦！",
+          type: "info"
+        });
+        return;
       }
       const message = this.tim.createTextMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: { text: this.messageContent }
-      })
-      this.$store.commit('pushCurrentMessageList', message)
-      this.$bus.$emit('scroll-bottom')
+      });
+      this.$store.commit("pushCurrentMessageList", message);
+      this.$bus.$emit("scroll-bottom");
       this.tim.sendMessage(message).catch(error => {
-        this.$store.commit('showMessage', {
-          type: 'error',
+        this.$store.commit("showMessage", {
+          type: "error",
           message: error.message
-        })
-      })
-      this.messageContent = ''
+        });
+      });
+      this.messageContent = "";
     },
     sendCustomMessage() {
       if (
@@ -211,11 +216,11 @@ export default {
         this.form.description.length === 0 &&
         this.form.extension.length === 0
       ) {
-        this.$store.commit('showMessage', {
-          message: '不能发送空消息',
-          type: 'info'
-        })
-        return
+        this.$store.commit("showMessage", {
+          message: "不能发送空消息",
+          type: "info"
+        });
+        return;
       }
       const message = this.tim.createCustomMessage({
         to: this.toAccount,
@@ -225,152 +230,156 @@ export default {
           description: this.form.description,
           extension: this.form.extension
         }
-      })
-      this.$store.commit('pushCurrentMessageList', message)
+      });
+      this.$store.commit("pushCurrentMessageList", message);
       this.tim.sendMessage(message).catch(error => {
-        this.$store.commit('showMessage', {
-          type: 'error',
+        this.$store.commit("showMessage", {
+          type: "error",
           message: error.message
-        })
-      })
+        });
+      });
       Object.assign(this.form, {
-        data: '',
-        description: '',
-        extension: ''
-      })
-      this.sendCustomDialogVisible = false
+        data: "",
+        description: "",
+        extension: ""
+      });
+      this.sendCustomDialogVisible = false;
     },
     random(min, max) {
-      return Math.floor(Math.random() * (max - min + 1) + min)
+      return Math.floor(Math.random() * (max - min + 1) + min);
     },
     sendSurvey() {
       const message = this.tim.createCustomMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
-          data: 'survey',
+          data: "survey",
           description: String(this.rate),
           extension: this.suggestion
         }
-      })
-      this.$store.commit('pushCurrentMessageList', message)
+      });
+      this.$store.commit("pushCurrentMessageList", message);
       Object.assign(this.form, {
-        data: '',
-        description: '',
-        extension: ''
-      })
+        data: "",
+        description: "",
+        extension: ""
+      });
       this.tim
         .sendMessage(message)
         .then(() => {
           Object.assign(this, {
             rate: 5,
-            suggestion: ''
-          })
+            suggestion: ""
+          });
         })
         .catch(error => {
-          this.$store.commit('showMessage', {
-            type: 'error',
+          this.$store.commit("showMessage", {
+            type: "error",
             message: error.message
-          })
-        })
-      this.surveyDialogVisible = false
+          });
+        });
+      this.surveyDialogVisible = false;
     },
     chooseEmoji(item) {
-      this.messageContent += item
+      this.messageContent += item;
     },
     handleSendImageClick() {
-      this.$refs.imagePicker.click()
+      this.$refs.imagePicker.click();
     },
     handleSendFileClick() {
-      this.$refs.filePicker.click()
+      this.$refs.filePicker.click();
     },
     handleSendVideoClick() {
-      this.$refs.videoPicker.click()
+      this.$refs.videoPicker.click();
     },
     videoCall() {
-      this.$bus.$emit('video-call')
+      this.$bus.$emit("video-call");
     },
     sendImage() {
       const message = this.tim.createImageMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
-          file: document.getElementById('imagePicker') // 或者用event.target
+          file: document.getElementById("imagePicker") // 或者用event.target
         },
         onProgress: percent => {
-          this.$set(message, 'progress', percent) // 手动给message 实例加个响应式属性: progress
+          this.$set(message, "progress", percent); // 手动给message 实例加个响应式属性: progress
         }
-      })
-      this.$store.commit('pushCurrentMessageList', message)
+      });
+      this.$store.commit("pushCurrentMessageList", message);
       this.tim
         .sendMessage(message)
-        .then(() => {
-        })
+        .then(() => {})
         .catch(imError => {
-          this.$store.commit('showMessage', {
+          this.$store.commit("showMessage", {
             message: imError.message,
-            type: 'error'
-          })
-        })
-      this.$refs.imagePicker.value = null
+            type: "error"
+          });
+        });
+      this.$refs.imagePicker.value = null;
     },
     sendFile() {
       const message = this.tim.createFileMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
-          file: document.getElementById('filePicker') // 或者用event.target
+          file: document.getElementById("filePicker") // 或者用event.target
         },
         onProgress: percent => {
-          this.$set(message, 'progress', percent) // 手动给message 实例加个响应式属性: progress
+          this.$set(message, "progress", percent); // 手动给message 实例加个响应式属性: progress
         }
-      })
-      this.$store.commit('pushCurrentMessageList', message)
+      });
+      this.$store.commit("pushCurrentMessageList", message);
       this.tim
         .sendMessage(message)
-        .then(() => {
-        })
+        .then(() => {})
         .catch(imError => {
-          this.$store.commit('showMessage', {
+          this.$store.commit("showMessage", {
             message: imError.message,
-            type: 'error'
-          })
-        })
-      this.$refs.filePicker.value = null
+            type: "error"
+          });
+        });
+      this.$refs.filePicker.value = null;
     },
     sendVideo() {
       const message = this.tim.createVideoMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
-          file: document.getElementById('videoPicker') // 或者用event.target
+          file: document.getElementById("videoPicker") // 或者用event.target
         },
         onProgress: percent => {
-          this.$set(message, 'progress', percent) // 手动给message 实例加个响应式属性: progress
+          this.$set(message, "progress", percent); // 手动给message 实例加个响应式属性: progress
         }
-      })
-      this.$store.commit('pushCurrentMessageList', message)
+      });
+      this.$store.commit("pushCurrentMessageList", message);
       this.tim
         .sendMessage(message)
         .then(() => {
-          this.$refs.videoPicker.value = null
+          this.$refs.videoPicker.value = null;
         })
         .catch(imError => {
-          this.$store.commit('showMessage', {
+          this.$store.commit("showMessage", {
             message: imError.message,
-            type: 'error'
-          })
-        })
+            type: "error"
+          });
+        });
     },
     //发起满意度调查事件
-    investigation(){
-      this.Request.get('/session/appraise').then(res => {
-        console.log('发起满意度调查事件')
-      })
-      
+    investigation() {
+      let that = this;
+      if (this.status) {
+        this.status = false;
+        this.Request.get("/session/appraise").then(res => {
+          console.log("发起满意度调查事件");
+        });
+        this.timer = setTimeout(function() {
+          that.status = true;
+        }, 1000);
+      }
     }
   }
-}
+};
 </script>
 
 <style lang="less" scoped>
@@ -398,7 +407,6 @@ export default {
 .send-header-bar {
   box-sizing: border-box;
   padding: 3px 0 0 0;
-  
 }
 
 .send-header-bar i {
@@ -408,20 +416,19 @@ export default {
   margin: 0 12px 0 0;
   width: 30px;
   height: 30px;
-  opacity: .7;
+  opacity: 0.7;
 }
 .send-header-bar i:hover {
   color: black;
   opacity: 1;
 }
-.investigation{
+.investigation {
   cursor: pointer;
   float: right;
   margin-top: 8px;
-  color: #3E7BF8;
-  border-bottom: 1px solid #3E7BF8;
+  color: #3e7bf8;
+  border-bottom: 1px solid #3e7bf8;
 }
-
 
 textarea {
   resize: none;

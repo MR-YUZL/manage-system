@@ -10,7 +10,7 @@
           </div>
           <div class="no-more" v-else>没有更多了</div>
           <history-message /> 
-          <!-- <message-item v-for="message in currentMessageList" :key="message.ID" :message="message" /> -->
+          <message-item v-for="message in data" :key="message.ID" :message="message" />
         </div>
         <div
           v-show="isShowScrollButtomTips"
@@ -158,7 +158,7 @@ export default {
           status: "success",
           payload: {
             data:
-              {"msgText":"客服xxxx为您服务","sendType":"automatic","subMsgType":"text"}
+              {"msgText":"客服xxxx为您服务","sendType":"automatic","subMsgType":"prompts"}
           },
           type: "TIMCustomElem"
         }
