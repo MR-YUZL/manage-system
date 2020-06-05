@@ -1,11 +1,11 @@
 <!-- 近期通话 -->
 <template>
-<div class='recentCalls'>
+<div class='recentCalls scroll'>
     <div v-if="recentCallsList && recentCallsList.length">
         <div v-for="(item,index) in recentCallsList" :key="index" class="recentCalls_item" @click="selectCallInf(index)" :class="{ 'choose': index == select }">
-            <div><span>{{item.tel}}({{item.address}})</span><span>{{item.time}}</span></div>
-            <div><span>{{item.name}}</span><span>{{item.timeLong}}</span></div>
-            <div><span>{{item.type}}</span><span :class="item.callType == 1 || item.callType == 3 ? 'received':'missed'">{{item.callType== 1 ? '已接来电' : item.callType== 2 ? '未接来电' : '未接去电'}}</span></div>
+            <div><span>{{item.tel}}({{item.address}})</span><span>{{item.callTime}}</span></div>
+            <div><span>{{item.custName}}</span><span>{{item.callLength}}</span></div>
+            <div><span>{{item.callType}}</span><span :class="item.callType == 1 || item.callType == 3 ? 'received':'missed'">{{item.callType== 1 ? '已接来电' : item.callType== 2 ? '未接来电' : '未接去电'}}</span></div>
         </div>
     </div>
     <div class="noData" v-else>
@@ -23,71 +23,9 @@ export default {
         return {
             select:0,
             recentCallsList:[
-                {
-                    tel:'122221212',
-                    address:'杭州',
-                    time:'2019 10:82',
-                    timeLong:'00 :35:00',
-                    type:'ivr导航',
-                    callType:1
-                },
-                {
-                    tel:'122221212',
-                    address:'杭州',
-                    time:'2019 10:82',
-                    timeLong:'00 :35:00',
-                    type:2,
-                    callType:2
-                },
-                 {
-                    tel:'122221212',
-                    address:'杭州',
-                    time:'2019 10:82',
-                    timeLong:'00 :35:00',
-                    type:2,
-                    callType:2
-                },
-                 {
-                    tel:'122221212',
-                    address:'杭州',
-                    time:'2019 10:82',
-                    timeLong:'00 :35:00',
-                    type:2,
-                    callType:2
-                },
-                {
-                    tel:'122221212',
-                    address:'杭州',
-                    time:'2019 10:82',
-                    timeLong:'00 :35:00',
-                    type:'ivr导航',
-                    callType:1
-                },
-                {
-                    tel:'122221212',
-                    address:'杭州',
-                    time:'2019 10:82',
-                    timeLong:'00 :35:00',
-                    type:2,
-                    callType:2
-                },
               
-                 {
-                    tel:'122221212',
-                    address:'杭州',
-                    time:'2019 10:82',
-                    timeLong:'00 :35:00',
-                    type:2,
-                    callType:2
-                },
-                 {
-                    tel:'122221212',
-                    address:'杭州11111',
-                    time:'2019 10:82',
-                    timeLong:'00 :35:00',
-                    type:2,
-                    callType:2
-                },
+              
+                
             ]
         };
     },
@@ -102,17 +40,17 @@ export default {
                 //   if(res.data.status){
                     // this.recentCallsList = res.data.list
                     // this.callType
-                    this.$store.commit('getCallStatus',{id:1,status:1})
+                    this.$store.commit('getCallStatus')
                 //   }
             }) 
         },
         selectCallInf(index){
             this.select = index
-            let obj = {
-                id:this.recentCallsList[index].id,
-                status:this.recentCallsList[index].status
-            }
-            this.$store.commit('getCallStatus',obj)
+            // let obj = {
+            //     id:this.recentCallsList[index].id,
+            //     status:this.recentCallsList[index].status
+            // }
+            this.$store.commit('getCallStatus',this.recentCallsList[index])
         }
     },
    

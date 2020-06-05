@@ -111,6 +111,8 @@ export default {
 </script>
 <style lang='less' scoped>
 .knowledgeBase {
+  // height: calc(100vh - 70px);
+  // overflow-y: auto;
   .search {
     text-align: center;
   }

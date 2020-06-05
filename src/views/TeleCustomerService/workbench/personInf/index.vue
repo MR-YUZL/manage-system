@@ -2,7 +2,7 @@
   <div class="sessionCenter">
     <div class="operation" v-if="status == '2' && outCallTask && outCallTask.taskStatus=='0'">
       <a-button type="primary" ghost @click="callBack">呼叫</a-button>
-      <a-button type="primary" ghost @click="addCallTask">改期</a-button>
+      <a-button type="primary" ghost @click="Rescheduling">改期</a-button>
       <a-popconfirm title="是否确认完成本次外呼任务？" ok-text="确定" cancel-text="取消" @confirm="confirm">
         <a-button type="primary" ghost>完成任务</a-button>
       </a-popconfirm>
@@ -11,11 +11,11 @@
       </a-popconfirm>
     </div>
 
-    <div class="operation" v-else-if="status == '1'&& callStatus.status == 2">
+    <div class="operation" v-else-if="status == '1'&& callStatus && callStatus.status == 2">
       <a-button type="primary" ghost @click="callBack">回拨</a-button>
       <a-button type="primary" ghost @click="addCallTask">添加外呼任务</a-button>
     </div>
-    <div class="operation" v-else-if="status == '1' && callStatus.status == 1">
+    <div class="operation" v-else-if="status == '1' && callStatus && callStatus.status == 1">
       <a-button type="primary" ghost @click="addCallTask">添加外呼任务</a-button>
       <a-button type="primary" ghost>创建工单</a-button>
       <a-button type="primary" ghost @click="addServer">添加本次服务小结</a-button>
@@ -32,7 +32,10 @@
       </template>
     </Modal>
 
-    <user-inf />
+    <div class="userInf scroll" v-if="status == '1' && callStatus && callStatus.guestId" ><user-inf :guestId="callStatus.guestId" /></div>
+    <div class="userInf scroll" v-else-if="status == '2' && outCallTask && outCallTask.guestId" ><user-inf :guestId="outCallTask.guestId" /></div>
+    <div class="noData" v-else><img src="./.././../../../assets/imgs/noData.png" alt=""></div>
+    <!-- <UserInformation  guestId="8c730589aa1d41a19d2ce8ca23f9fb1e"/> -->
   </div>
 </template>
 
@@ -50,6 +53,35 @@ export default {
       title: "添加至外呼任务",
       visible: false,
       ref: "callTask",
+      type: "modalForm",
+      width: "500px",
+      modelList: [
+        {
+          type: "date",
+          label: "预约时间：",
+          placeholder: "请选择",
+          model: undefined,
+          ruleName: "appointmentsTime", //receiverGroupId 工单受理组id
+          options: [],
+          rules: {
+            required: true,
+            message: "请指定客服人员",
+            trigger: "change"
+          }
+        },
+        {
+          type: "textarea",
+          label: "备注",
+          placeholder: "",
+          model: undefined,
+          ruleName: "remark" //receiverGroupId 工单受理组id
+        }
+      ]
+    },
+     reschedulingObj: {
+      title: "改期",
+      visible: false,
+      ref: "Rescheduling",
       type: "modalForm",
       width: "500px",
       modelList: [
@@ -174,12 +206,15 @@ export default {
       this["callTaskObj"]["visible"] = true;
       this.transferObj = this.callTaskObj;
     },
-
+    //改期
+    Rescheduling(){
+      this["reschedulingObj"]["visible"] = true;
+      this.transferObj = this.reschedulingObj;
+    },
     confirm() {
       this.Request.get("/hfw/workbench/deleteTask", {
         id: this.outCallTask.id
       }).then(res => {
-        console.log(res.data);
         if (res.data.status) {
           this.$store.commit("getOutCallStatus");
           this.$message.success("操作成功！");
@@ -200,15 +235,16 @@ export default {
       console.log("呼叫，回拨");
     },
     toggleModal(data) {
-      console.log(data);
       this.transferObj = {};
       switch (data.ref) {
         case "callTask":
-          this["addServerObj"]["visible"] = data.visible;
+          this["addServerObj"]["callTaskObj"] = data.visible;
           break;
         case "addServer":
           this["addServerObj"]["visible"] = data.visible;
           break;
+        case 'Rescheduling':
+          this["reschedulingObj"]["visible"] = data.visible  
       }
     },
     formSubmit(data) {
@@ -218,26 +254,37 @@ export default {
       let obj = data.obj;
       switch (data.ref) {
         case "callTask":
-          this["addServerObj"]["visible"] = data.visible;
+          this["callTaskObj"]["visible"] = data.visible;
           url = "/hfw/workbench/saveTask";
+          obj.guestId = callStatus.guestId;
           obj.appointmentsTime = moment(obj.appointmentsTime).format(
             "YYYY-MM-DD HH:SS:MM"
           );
           break;
         case "addServer":
           this["addServerObj"]["visible"] = data.visible;
-          console.log(this.outCallTask);
-          //  obj.callId = this.outCallTask ?       //需要判断是通话记录还是外呼任务
-
           let [firstConsuleId, secondConsuleId, threeConsuleId] = obj.consuleId;
           obj.firstConsuleId = firstConsuleId;
           obj.secondConsuleId = secondConsuleId;
           obj.threeConsuleId = threeConsuleId;
           delete obj.consuleId;
+          obj.guestId = callStatus.guestId;
+          obj.id = callStatus.id;
+          obj.callId = callStatus.callId;
+          obj.sessionId = callStatus.sessionId;
           url = "/hfw/workbench/saveServiceSummary";
           break;
+        case 'Rescheduling':
+      
+          obj.appointmentsTime = moment(obj.appointmentsTime).format(
+            "YYYY-MM-DD HH:SS:MM"
+          );
+          
+          this["reschedulingObj"]["visible"] = data.visible
+          obj.id = this.outCallTask ? this.outCallTask.id :''
+          url = "/hfw/workbench/updateCallOutTime"  
       }
-      obj.guestId = "7ca88132f26949b6bbc82f3b5a339735";
+      
       console.log(obj);
       this.Request.post(url, obj).then(res => {
         if (res.data.status) {
@@ -276,6 +323,13 @@ export default {
     border-top: 1px solid #e8e8e8;
     border-top: 1px solid #e8e8e8;
     background: #ffffff;
+  }
+  .userInf{
+    height: calc(100% - 44px);
+    overflow-y: auto;
+  }
+  .noData{
+    text-align: center;
   }
 }
 </style>
