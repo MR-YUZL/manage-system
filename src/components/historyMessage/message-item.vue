@@ -34,7 +34,13 @@
           />
 
           <div v-else-if="message.imMsgType === TIM.TYPES.MSG_CUSTOM">
-            <span v-if="message.msgContent.subMsgType === 'prompts'">{{message.msgContent.msgText}}</span>
+            <span class="prompts"
+              v-if="message.subMsgType === 'prompts' 
+              || message.subMsgType == 'transfer' 
+              || message.subMsgType == 'reception' 
+              || message.subMsgType == 'stopsession'
+              || message.subMsgType == 'createsession'"
+            >{{message.msgContent.text}}</span>
             <span v-if="message.subMsgType === 'repository'" v-html="message.msgContent.text"></span>
             <custom-text
               v-else-if="message.subMsgType === 'text'"
@@ -134,9 +140,7 @@ export default {
       renderDom: []
     };
   },
-  mounted() {
-   
-  },
+  mounted() {},
   created() {},
   computed: {
     ...mapState({
@@ -146,7 +150,6 @@ export default {
     // 是否显示头像，群提示消息不显示头像
     showAvatar() {
       if (this.message.imMsgType == "TIMCustomElem") {
-          console.log(this.message.imMsgType,this.message.subMsgType)
         if (
           this.message.subMsgType == "prompts" ||
           this.message.subMsgType == "transfer" ||
@@ -155,8 +158,8 @@ export default {
           this.message.subMsgType == "createsession"
         ) {
           return false;
-        }else{
-            return true
+        } else {
+          return true;
         }
       } else if (
         this.currentConversation.type === "C2C" &&
@@ -208,11 +211,16 @@ export default {
         return "position-center";
       }
 
-      if (
-        this.message.type == "TIMCustomElem" &&
-        this.message.payload.data.subMsgType == "prompts"
-      ) {
-        return "position-center";
+      if (this.message.imMsgType == "TIMCustomElem") {
+        if (
+          this.message.subMsgType == "prompts" ||
+          this.message.subMsgType == "transfer" ||
+          this.message.subMsgType == "reception" ||
+          this.message.subMsgType == "stopsession" ||
+          this.message.subMsgType == "createsession"
+        ) {
+          return "position-center";
+        }
       }
       if (this.message.isRevoked) {
         // 撤回消息
@@ -266,6 +274,9 @@ export default {
   .content-wrapper {
     display: flex;
     align-items: center;
+    .prompts{
+      font-size: 12px;
+    }
   }
 }
 
