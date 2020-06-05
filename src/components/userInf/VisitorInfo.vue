@@ -11,7 +11,7 @@
           <ul>
             <li>
               <span>所属客户</span>
-              <p class="blue" @click="relatedCustomers" v-if="!vistorInfoObj.isCustomer">关联客户</p>
+              <p class="blue" @click="relatedCustomers" v-if="!vistorInfoObj.customer">关联客户</p>
               <p v-else>{{vistorInfoObj.custName}}</p>
             </li>
             <li>
@@ -264,15 +264,15 @@ export default {
           }) 
         },
         onRelatedCusSearch(){
-            console.log('=====================',this.relateSearchKey)
-            this.relateRadio = []
-            this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+this.relateSearchKey).then(res => {
-              let data = res.data.list
-              if(data.length>0){
-                this.relateRadio = data
-              }
-              console.log('模糊搜索',res.data)
-            }) 
+          console.log('=====================',this.relateSearchKey)
+          this.relateRadio = []
+          this.Request.get('/hfw/workbench/blurMatchCustName?matchKey='+this.relateSearchKey).then(res => {
+            let data = res.data.list
+            if(data.length>0){
+              this.relateRadio = data
+            }
+            console.log('模糊搜索',res.data)
+          }) 
         },
     }
 }
