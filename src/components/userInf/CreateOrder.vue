@@ -166,9 +166,8 @@ export default {
      
     },
     mounted(){
-        console.log(this.createdWorkOrderVisible,this.relevObj.detailId)
         this.createdWorkOrder.visible  = this.createdWorkOrderVisible
-        if(this.relevObj.detailId){
+        if(this.relevObj&&this.relevObj.detailId){
           let replaceArr = {
             type: "defaultText",
             label: "关联客户",
