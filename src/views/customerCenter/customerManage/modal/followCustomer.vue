@@ -113,7 +113,7 @@ export default {
           // todo 当跟进内容为空时，data都不返回。
           if (res.data.data) {
             this.lastInfo = res.data.data;
-            this.formObject.defaultValues = res.data.data;
+            // this.formObject.defaultValues = res.data.data;
           }
         }
       });

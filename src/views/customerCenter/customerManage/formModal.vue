@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-form-model ref="dynamicValidateForm" :model="formObj">
+    <a-form-model ref="dynamicValidateForm" v-bind="formItemLayout" :model="formObj">
       <a-form-model-item
         v-for="(item,index) in formObj.formList"
         :key="item.fieldId"
@@ -11,13 +11,11 @@
         <a-input
           v-if="item.dataType==1"
           v-model="item.fieldValue"
-          style="width: 200px"
           placeholder="请输入"
         />
 
         <a-select
           v-if="item.dataType==2"
-          style="width: 170px"
           @change="onChange($event,item)"
           v-model="item.fieldValue"
           placeholder="请选择"
@@ -30,7 +28,6 @@
         </a-select>
 
         <a-cascader
-          style="width: 200px"
           v-if="item.dataType==3"
           :options="cityOptions"
           placeholder="请选择省市"
@@ -41,12 +38,11 @@
         <a-range-picker
           v-if="item.dataType==4"
           format="YYYY-MM-DD"
-          style="width:240px"
           v-model="item.fieldValue"
           allowClear
         />
       </a-form-model-item>
-      <a-form-model-item>
+      <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
         <a-button type="primary" html-type="submit" @click="submitForm('dynamicValidateForm')">保存</a-button>
         <a-button style="margin-left: 10px" @click="handleCancel">取消</a-button>
       </a-form-model-item>
@@ -58,6 +54,10 @@
 export default {
   data() {
     return {
+      formItemLayout: {
+        labelCol: { span: 6 },
+        wrapperCol: { span: 14 }
+      },
       cityOptions: [
         {
           value: "浙江",
