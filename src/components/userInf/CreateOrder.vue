@@ -23,7 +23,7 @@ export default {
       Modal,
       BaseForm
     },
-    props:['createdWorkOrderVisible'],
+    props:['createdWorkOrderVisible','relevObj'],
     data() {
       return {
       
@@ -166,8 +166,16 @@ export default {
      
     },
     mounted(){
-        console.log(this.createdWorkOrderVisible)
         this.createdWorkOrder.visible  = this.createdWorkOrderVisible
+        if(this.relevObj&&this.relevObj.detailId){
+          let replaceArr = {
+            type: "defaultText",
+            label: "关联客户",
+            value:this.relevObj.custManager,
+            options: [],
+          }
+          this.formObjectCreated.modelList.splice(7,1,replaceArr)
+        }
     },
     methods: {
     
@@ -256,9 +264,11 @@ export default {
       },
       formSubmitWorkOrder(data){
         console.log('创建工单参数',data)
-        let {typeId,...others} = data
+        let {typeId,customerId,...others} = data
+        let custId = customerId?customerId:this.relevObj.detailId;
         let params = {
           ...others,
+          customerId:custId
         }
         if(typeId&&typeId.length>0){
             params.typeId = typeId[typeId.length-1]

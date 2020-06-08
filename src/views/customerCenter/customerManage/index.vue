@@ -46,13 +46,19 @@
               style="margin-right:10px;"
               @click="followCustomer(row.custId)"
             >跟进客户</span>
-            <span class="blue" @click="createOrder(row.custId)">创建工单</span>
+            <span class="blue" @click="createOrder(row.custId,row.custManager)">创建工单</span>
           </div>
         </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
     </div>
     <!-- 弹窗 -->
+    <createOrder
+      :createdWorkOrderVisible="createdWorkOrderVisible"
+      v-if="createdWorkOrderVisible"
+      :relevObj="relevObj"
+      @newOrder="newOrder"
+    />
     <SetManagerModal
       v-if="modals.setManagerVisible"
       :visible="modals.setManagerVisible"
@@ -128,6 +134,7 @@ import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import Modal from "@/components/Modal";
 import BaseForm from "@/components/BaseForm";
 import qs from "qs";
+import createOrder from '@/components/userInf/CreateOrder'
 export default {
   components: {
     FormModelSearchForm,
@@ -142,10 +149,13 @@ export default {
     followCustomerModal,
     DetailModal,
     Modal,
-    BaseForm
+    BaseForm,
+    createOrder
   },
   data() {
     return {
+      relevObj:{},
+      createdWorkOrderVisible:false,
       currentModal: {
         visible: false
       },
@@ -430,11 +440,20 @@ export default {
     //   this.modals.followCustomerVisible = true
     // },
     followCustomer(custId) {
-      this.detailId = custId; //此处有问题，记得修改
+      this.detailId = custId;
       this.modals.followCustomerVisible = true;
       // this.followObj.visible = true;
     },
-    createOrder() {},
+    newOrder(e){
+      this.createdWorkOrderVisible = e
+    },
+    createOrder(custId,custManager) {
+      this.relevObj = {
+        detailId:custId,
+        custManager:custManager
+      }
+      this.createdWorkOrderVisible = true
+    },
     changeTabFn(key) {
       this.searchParams.dataSource = key;
       this.getList();
