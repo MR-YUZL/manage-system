@@ -34,6 +34,7 @@
           v-if="item.dataType==3"
           :options="cityOptions"
           placeholder="请选择省市"
+          v-model="item.fieldValue"
           @change="cityChange"
         />
 

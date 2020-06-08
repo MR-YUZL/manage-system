@@ -59,7 +59,7 @@ import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import LineChart from "@/views/dataAnalysis/lineChart";
 import CircleChart from "@/views/dataAnalysis/circleChart";
-
+import analysis from "@/utils/analysis.js";
 export default {
   data() {
     return {
@@ -77,8 +77,8 @@ export default {
           label: "技能组",
           mode: "multiple",
           options: [],
-          optionValue: "key",
-          optionLabel: "id"
+          optionValue: "groupId",
+          optionLabel: "groupName"
         }
       ],
       defaultSearchFormValues: {},
@@ -209,8 +209,12 @@ export default {
     LineChart,
     CircleChart
   },
-  mounted() {
-    this.getOverviewInfo()
+   mounted() {
+    this.getOverviewInfo();
+    let receiveList =  analysis.getSkill();
+    receiveList.then((res)=>{
+      this.searchFormList[1].options = res;
+    })
   },
   methods: {
     getOverviewInfo(){
@@ -219,15 +223,21 @@ export default {
         this.info = res.data.data;
         this.echartObj = this.info.callChar;
         this.echartObj2 = this.info.msgChar;
-        // this.circleObj = this.info.channelChar;
-        // let total = [
-        //   {
-        //      value: 0,
-        //      name: "总接待量",
-        //      itemStyle: { normal: { color: "#ffffff" } }
-        //   }
-        // ]
-        // this.$set(this.circleObj,'total',total)
+
+        this.circleObj = this.info.channelChar;
+        var counts = this.info.channelChar.series;
+        var sum = counts.reduce(function(a, b) {
+          return a + b.value;
+        }, 0);
+        let total = [
+          {
+             value: sum,
+             name: "总接待量",
+             itemStyle: { normal: { color: "#ffffff" } }
+          }
+        ]
+        this.$set(this.circleObj,'total',total)
+        console.log(this.circleObj,'数组加进去了没有')
       })
     },
     prevHandleSubmit(val) {
@@ -238,7 +248,7 @@ export default {
       //     val
       //   );
       //   this.getList();
-    }
+    },
   }
 };
 </script>

@@ -45,6 +45,7 @@
 <script>
 import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import analysis from "@/utils/analysis.js";
 export default {
   data() {
     return {
@@ -110,8 +111,8 @@ export default {
           label: "技能组",
           mode: "multiple",
           options: [],
-          optionValue: "key",
-          optionLabel: "id"
+          optionValue: "groupId",
+          optionLabel: "groupName"
         }
       ],
       defaultSearchFormValues: {},
@@ -227,10 +228,14 @@ export default {
   components: {
     FormModelSearchForm
   },
-  mounted(){
+   mounted(){
     this.getSeatControlList();
     this.getSessionStatsList();
     this.getQcStatsList();
+    let receiveList =  analysis.getSkill();
+    receiveList.then((res)=>{
+      this.searchFormList[1].options = res;
+    })
   },
   methods: {
     getSeatControlList(){

@@ -28,7 +28,7 @@
 </template>
 
 <script>
-import api from "@/api/customerCenter";
+import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 export default {
   data() {
@@ -208,7 +208,15 @@ export default {
   components: {
     FormModelSearchForm
   },
+  mounted(){
+    this.getPhoneDepartmentInfo();
+  },
   methods: {
+    getPhoneDepartmentInfo(){
+      api.phoneDepartmentInfo().then(res=>{
+        console.log('电话客服部门统计',res)
+      })
+    },
     prevHandleSubmit() {}
   }
 };

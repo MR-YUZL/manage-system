@@ -50,8 +50,9 @@
 </template>
 
 <script>
-import api from "@/api/customerCenter";
+import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import moment from 'moment';
 export default {
   data() {
     return {
@@ -143,13 +144,30 @@ export default {
           label: "统计周期"
         }
       ],
-      defaultSearchFormValues: {}
+      defaultSearchFormValues: {
+        // inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
+        inputDateStart:['2020-06-03','2020-06-06']
+      }
     };
   },
   components: {
     FormModelSearchForm
   },
+  mounted(){
+    this.getPhonePersonInfo();
+  },
   methods: {
+    getPhonePersonInfo(){
+      let dateObj = Object.assign({}, this.defaultSearchFormValues,this.searchParams);
+      let dateArr = dateObj.inputDateStart
+      let params = {
+        beginDate:dateArr[0],
+        endDate:dateArr[1],
+      }
+      api.phonePersonInfo(params).then(res=>{
+        console.log('电话客服-个人统计',res)
+      })
+    },
     prevHandleSubmit(val) {}
   }
 };

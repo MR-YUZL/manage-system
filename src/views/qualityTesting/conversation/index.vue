@@ -102,6 +102,7 @@ export default {
           type: "select",
           label: "客服组:",
           name: "serviceGroupIds",
+          mode:"multiple",
           options: []
         },
         {

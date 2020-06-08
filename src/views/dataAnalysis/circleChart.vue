@@ -43,6 +43,7 @@ export default {
             var index = 0;
             var labels = that.echartObj.legend;
             var counts = that.echartObj.series;
+            // console.log(labels,counts,'你是不是没值')
             var sum = counts.reduce(function(a, b) {
               return a + b.value;
             }, 0);

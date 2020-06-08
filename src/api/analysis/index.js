@@ -1,8 +1,20 @@
 import axios from 'axios'
 export default {
+    //查询整颗树
+    consultTypeList(params) {
+        return axios.get('/config/system/findTypeListJson', {params})
+    },
     //总览 
     overviewInfo(params) {
         return axios.get('/overview/count/info', {params})
+    },
+    //数据分析-电话客服-个人统计  
+    phonePersonInfo(params) {
+        return axios.get('/phoneSerivce/data/getPersonData', {params})
+    },
+    //数据分析-电话客服-部门统计  
+    phoneDepartmentInfo(params) {
+        return axios.get('/phoneSerivce/data/getDepartmentData', {params})
     },
     //坐席管控-坐席考勤
     seatControlList(params) {
@@ -32,5 +44,8 @@ export default {
     orderDetailList(params) {
         return axios.get('/hfw/count/acc/detail', {params})
     },
-
+    //技能组列表
+    sessionServiceGroups(params) {
+        return axios.get('/staff/hfwStaffSkillGroups/listJson', {params})
+    },
 }
