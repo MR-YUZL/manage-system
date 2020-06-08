@@ -2,27 +2,28 @@
   <div>
     <a-page-header title="留言记录" style="padding:16px 0;" />
     <div class="box">
-      <!-- <Search :tools="formList" @onSearch="searchFun" />  -->
-      <FormModelSearchForm
-        :defaultFormValues="defaultSearchFormValues"
-        :formList="searchFormList"
-        @prevHandleSubmit="prevHandleSubmit"
-      />
+      <div class="searchStyle">
+        <FormModelSearchForm
+          :defaultFormValues="defaultSearchFormValues"
+          :formList="searchFormList"
+          @prevHandleSubmit="prevHandleSubmit"
+        />
+      </div>
       <div>
         <a-table :columns="columns" :dataSource="dataSource" :pagination='false' :rowKey="record => record.id">
-          <div slot="guestName" slot-scope="record,row">
+          <div slot="name" slot-scope="record,row">
              <span class="blue" @click="checkMessage(row.id,row.status)">{{row.name}}</span>
           </div>
         </a-table>
       </div>
-      <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
+      <div style="padding:20px 0;"><TablePagination :parentPager="pager" @paginationChange="paginationChange" /></div>
     </div>
     <a-modal title="记录" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
       <div class="record-detail">
         <div class="message"><MessageDetail :recordList="recordList" :handleRecordBtn="handleRecordBtn" :handleResult="handleResultCon" @setHandleResult="setHandleResult" /> </div>
         <div class="information"><UserInformation  guestId="8c730589aa1d41a19d2ce8ca23f9fb1e"/></div>
       </div>
-   </a-modal>
+    </a-modal>
     <a-modal title="留言处理" v-if="leaveModalShow" :visible="leaveModalShow" @cancel="handleleaveModalCancel" @ok="handleleaveModalOk">
       <div style="display:flex">
         <p style="width:78px;">处理结果</p><a-textarea v-model="resultContent" placeholder="请输入处理结果" :auto-size="{ minRows: 3, maxRows: 5 }" />
@@ -32,7 +33,6 @@
 </template>
 
 <script>
-import moment from "moment";
 import UserInformation from './../../components/userInf'
 // import Search from './../../components/Search/index'
 import MessageDetail from './messageDetail'
@@ -53,19 +53,18 @@ export default {
           type: 'input',
           label: '用户名:',
           placeholder: '请输入',
-          name: 'guestName',
-          // defaultValue: '',
+          name: 'name',
         },
         {
           type: 'rangepicker',
           label: '留言时间:',
-          name: 'queryTime',
+          name: 'leaveFollowTime',
           
         },
         {
           type: 'select',
           label: '留言状态:',
-          name: 'status',
+          name: 'leaveStatus',
           options:[{ key: "null", id: "全部" },{key:0,id:"未处理"},{key:1,id:'已处理'}],
           optionValue: "key",
           optionLabel: "id"
@@ -73,8 +72,8 @@ export default {
         {
           type: 'select',
           label: '来源终端:',
-          name: 'source',
-          options:[{ key:'null', id: "全部" },{key:0,id:"网页"},{key:1,id:'微信小程序'},{key:2,id:'微信公众号'},{key:3,id:'安卓'},{key:4,id:'ios'}],
+          name: 'channelType',
+          options:[{ key:'null', id: "全部" },{key:0,id:"网站咨询"},{key:1,id:'微信公众号'},{key:2,id:'微信小程序'},{key:3,id:'IOS'},{key:4,id:'安卓'},{key:4,id:'QQ'},{key:4,id:'微信'}],
           optionValue: "key",
           optionLabel: "id"
         },
@@ -84,18 +83,18 @@ export default {
       columns:[
         {
           title: '用户名',
-          dataIndex: 'guestName',
+          dataIndex: 'name',
           key: '1',
-          scopedSlots: { customRender: 'guestName' },
+          scopedSlots: { customRender: 'name' },
         },
         {
           title: '留言时间',
-          dataIndex: 'inputTime',
+          dataIndex: 'leaveFollowTime',
           key: '2',
         },
         {
           title: '当前状态',
-          dataIndex: 'status',
+          dataIndex: 'leaveStatus',
           key: '3',
           customRender:(value)=>{
             let con = {
@@ -111,12 +110,12 @@ export default {
         },
         {
           title: '处理结果',
-          dataIndex: 'content',
+          dataIndex: 'leaveResult',
           key: '4',
         },
         {
           title: '跟进人',
-          dataIndex: 'followAccName',
+          dataIndex: 'leaveFollowName',
           key: '5',
         },
         {
@@ -125,16 +124,18 @@ export default {
           key: '6',
         },
         {
-          title: '来源终端',
-          dataIndex: 'source',
+          title: '来源终端', 
+          dataIndex: 'channelType',
           key: '7',
           customRender:(value)=>{
             let obj = {
-              "0":'网页',
-              "1":'微信小程序',
-              "2":'微信公众号',
-              "3":'安卓',
-              "4":'ios'
+              "0":'网站咨询',
+              "1":'微信公众号',
+              "2":'微信小程序',
+              "3":'IOS',
+              "4":'安卓',
+              "5":'QQ',
+              "6":'微信'
             }
             return obj[value]
           }
@@ -166,7 +167,7 @@ export default {
   },
   methods: {
     getList(){
-      this.Request.get('hfw/hfwSessionInfo/leave/listPageJson',{ ...this.pager,...this.searchField}).then(res => {
+      this.Request.get('/hfw/hfwSessionInfo/leave/listPageJson',{ ...this.pager,...this.searchField}).then(res => {
         let data = res.data
         let page = data.pager
         this.dataSource =  data.list
@@ -248,5 +249,8 @@ export default {
       margin-left:48px;
       width:384px;
     }
+  }
+  .searchStyle{
+    padding:20px 10px 30px 20px;
   }
 </style>
