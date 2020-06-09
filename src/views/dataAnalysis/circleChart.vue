@@ -43,22 +43,24 @@ export default {
             var index = 0;
             var labels = that.echartObj.legend;
             var counts = that.echartObj.series;
-            var sum = counts.reduce(function(a, b) {
-              return a + b.value;
-            }, 0);
-            labels.forEach(function(value, i) {
-              if (value == name) {
-                index = i;
-              }
-            });
-            return (
-              name +
-              " | " +
-              ((counts[index].value / Number(sum)) * 100).toFixed(0) +
-              "% " +
-              counts[index].value
-            );
-            // return name + "    " + counts[index].value;
+            // console.log(labels,counts,'你是不是没值')
+            // var sum = counts.reduce(function(a, b) {
+            //   return a + b.value;
+            // }, 0);
+            // labels.forEach(function(value, i) {
+            //   if (value == name) {
+            //     index = i;
+            //   }
+            // });
+            // return (
+            //   name +
+            //   " | " +
+            //   ((counts[index].value / Number(sum)) * 100).toFixed(0) +
+            //   "% " +
+            //   counts[index].value
+            // );
+            return name + "    " + counts[index].value;
+            // return name ;
           }
         },
         series: [

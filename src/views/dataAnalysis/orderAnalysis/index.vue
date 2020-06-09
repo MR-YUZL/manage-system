@@ -24,6 +24,7 @@
 import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import moment from 'moment';
+import analysis from "@/utils/analysis.js";
 export default {
   data() {
     return {
@@ -41,8 +42,8 @@ export default {
           label: "技能组",
           mode: "multiple",
           options: [],
-          optionValue: "key",
-          optionLabel: "id"
+          optionValue: "groupId",
+          optionLabel: "groupName"
         }
       ],
       defaultSearchFormValues: {
@@ -137,6 +138,10 @@ export default {
   mounted() {
     this.getOrderAccList();
     console.log(this.defaultSearchFormValues.inputDateStart,'123******')
+    let receiveList =  analysis.getSkill();
+    receiveList.then((res)=>{
+      this.searchFormList[1].options = res;
+    })
   },
   methods: {
     moment,

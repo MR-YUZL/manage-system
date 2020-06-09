@@ -93,6 +93,10 @@ const routes = [
             component: () => import("@/views/dataAnalysis/department/index.vue"),
           },
           {
+            path:'personDetail',
+            component: () => import("@/views/dataAnalysis/personDetail/index.vue"),
+          },
+          {
             path:'seat',
             component: () => import("@/views/dataAnalysis/seat/index.vue"),
           },

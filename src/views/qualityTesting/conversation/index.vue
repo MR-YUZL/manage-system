@@ -102,7 +102,10 @@ export default {
           type: "select",
           label: "客服组:",
           name: "serviceGroupIds",
-          options: []
+          mode:"multiple",
+          options: [],
+          optionValue: "groupId",
+          optionLabel: "groupName"
         },
         {
           type: "select",
@@ -201,14 +204,14 @@ export default {
       api.sessionServiceGroups().then(res=>{
         console.log('客服组',res)
         if(res.data.status){
-          let newArr = res.data.list.map((item)=>{
-            return{
-              ...item,
-              label:item.groupName,
-              value:item.groupId
-            }
-          })
-          this.searchFormList[4].options = newArr;
+          // let newArr = res.data.list.map((item)=>{
+          //   return{
+          //     ...item,
+          //     label:item.groupName,
+          //     value:item.groupId
+          //   }
+          // })
+          this.searchFormList[4].options = res.data.list;
         }
       })
     },
@@ -231,7 +234,7 @@ export default {
     },
     prevHandleSubmit(val){
       // console.log(val,'val')
-      this.searchParams = Object.assign({},this.searchParams,val)
+      this.searchParams = Object.assign({},this.defaultSearchFormValues,val)
       this.getList();
     },
     getList() {
