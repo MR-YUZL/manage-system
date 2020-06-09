@@ -57,21 +57,21 @@ export default {
       }
     ],
     penddingList: [],
-    endList: []
+    endList: [],
+    timer:null
   }),
   components: {
     sessionItem
   },
   mounted() {
     // console.log(this.conversationList)
-    this.getSessionList();
+    // this.getSessionList();
   },
   methods: {
     moment,
-    sum() {
-      this.list = [];
-    },
+   
     getIsSDKReady() {
+     
       if (this.penddingList && this.penddingList.length) {
         this.isCheckouting = true;
         this.$store
@@ -88,6 +88,7 @@ export default {
           guestName: this.penddingList[0].guestName,
           endTime: this.penddingList[0].endTime
         };
+       
         this.$store.commit("getVisitorInf", obj);
       } else if (this.endList && this.endList.length) {
         this.isCheckouting = true;
@@ -107,12 +108,108 @@ export default {
         };
         this.$store.commit("getVisitorInf", obj);
       }
+     
     },
     //获取会话列表
     getSessionList() {
       this.Request.get("/session/guest/my/all/list").then(res => {
+        console.log(this.list, this.conversationList);
+
         // console.log("会话列表", res.data);
+        this.penddingList = [];
+        this.endList = [];
+        this.list.map(item => {
+          this.conversationList.map(val => {
+            if (item.guestId == val.userProfile.userID) {
+              let obj = {
+                ...item,
+                ...val
+              };
+
+              if (item.endTime) {
+                this.endList.push(obj);
+              } else {
+                this.penddingList.push(obj);
+              }
+            }
+          });
+        });
+        this.getIsSDKReady();
+        this.timeoutHandler()
       });
+    },
+    //检测列表数据变化
+    testList() {
+      this.messageList.forEach((item, i) => {
+        if (
+          item.type == "TIMCustomElem" &&
+          item.payload.data.subMsgType == "createsession"
+        ) {
+          //创建新会话
+          //从已结束会话中查找，确定是否有已结束的会话重新启用
+          if (this.endList && this.endList.length) {
+            this.endList.forEach((val, index) => {
+              if (val.guestId == item.from) {
+                this.endList.splice(index, 1);
+              }
+            });
+          }
+          this.Request.get("/guest/session/question/list", {
+            guestId: val.guestId
+          }).then(res => {
+            if (res.data.status) {
+              let obj = { ...val, ...res.data.sessionInfo };
+              this.penddingList.push(obj);
+            }
+          });
+        } else if (
+          item.type == "TIMCustomElem" &&
+          (item.payload.data.subMsgType == "stopsession" ||
+            item.payload.data.subMsgType == "transfer")
+        ) {
+          //转接或结束会话
+
+          //正在进行的会话设置为已结束的会话
+          this.penddingList.forEach((val, index) => {
+            if (val.guestId == item.from) {
+              this.penddingList.splice(index, 1);
+              let data = { ...val };
+
+              data["endTime"] = moment().format("X");
+
+              this.endList = [data,...this.endList];
+
+              let status =
+                item.payload.data.subMsgType == "stopsession" ? 0 : 1;
+              this.endSession(item.id, status);
+            }
+          });
+        } else {
+          this.penddingList.forEach((val, index) => {
+            if (val.guestId == item.from) {
+              this.penddingList.splice(index, 1);
+              let data = { ...val };
+
+              if (val.payload.data.sendType == "manual") {   //手动消息需重新计时最后一条消息时间
+                data["guestLastMsgTime"] = moment().format("X");
+              }
+              this.penddingList = [data,...this.penddingList];
+              
+            }
+          });
+        }
+        if (this.visitorInf.guestId == item.from) {
+          let obj = {
+            guestId: item.guestId,
+            beginTime: item.beginTime,
+            guestName: item.guestName,
+            endTime: item.endTime
+          };
+
+          this.$store.commit("getVisitorInf", obj);
+        }
+      });
+      this.timeoutHandler()
     },
     //结束会话
     endSession(sessionId, endWay) {
@@ -126,17 +223,10 @@ export default {
     },
 
     //超时处理
-    timeoutHandler(arr) {
-      this.penddingList = [...arr];
-      // arr.map((item, index) => {
-      //     if (moment().format("X") - item.guestLastMsgTime > 5 * 60) {
-      //       this.penddingList.splice(index, 1);
-      //       this.endList.push(item);
-      //       this.endSession(item.id, 2);
-      //     }
-      // });
+    timeoutHandler() {
+      clearInterval(this.timer);
       let date = moment().format("X");
-      let timer = setInterval(() => {
+      this.timer = setInterval(() => {
         this.penddingList.map((item, index) => {
           if (moment().format("X") - item.guestLastMsgTime > 5 * 60) {
             this.penddingList.splice(index, 1);
@@ -145,7 +235,7 @@ export default {
             data["endTime"] = moment().format("X");
 
             this.endList = [...this.endList, data];
-            if (this.visitorInf.guestId == item.guestId) {
+            if (this.visitorInf && (this.visitorInf.guestId == item.guestId || this.visitorInf.guestId == item.from)) {
               let obj = {
                 guestId: data.guestId,
                 beginTime: data.beginTime,
@@ -158,8 +248,9 @@ export default {
             this.endSession(item.id, 2);
           }
         });
+      
         if (!this.penddingList.length) {
-          clearInterval(timer);
+          clearInterval(this.timer);
         }
       }, 1000);
     },
@@ -167,30 +258,38 @@ export default {
   },
   watch: {
     isSDKReady(a, b) {
+      // console.log(this.list, this.conversationList);
       if (a) {
-        this.getIsSDKReady();
+        // this.getIsSDKReady();
+        this.getSessionList();
       }
     },
-    conversationList(a, b) {
-      if (a) {
-        this.conversationList = a;
-      }
-    },
-    sessionList(a, b) {
-      if (a.length) {
-        if (a[0].length) {
-          this.timeoutHandler(a[0]);
-        }
-        this.endList = [...a[1]];
+    // conversationList(a, b) {
+    //   if (a) {
+    //     this.conversationList = a;
+    //   }
+    // },
+    messageList(a, b) {
+      if (a && a.length) {
+        this.testList();
       }
     }
+    // sessionList(a, b) {
+    //   if (a.length) {
+    //     if (a[0].length) {
+    //       this.timeoutHandler(a[0]);
+    //     }
+    //     this.endList = [...a[1]];
+    //   }
+    // }
   },
   computed: {
     ...mapState({
       conversationList: state => state.conversation.conversationList,
       currentConversation: state => state.conversation.currentConversation,
       isSDKReady: state => state.user.isSDKReady,
-      visitorInf: state => state.basic.visitorInf
+      visitorInf: state => state.basic.visitorInf,
+      messageList: state => state.conversation.messageList
     }),
     sessionList: function() {
       this.penddingList = [];
@@ -267,7 +366,10 @@ export default {
 
                   this.$store.commit("getVisitorInf", obj);
                 }
-                let status = item.lastMessage.payload.data.subMsgType == "stopsession" ? 0 : 1
+                let status =
+                  item.lastMessage.payload.data.subMsgType == "stopsession"
+                    ? 0
+                    : 1;
                 this.endSession(item.id, status);
               }
             });

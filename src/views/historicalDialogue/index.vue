@@ -47,7 +47,7 @@
           />
         </div>
         <div class="information">
-          <UserInformation :guestId="guestId" />
+          <UserInformation guestId="8c730589aa1d41a19d2ce8ca23f9fb1e"  />
         </div>
       </div>
     </a-modal>
@@ -360,7 +360,7 @@ export default {
     skipDetail(id) {
       this.detailId = id;
       console.log(id, "==========id");
-      this.Request.get("/hfw/tsmHfwLeaveComments/infoJson?id=" + id).then(
+      this.Request.get("/hfw/hfwSessionInfo/infoJson?id=" + id).then(
         res => {
           let data = res.data.data;
           this.handleResultCon.con = data.result;

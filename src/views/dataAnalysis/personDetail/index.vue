@@ -1,41 +1,40 @@
 <template>
   <div>
-    <a-page-header title="个人统计" style="padding:16px 0;" />
-    <div class>
-      <FormModelSearchForm
-        :defaultFormValues="defaultSearchFormValues"
-        :formList="searchFormList"
-        @prevHandleSubmit="prevHandleSubmit"
-      />
+    <div class="headerTit">
+        <a-button type="link" @click="backFn">返回</a-button><span class="separate">|</span>个人明细
+    </div>
+    
+    <div class="statisticalInterval">
+      统计区间:{{dateString.date1}}~{{dateString.date2}}
     </div>
     <div class="receptionList">
       <ul>
         <li>
-          <span class="rece1"><span class="overviewIcon overviewIcon1"></span>话务总量</span>
+          <span class="rece1">话务总量</span>
           <span class="rece2 style1">{{info.callTotalNum}}</span>
           <span class="rece3">呼入量/已接:{{info.inCallAllNum}}/{{info.inCallAnswerNum}}</span>
           <span class="rece3">呼出量/已接:{{info.callOutAllNum}}/{{info.callOutAnswerNum}}</span>
         </li>
         <li>
-          <span class="rece1"><span class="overviewIcon overviewIcon2"></span>通话时长</span>
+          <span class="rece1">通话时长</span>
           <span class="rece2 style2">{{info.callTotalTime}}</span>
           <span class="rece3">呼入时长:{{info.callInTime}}</span>
           <span class="rece3">呼出时长:{{info.callOutTime}}</span>
         </li>
         <li>
-          <span class="rece1"><span class="overviewIcon overviewIcon3"></span>平均通话时长</span>
+          <span class="rece1">平均通话时长</span>
           <span class="rece2 style3">{{info.avgCallTime}}</span>
           <span class="rece3">平均呼出时长:{{info.avgCallOutTime}}</span>
           <span class="rece3">平均呼入时长:{{info.avgCallInTime}}</span>
         </li>
         <li>
-          <span class="rece1"><span class="overviewIcon overviewIcon4"></span>接通率</span>
+          <span class="rece1">接通率</span>
           <span class="rece2 style4">{{info.completionRate}}</span>
           <span class="rece3">呼出接通率:{{info.callOutCRate}}</span>
           <span class="rece3">呼入接通率:{{info.callInCRate}}</span>
         </li>
         <li>
-          <span class="rece1"><span class="overviewIcon overviewIcon5"></span>小结完成率</span>
+          <span class="rece1">小结完成率</span>
           <span class="rece2 style5">{{info.summaryRate}}</span>
         </li>
       </ul>
@@ -56,6 +55,10 @@ import moment from 'moment';
 export default {
   data() {
     return {
+      dateString:{
+          date1:this.$route.query.beginDate,
+          date2:this.$route.query.endDate,
+      },
       columns: [
         {
           title: "日期",
@@ -157,14 +160,16 @@ export default {
   },
   mounted(){
     this.getPhonePersonInfo();
+    console.log(this.$route.query,'this.$route.query')
   },
   methods: {
     getPhonePersonInfo(){
-      let dateObj = Object.assign({}, this.defaultSearchFormValues);
+      let dateObj = Object.assign({}, this.defaultSearchFormValues,this.searchParams);
       let dateArr = dateObj.inputDateStart
       let params = {
         beginDate:dateArr[0],
         endDate:dateArr[1],
+        serviceAcc:this.$route.query.serviceAcc
       }
       api.phonePersonInfo(params).then(res=>{
         console.log('电话客服-个人统计',res)
@@ -172,9 +177,10 @@ export default {
         this.info = res.data.totalDto;
       })
     },
-    prevHandleSubmit(val) {
-
-    }
+    backFn(){
+        this.$router.go(-1)
+    },
+    prevHandleSubmit(val) {}
   }
 };
 </script>
@@ -183,7 +189,6 @@ export default {
 .receptionList {
   ul {
     display: flex;
-    padding: 20px 0 20px;
     li {
       flex: 1;
       text-align: center;
@@ -193,30 +198,6 @@ export default {
       .rece1 {
         font-size: 14px;
         color: #4c4c4c;
-        .overviewIcon{
-          width: 30px;
-          height: 30px;
-          display: inline-block;
-          vertical-align: middle;
-          background-repeat: no-repeat;
-          background-size: 30px 30px;
-          padding-left: 35px;
-        }
-        .overviewIcon1{
-          background-image: url('../../../assets/imgs/da1.png');
-        }
-        .overviewIcon2{
-          background-image: url('../../../assets/imgs/da2.png');
-        }
-        .overviewIcon3{
-          background-image: url('../../../assets/imgs/da3.png');
-        }
-        .overviewIcon4{
-          background-image: url('../../../assets/imgs/da4.png');
-        }
-        .overviewIcon5{
-          background-image: url('../../../assets/imgs/da5.png');
-        }
       }
       .rece2 {
         font-size: 36px;
@@ -243,5 +224,14 @@ export default {
       }
     }
   }
+}
+.headerTit{
+    .separate{
+        padding: 0 15px 0 0;
+    }
+}
+.statisticalInterval{
+    line-height: 100px;
+    padding-left: 20px;
 }
 </style>

@@ -17,7 +17,7 @@
                 <div v-if="conversation.endTime">{{time}}</div>
             </div>
             <div class="row-2">
-                <div class="summary" :title="conversation.lastMessage.messageForShow">{{messageForShow}}</div>
+                <div class="summary" :title="conversation.lastMessage.messageForShow != '' ? conversation.lastMessage.messageForShow : conversation.latestMsgContent">{{messageForShow}}</div>
                 <div class="date">{{date}}</div>
             </div>
        </div>
@@ -40,13 +40,13 @@ export default {
     
   },
   mounted() {
-    // console.log(this.conversation)
+    console.log(this.conversation)
     // console.log(this.currentConversation)
     
   },
   methods: {
    selectConversation() {
-     console.log(this.conversation.conversationID,this.currentConversation.conversationID)
+     
       if (this.conversation.conversationID == this.currentConversation.conversationID) {
         this.$store.dispatch(
           'checkoutConversation',
@@ -58,7 +58,7 @@ export default {
           guestName: this.conversation.guestName,
           endTime: this.conversation.endTime
         };
-        console.log(obj)
+        
         this.$store.commit("getVisitorInf", obj);
       }
     },
@@ -108,7 +108,7 @@ export default {
         }
         return `${this.conversation.lastMessage.fromAccount}撤回了一条消息`
       }
-      return this.conversation.lastMessage.messageForShow
+      return this.conversation.lastMessage.messageForShow != '' ? this.conversation.lastMessage.messageForShow : this.conversation.latestMsgContent
     },
     date() {
       if (
