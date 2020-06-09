@@ -2,18 +2,11 @@
   <div>
     <div class="circleFlex">
       <div class="pr" v-for="(item,index) in chartList" :key="index">
-        <!-- <a-cascader
-          :field-names="fieldNames"
-          v-model="orderSel"
-          :options="treeOptions"
-          placeholder="请选择"
-          @change="treeOnChange"
-        />-->
-        <a-select v-if="item.typeId" @change="changeTypeFn" v-model="orderSel" style="width: 174px;">
+        <a-select v-if="item.typeId" @change="changeTypeFn" v-model="item.typeId" style="width: 174px;">
           <a-select-option
             v-for="(it,ind) in item.childList"
             :key="ind"
-            :value="it.pid"
+            :value="it.id"
           >{{it.name}}</a-select-option>
         </a-select>
         <CircleChart
@@ -22,21 +15,6 @@
           styles="width:100%;height:300px;margin:auto"
         />
       </div>
-      <!-- <div class="orderType3 pr">
-        <a-select @change="secondTypeFn" v-model="orderSel3" style="width: 174px;">
-          <a-select-option
-            v-for="(item,index) in orderTypeList2"
-            :key="index"
-            :value="item.id"
-          >{{item.name}}</a-select-option>
-        </a-select>
-        <CircleChart
-          id="circleChart3"
-          :echartObj="circleObj3"
-          v-if="circleObj3.legend.length"
-          styles="width:100%;height:300px;margin:auto"
-        />
-      </div>-->
     </div>
   </div>
 </template>
@@ -81,7 +59,7 @@ export default {
         {
           id: "chart2",
           childList: [],
-          typeId:"51466f0262e04938b2065d9cb0481b10",
+          typeId:"",
           echartObj: {
             legend: [
               "电话接待",
@@ -111,7 +89,7 @@ export default {
         {
           id: "chart3",
           childList: [],
-          typeId:"3cd05d068ff74bb2a20af3da4340288f",
+          typeId:"",
           echartObj: {
             legend: [
               "电话接待",

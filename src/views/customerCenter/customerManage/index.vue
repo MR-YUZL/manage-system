@@ -475,7 +475,11 @@ export default {
     },
     exportUrl() {
       this.modals.exportCustomerVisible = false;
-      let param = qs.stringify(this.searchParams);
+      let param = qs.stringify({
+        ...this.searchParams,
+        totalRecord:this.pager.totalRecord
+      });
+      console.log(param,'exportUrl111')
       let url = `/customers/hfwCustomersInfo/exportJson?${param}`;
       window.location.href = url;
       // document.location = url;

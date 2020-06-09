@@ -211,7 +211,10 @@ export default {
     },
     exportUrl(){
       this.visible = false;
-      let param = qs.stringify(this.searchParams);
+      let param = qs.stringify({
+        ...this.searchParams,
+        totalRecord:this.pager.totalRecord
+      });
       let url =`/customers/hfwCustomersClue/exportJson?${param}`;
       window.location.href = url;
     },

@@ -8,6 +8,10 @@ export default {
     overviewInfo(params) {
         return axios.get('/overview/count/info', {params})
     },
+    //总览-咨询分类
+    consultTypeChartJson(params) {
+        return axios.get('/overview/count/type', {params})
+    },
     //数据分析-电话客服-个人统计  
     phonePersonInfo(params) {
         return axios.get('/phoneSerivce/data/getPersonData', {params})
@@ -32,6 +36,7 @@ export default {
     orderTypeChartJson(params) {
         return axios.get('/hfw/count/type/list', {params})
     },
+    
     //工单分类查询/下拉框  
     orderTypeSelectJson(params) {
         return axios.get('/config/system/listJson', {params})

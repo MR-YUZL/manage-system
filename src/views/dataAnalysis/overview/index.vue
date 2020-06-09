@@ -11,25 +11,25 @@
     <div class="receptionList">
       <ul>
         <li>
-          <span class="rece1">总接待量</span>
+          <span class="rece1"><span class="overviewIcon overviewIcon1"></span>总接待量</span>
           <span class="rece2 style1">{{info.allReceptionNum}}</span>
           <span class="rece3">电话接待:{{info.inCallAnswerNum}}</span>
           <span class="rece3">会话接待:{{info.sessionNum}}</span>
         </li>
         <li>
-          <span class="rece1">人均通话时长</span>
+          <span class="rece1"><span class="overviewIcon overviewIcon2"></span>人均通话时长</span>
           <span class="rece2 style2">{{info.avgCallTime}}</span>
           <span class="rece3">人均呼入时长:{{info.avgCallInTime}}</span>
           <span class="rece3">人均呼出时长:{{info.avgCallOutTime}}</span>
         </li>
         <li>
-          <span class="rece1">平均会话时长</span>
+          <span class="rece1"><span class="overviewIcon overviewIcon3"></span>平均会话时长</span>
           <span class="rece2 style3">{{info.avgSessionTime}}</span>
           <span class="rece3">平均首次响应时间:{{info.avgFirstRespTime}}</span>
           <span class="rece3">平均响应时间:{{info.avgRespTime}}</span>
         </li>
         <li>
-          <span class="rece1">会话满意率</span>
+          <span class="rece1"><span class="overviewIcon overviewIcon4"></span>会话满意率</span>
           <span class="rece2 style4">{{info.satisfiedAppraiseRate}}</span>
           <span class="rece3">参评率:{{info.appraiseRate}}</span>
         </li>
@@ -55,6 +55,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import LineChart from "@/views/dataAnalysis/lineChart";
@@ -81,7 +82,9 @@ export default {
           optionLabel: "groupName"
         }
       ],
-      defaultSearchFormValues: {},
+      defaultSearchFormValues: {
+        inputDateStart:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")],
+      },
       echartObj: {
         // legend: ["消息总数", "访客发出消息", "客服发出消息"],
         // xAxis: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
@@ -233,7 +236,6 @@ export default {
           {
              value: sum,
              name: "总接待量",
-             itemStyle: { normal: { color: "#ffffff" } }
           }
         ]
         this.$set(this.circleObj,'total',total)
@@ -263,6 +265,7 @@ export default {
 .receptionList {
   ul {
     display: flex;
+    padding: 20px 0 20px;
     li {
       width: 25%;
       text-align: center;
@@ -272,6 +275,27 @@ export default {
       .rece1 {
         font-size: 14px;
         color: #4c4c4c;
+        .overviewIcon{
+          width: 30px;
+          height: 30px;
+          display: inline-block;
+          vertical-align: middle;
+          background-repeat: no-repeat;
+          background-size: 30px 30px;
+          padding-left: 35px;
+        }
+        .overviewIcon1{
+          background-image: url('../../../assets/imgs/da1.png');
+        }
+        .overviewIcon2{
+          background-image: url('../../../assets/imgs/da6.png');
+        }
+        .overviewIcon3{
+          background-image: url('../../../assets/imgs/da7.png');
+        }
+        .overviewIcon4{
+          background-image: url('../../../assets/imgs/da8.png');
+        }
       }
       .rece2 {
         font-size: 36px;
