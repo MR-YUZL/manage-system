@@ -221,7 +221,7 @@ export default {
   },
   methods: {
     getOverviewInfo(){
-      api.overviewInfo().then(res=>{
+      api.overviewInfo(this.defaultSearchFormValues).then(res=>{
         console.log(res,'总览')
         this.info = res.data.data;
         this.echartObj = this.info.callChar;
@@ -243,13 +243,11 @@ export default {
       })
     },
     prevHandleSubmit(val) {
-      //   this.searchParams = Object.assign(
-      //     {},
-      //     this.searchParams,
-      //     this.clueArea,
-      //     val
-      //   );
-      //   this.getList();
+       this.defaultSearchFormValues = {
+        ...val
+      }
+      this.getOverviewInfo()
+     
     },
   }
 };

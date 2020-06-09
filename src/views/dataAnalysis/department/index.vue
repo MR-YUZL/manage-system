@@ -47,7 +47,7 @@
       @ok="handleOkExportGroup"
     >
       是否确认导出按组分析的数据？
-      <br />本次导出条数据
+      <br />本次导出{{groupDataSource.length}}条数据
     </a-modal>
     <a-modal
       title="导出"
@@ -57,14 +57,16 @@
       @ok="handleOkExportMember"
     >
       是否确认导出按人分析的数据？
-      <br />本次导出条数据
+      <br />本次导出{{memberDataSource.length}}条数据
     </a-modal>
   </div>
 </template>
 
 <script>
+import moment from "moment";
 import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import qs from "qs";
 export default {
   data() {
     return {
@@ -72,18 +74,7 @@ export default {
         showMember: false,
         showGroup: false
       },
-      memberDataSource: [
-        {
-          key: "1",
-          groupName: "0",
-          callTotalNum: "inputtime"
-        },
-        {
-          key: "2",
-          groupName: "0",
-          callTotalNum: "inputtime"
-        }
-      ],
+      memberDataSource: [],
       memberColumns: [
         {
           title: "操作",
@@ -231,8 +222,8 @@ export default {
         }
       ],
       defaultSearchFormValues: {
-        // inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
-        inputDateStart: ["2020-06-03", "2020-06-08"]
+        inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
+        // inputDateStart: ["2020-06-03", "2020-06-08"]
       },
       searchParams: {},
       groupId: ""
@@ -248,11 +239,9 @@ export default {
   methods: {
     getPhoneDepartmentInfo() {
       let promise = new Promise((resolve, reject) => {
-        let dateObj = Object.assign(
-          {},
-          this.defaultSearchFormValues,
-          this.searchParams
-        );
+        let dateObj = {
+          ...this.defaultSearchFormValues
+        };
         let dateArr = dateObj.inputDateStart;
         let params = {
           beginDate: dateArr[0],
@@ -263,15 +252,15 @@ export default {
           resolve(res);
           console.log("电话客服-按组分析", res);
           this.groupDataSource = res.data.list;
-          this.groupId = res.data.list[0].groupId;
+          if(res.data.list.length > 0){
+            this.groupId = res.data.list[0].groupId;
+          }
         });
       });
       promise.then(res => {
-        let dateObj = Object.assign(
-          {},
-          this.defaultSearchFormValues,
-          this.searchParams
-        );
+        let dateObj = {
+          ...this.defaultSearchFormValues
+        };
         let dateArr = dateObj.inputDateStart;
         let params = {
           beginDate: dateArr[0],
@@ -302,6 +291,7 @@ export default {
               groupIds: record.groupId,
               analysisType: 1
             };
+            this.groupId = record.groupId;
             api.phoneDepartmentInfo(params).then(res => {
               this.memberDataSource = res.data.list;
             });
@@ -316,11 +306,9 @@ export default {
       });
     },
     detailFn(account) {
-      let dateObj = Object.assign(
-        {},
-        this.defaultSearchFormValues,
-        this.searchParams
-      );
+      let dateObj = {
+          ...this.defaultSearchFormValues
+        };
       let dateArr = dateObj.inputDateStart;
       let params = {
         beginDate: dateArr[0],
@@ -329,7 +317,12 @@ export default {
       };
       this.$router.push({ path: "/dataAnalysis/personDetail", query: params });
     },
-    prevHandleSubmit(val) {},
+    prevHandleSubmit(val) {
+      this.defaultSearchFormValues = {
+        ...val
+      }
+      this.getPhoneDepartmentInfo();
+    },
     exportGroup() {
       this.exportModal.showGroup = true;
     },
@@ -343,21 +336,46 @@ export default {
       this.exportModal.showMember = false;
     },
     handleOkExportGroup() {
+
       ///
-      let param = {
-        list:this.groupDataSource
+      let {inputDateStart,...others} = this.defaultSearchFormValues
+      let dateArr = {}
+      if(inputDateStart&&inputDateStart.length > 0){
+        dateArr = {
+          beginDate: inputDateStart[0],
+          endDate: inputDateStart[1],
+        }
       }
-      console.log(param,'param')
+        let param = qs.stringify({
+          ...dateArr,
+          analysisType: 0,
+          ...others
+        });
+      
       let url =`/phoneSerivce/data/groupReportExport?${param}`;
       window.location.href = url;
+      this.exportModal.showGroup = false;
     },
     handleOkExportMember() {
       ///
-      let param = {
-        list:this.memberDataSource
+  
+      let {inputDateStart,...others} = this.defaultSearchFormValues
+      let dateArr = {}
+      if(inputDateStart&&inputDateStart.length > 0){
+        dateArr = {
+          beginDate: inputDateStart[0],
+          endDate: inputDateStart[1],
+        }
       }
+        let param = qs.stringify({
+          ...dateArr,
+          analysisType: 1,
+          groupIds:this.groupId,
+          ...others
+        });
       let url =`/phoneSerivce/data/personReportExport?${param}`;
       window.location.href = url;
+      this.exportModal.showMember = false;
     }
   }
 };
@@ -367,7 +385,7 @@ export default {
 .groupAnalyze {
   display: flex;
   justify-content: space-between;
-  padding: 0 20px;
-  margin-top: 20px;
+  padding: 20px;
+  line-height: 32px;
 }
 </style>
