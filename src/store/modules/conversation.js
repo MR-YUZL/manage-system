@@ -8,7 +8,8 @@ const conversationModules = {
     currentMessageList: [],
     nextReqMessageID: '',
     isCompleted: false, // 当前会话消息列表是否已经拉完了所有消息
-    conversationList: []
+    conversationList: [],
+    messageList:[],//获取对方新消息
   },
   getters: {
     toAccount: state => {
@@ -86,6 +87,7 @@ const conversationModules = {
      * @returns
      */
     pushCurrentMessageList(state, data) {
+      state.messageList = data
       // 还没当前会话，则跳过
       if (!state.currentConversation.conversationID) {
         return
