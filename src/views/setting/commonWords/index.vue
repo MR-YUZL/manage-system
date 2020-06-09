@@ -217,16 +217,17 @@ export default {
     computed:{
       rowSelection(){
         return {
+          selectedRowKeys: this.selectedRowKeys,
           onChange: (selectedRowKeys, selectedRows) => {
             console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            this.selectedRowKeys = selectedRowKeys
           },
-          onSelect: (record, selected, selectedRows) => {
-            console.log(record, selected, selectedRows);
-            this.selectedRowKeys = selectedRows
-          },
-          onSelectAll: (selected, selectedRows, changeRows) => {
-            console.log(selected, selectedRows, changeRows);
-          },
+          // onSelect: (record, selected, selectedRows) => {
+          //   console.log(record, selected, selectedRows);
+          // },
+          // onSelectAll: (selected, selectedRows, changeRows) => {
+          //   console.log(selected, selectedRows, changeRows);
+          // },
         }
       },
     },
@@ -315,7 +316,9 @@ export default {
         })
         this.groupList[index].active = true
         this.getCommonWordsList()
+        this.selectedRowKeys = []
         this.pager.currentPage = 1
+        this.$forceUpdate()
       },
       searchList(){
         this.pager.currentPage = 1
