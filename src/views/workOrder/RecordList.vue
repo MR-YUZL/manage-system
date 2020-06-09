@@ -2,7 +2,7 @@
   <div class="">
     <a-tabs :animated="false">
       <a-tab-pane key="1" tab="工单日志">
-        <ul class="recordList">
+        <ul class="recordList scroll" >
           <li v-for="(item,index) in workOrderList" :key="index">
             <h5>{{item.inputAcc}}</h5>
             <p>{{item.inputTime}}<span>{{changeType(item.type)}}</span></p>
@@ -11,7 +11,7 @@
         </ul>
       </a-tab-pane>
       <a-tab-pane key="2" tab="操作记录">
-        <ul class="recordList">
+        <ul class="recordList scroll">
           <li v-for="(item,index) in handleList" :key="index">
             <h5>{{item.inputAcc}}</h5>
             <p>{{item.inputTime}}<span>{{item.content}}</span></p>
@@ -88,7 +88,8 @@ export default {
 </script>
 <style lang="less" scoped>
 .recordList{
-  // line-height:30px;
+  height:550px;
+  overflow-y:scroll;
   p{
     color:#bbb;
     margin-bottom:10px;
@@ -101,4 +102,6 @@ export default {
     margin-bottom:20px;
   }
 }
+
+
 </style>
