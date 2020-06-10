@@ -33,6 +33,7 @@ export default {
       let that = this;
       // 绘制图表
       myChart.setOption({
+        color:['#0097fe','#3b75e8','#f3cf21','#f3942e','#18bc85','#ccc','#005afe','#7dcaff','#04885c','#916fe6'],
         tooltip: {
           trigger: "item",
           formatter: "{a} <br/>{b}: {c} ({d}%)"
@@ -50,27 +51,36 @@ export default {
             var labels = that.echartObj.legend;
             var counts = that.echartObj.series;
             // console.log(labels,counts,'你是不是没值')
-            var sum = counts.reduce(function(a, b) {
-              return Number(a) + Number(b.value);
-            }, 0);
-            labels.forEach(function(value, i) {
-              if (value == name) {
-                index = i;
-              }
-            });
+            var sum = ''
+            if(counts&&counts.length>0){
+              sum = counts.reduce(function(a, b) {
+                return Number(a) + Number(b.value);
+              }, 0);
+            }
+            if(labels&&labels.length>0){
+              labels.forEach(function(value, i) {
+                if (value == name) {
+                  index = i;
+                }
+              });
+            }
             if(sum){
-              return (
-                name +
-                " | " +
-                ((Number(counts[index].value) / sum) * 100).toFixed(0) +
-                "% " +
-                counts[index].value
-              );
+              if(counts&&counts.length>0){
+                return (
+                  name +
+                  " | " +
+                  ((Number(counts[index].value) / sum) * 100).toFixed(0) +
+                  "% " +
+                  counts[index].value
+                );
+              }
             }else {
-              return name +
-                " | " +
-                "0% " +
-                counts[index].value
+              if(counts&&counts.length>0){
+                return name +
+                  " | " +
+                  "0% " +
+                  counts[index].value
+              }
             }
             // if(counts&&counts.length>0){
             //   return name + "    " + counts[index].value;
