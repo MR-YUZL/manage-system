@@ -14,7 +14,7 @@
       ></a-input>
       <!-- select 下拉框 -->
       <a-select
-        style="width: 174px;"
+        style="width: 200px;"
         v-if="item.type=='select'"
         v-model="formInline[item.name]"
         :mode="item.mode?item.mode:'default'"
@@ -30,7 +30,7 @@
       </a-select>
       <!-- select group 下拉框 -->
       <a-select
-        style="width: 174px;"
+        style="width: 200px;"
         v-if="item.type=='selectGroup'"
         v-model="formInline[item.name]"
         :mode="item.mode?item.mode:'default'"
@@ -66,7 +66,7 @@
           v-if="item.compact=='input'"
           v-model="formInline[item.name]"
           :placeholder="item.placeholder"
-          style="width:174px;"
+          style="width:200px;"
         />
         <a-range-picker
           v-if="item.compact=='datepicker'"
@@ -207,3 +207,15 @@ export default {
   }
 };
 </script>
+<style lang="less" scoped>
+.ant-form {
+  padding: 10px 15px;
+  border-bottom: 1px solid #e8e8e8;
+}
+.ant-form-inline .ant-form-item{
+  margin-bottom: 10px;
+}
+.ant-form{
+  
+}
+</style>

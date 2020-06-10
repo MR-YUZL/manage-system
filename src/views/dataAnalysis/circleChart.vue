@@ -14,6 +14,12 @@ export default {
       default: {}
     }
   },
+  watch: {
+    echartObj(val,oldVal) {
+      console.log("echartObj======",this.id,val,oldVal)
+      this.initChart();
+    }
+  },
   data() {
     return {};
   },
@@ -44,22 +50,31 @@ export default {
             var labels = that.echartObj.legend;
             var counts = that.echartObj.series;
             // console.log(labels,counts,'你是不是没值')
-            // var sum = counts.reduce(function(a, b) {
-            //   return a + b.value;
-            // }, 0);
-            // labels.forEach(function(value, i) {
-            //   if (value == name) {
-            //     index = i;
-            //   }
-            // });
-            // return (
-            //   name +
-            //   " | " +
-            //   ((counts[index].value / Number(sum)) * 100).toFixed(0) +
-            //   "% " +
-            //   counts[index].value
-            // );
-            return name + "    " + counts[index].value;
+            var sum = counts.reduce(function(a, b) {
+              return Number(a) + Number(b.value);
+            }, 0);
+            labels.forEach(function(value, i) {
+              if (value == name) {
+                index = i;
+              }
+            });
+            if(sum){
+              return (
+                name +
+                " | " +
+                ((Number(counts[index].value) / sum) * 100).toFixed(0) +
+                "% " +
+                counts[index].value
+              );
+            }else {
+              return name +
+                " | " +
+                "0% " +
+                counts[index].value
+            }
+            // if(counts&&counts.length>0){
+            //   return name + "    " + counts[index].value;
+            // }
             // return name ;
           }
         },

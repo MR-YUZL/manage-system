@@ -145,8 +145,8 @@ export default {
         }
       ],
       defaultSearchFormValues: {
-        // inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
-        inputDateStart:['2020-06-03','2020-06-06']
+        inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
+        // inputDateStart:['2020-06-03','2020-06-06']
       },
       searchParams:{},
       info:{},
@@ -160,7 +160,9 @@ export default {
   },
   methods: {
     getPhonePersonInfo(){
-      let dateObj = Object.assign({}, this.defaultSearchFormValues);
+      let dateObj = {
+        ...this.defaultSearchFormValues
+      };
       let dateArr = dateObj.inputDateStart
       let params = {
         beginDate:dateArr[0],
@@ -173,7 +175,10 @@ export default {
       })
     },
     prevHandleSubmit(val) {
-
+      this.defaultSearchFormValues = {
+        ...val
+      }
+      this.getPhonePersonInfo();
     }
   }
 };
