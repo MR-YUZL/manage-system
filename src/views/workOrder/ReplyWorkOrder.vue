@@ -9,6 +9,13 @@
       <a-button type="primary" @click="handleWorkOrder(4)">重启</a-button>
     </div>
     <p class="text">{{info.content}}</p>
+    <div v-if="info.fileList&&info.fileList.length>0" class="fileListStyle">
+       <span v-for="(item,index) in info.fileList" :key="index">
+         <a-icon type="file"/>
+         {{item.fileName}}
+         <a :href="item.fileUrl">下載</a>
+       </span>
+    </div>
     <div v-if="info.status!=2">
     <BaseForm ref="replayForm" :formObject="replayFormObject"   @formSubmit="replyWorkOrder"></BaseForm>
     </div>
@@ -57,7 +64,7 @@ export default {
                 type: "upload",
                 label: "上传附件",
                 placeholder: "请选择",
-                ruleName: "fileList ",
+                ruleName: "fileList",
               },
             ],
             defaultValues:{
@@ -71,7 +78,7 @@ export default {
       workOrderId(value){
         if(value){
           // this.getWorkOrderDetails()
-          this.$refs.replayForm.$refs.replayWorkOrderModal.resetFields();
+          this.$refs.replayForm.resetForm()
         }
       },
       orderInfo(){
@@ -108,17 +115,29 @@ export default {
       // 回复
       replyWorkOrder(data){
         console.log(data,'====')
+        let {fileList , ...others} = data
         let params = {
           workflowId:this.workOrderId,
           type:1,
-          ...data,
+          ...others,
+          fileList:[]
         }
-        this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(()=>{
-           this.$message.success('操作成功')
-           this.replayFormObject.defaultValues.content  = ''
-           this.replayFormObject.defaultValues.fileList = []
-           this.$emit('updataOrderRecord')
-        })
+        if(fileList&&fileList.length>0){
+          fileList.map(item=>{
+            params.fileList.push({
+              fileUrl:item.url,
+              fileName:item.fileName
+            })
+          })
+        }
+        this.$refs.replayForm.resetForm()
+        console.log('回复的参数',params)
+        // this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(()=>{
+        //   this.$message.success('操作成功')
+        //   this.replayFormObject.defaultValues.content  = ''
+        //   this.replayFormObject.defaultValues.fileList = []
+        //   this.$emit('updataOrderRecord')
+        // })
       }
     }
 }
@@ -150,6 +169,17 @@ export default {
   margin-bottom:5px;
   button{
     margin-left:0!important;
+  }
+}
+.fileListStyle{
+  display:flex;
+  flex-wrap:wrap;
+  span{
+    margin-bottom:10px;  
+    margin-right:10px;
+    display:block;
+    padding:10px;
+    border:thin solid #ddd;
   }
 }
 </style>

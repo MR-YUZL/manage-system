@@ -612,14 +612,23 @@ export default {
         this.$refs.formObjectCreated.resetForm()
       },
       formSubmitWorkOrder(data){
-        console.log('创建工单参数',data)
-        let {typeId,...others} = data
+        let {fileList,typeId,...others} = data
         let params = {
           ...others,
+          fileList:[]
         }
         if(typeId&&typeId.length>0){
             params.typeId = typeId[typeId.length-1]
         }
+        if(fileList&&fileList.length>0){
+          fileList.map(item=>{
+            params.fileList.push({
+              fileUrl:item.url,
+              fileName:item.fileName
+            })
+          })
+        }
+        console.log('创建工单参数',params)
         this.Request.post('/workflow/saveWorkflow',params).then(res=>{
           console.log('工单创建成功',res)
           this.createdWorkOrder.visible = false

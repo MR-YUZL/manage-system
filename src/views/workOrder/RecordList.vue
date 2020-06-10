@@ -7,6 +7,13 @@
             <h5>{{item.inputAcc}}</h5>
             <p>{{item.inputTime}}<span>{{changeType(item.type)}}</span></p>
             <div>{{item.content}}</div>
+            <div v-if="item.fileList.length>0" class="fileListStyle">
+               <span v-for="(it,index) in item.fileList" :key="index">
+                  <a-icon type="file"/>
+                  {{it.fileName}}
+                  <a :href="it.fileUrl">下載</a>
+                </span>
+            </div>
           </li>
         </ul>
       </a-tab-pane>
@@ -102,6 +109,18 @@ export default {
     margin-bottom:20px;
   }
 }
-
+.fileListStyle{
+  margin-top:10px;
+  display:flex;
+  flex-wrap:wrap;
+  span{
+    margin-bottom:10px;  
+    margin-right:10px;
+    display:block;
+    padding:10px;
+    border:thin solid #ddd;
+  }
+}
 
 </style>
+

@@ -264,14 +264,23 @@ export default {
       },
       formSubmitWorkOrder(data){
         console.log('创建工单参数',data)
-        let {typeId,customerId,...others} = data
+        let {fileList,typeId,customerId,...others} = data
         let custId = customerId?customerId:this.relevObj.detailId;
         let params = {
           ...others,
-          customerId:custId
+          customerId:custId,
+          fileList:[]
         }
         if(typeId&&typeId.length>0){
             params.typeId = typeId[typeId.length-1]
+        }
+        if(fileList&&fileList.length>0){
+          fileList.map(item=>{
+            params.fileList.push({
+              fileUrl:item.url,
+              fileName:item.fileName
+            })
+          })
         }
         this.Request.post('/workflow/saveWorkflow',params).then(res=>{
           console.log('工单创建成功',res)
