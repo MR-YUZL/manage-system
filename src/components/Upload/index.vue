@@ -2,7 +2,7 @@
   <div class="uploadBox">
     <a-upload
       name="file"
-      action="http://up.test.com/fileupload/upload"
+      action="/fileupload/upload"
       :multiple="true"
       :beforeUpload="beforeUpload"
       @change="handleChange"
@@ -27,7 +27,7 @@ export default {
   watch: {
     list(val, oldVal) {
       console.log(val, oldVal, "watch======");
-      this.updateDefaultFileList(val);
+      // this.updateDefaultFileList(val);
     }
   },
   props: {
@@ -57,7 +57,7 @@ export default {
     },
     updateDefaultFileList(list) {
       let tempList = [];
-      list.map((item, index) => {
+      list && list.map((item, index) => {
         let temp = {
           uid: index,
           url: item.url,
@@ -79,12 +79,13 @@ export default {
         if(file.url) {
           paramsFile.push(file)
         }
-        if (file.response && file.response.status) {
-          // console.log(file.response.data, "data");
-          paramsFile.push(Object.assign({uid:file.uid},file.response.data));
+        if (file.response && file.response.status === "success") {
+          // console.log(file.response, "data");
+          paramsFile.push(Object.assign({uid:file.uid},file.response));
         }
       });
       // this.fileList = paramsFile
+      console.log("paramsFile=========",paramsFile,fileList)
       this.$emit("change", paramsFile, this.propName);
     }
   }
