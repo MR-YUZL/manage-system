@@ -46,10 +46,24 @@
     <a-page-header title="接待来源" style="padding:16px 0;" />
     <CircleChart id="circleChart" :echartObj="circleObj" styles="width:600px;height:300px;margin:auto" />
     <a-page-header title="咨询分类" style="padding:16px 0;" />
+    <!-- 咨询分类 -->
     <div class="circleFlex">
-      <CircleChart id="circleChart1" :echartObj="circleObj1" styles="width:100%;height:300px;margin:auto" />
-      <CircleChart id="circleChart2" :echartObj="circleObj2" styles="width:100%;height:300px;margin:auto" />
-      <CircleChart id="circleChart3" :echartObj="circleObj3" styles="width:100%;height:300px;margin:auto" />
+      <div class="pr" v-for="(item,index) in chartList" :key="index">
+        <a-select
+          v-if="item.typeId"
+          @change="changeTypeFn($event,item)"
+          v-model="item.typeId"
+          style="width: 174px;"
+        >
+          <a-select-option v-for="(it,ind) in item.childList" :key="ind" :value="it.id">{{it.name}}</a-select-option>
+        </a-select>
+        <CircleChart
+          :id="item.id"
+          :key="item.id"
+          :echartObj="item.echartObj"
+          styles="width:100%;height:300px;margin:auto"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -74,7 +88,7 @@ export default {
 
         {
           type: "select",
-          name: "inputAccs",
+          name: "serviceAcc",
           label: "技能组",
           mode: "multiple",
           options: [],
@@ -83,7 +97,8 @@ export default {
         }
       ],
       defaultSearchFormValues: {
-        inputDateStart:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")],
+        // inputDateStart:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")],
+        inputDateStart:['2020-06-01','2020-06-10']
       },
       echartObj: {
         // legend: ["消息总数", "访客发出消息", "客服发出消息"],
@@ -134,77 +149,36 @@ export default {
         // ]
       },
       circleObj: {
-        legend: ["电话接待", "网页接待", "微信公众号", "微信个人号", "微信小程序", "QQ接待"],
-        series: [
-          { value: 335, name: "电话接待" },
-          { value: 310, name: "网页接待" },
-          { value: 234, name: "微信公众号" },
-          { value: 135, name: "微信个人号" },
-          { value: 1548, name: "微信小程序" },
-          { value: 1548, name: "QQ接待" },
-        ],
-        total:[
-          {
-             value: 0,
-             name: "总接待量",
-             itemStyle: { normal: { color: "#ffffff" } }
-          }
-        ]
+        
       },
-      circleObj1:{
-        legend: ["电话接待", "网页接待", "微信公众号", "微信个人号", "微信小程序", "QQ接待"],
-        series: [
-          { value: 335, name: "电话接待" },
-          { value: 310, name: "网页接待" },
-          { value: 234, name: "微信公众号" },
-          { value: 135, name: "微信个人号" },
-          { value: 1548, name: "微信小程序" },
-          { value: 1548, name: "QQ接待" },
-        ],
-        total:[
-          {
-             value: 0,
-             name: "总接待量",
-             itemStyle: { normal: { color: "#ffffff" } }
+      chartList: [
+        {
+          id: "chart1",
+          typeId: "",
+          childList: [],
+          echartObj: {
+            
           }
-        ]
-      },
-      circleObj2:{
-        legend: ["电话接待", "网页接待", "微信公众号", "微信个人号", "微信小程序", "QQ接待"],
-        series: [
-          { value: 335, name: "电话接待" },
-          { value: 310, name: "网页接待" },
-          { value: 234, name: "微信公众号" },
-          { value: 135, name: "微信个人号" },
-          { value: 1548, name: "微信小程序" },
-          { value: 1548, name: "QQ接待" },
-        ],
-        total:[
-          {
-             value: 0,
-             name: "总接待量",
-             itemStyle: { normal: { color: "#ffffff" } }
+        },
+        {
+          id: "chart2",
+          childList: [],
+          typeId: "",
+          echartObj: {
+            
           }
-        ]
-      },
-      circleObj3:{
-        legend: ["电话接待", "网页接待", "微信公众号", "微信个人号", "微信小程序", "QQ接待"],
-        series: [
-          { value: 335, name: "电话接待" },
-          { value: 310, name: "网页接待" },
-          { value: 234, name: "微信公众号" },
-          { value: 135, name: "微信个人号" },
-          { value: 1548, name: "微信小程序" },
-          { value: 1548, name: "QQ接待" },
-        ],
-        total:[
-          {
-             value: 0,
-             name: "总接待量",
-             itemStyle: { normal: { color: "#ffffff" } }
+        },
+        {
+          id: "chart3",
+          childList: [],
+          typeId: "",
+          echartObj: {
+            
           }
-        ]
-      }
+        }
+      ],
+      chart2TypeId: "",
+      chart3TypeId: "",
     };
   },
   components: {
@@ -212,16 +186,97 @@ export default {
     LineChart,
     CircleChart
   },
+    watch: {
+    chart2TypeId(val,oldVal){
+      this.chartList[1].typeId = val;
+      let name =''
+      this.chartList[1].childList.map(v=>{
+        if(v.id==val){
+          name=v.name
+        }
+      })
+      this.getChartData(val,1,name)
+    },
+    chart3TypeId(val,oldVal){
+      this.chartList[2].typeId = val;
+      let name =''
+      this.chartList[2].childList.map(v=>{
+        if(v.id==val){
+          name=v.name
+        }
+      })
+      this.getChartData(val,2,name)
+    },
+  },
+  created() {
+    this.getTree();
+  },
    mounted() {
     this.getOverviewInfo();
     let receiveList =  analysis.getSkill();
     receiveList.then((res)=>{
       this.searchFormList[1].options = res;
     })
+    this.getChartData("",0,'总量');
   },
   methods: {
+    getTree() {
+      api.consultTypeList({ type: 0 }).then(res => {
+        console.log(res, "总览的整颗树");
+        
+        this.chartList[1].childList = res.data.list;
+        this.chart2TypeId = res.data.list && res.data.list.length ? res.data.list[0].id : "";
+        this.chartList[2].childList = res.data.list[0].childList;
+        this.chart3TypeId = res.data.list && res.data.list.length && res.data.list[0].childList && res.data.list[0].childList.length ? res.data.list[0].childList[0].id : "";
+        
+      });
+    },
+    //咨询分类图表
+    getChartData(typeId,chartIndex,str){
+      let {
+        inputDateStart,
+        serviceAcc,
+        ...others
+      } = this.defaultSearchFormValues;
+      let inputAccs = "";
+      if (serviceAcc && serviceAcc.length > 0) {
+        inputAccs = serviceAcc.join();
+      }
+      let params = {
+        startDate: inputDateStart[0],
+        endDate: inputDateStart[1],
+        serviceAcc: inputAccs,
+        typeId,
+        ...others
+      };
+      api.consultTypeChartJson(params).then(res=>{
+        this.chartList[chartIndex].echartObj = res.data.data;
+        let counts = res.data.data.series;
+        var sum = counts.reduce(function(a, b) {
+          return Number(a) + Number(b.value);
+        }, 0);
+        let total = [
+          {
+            value: sum,
+            name: str,
+            itemStyle: { normal: { color: "#ffffff" } }
+          }
+        ];
+        this.$set(this.chartList[chartIndex].echartObj, "total", total);
+      })
+    },
     getOverviewInfo(){
-      api.overviewInfo(this.defaultSearchFormValues).then(res=>{
+      let{inputDateStart,serviceAcc} = this.defaultSearchFormValues
+      let inputAccs = ''
+      if(serviceAcc&&serviceAcc.length){
+        inputAccs = serviceAcc.join()
+      }
+      let params = {
+        startDate:inputDateStart[0],
+        endDate:inputDateStart[1],
+        serviceAcc:inputAccs
+      }
+      api.overviewInfo(params).then(res=>{
         console.log(res,'总览')
         this.info = res.data.data;
         this.echartObj = this.info.callChar;
@@ -236,10 +291,10 @@ export default {
           {
              value: sum,
              name: "总接待量",
+             itemStyle: { normal: { color: "#ffffff" } }
           }
         ]
         this.$set(this.circleObj,'total',total)
-        console.log(this.circleObj,'数组加进去了没有')
       })
     },
     prevHandleSubmit(val) {
@@ -254,10 +309,19 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.circleFlex{
+.circleFlex {
   display: flex;
-  div{
+  div {
     flex: 1;
+  }
+  .pr {
+    position: relative;
+    .ant-select {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      z-index: 10;
+    }
   }
 }
 .receptionList {

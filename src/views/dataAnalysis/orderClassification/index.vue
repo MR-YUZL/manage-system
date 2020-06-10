@@ -203,7 +203,7 @@ export default {
   methods: {
     getTree() {
       api.consultTypeList({ type: 1 }).then(res => {
-        console.log(res, "整颗树");
+        console.log(res, "工单分类的整颗树");
         
         this.chartList[1].childList = res.data.list;
         this.chart2TypeId = res.data.list && res.data.list.length ? res.data.list[0].id : "";
@@ -290,8 +290,8 @@ export default {
     position: relative;
     .ant-select {
       position: absolute;
-      right: 0;
-      top: 0;
+      right: 20px;
+      top: 20px;
       z-index: 10;
     }
   }
