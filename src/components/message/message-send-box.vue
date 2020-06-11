@@ -161,7 +161,7 @@ export default {
         return;
       }
       // 1. 创建消息实例，接口返回的实例可以上屏
-      let message = this.tim.createImageMessage({
+      let message = this.tim(this.imInfo.SDKAppID).createImageMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
@@ -174,7 +174,7 @@ export default {
       this.$store.commit("pushCurrentMessageList", message);
 
       // 2. 发送消息
-      let promise = this.tim.sendMessage(message);
+      let promise = this.tim(this.imInfo.SDKAppID).sendMessage(message);
       promise.catch(error => {
         this.$store.commit("showMessage", {
           type: "error",
@@ -195,14 +195,14 @@ export default {
         });
         return;
       }
-      const message = this.tim.createTextMessage({
+      const message = this.tim(this.imInfo.SDKAppID).createTextMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: { text: this.messageContent }
       });
       this.$store.commit("pushCurrentMessageList", message);
       this.$bus.$emit("scroll-bottom");
-      this.tim.sendMessage(message).catch(error => {
+      this.tim(this.imInfo.SDKAppID).sendMessage(message).catch(error => {
         this.$store.commit("showMessage", {
           type: "error",
           message: error.message
@@ -222,7 +222,7 @@ export default {
         });
         return;
       }
-      const message = this.tim.createCustomMessage({
+      const message = this.tim(this.imInfo.SDKAppID).createCustomMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
@@ -232,7 +232,7 @@ export default {
         }
       });
       this.$store.commit("pushCurrentMessageList", message);
-      this.tim.sendMessage(message).catch(error => {
+      this.tim(this.imInfo.SDKAppID).sendMessage(message).catch(error => {
         this.$store.commit("showMessage", {
           type: "error",
           message: error.message
@@ -249,7 +249,7 @@ export default {
       return Math.floor(Math.random() * (max - min + 1) + min);
     },
     sendSurvey() {
-      const message = this.tim.createCustomMessage({
+      const message = this.tim(this.imInfo.SDKAppID).createCustomMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
@@ -264,7 +264,7 @@ export default {
         description: "",
         extension: ""
       });
-      this.tim
+      this.tim(this.imInfo.SDKAppID)
         .sendMessage(message)
         .then(() => {
           Object.assign(this, {
@@ -296,7 +296,7 @@ export default {
       this.$bus.$emit("video-call");
     },
     sendImage() {
-      const message = this.tim.createImageMessage({
+      const message = this.tim(this.imInfo.SDKAppID).createImageMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
@@ -307,7 +307,7 @@ export default {
         }
       });
       this.$store.commit("pushCurrentMessageList", message);
-      this.tim
+      this.tim(this.imInfo.SDKAppID)
         .sendMessage(message)
         .then(() => {})
         .catch(imError => {
@@ -319,7 +319,7 @@ export default {
       this.$refs.imagePicker.value = null;
     },
     sendFile() {
-      const message = this.tim.createFileMessage({
+      const message = this.tim(this.imInfo.SDKAppID).createFileMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
@@ -330,7 +330,7 @@ export default {
         }
       });
       this.$store.commit("pushCurrentMessageList", message);
-      this.tim
+      this.tim(this.imInfo.SDKAppID)
         .sendMessage(message)
         .then(() => {})
         .catch(imError => {
@@ -342,7 +342,7 @@ export default {
       this.$refs.filePicker.value = null;
     },
     sendVideo() {
-      const message = this.tim.createVideoMessage({
+      const message = this.tim(this.imInfo.SDKAppID).createVideoMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
         payload: {
@@ -353,7 +353,7 @@ export default {
         }
       });
       this.$store.commit("pushCurrentMessageList", message);
-      this.tim
+      this.tim(this.imInfo.SDKAppID)
         .sendMessage(message)
         .then(() => {
           this.$refs.videoPicker.value = null;
@@ -371,7 +371,7 @@ export default {
       if (this.status) {
         this.status = false;
         this.Request.get("/session/appraise").then(res => {
-          console.log("发起满意度调查事件");
+          // console.log("发起满意度调查事件");
         });
         this.timer = setTimeout(function() {
           that.status = true;

@@ -315,6 +315,7 @@ export default {
   .content-wrapper {
     display: flex;
     align-items: center;
+    justify-content: center;
     .prompts{
       font-size: 12px;
     }

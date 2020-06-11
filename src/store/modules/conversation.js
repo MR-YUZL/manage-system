@@ -139,7 +139,7 @@ const conversationModules = {
       }
       
       const { nextReqMessageID, currentMessageList } = context.state
-      tim.getMessageList({ conversationID, nextReqMessageID, count: 15 }).then(imReponse => {
+      tim(store.state.basic.imInfo.SDKAppID).getMessageList({ conversationID, nextReqMessageID, count: 15 }).then(imReponse => {
         console.log(imReponse)
         // 更新messageID，续拉时要用到
         context.state.nextReqMessageID = imReponse.data.nextReqMessageID
@@ -159,12 +159,12 @@ const conversationModules = {
       // 1.切换会话前，将切换前的会话进行已读上报
       if (context.state.currentConversation.conversationID) {
         const prevConversationID = context.state.currentConversation.conversationID
-        tim.setMessageRead({ conversationID: prevConversationID })
+        tim(store.state.basic.imInfo.SDKAppID).setMessageRead({ conversationID: prevConversationID })
       }
       // 2.待切换的会话也进行已读上报
-      tim.setMessageRead({ conversationID })
+      tim(store.state.basic.imInfo.SDKAppID).setMessageRead({ conversationID })
       // 3. 获取会话信息
-      return tim.getConversationProfile(conversationID).then(({ data }) => {
+      return tim(store.state.basic.imInfo.SDKAppID).getConversationProfile(conversationID).then(({ data }) => {
         // 3.1 更新当前会话
         context.commit('updateCurrentConversation', data.conversation)
         // 3.2 获取消息列表

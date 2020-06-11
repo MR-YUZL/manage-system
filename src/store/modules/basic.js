@@ -6,6 +6,7 @@ const basic = {
         outCallStatus:true,//选中的外呼任务状态
         classificationId:'',//知识库分类id
         visitorInf:{}, //访客信息
+        imInfo:{},   //im信息
     },
     mutations : {
         getStatus(state,status){
@@ -27,7 +28,10 @@ const basic = {
         },
         getVisitorInf(state,visitorInf){
             state.visitorInf = visitorInf
-        }
+        },
+        getImInfo(state,imInfo){
+            state.imInfo = imInfo
+        },
     },
     action : {
 

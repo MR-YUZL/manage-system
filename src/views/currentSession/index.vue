@@ -15,7 +15,8 @@ import sessionCenter from "./sessionCenter/index";
 import informationList from "./informationList/index";
 export default {
   data: () => ({
-    status: true
+    status: true,
+    infoObj:{}
   }),
   components: {
     sessionList,
@@ -23,16 +24,41 @@ export default {
     informationList
   },
   mounted() {
-    this.login();
-    this.initListener();
+    // this.login();
+    // this.initListener();
+    this.getIM()
   },
   methods: {
+    getIM() {
+      this.Request.get("/api/chat/customer/status/query").then(res => {
+        if (res.data.status) {
+          this.getSig(res.data.imAccount, res.data.imPassword);
+        }
+      });
+    },
+    getSig(imAccount, imPassword) {
+      let params = {
+        imAccount,
+        imPassword
+      };
+      this.Request.get("/guest/session/im/query/user/sig", params).then(res => {
+        if (res.data.status) {
+          this.infoObj = {
+            userID : imAccount,
+            userSig:res.data.userSig,
+            SDKAppID:res.data.sdkAppid
+          }
+          this.$store.commit('getImInfo',this.infoObj)
+          this.login();
+          this.initListener();
+        }
+      });
+    },
     login() {
-      this.tim
+      this.tim(this.infoObj.SDKAppID)
         .login({
-          userID: "user1",
-          userSig:
-            "eJwtzMEKgkAUheF3mW0hcx2vjkKbcBHiIjIE2wkz2iXMYZzKit49UZfnO-B-2TkvvKe2LGG*x9l23qT03VFDMz8GbWE9BnWrjSHFEgg4F4gBhMvjqNOTYgw*goxwUT0aspOHPJCcrw1qp*rFZXvsRpkrfeoFlPjua2Fe9moPny4*mmITtVBmVZpWO-b7A8XMMQE_"
+          userID: this.infoObj.userID,
+          userSig:this.infoObj.userSig
         })
         .then(() => {
           this.$store.commit("toggleIsLogin", true);
@@ -48,17 +74,17 @@ export default {
     },
     initListener() {
       // 登录成功后会触发 SDK_READY 事件，该事件触发后，可正常使用 SDK 接口
-      this.tim.on(this.TIM.EVENT.SDK_READY, this.onReadyStateUpdate, this);
+     this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.SDK_READY, this.onReadyStateUpdate, this);
       // SDK NOT READT
-      this.tim.on(this.TIM.EVENT.SDK_NOT_READY, this.onReadyStateUpdate, this);
+      this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.SDK_NOT_READY, this.onReadyStateUpdate, this);
       // 被踢出
-      this.tim.on(this.TIM.EVENT.KICKED_OUT, this.onKickOut);
+      this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.KICKED_OUT, this.onKickOut);
       // SDK内部出错
-      this.tim.on(this.TIM.EVENT.ERROR, this.onError);
+      this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.ERROR, this.onError);
       // 收到新消息
-      this.tim.on(this.TIM.EVENT.MESSAGE_RECEIVED, this.onReceiveMessage);
+      this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.MESSAGE_RECEIVED, this.onReceiveMessage);
       // 会话列表更新
-      this.tim.on(
+      this.tim(this.infoObj.SDKAppID).on(
         this.TIM.EVENT.CONVERSATION_LIST_UPDATED,
         this.onUpdateConversationList
       );
@@ -68,7 +94,7 @@ export default {
       this.$store.commit("toggleIsSDKReady", isSDKReady);
 
       if (isSDKReady) {
-        this.tim
+        this.tim(this.infoObj.SDKAppID)
           .getMyProfile()
           .then(({ data }) => {
             this.$store.commit("updateCurrentUserProfile", data);
@@ -120,17 +146,7 @@ export default {
     onUpdateConversationList(event) {
       console.log("会话列表更新");
 
-      // let res = await this.Request.get('/session/guest/my/all/list')
-      // console.log(res)
-      console.log("res----------------------");
-
       this.$store.commit("updateConversationList", event.data);
-
-      // if(res.data.status){
-      //   console.log(event.data)
-      //   console.log(res.data.list)
-      //    this.$store.commit('updateConversationList', event.data)
-      // }
     }
   },
   watch: {},

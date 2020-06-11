@@ -1,4 +1,5 @@
 import tim from '../../utils/tim'
+import store from '..'
 const user = {
   state: {
     currentUserProfile: {},
@@ -29,7 +30,7 @@ const user = {
     GET_USER_INFO(state, payload) {
       state.userID = payload.userID
       state.userSig = payload.userSig
-      state.sdkAppID = payload.sdkAppID
+      state.SDKAppID = payload.SDKAppID
     },
   },
   actions: {
@@ -55,9 +56,9 @@ const user = {
     logout(context) {
       // 若有当前会话，在退出登录时已读上报
       if (context.rootState.conversation.currentConversation.conversationID) {
-        tim.setMessageRead({ conversationID: context.rootState.conversation.currentConversation.conversationID })
+        tim(store.state.basic.imInfo.SDKAppID).setMessageRead({ conversationID: context.rootState.conversation.currentConversation.conversationID })
       }
-      tim.logout().then(() => {
+      tim(store.state.basic.imInfo.SDKAppID).logout().then(() => {
         context.commit('toggleIsLogin')
         context.commit('stopComputeCurrent')
         context.commit('reset')

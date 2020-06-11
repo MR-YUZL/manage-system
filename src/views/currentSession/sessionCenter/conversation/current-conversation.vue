@@ -10,7 +10,7 @@
           </div>
           <div class="no-more" v-else>没有更多了</div>
           <history-message /> 
-          <message-item v-for="message in data" :key="message.ID" :message="message" />
+          <message-item v-for="message in currentMessageList" :key="message.ID" :message="message" />
         </div>
         <div
           v-show="isShowScrollButtomTips"
@@ -170,6 +170,7 @@ export default {
       currentConversation: state => state.conversation.currentConversation,
       currentUnreadCount: state =>
         state.conversation.currentConversation.unreadCount,
+      imInfo: state => state.basic.imInfo,
       currentMessageList: state => {
         console.log('*----------------------------------*')
         state.conversation.currentMessageList.forEach(item => {
@@ -226,14 +227,14 @@ export default {
   watch: {
     currentUnreadCount(next) {
       if (!this.hidden && next > 0) {
-        this.tim.setMessageRead({
+        this.tim(this.imInfo.SDKAppID).setMessageRead({
           conversationID: this.currentConversation.conversationID
         });
       }
     },
     hidden(next) {
       if (!next && this.currentUnreadCount > 0) {
-        this.tim.setMessageRead({
+        this.tim(this.imInfo.SDKAppID).setMessageRead({
           conversationID: this.currentConversation.conversationID
         });
       }
