@@ -184,23 +184,18 @@ export default {
       console.log(id,status)
       this.handleRecordBtn = !status?true:false
       this.detailsShow = true
-      this.Request.get('/hfw/tsmHfwLeaveComments/infoJson?id='+ id).then(res=>{
+      this.Request.get('/hfw/hfwSessionInfo/infoJson?id='+ id).then(res=>{
         console.log(res.data.data,'记录详情')
         let data = res.data.data
         this.detailsId = data.id
-        this.handleResultCon.con = data.result
-        this.handleResultCon.name = data.followAccName
-        this.recordList = data.detailBeanList
+        this.handleResultCon.con = data.leaveResult
+        this.handleResultCon.name = data.leaveFollowAcc
+        this.recordList = data.detailBeanList  // 参数要改
         this.guestId = data.guestId
       })
     },
     handleCancel(){
       this.detailsShow = false
-    },
-    onShowSizeChange(current, pageSize) {
-      this.pager.pageSize = pageSize;
-      this.pager.currentPage = 1;
-      this.getList();
     },
     paginationChange(values) {
       this.pager = values
@@ -208,26 +203,24 @@ export default {
     },
     setHandleResult(){
       this.leaveModalShow=true
+      this.resultContent = ''
     },
     handleleaveModalCancel(){
       this.leaveModalShow=false
     },
     handleleaveModalOk(){
-      this.Request.get('/hfw/tsmHfwLeaveComments/updateStatus?id='+ this.detailsId).then(res=>{
+      let params = {
+        id:this.detailsId,
+        result:this.resultContent,
+        status:1
+      }
+      this.Request.post('/hfw/tsmHfwLeaveComments/updateStatus',params).then(res=>{
         console.log(res)
         this.leaveModalShow=false
         this.handleRecordBtn = false
         this.handleResultCon.con = this.resultContent
-
       })
     },
-    //检索组件传参接收
-    searchFun(values){
-      console.log('values',values)
-      this.pager.currentPage = 1
-      this.searchField = values
-      this.getList();
-    }
   },
   watch: {},
   computed: {}

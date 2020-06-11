@@ -10,7 +10,7 @@
         />
         <div class="groupAnalyze">
           <span></span>
-          <a-button type="primary">导出</a-button>
+          <a-button type="primary" @click="exportSeat">导出</a-button>
         </div>
         <a-table :columns="seatColumns" :dataSource="seatDataSource" :pagination="false"></a-table>
       </a-tab-pane>
@@ -22,7 +22,7 @@
         />
         <div class="groupAnalyze">
           <span></span>
-          <a-button type="primary">导出</a-button>
+          <a-button type="primary" @click="exportSession">导出</a-button>
         </div>
         <a-table :columns="sessionColumns" :dataSource="sessionDataSource" :pagination="false"></a-table>
       </a-tab-pane>
@@ -34,21 +34,58 @@
         />
         <div class="groupAnalyze">
           <span></span>
-          <a-button type="primary">导出</a-button>
+          <a-button type="primary" @click="exportQuality">导出</a-button>
         </div>
         <a-table :columns="qcColumns" :dataSource="qcDataSource" :pagination="false"></a-table>
       </a-tab-pane>
     </a-tabs>
+    <a-modal
+      title="导出"
+      :visible="exportModal.showSeat"
+      v-if="exportModal.showSeat"
+      @cancel="handleCancelExportSeat"
+      @ok="handleOkExportSeat"
+    >
+      是否确认导出坐席考勤的数据？
+      <br />本次导出{{seatDataSource.length}}条数据
+    </a-modal>
+    <a-modal
+      title="导出"
+      :visible="exportModal.showSession"
+      v-if="exportModal.showSession"
+      @cancel="handleCancelExportSession"
+      @ok="handleOkExportSession"
+    >
+      是否确认导出会话数据的数据？
+      <br />本次导出{{sessionDataSource.length}}条数据
+    </a-modal>
+    <a-modal
+      title="导出"
+      :visible="exportModal.showQc"
+      v-if="exportModal.showQc"
+      @cancel="handleCancelExportQc"
+      @ok="handleOkExportQc"
+    >
+      是否确认导出质检统计的数据？
+      <br />本次导出{{qcDataSource.length}}条数据
+    </a-modal>
   </div>
 </template>
 
 <script>
+import moment from "moment";
 import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import analysis from "@/utils/analysis.js";
+import qs from "qs";
 export default {
   data() {
     return {
+      exportModal:{
+        showSeat:false,
+        showSession:false,
+        showQc:false
+      },
       seatColumns: [
         
         {
@@ -115,7 +152,9 @@ export default {
           optionLabel: "groupName"
         }
       ],
-      defaultSearchFormValues: {},
+      defaultSearchFormValues: {
+        loginDate:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")],
+      },
       sessionColumns:[
           {
           title: "客服姓名",
@@ -239,11 +278,18 @@ export default {
   },
   methods: {
     getSeatControlList(){
-      let params = {
-        loginDate:'',
-        serviceAccs:''
+      console.log(this.defaultSearchFormValues,'this.defaultSearchFormValues')
+      let { loginDate,serviceAccs} = this.defaultSearchFormValues;
+      let date = loginDate.join();
+      let acc = ''
+      if(serviceAccs && serviceAccs.length > 0){
+        acc = serviceAccs.join();
       }
-      api.seatControlList(params).then(res=>{
+      let param = {
+        loginDate:date,
+        serviceAccs:acc
+      }
+      api.seatControlList(param).then(res=>{
         console.log(res,'坐席管控-坐席考勤')
         this.seatDataSource = res.data.list
       })
@@ -262,9 +308,75 @@ export default {
     },
     changeTabFn() {},
     prevHandleSubmit(val) {
-      this.searchParams = Object.assign({}, this.searchParams,val);
+      this.defaultSearchFormValues = {
+        ...val
+      }
       this.getSeatControlList()
-    }
+    },
+    handleOkExportSeat(){
+      let { loginDate,serviceAccs} = this.defaultSearchFormValues;
+      let date = loginDate.join();
+      let acc = ''
+      if(serviceAccs && serviceAccs.length > 0){
+        acc = serviceAccs.join();
+      }
+      let param = qs.stringify({
+        loginDate:date,
+        serviceAccs:acc
+      });
+      let url =`/seat/exam/stats/export?${param}`;
+      window.location.href = url;
+      this.exportModal.showSeat = false
+    },
+    handleOkExportSession(){
+      let { loginDate,serviceAccs} = this.defaultSearchFormValues;
+      let date = loginDate.join();
+      let acc = ''
+      if(serviceAccs && serviceAccs.length > 0){
+        acc = serviceAccs.join();
+      }
+      let param = qs.stringify({
+        sessionDate:date,
+        serviceAccs:acc
+      });
+      let url =`/session/stats/export?${param}`;
+      window.location.href = url;
+      this.exportModal.showSession = false
+      
+    },
+    handleOkExportQc(){
+      let { loginDate,serviceAccs} = this.defaultSearchFormValues;
+      let date = loginDate.join();
+      let acc = ''
+      if(serviceAccs && serviceAccs.length > 0){
+        acc = serviceAccs.join();
+      }
+      let param = qs.stringify({
+        qcDate:date,
+        serviceAccs:acc
+      });
+      let url =`/qc/stats/export?${param}`;
+      window.location.href = url;
+      this.exportModal.showQc = false
+    },
+    exportSeat(){
+      this.exportModal.showSeat = true
+    },
+    exportSession(){
+      this.exportModal.showSession = true
+    },
+    exportQuality(){
+      this.exportModal.showQc = true
+    },
+    handleCancelExportSeat (){
+      this.exportModal.showSeat = false
+    },
+    handleCancelExportSession(){
+      this.exportModal.showSession = false
+    },
+    handleCancelExportQc(){
+      this.exportModal.showQc = false
+    },
   }
 };
 </script>

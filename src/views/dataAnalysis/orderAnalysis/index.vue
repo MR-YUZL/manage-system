@@ -6,16 +6,17 @@
       :formList="searchFormList"
       @prevHandleSubmit="prevHandleSubmit"
     />
-    <div class="groupAnalyze">
+    <!-- <div class="groupAnalyze">
       <span></span>
-      <a-button type="primary">导出</a-button>
-    </div>
+      <a-button type="primary" @click="exportOrder">导出</a-button>
+    </div> -->
     <a-table
       :columns="columns"
       :dataSource="dataSource"
       :pagination="false"
       :customRow="handleClickRow"
     ></a-table>
+    <p class="serviceInfo" v-if="serviceInfo">{{serviceInfo}}明细</p>
     <a-table v-if="detailShowTable" :columns="detailColumns" :dataSource="detailDataSource" :pagination="false"></a-table>
   </div>
 </template>
@@ -25,9 +26,11 @@ import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import moment from 'moment';
 import analysis from "@/utils/analysis.js";
+import qs from "qs";
 export default {
   data() {
     return {
+      serviceInfo:'',
       detailShowTable:false,
       searchParams: {},
       searchFormList: [
@@ -38,12 +41,13 @@ export default {
         },
         {
           type: "select",
-          name: "inputAccs",
+          name: "inputAcc",
           label: "技能组",
           mode: "multiple",
           options: [],
           optionValue: "groupId",
-          optionLabel: "groupName"
+          optionLabel: "groupName",
+          placeholder: "全部技能组"
         }
       ],
       defaultSearchFormValues: {
@@ -150,13 +154,16 @@ export default {
         on:{
           click:()=>{
             this.detailShowTable = true;
-            let dateObj = Object.assign({}, this.defaultSearchFormValues,this.searchParams);
+            let dateObj = {
+              ...this.defaultSearchFormValues
+            }
             let dateArr = dateObj.inputDateStart
             let params = {
               startDate:dateArr[0],
               endDate:dateArr[1],
               inputAcc:record.inputAcc
             }
+            this.serviceInfo = record.inputAccName
             api.orderDetailList(params).then(res=>{
               console.log('工单工作分析明细',res)
               this.detailDataSource = res.data.list;
@@ -167,15 +174,31 @@ export default {
       }
     },
     getOrderAccList() {
-      api.orderAccList(this.searchParams).then(res => {
+      let{inputDateStart,inputAcc} = this.defaultSearchFormValues
+      let inputAccs = ''
+      if(inputAcc&&inputAcc.length){
+        inputAccs = inputAcc.join()
+      }
+      let params = {
+        startDate:inputDateStart[0],
+        endDate:inputDateStart[1],
+        inputAcc:inputAccs
+      }
+      api.orderAccList(params).then(res => {
         console.log("工单工作分析", res);
         this.dataSource = res.data.list;
+        // if(res.data.list&&res.data.list.length>0){
+
+          
+        // }
       });
     },
     prevHandleSubmit(val) {
-      this.searchParams = Object.assign({}, this.searchParams, val);
+      this.defaultSearchFormValues = {
+        ...val
+      }
       this.getOrderAccList();
-    }
+    },
   }
 };
 </script>
@@ -185,5 +208,9 @@ export default {
   display: flex;
   justify-content: space-between;
   padding: 0 20px;
+}
+.serviceInfo{
+  margin-bottom: 0;
+  padding: 20px 0 20px 15px;
 }
 </style>

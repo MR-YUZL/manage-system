@@ -2,16 +2,23 @@
   <div class="">
     <a-tabs :animated="false">
       <a-tab-pane key="1" tab="工单日志">
-        <ul class="recordList">
+        <ul class="recordList scroll" >
           <li v-for="(item,index) in workOrderList" :key="index">
             <h5>{{item.inputAcc}}</h5>
             <p>{{item.inputTime}}<span>{{changeType(item.type)}}</span></p>
             <div>{{item.content}}</div>
+            <div v-if="item.fileList.length>0" class="fileListStyle">
+               <span v-for="(it,index) in item.fileList" :key="index">
+                  <a-icon type="file"/>
+                  {{it.fileName}}
+                  <a :href="it.fileUrl">下載</a>
+                </span>
+            </div>
           </li>
         </ul>
       </a-tab-pane>
       <a-tab-pane key="2" tab="操作记录">
-        <ul class="recordList">
+        <ul class="recordList scroll">
           <li v-for="(item,index) in handleList" :key="index">
             <h5>{{item.inputAcc}}</h5>
             <p>{{item.inputTime}}<span>{{item.content}}</span></p>
@@ -88,7 +95,8 @@ export default {
 </script>
 <style lang="less" scoped>
 .recordList{
-  // line-height:30px;
+  height:550px;
+  overflow-y:scroll;
   p{
     color:#bbb;
     margin-bottom:10px;
@@ -101,4 +109,18 @@ export default {
     margin-bottom:20px;
   }
 }
+.fileListStyle{
+  margin-top:10px;
+  display:flex;
+  flex-wrap:wrap;
+  span{
+    margin-bottom:10px;  
+    margin-right:10px;
+    display:block;
+    padding:10px;
+    border:thin solid #ddd;
+  }
+}
+
 </style>
+

@@ -50,7 +50,7 @@
                   <p>{{item.fieldValue}}</p>
                 </li>
               </ul>
-              <div class="title"><p>客户信息</p></div>
+              <div class="title" style="margin-top:30px;"><p>客户信息</p></div>
               <ul>
                 <li>
                   <span>客户名称</span>
@@ -225,11 +225,14 @@ export default {
     width:100%;
   }
   li{
-    margin-bottom:5px;
+    margin-bottom:15px;
     display:flex;
     span{
       display: block;
       width:100px;
+    }
+    p{
+      margin-bottom:0;
     }
   }
 }

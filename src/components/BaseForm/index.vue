@@ -273,8 +273,9 @@ export default {
       this.$emit("toggleModal", false);
     },
     handleUploadChange(value, propName) {
+      console.log("handleUploadChange",value)
       if(propName) {
-        this.formObject.defaultValues[propName] = value
+        this.formObject.defaultValues[propName] = [...value]
       }
     },
     areaOnChange(value) {

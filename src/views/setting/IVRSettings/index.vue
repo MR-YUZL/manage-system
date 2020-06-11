@@ -1,12 +1,12 @@
 <template>
-    <div class="">
-        <a-page-header title="语音导航设置" />
-        <div class="voiceSet">
-          <p>您还未开通IVR语音导航功能，请联系企蜂云专员</p>
-          <P>4008363377</P>
-          <img src="../../../assets/imgs/yuying.png" alt="">
-        </div>
+  <div class="">
+    <a-page-header title="语音导航设置" />
+    <div class="voiceSet">
+      <p>您还未开通IVR语音导航功能，请联系企蜂云专员</p>
+      <P>4008363377</P>
+      <img src="../../../assets/imgs/yuying.png" alt="">
     </div>
+  </div>
 </template>
 
 <script>

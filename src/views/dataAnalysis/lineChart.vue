@@ -13,6 +13,12 @@ export default {
       default:{}
     }
   },
+  watch: {
+    echartObj(val,oldVal) {
+      console.log("echartObj======",this.id,val,oldVal)
+      this.initChart();
+    }
+  },
   data(){
     return{
     }
@@ -26,12 +32,12 @@ export default {
       let myChart = this.$echarts.init(document.getElementById(this.id));
       // 绘制图表
       myChart.setOption({
-        
+        color:['#0097fe','#3b75e8','#f3cf21','#f3942e','#ccc'],
         tooltip: {
           trigger: "axis"
         },
         legend: {
-          data: this.echartObj.legend,
+          name: this.echartObj.legend,
           top:10,
           left:10,
           icon:'roundRect',

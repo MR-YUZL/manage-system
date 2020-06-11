@@ -6,13 +6,13 @@
       :formList="searchFormList"
       @prevHandleSubmit="prevHandleSubmit"
     />
-    
+
     <!-- <CircleTable /> -->
     <div class="circleFlex">
       <div class="pr" v-for="(item,index) in chartList" :key="index">
         <a-select
           v-if="item.typeId"
-          @change="changeTypeFn"
+          @change="changeTypeFn($event,item)"
           v-model="item.typeId"
           style="width: 174px;"
         >
@@ -20,6 +20,7 @@
         </a-select>
         <CircleChart
           :id="item.id"
+          :key="item.id"
           :echartObj="item.echartObj"
           styles="width:100%;height:300px;margin:auto"
         />
@@ -34,6 +35,7 @@ import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import CircleChart from "@/views/dataAnalysis/circleChart";
 import analysis from "@/utils/analysis.js";
 import CircleTable from "@/views/dataAnalysis/consult";
+import moment from "moment";
 export default {
   data() {
     return {
@@ -49,7 +51,7 @@ export default {
         },
         {
           type: "select",
-          name: "inputAccs",
+          name: "inputAcc",
           label: "技能组",
           mode: "multiple",
           options: [],
@@ -61,12 +63,12 @@ export default {
         // inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
         inputDateStart: ["2020-06-03", "2020-06-11"]
       },
-      
+
       searchParams: {},
       chartList: [
         {
           id: "chart1",
-          typeId:'',
+          typeId: "",
           childList: [],
           echartObj: {
             // legend: [
@@ -97,7 +99,7 @@ export default {
         {
           id: "chart2",
           childList: [],
-          typeId:"",
+          typeId: "",
           echartObj: {
             // legend: [
             //   "电话接待",
@@ -127,7 +129,7 @@ export default {
         {
           id: "chart3",
           childList: [],
-          typeId:"",
+          typeId: "",
           echartObj: {
             // legend: [
             //   "电话接待",
@@ -155,6 +157,8 @@ export default {
           }
         }
       ],
+      chart2TypeId: "",
+      chart3TypeId: "",
     };
   },
   components: {
@@ -162,80 +166,115 @@ export default {
     CircleChart,
     CircleTable
   },
+  watch: {
+    chart2TypeId(val,oldVal){
+      this.chartList[1].typeId = val;
+      let name =''
+      this.chartList[1].childList.map(v=>{
+        if(v.id==val){
+          name=v.name
+        }
+      })
+      this.getOrderTypeChartJson(val,1,name)
+    },
+    chart3TypeId(val,oldVal){
+      this.chartList[2].typeId = val;
+      let name =''
+      this.chartList[2].childList.map(v=>{
+        if(v.id==val){
+          name=v.name
+        }
+      })
+      this.getOrderTypeChartJson(val,2,name)
+    },
+  },
+  created() {
+    this.getTree();
+  },
   mounted() {
-    this.getOrderTypeChartJson();
+    this.getOrderTypeChartJson("",0,"总接待量");
     // this.getOrderTypeSelectJson();
-    // let receiveList = analysis.getSkill();
-    // receiveList.then(res => {
-    //   this.searchFormList[1].options = res;
-    // });
-    this.getTree()
+    let receiveList = analysis.getSkill();
+    receiveList.then(res => {
+      this.searchFormList[1].options = res;
+    });
+    
   },
   methods: {
     getTree() {
       api.consultTypeList({ type: 1 }).then(res => {
-        console.log(res, "整颗树");
-        // this.treeOptions = res.data.list;
-        // res.data.list.map(v=>{
-
-        // })
+        console.log(res, "工单分类的整颗树");
+        
         this.chartList[1].childList = res.data.list;
-        this.chartList[2].childList = res.data.list[0].childList
-        // this.chartList[2].childList = [];
+        this.chart2TypeId = res.data.list && res.data.list.length ? res.data.list[0].id : "";
+        this.chartList[2].childList = res.data.list[0].childList;
+        this.chart3TypeId = res.data.list && res.data.list.length && res.data.list[0].childList && res.data.list[0].childList.length ? res.data.list[0].childList[0].id : "";
+        
       });
     },
-    
-   
+
     //图表
-    getOrderTypeChartJson() {
-      let dateArr = [];
-      let params = {};
-      if (JSON.stringify(this.searchParams) != "{}") {
-        dateArr = this.searchParams.inputDateStart;
-        params = {
-          startDate: dateArr[0],
-          endDate: dateArr[1],
-          typeId:'',
-          ...this.searchParams
-        };
-      } else {
-        dateArr = this.defaultSearchFormValues.inputDateStart;
-        params = {
-          startDate: dateArr[0],
-          endDate: dateArr[1],
-          ...this.defaultSearchFormValues
-        };
+    getOrderTypeChartJson(typeId,chartIndex,str) {
+      let {
+        inputDateStart,
+        inputAcc,
+        ...others
+      } = this.defaultSearchFormValues;
+      let inputAccs = "";
+      if (inputAccs && inputAccs.length > 0) {
+        inputAccs = inputAcc.join();
       }
+      let params = {
+        startDate: inputDateStart[0],
+        endDate: inputDateStart[1],
+        inputAcc: inputAccs,
+        typeId,
+        ...others
+      };
 
       api.orderTypeChartJson(params).then(res => {
         console.log(res, "工单分类统计图表数据44555555555555");
-        this.chartList[0].echartObj = res.data.data;
-        console.log(this.chartList[0].echartObj,'this.chartList[0].echartObj')
+        this.chartList[chartIndex].echartObj = res.data.data;
+        let counts = res.data.data.series;
+        var sum = counts.reduce(function(a, b) {
+          return Number(a) + Number(b.value);
+        }, 0);
         let total = [
           {
-            value: 0,
-            name: "总接待量",
+            value: sum,
+            name: str,
             itemStyle: { normal: { color: "#ffffff" } }
           }
         ];
-        this.$set(this.chartList[0].echartObj, "total", total);
-        console.log(this.chartList[0].echartObj, "我是第一个图表");
+        this.$set(this.chartList[chartIndex].echartObj, "total", total);
       });
     },
-    
+
+    changeTypeFn(eve,item){
+      console.log(eve,item)
+      let chartIndex = ''
+      if(item.id == 'chart2'){
+        chartIndex = 1 
+      }
+      else if(item.id == 'chart3'){
+        chartIndex = 2
+      }else{
+        chartIndex = 0
+      }
+      let name = '';
+      this.chartList[chartIndex].childList.map(v=>{
+        if(v.id==eve){
+          name=v.name
+        }
+      })
+      this.getOrderTypeChartJson(eve,chartIndex,name)
+    },
+
     prevHandleSubmit(val) {
-      this.searchParams = Object.assign({}, this.defaultSearchFormValues, val);
-      // this.getOrderTypeChartJson();
-    },
-    firstTypeFn(val) {
-      console.log(val);
-      this.orderSel2 = val;
-      // this.fn();
-      // this.getSecondChart();
-    },
-    secondTypeFn() {
-      // this.orderSel3 = val;
-      // this.getThirdChart();
+      this.defaultSearchFormValues = {
+        ...val
+      };
+      this.getOrderTypeChartJson();
     },
   }
 };
@@ -251,8 +290,8 @@ export default {
     position: relative;
     .ant-select {
       position: absolute;
-      right: 0;
-      top: 0;
+      right: 20px;
+      top: 20px;
       z-index: 10;
     }
   }
