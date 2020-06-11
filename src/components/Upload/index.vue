@@ -28,9 +28,9 @@ export default {
     list(val, oldVal) {
       console.log(val, oldVal, "watch======");
       // debugger;
-      if(JSON.stringify(val) != JSON.stringify(oldVal)){
-        this.updateDefaultFileList(val);
-      }
+      // if(JSON.stringify(val) != JSON.stringify(oldVal)){
+      //   this.updateDefaultFileList(val);
+      // }
     }
   },
   props: {
