@@ -246,6 +246,7 @@ export default {
           name: "queryText",
           compact: "input",
           compactName: "queryType",
+          placeholder: "请输入",
           options: [
             { label: "客户名称", value: "1" },
             { label: "联系人", value: "2" },
@@ -258,37 +259,43 @@ export default {
           name: "custLabels",
           mode: "multiple",
           label: "客户标签",
-          options: []
+          options: [],
+          placeholder: "请选择",
         },
         {
           type: "selectGroup",
           name: "inputAccs",
           label: "创建人",
           mode: "multiple",
-          list: []
+          list: [],
+          placeholder: "请选择",
         },
         {
           type: "selectGroup",
           name: "principalAccs",
           label: "负责人",
           mode: "multiple",
-          list: []
+          list: [],
+          placeholder: "请选择",
         },
 
         {
           type: "rangepicker",
           name: "inputDateStart",
-          label: "创建时间"
+          label: "创建时间",
+          placeholder: "请选择",
         },
         {
           type: "rangepicker",
           name: "lastFollowDateStart",
-          label: "最近跟进时间"
+          label: "最近跟进时间",
+          placeholder: "请选择",
         },
         {
           type: "rangepicker",
           name: "nextFollowDateStart",
-          label: "下次跟进时间"
+          label: "下次跟进时间",
+          placeholder: "请选择",
         }
       ],
       defaultSearchFormValues: {

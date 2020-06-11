@@ -211,6 +211,7 @@ export default {
           name: "inputAccs",
           label: "部门",
           mode: "multiple",
+          placeholder:'请选择',
           options: [],
           optionValue: "groupId",
           optionLabel: "groupName"

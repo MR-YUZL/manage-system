@@ -40,6 +40,7 @@ export default {
           name: "queryText",
           compact: "input",
           compactName: "queryType",
+          placeholder: "请输入",
           options:[ {
               label: "客户姓名",
               value: "1"
@@ -50,13 +51,14 @@ export default {
           label: "客服姓名",
           name: "followAccs",
           mode: "multiple",
-          list: []
+          list: [],
+          placeholder:'请选择',
         },
         {
           type: "rangepicker",
           label: "跟进时间",
           name: "queryTimess",
-          
+          placeholder:'请选择',
         }
       ],
       columns: [

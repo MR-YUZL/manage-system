@@ -54,6 +54,7 @@ export default {
           name: "inputAcc",
           label: "技能组",
           mode: "multiple",
+          placeholder:'请选择',
           options: [],
           optionValue: "groupId",
           optionLabel: "groupName"

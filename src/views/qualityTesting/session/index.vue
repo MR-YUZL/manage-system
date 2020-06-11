@@ -64,12 +64,13 @@ export default {
           type: "rangepicker",
           label: "会话时间",
           name: "sessionDate",
-          
+          placeholder:'请选择',
         },
         {
           type: "select",
           label: "问题解决状态",
           name: "status",
+          placeholder:'请选择',
           options: [
             { key: "null", id: "全部" },
             { key: 0, id: "未解决" },
@@ -82,7 +83,8 @@ export default {
           type: "select",
           label: "质检人",
           name: "qcAcc",
-          options: []
+          options: [],
+          placeholder:'请选择',
         },
         {
           type: "cascader",
@@ -100,20 +102,22 @@ export default {
           type: "select",
           label: "接待客服:",
           name: "serviceAccs",
-          options: []
-          
+          options: [],
+          placeholder:'请选择',
         },
         {
           type: "select",
           label: "客服组",
           name: "serviceGroupId",
           mode:"multiple",
-          options: []
+          options: [],
+          placeholder:'请选择',
         },
         {
           type: "select",
           label: "质检状态:",
           name: "qcStatus",
+          placeholder:'请选择',
           options: [
             { key: "null", id: "全部" },
             { key: 0, id: "未质检" },
@@ -125,7 +129,6 @@ export default {
         {
           type: "inputCompact",
           label: "会话时长",
-          placeholder: "请输入",
           name: "sessionTime"
         },
         {
