@@ -4,6 +4,7 @@
       <div slot='content'>
         <BaseForm 
           ref="formObjectCreated"
+          :guestId="orderInfo.guestId"
           :formObject="formObjectCreated"
           @toggleModal="createdToggleModal"
           @formSubmit="formSubmitWorkOrder"
@@ -23,7 +24,7 @@ export default {
       Modal,
       BaseForm
     },
-    props:['createdWorkOrderVisible','relevObj'],
+    props:['createdWorkOrderVisible','relevObj','orderInfo'],
     data() {
       return {
       
@@ -269,6 +270,7 @@ export default {
         let params = {
           ...others,
           customerId:custId,
+          userType:this.orderInfo.userType,
           fileList:[]
         }
         if(typeId&&typeId.length>0){

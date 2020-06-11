@@ -56,6 +56,7 @@ export default {
         );
         let obj = {
           guestId: this.conversation.guestId,
+          di:this.conversation.id,
           guestName: this.conversation.guestName,
           beginTime: moment(this.conversation.beginTime).valueOf() / 1000,
           endTime: moment(this.conversation.endTime).valueOf() / 1000
@@ -112,9 +113,18 @@ export default {
         }
         return `${this.conversation.lastMessage.fromAccount}撤回了一条消息`;
       }
-      return this.conversation.lastMessage.messageForShow != ""
+    
+      console.log(this.conversation,this.conversation.latestMsgContent)
+      if(this.conversation.latestMsgType == 'TIMCustomElem'){
+        //  let 
+
+      }else{
+        //  this.conversation.lastMessage.messageForShow
+          return this.conversation.lastMessage.messageForShow != ""
         ? this.conversation.lastMessage.messageForShow
         : this.conversation.latestMsgContent;
+      }
+     
     },
     date() {
       if (

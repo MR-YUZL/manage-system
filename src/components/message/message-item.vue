@@ -174,7 +174,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.message);
+    // console.log(this.message);
   },
   created() {},
   computed: {
