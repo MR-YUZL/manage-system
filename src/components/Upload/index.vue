@@ -27,7 +27,10 @@ export default {
   watch: {
     list(val, oldVal) {
       console.log(val, oldVal, "watch======");
-      // this.updateDefaultFileList(val);
+      // debugger;
+      // if(JSON.stringify(val) != JSON.stringify(oldVal)){
+      //   this.updateDefaultFileList(val);
+      // }
     }
   },
   props: {
@@ -57,13 +60,15 @@ export default {
     },
     updateDefaultFileList(list) {
       let tempList = [];
-      list && list.map((item, index) => {
-        let temp = {
-          uid: index,
-          url: item.url,
-          name: item.name
-        };
-        tempList.push(temp);
+      list && list.length && list.map((item, index) => {
+        if(item) {
+          let temp = {
+            uid: item.fileId?item.fileId:index,
+            url: item.url,
+            name: item.name?item.name:item.fileName
+          };
+          tempList.push(temp);
+        }
       });
       this.fileList = tempList;
     },
@@ -76,7 +81,7 @@ export default {
       this.fileList = fileList
       let paramsFile = [];
       fileList.map(file => {
-        if(file.url) {
+        if(file.url && file.name) {
           paramsFile.push(file)
         }
         if (file.response && file.response.status === "success") {

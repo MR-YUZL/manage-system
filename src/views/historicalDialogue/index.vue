@@ -84,12 +84,13 @@ export default {
           type: "rangepicker",
           label: "会话时间",
           name: "queryTime",
-          
+          placeholder:'请选择',
         },
         {
           type: "select",
           label: "会话来源:",
           name: "channelType",
+          placeholder:'请选择',
           options: [
             { key: "null", id: "全部" },
             { key: 2, id: "网站咨询" },
@@ -105,10 +106,10 @@ export default {
         {
           type: "selectGroup",
           label: "接待客服",
-          placeholder: "请输入",
           name: "serviceAccs",
           mode: "multiple",
-          list: []
+          list: [],
+          placeholder:'请选择',
         },
         {
           type: "input",
@@ -119,7 +120,7 @@ export default {
         {
           type: "cascader",
           label: "咨询分类",
-          placeholder: "请输入",
+          placeholder: "请选择",
           name: "consultType",
           options:[],
           fieldNames: {

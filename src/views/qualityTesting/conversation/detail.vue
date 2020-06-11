@@ -182,6 +182,7 @@ export default {
         console.log("通话质检的详情", res);
         if (res.data.status) {
           this.qualityForm = res.data.data;
+          console.log(this.qualityForm,'你到底对不对')
           this.defaultObject.modelList.map(v => {
             if (v.type == "defaultText") {
               v.value = res.data.data[v.ruleName];

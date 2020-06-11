@@ -65,12 +65,13 @@ export default {
           type: "rangepicker",
           label: "通话时间",
           name: "callDate",
-          
+          placeholder:'请选择',
         },
         {
           type: "select",
           label: "质检状态",
           name: "qcStatus",
+          placeholder:'请选择',
           options: [
             { key: "null", id: "全部" },
             { key: 0, id: "未质检" },
@@ -83,13 +84,14 @@ export default {
           type: "select",
           label: "质检人",
           name: "qcAcc",
-          placeholder: "请输入",
+          placeholder: "请选择",
           options: []
         },
         {
           type: "select",
           label: "通话类型",
           name: "callType",
+          placeholder:'请选择',
           options: [
             { key: "null", id: "全部" },
             { key: 2, id: "呼出" },
@@ -103,6 +105,7 @@ export default {
           label: "客服组:",
           name: "serviceGroupIds",
           mode:"multiple",
+          placeholder:'请选择',
           options: [],
           optionValue: "groupId",
           optionLabel: "groupName"
@@ -111,7 +114,8 @@ export default {
           type: "select",
           label: "客服",
           name: "serviceIds",
-          options: []
+          options: [],
+          placeholder:'请选择',
         },
         {
           type: "input",

@@ -13,7 +13,7 @@
        <span v-for="(item,index) in info.fileList" :key="index">
          <a-icon type="file"/>
          {{item.fileName}}
-         <a :href="item.fileUrl">下載</a>
+         <a :href="item.fileUrl">下载</a>
        </span>
     </div>
     <div v-if="info.status!=2">
@@ -132,12 +132,12 @@ export default {
         }
         this.$refs.replayForm.resetForm()
         console.log('回复的参数',params)
-        // this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(()=>{
-        //   this.$message.success('操作成功')
-        //   this.replayFormObject.defaultValues.content  = ''
-        //   this.replayFormObject.defaultValues.fileList = []
-        //   this.$emit('updataOrderRecord')
-        // })
+        this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(()=>{
+          this.$message.success('操作成功')
+          this.replayFormObject.defaultValues.content  = ''
+          this.replayFormObject.defaultValues.fileList = []
+          this.$emit('updataOrderRecord')
+        })
       }
     }
 }

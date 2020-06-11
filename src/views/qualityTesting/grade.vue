@@ -77,16 +77,11 @@ export default {
     submitGrade(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log(this.gradeForm,this.qualityType, "this.gradeForm.gradelist提交");
-
-
           if (this.qualityType == "session") {
-
             let sessionJson = {
               sessionId: this.qcObj.session.id,
               ...this.gradeForm
             };
-            console.log(sessionJson,this.qualityType,'sessionJson')
             api.saveSessionGrade(sessionJson).then(res => {
               if (res.data.status) {
                 this.$message.success("提交评分成功");
@@ -94,15 +89,12 @@ export default {
             });
           } 
 
-
-
           if(this.qualityType == "conversation"){
-
             let conversationJson = {
-              callId: this.qcObj.data.callId,
+              id:this.qcObj.id,
+              callId: this.qcObj.callId,
               ...this.gradeForm
             };
-            console.log(conversationJson, this.qcObj, "conversationJson");
             api.saveQc(conversationJson).then(res => {
               if (res.data.status) {
                 this.$message.success("提交评分成功");

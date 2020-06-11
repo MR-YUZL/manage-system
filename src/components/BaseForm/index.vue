@@ -263,9 +263,14 @@ export default {
       });
     },
     resetForm() {
+      // debugger;
       let _that = this;
       _that.$refs[_that.formObject.ref].resetFields();
       let tempFormObject = _that.formObject;
+      // debugger;
+      // tempFormObject.modelList.filter(item=>item.type=="upload").forEach(item=>{
+      //   tempFormObject.defaultValues[item.ruleName] = []
+      // })
       tempFormObject.defaultValues = Object.assign({},_that.formObject.defaultValues);
       tempFormObject = Object.assign({},_that.formObject);
     },

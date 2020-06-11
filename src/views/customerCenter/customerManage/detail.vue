@@ -54,9 +54,9 @@
               </li>
             </ul>
             <!-- 服务小结 -->
-            <ServiceSummary :questionList="questionList" />
+            <ServiceSummary :custId="detailId" />
             <!-- 跟进记录 -->
-            <ServiceRecord :questionList="followList" v-if="followList.length" />
+            <ServiceRecord :questionList="followList" />
             <!-- 工单信息 -->
             <OrderInf :userInfList="userInfList" />
           </a-tab-pane>
@@ -93,7 +93,7 @@
 import Modal from "@/components/Modal";
 import api from "@/api/customerCenter";
 import OrderInf from "@/components/userInf/OrderInf";
-import ServiceSummary from "@/components/userInf/ServiceSummary";
+import ServiceSummary from "@/components/userInf/Summary";
 import ServiceRecord from "@/components/userInf/ServiceRecord";
 import CreateContact from "@/views/customerCenter/customerManage/modal/createContact";
 export default {
@@ -128,7 +128,7 @@ export default {
     dataSource:String
   },
   mounted() {
-    this.getServiceList();
+    // this.getServiceList();
     this.getDetail(this.obj);
     this.getContactJson(this.obj);
     this.getMaterialInfo(this.obj);
@@ -232,22 +232,22 @@ export default {
       });
     },
     //获取服务小结
-    getServiceList() {
-      this.Request.post(
-        "/hfw/workbench/getServiceSummary?guestId=" + this.detailId
-      ).then(res => {
-        console.log("服务小结", res.data.list);
-        if(res.data.list){
-          this.questionList = res.data.list;
-        }
-      });
-    },
+    // getServiceList() {
+    //   this.Request.post(
+    //     "/hfw/workbench/getServiceSummary?custId=" + this.detailId
+    //   ).then(res => {
+    //     console.log("服务小结",res.data.status, res.data.list);
+    //     if(res.data.status){
+    //       this.questionList = res.data.list;
+    //     }
+    //   });
+    // },
     //获取跟进记录
     getFollowRecord(params) {
       api.detailFollowRecord(params).then(res => {
         console.log("跟进记录", res);
         if (res.data.status) {
-          if(res.data.list){
+          if(res.data.list && res.data.list.length){
             this.followList = res.data.list;
           }
         }
@@ -289,12 +289,14 @@ export default {
 .contactFlex {
   display: flex;
   justify-content: space-between;
+  padding: 0 20px;
   .contactHead {
     background: url(../../../assets/imgs/ly-user.png) no-repeat 0 center;
     padding-left: 22px;
   }
 }
 .contactUl {
+  padding: 0 20px;
   li {
     padding: 10px 0;
     span {

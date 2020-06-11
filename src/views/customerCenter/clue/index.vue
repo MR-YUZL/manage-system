@@ -60,6 +60,7 @@ export default {
           name: "queryText",
           compact: "input",
           compactName: "queryType",
+          placeholder: "请输入",
           options: [
             {
               label: "姓名",
@@ -99,12 +100,14 @@ export default {
           name: "inputAccs",
           label: "创建人",
           mode: "multiple",
-          list: []
+          list: [],
+          placeholder: "请选择",
         },
         {
           type: "select",
           label: "创建来源:",
           name: "clueSource",
+          placeholder: "请选择",
           options: [
             { key: "null", id: "全部" },
             { key: 0, id: "微信公众号" },
