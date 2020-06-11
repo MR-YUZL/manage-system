@@ -13,7 +13,7 @@
        <span v-for="(item,index) in info.fileList" :key="index">
          <a-icon type="file"/>
          {{item.fileName}}
-         <a :href="item.fileUrl">下載</a>
+         <a :href="item.fileUrl">下载</a>
        </span>
     </div>
     <div v-if="info.status!=2">
