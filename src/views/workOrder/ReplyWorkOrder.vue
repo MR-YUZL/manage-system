@@ -132,12 +132,12 @@ export default {
         }
         this.$refs.replayForm.resetForm()
         console.log('回复的参数',params)
-        // this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(()=>{
-        //   this.$message.success('操作成功')
-        //   this.replayFormObject.defaultValues.content  = ''
-        //   this.replayFormObject.defaultValues.fileList = []
-        //   this.$emit('updataOrderRecord')
-        // })
+        this.Request.post('/workflow/follow/saveWorkflowFollow',params).then(()=>{
+          this.$message.success('操作成功')
+          this.replayFormObject.defaultValues.content  = ''
+          this.replayFormObject.defaultValues.fileList = []
+          this.$emit('updataOrderRecord')
+        })
       }
     }
 }
