@@ -1,4 +1,5 @@
 import tim from '../../utils/tim'
+import store from '..'
 const blacklistModule = {
   state: {
     blacklist: []
@@ -18,11 +19,11 @@ const blacklistModule = {
   },
   actions: {
     getBlacklist(context) {
-      tim
+      tim(store.state.basic.imInfo.SDKAppID)
         .getBlacklist()
         .then(({ data }) => {
           if (data.length > 0) {
-            tim.getUserProfile({ userIDList: data })
+            tim(store.state.basic.imInfo.SDKAppID).getUserProfile({ userIDList: data })
               .then(({ data }) => {
                 context.commit('updateBlacklist', data)
               })

@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { message } from 'ant-design-vue'
 import { getToken } from '@/utils/auth'
-
+const host = process.env.NODE_ENV === "development" ? "" : "http://hfw.test.com/";
 const Api = {}
 const method = ['get', 'post', 'put', 'delete']
 
@@ -32,7 +32,7 @@ method.forEach(item => {
       axios(
         Object.assign(
           {
-            url: `${url}`,
+            url: `${host ? host + url : url}`,
             method: item,
             params: item == 'get' ? {_t: new Date().getTime(),...data} : null,  //加时间戳，防止浏览器缓存,
             data

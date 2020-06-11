@@ -19,46 +19,10 @@ import moment from "moment";
 export default {
   data: () => ({
     list: [
-      {
-        sendAppraiseFlag: 0,
-        latestMsgType: "TIMTextElem",
-        latestMsgTime: "45645465",
-        latestMsgContent: "",
-        latestMsgAccount: "",
-        id: "1",
-        serviceAcc: "",
-        guestName: "科比",
-        status: "",
-        round: "",
-        guestAvatar: "",
-        serviceAvatar: "",
-        guestId: "user0",
-        guestLastMsgTime: "1591145530",
-        endTime: "",
-        beginTime: "1591175927"
-      },
-      {
-        sendAppraiseFlag: 0,
-        latestMsgType: "TIMTextElem",
-        latestMsgTime: "45645465",
-        latestMsgContent: "",
-        latestMsgAccount: "",
-        id: "C2Cuser0",
-        serviceAcc: "",
-        guestName: "老詹hahhahahh",
-        status: "",
-        round: "",
-        guestAvatar: "",
-        serviceAvatar: "",
-        guestId: "user0",
-        guestLastMsgTime: "1591167374",
-        endTime: "1591173766",
-        beginTime: "1591172766"
-      }
     ],
     penddingList: [],
     endList: [],
-    timer:null
+    timer: null
   }),
   components: {
     sessionItem
@@ -69,9 +33,8 @@ export default {
   },
   methods: {
     moment,
-   
+
     getIsSDKReady() {
-     
       if (this.penddingList && this.penddingList.length) {
         this.isCheckouting = true;
         this.$store
@@ -84,11 +47,11 @@ export default {
           });
         let obj = {
           guestId: this.penddingList[0].guestId,
-          beginTime: this.penddingList[0].beginTime,
+          beginTime: moment(this.penddingList[0].beginTime).valueOf() / 1000,
           guestName: this.penddingList[0].guestName,
-          endTime: this.penddingList[0].endTime
+          endTime: moment(this.penddingList[0].endTime).valueOf() / 1000
         };
-       
+
         this.$store.commit("getVisitorInf", obj);
       } else if (this.endList && this.endList.length) {
         this.isCheckouting = true;
@@ -102,45 +65,53 @@ export default {
           });
         let obj = {
           guestId: this.endList[0].guestId,
-          beginTime: this.endList[0].beginTime,
           guestName: this.endList[0].guestName,
-          endTime: this.endList[0].endTime
+          beginTime: moment(this.endList[0].beginTime).valueOf() / 1000,
+          endTime: moment(this.endList[0].endTime).valueOf() / 1000
         };
         this.$store.commit("getVisitorInf", obj);
       }
-     
     },
     //获取会话列表
     getSessionList() {
       this.Request.get("/session/guest/my/all/list").then(res => {
-        console.log(this.list, this.conversationList);
+        if (res.data.status) {
+          this.list = res.data.list;
+          this.penddingList = [];
+          this.endList = [];
+          this.list.map(item => {
+            this.conversationList.map(val => {
+              if (item.guestImAccount == val.userProfile.userID) {
+                let obj = {
+                  ...item,
+                  ...val
+                };
 
-        // console.log("会话列表", res.data);
-        this.penddingList = [];
-        this.endList = [];
-        this.list.map(item => {
-          this.conversationList.map(val => {
-            if (item.guestId == val.userProfile.userID) {
-              let obj = {
-                ...item,
-                ...val
-              };
-
-              if (item.endTime) {
-                this.endList.push(obj);
-              } else {
-                this.penddingList.push(obj);
+                if (item.endTime) {
+                  this.endList.push(obj);
+                } else {
+                  this.penddingList.push(obj);
+                }
               }
-            }
+            });
           });
-        });
-        this.getIsSDKReady();
-        this.timeoutHandler()
+          this.getIsSDKReady();
+          this.timeoutHandler();
+        }
+        // console.log("会话列表", res.data);
       });
     },
     //检测列表数据变化
     testList() {
+      console.log(this.messageList)
       this.messageList.forEach((item, i) => {
+       
+       if (item.type == "TIMCustomElem") {
+            item.payload.data =
+              typeof item.payload.data == "string"
+                ? JSON.parse(item.payload.data)
+                : item.payload.data;
+        }
         if (
           item.type == "TIMCustomElem" &&
           item.payload.data.subMsgType == "createsession"
@@ -149,17 +120,20 @@ export default {
           //从已结束会话中查找，确定是否有已结束的会话重新启用
           if (this.endList && this.endList.length) {
             this.endList.forEach((val, index) => {
-              if (val.guestId == item.from) {
+              if (val.guestImAccount == item.from) {
                 this.endList.splice(index, 1);
               }
             });
           }
+          console.log('fasdfsafdsaf')
           this.Request.get("/guest/session/question/list", {
-            guestId: val.guestId
+            guestId: item.guestImAccount
           }).then(res => {
             if (res.data.status) {
-              let obj = { ...val, ...res.data.sessionInfo };
-              this.penddingList.push(obj);
+              let obj = { ...item, ...res.data.sessionInfo };
+              console.log(obj,this.penddingList)
+              this.penddingList = [obj,...this.penddingList];
+              console.log(this.penddingList)
             }
           });
         } else if (
@@ -171,13 +145,13 @@ export default {
 
           //正在进行的会话设置为已结束的会话
           this.penddingList.forEach((val, index) => {
-            if (val.guestId == item.from) {
+            if (val.guestImAccount == item.from) {
               this.penddingList.splice(index, 1);
               let data = { ...val };
 
               data["endTime"] = moment().format("X");
 
-              this.endList = [data,...this.endList];
+              this.endList = [data, ...this.endList];
 
               let status =
                 item.payload.data.subMsgType == "stopsession" ? 0 : 1;
@@ -186,15 +160,16 @@ export default {
           });
         } else {
           this.penddingList.forEach((val, index) => {
-            if (val.guestId == item.from) {
+            if (val.guestImAccount == item.from) {
               this.penddingList.splice(index, 1);
               let data = { ...val };
 
-              if (val.payload.data.sendType == "manual") {   //手动消息需重新计时最后一条消息时间
+              if (val.payload.data.sendType == "manual") {
+                //手动消息需重新计时最后一条消息时间
                 data["guestLastMsgTime"] = moment().format("X");
               }
-              this.penddingList = [data,...this.penddingList];
-              
+              this.penddingList = [data, ...this.penddingList];
+              console.log(this.penddingList)
             }
           });
         }
@@ -209,7 +184,7 @@ export default {
           this.$store.commit("getVisitorInf", obj);
         }
       });
-      this.timeoutHandler()
+      this.timeoutHandler();
     },
     //结束会话
     endSession(sessionId, endWay) {
@@ -228,14 +203,18 @@ export default {
       let date = moment().format("X");
       this.timer = setInterval(() => {
         this.penddingList.map((item, index) => {
-          if (moment().format("X") - item.guestLastMsgTime > 5 * 60) {
+          if (moment().format("X") - (item.latestVisitorMsgTime/ 1000) > 5 * 60) {
             this.penddingList.splice(index, 1);
             let data = { ...item };
 
-            data["endTime"] = moment().format("X");
+            data["endTime"] = moment().format('YYYY-MM-DD HH:mm:ss');;
 
             this.endList = [...this.endList, data];
-            if (this.visitorInf && (this.visitorInf.guestId == item.guestId || this.visitorInf.guestId == item.from)) {
+            if (
+              this.visitorInf &&
+              (this.visitorInf.guestId == item.guestId ||
+                this.visitorInf.guestId == item.from)
+            ) {
               let obj = {
                 guestId: data.guestId,
                 beginTime: data.beginTime,
@@ -248,7 +227,7 @@ export default {
             this.endSession(item.id, 2);
           }
         });
-      
+
         if (!this.penddingList.length) {
           clearInterval(this.timer);
         }
@@ -258,30 +237,20 @@ export default {
   },
   watch: {
     isSDKReady(a, b) {
-      // console.log(this.list, this.conversationList);
+      console.log(a, b);
       if (a) {
         // this.getIsSDKReady();
         this.getSessionList();
       }
     },
-    // conversationList(a, b) {
-    //   if (a) {
-    //     this.conversationList = a;
-    //   }
-    // },
+   
     messageList(a, b) {
+      console.log(a,b)
       if (a && a.length) {
         this.testList();
       }
     }
-    // sessionList(a, b) {
-    //   if (a.length) {
-    //     if (a[0].length) {
-    //       this.timeoutHandler(a[0]);
-    //     }
-    //     this.endList = [...a[1]];
-    //   }
-    // }
+   
   },
   computed: {
     ...mapState({
@@ -290,94 +259,8 @@ export default {
       isSDKReady: state => state.user.isSDKReady,
       visitorInf: state => state.basic.visitorInf,
       messageList: state => state.conversation.messageList
-    }),
-    sessionList: function() {
-      this.penddingList = [];
-      this.endList = [];
-      let arr = [[], []];
-      console.log(this.list, this.conversationList);
-      this.list.map(item => {
-        this.conversationList.map(val => {
-          if (item.guestId == val.userProfile.userID) {
-            let obj = {
-              ...item,
-              ...val
-            };
-
-            if (item.endTime) {
-              arr[1].push(obj);
-            } else {
-              arr[0].push(obj);
-            }
-          }
-        });
-      });
-      this.conversationList.forEach(item => {
-        if (item.lastMessage.type == "TIMCustomElem") {
-          if (item.lastMessage.payload.data.subMsgType == "createsession") {
-            //自定义创建会话消息
-            if (arr[1] && arr[1].length) {
-              arr[1].map((val, index) => {
-                if (val.guestId == item.userProfile.userID) {
-                  this.Request.get("/guest/session/question/list", {
-                    guestId: val.guestId
-                  }).then(res => {
-                    if (res.data.status) {
-                      let obj = { ...val, ...res.data.sessionInfo };
-
-                      arr[0].push(obj);
-                    }
-                  });
-                  arr[1].splice(index, 1);
-                }
-              });
-            } else {
-              this.Request.get("/guest/session/question/list", {
-                guestId: val.guestId
-              }).then(res => {
-                if (res.data.status) {
-                  let obj = { ...val, ...res.data.sessionInfo };
-                  arr[0].push(obj);
-                }
-              });
-            }
-          }
-
-          if (
-            item.lastMessage.payload.data.subMsgType == "stopsession" ||
-            item.lastMessage.payload.data.subMsgType == "transfer"
-          ) {
-            //自定义停止会话消息  //自定义转接消息
-            arr[0].map((val, index) => {
-              if (val.guestId == item.userProfile.userID) {
-                arr[0].splice(index, 1);
-                let data = { ...val };
-
-                data["endTime"] = moment().format("X");
-
-                arr[1] = [...this.endList, data];
-                if (this.visitorInf.guestId == item.guestId) {
-                  let obj = {
-                    guestId: data.guestId,
-                    beginTime: data.beginTime,
-                    guestName: data.guestName,
-                    endTime: data.endTime
-                  };
-
-                  this.$store.commit("getVisitorInf", obj);
-                }
-                let status =
-                  item.lastMessage.payload.data.subMsgType == "stopsession"
-                    ? 0
-                    : 1;
-                this.endSession(item.id, status);
-              }
-            });
-          }
-        }
-      });
-      return arr;
-    }
+    })
+   
   }
 };
 </script>

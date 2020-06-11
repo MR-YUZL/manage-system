@@ -45,14 +45,24 @@ export default {
       return this.message.flow === 'out'
     },
     center(){
-      if(this.message.payload.data.subMsgType === 'prompts' 
-      || this.message.payload.data.subMsgType == 'transfer' 
-      || this.message.payload.data.subMsgType == 'reception' 
-      || this.message.payload.data.subMsgType == 'stopsession'
-      || this.message.payload.data.subMsgType == 'createsession'){
-        return 'center'
+      if (
+        this.message.type == "TIMCustomElem" &&
+        this.message.payload.data &&
+        this.message.payload.data.subMsgType
+      ) {
+        if (
+          this.message.payload.data.subMsgType === "prompts" ||
+          this.message.payload.data.subMsgType == "transfer" ||
+          this.message.payload.data.subMsgType == "reception" ||
+          this.message.payload.data.subMsgType == "stopsession" ||
+          this.message.payload.data.subMsgType == "createsession"
+        ) {
+          return "center";
+        }
+        return "";
+      }else{
+        return ""
       }
-      return ''
     }
   }
 }

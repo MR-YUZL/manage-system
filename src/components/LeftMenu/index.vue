@@ -163,11 +163,8 @@ export default {
   }),
   created() {
     this.Request.post("/config/hfwConfigResource/menuJson").then(res => {
-      console.log(res);
-      console.log(listMenu);
       if (res.data.status) {
         this.menuData = res.data.list;
-        console.log(this.menuData);
         this.initMenu(this.menuData);
       }
     });
@@ -236,7 +233,10 @@ export default {
       this.selection = routerArr[0];
     },
     onOpenChange(openKeys) {
-      this.openKeysList = [openKeys[openKeys.length - 1]]; //展开事件触发的子菜单
+      if(openKeys && openKeys.length){
+        this.openKeysList = [openKeys[openKeys.length - 1]]; //展开事件触发的子菜单
+      }
+      
     }
   }
 };

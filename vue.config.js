@@ -9,7 +9,6 @@ module.exports = {
   //   }
   // },
   lintOnSave: false,
-  publicPath: "",
   devServer: {
     host: "0.0.0.0",
     port: "9200", //代理端口
@@ -23,4 +22,7 @@ module.exports = {
       }
     }
   },
+  publicPath: './',
+  outputDir: 'dist',
+  assetsDir:'static'
 };
