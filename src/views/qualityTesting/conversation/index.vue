@@ -165,8 +165,8 @@ export default {
         },
         {
           title: "通话时长",
-          dataIndex: "callLength",
-          key: "callLength"
+          dataIndex: "cLength",
+          key: "cLength"
         },
         {
           title: "质检状态",

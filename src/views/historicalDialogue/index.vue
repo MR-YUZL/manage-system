@@ -186,8 +186,8 @@ export default {
         },
         {
           title: "咨询分类",
-          dataIndex: "consultType",
-          key: "consultType"
+          dataIndex: "consultTypeName",
+          key: "consultTypeName"
         },
         {
           title: "会话结束时间",

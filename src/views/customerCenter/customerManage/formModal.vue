@@ -6,7 +6,7 @@
         :key="item.fieldId"
         :label="item.fieldName"
         :prop="'formList.' + index + '.fieldValue'"
-        :rules="[{ required: item.isRequired?true:false, message: '不能为空' },{validator:checkForm}]"
+        :rules="[{ required: item.isRequired?true:false, message: '不能为空' },{validator:checkForm,trigger:'blur'}]"
       >
         <a-input
           v-if="item.dataType==1"
@@ -86,8 +86,10 @@ export default {
   methods: {
     submitForm(formName) {
       console.log(formName, "formName");
+      console.log(this.$refs[formName],'this.$refs[formName]')
       this.$refs[formName].validate(valid => {
         if (valid) {
+          console.log(this.formObj.formList,'this.formObj.formList==========')
           this.$emit("cusSubmitForm", this.formObj.formList);
         }else {
           console.log("error submit!!");

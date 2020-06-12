@@ -22,7 +22,7 @@
           :columns="columns"
           :dataSource="dataSource"
           :pagination="false"
-          :rowKey="record => record.id"
+          :rowKey="record => record.clueId"
         ></a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
@@ -179,11 +179,7 @@ export default {
         }
       ], // 表头
       dataSource: [], // 表格数据
-      searchParams: {
-        queryText: "1",
-        queryType: 1,
-        totalRecord: "20"
-      },
+      searchParams: {},
       defaultSearchFormValues: {
         queryType: "1"
       },

@@ -179,8 +179,8 @@ export default {
         },
         {
           title: "会话时长",
-          dataIndex: "sessionTime",
-          key: "sessionTime"
+          dataIndex: "sessionTimeStr",
+          key: "sessionTimeStr"
         },
         {
           title: "质检人",

@@ -10,6 +10,7 @@
       :columns="columns"
       :dataSource="dataSource"
       :pagination="false"
+      :rowKey="record => record.id"
     >
     </a-table>
     <div class="groupAnalyze">
@@ -19,14 +20,17 @@
       :columns="callColumns"
       :dataSource="callDataSource"
       :pagination="false"
+      :rowKey="record => record.id"
     >
     </a-table>
   </div>
 </template>
 
 <script>
-import api from "@/api/customerCenter";
+import moment from "moment";
+import api from "@/api/analysis";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import analysis from "@/utils/analysis.js";
 export default {
   data() {
     return {
@@ -39,60 +43,63 @@ export default {
 
         {
           type: "select",
-          name: "inputAccs",
+          name: "groupIds",
           label: "技能组",
           mode: "multiple",
           options: [],
-          optionValue: "key",
-          optionLabel: "id"
+          optionValue: "groupId",
+          optionLabel: "groupName",
+          placeholder: "全部技能组"
         }
       ],
-      defaultSearchFormValues: {},
+      defaultSearchFormValues: {
+        inputDateStart:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")]
+      },
       columns:[
         {
           title: "技能组",
-          dataIndex: "1",
-          key: "1"
+          dataIndex: "groupName",
+          key: "groupName"
         },
         {
           title: "接待分配量",
-          dataIndex: "2",
-          key: "2"
+          dataIndex: "receiveNum",
+          key: "receiveNum"
         },
         {
           title: "平均排队用时",
-          dataIndex: "3",
-          key: "3"
+          dataIndex: "avgWaitTime",
+          key: "avgWaitTime"
         },
         {
           title: "接通量",
-          dataIndex: "4",
-          key: "4"
+          dataIndex: "connectNum",
+          key: "connectNum"
         },
         {
           title: "平均接通用时",
-          dataIndex: "5",
-          key: "5"
+          dataIndex: "avgConnectTime",
+          key: "avgConnectTime"
         },
         {
           title: "客服未接通量",
-          dataIndex: "6",
-          key: "6"
+          dataIndex: "notConnectNum",
+          key: "notConnectNum"
         },
         {
           title: "无客服在线量",
-          dataIndex: "7",
-          key: "7"
+          dataIndex: "notOnLine",
+          key: "notOnLine"
         },
         {
           title: "排队放弃量",
-          dataIndex: "8",
-          key: "8"
+          dataIndex: "giveUpNum",
+          key: "giveUpNum"
         },
         {
           title: "接通成功率",
-          dataIndex: "9",
-          key: "9"
+          dataIndex: "connectRate",
+          key: "connectRate"
         },
       ],
       dataSource:[],
@@ -104,38 +111,38 @@ export default {
         },
         {
           title: "接待分配量",
-          dataIndex: "2",
-          key: "2"
+          dataIndex: "receiveNum",
+          key: "receiveNum"
         },
         {
           title: "平均排队用时",
-          dataIndex: "3",
-          key: "3"
+          dataIndex: "avgWaitTime",
+          key: "avgWaitTime"
         },
         {
           title: "接通量",
-          dataIndex: "4",
-          key: "4"
+          dataIndex: "connectNum",
+          key: "connectNum"
         },
         {
           title: "平均接通用时",
-          dataIndex: "5",
-          key: "5"
+          dataIndex: "avgConnectTime",
+          key: "avgConnectTime"
         },
         {
           title: "客服未接通量",
-          dataIndex: "6",
-          key: "6"
+          dataIndex: "notConnectNum",
+          key: "notConnectNum"
         },
         {
           title: "排队放弃量",
-          dataIndex: "8",
-          key: "8"
+          dataIndex: "giveUpNum",
+          key: "giveUpNum"
         },
         {
           title: "接通成功率",
-          dataIndex: "9",
-          key: "9"
+          dataIndex: "connectRate",
+          key: "connectRate"
         },
       ],
       callDataSource:[]
@@ -144,8 +151,41 @@ export default {
   components: {
     FormModelSearchForm
   },
+  mounted(){
+    this.getIvrReport();
+    let receiveList =  analysis.getSkill();
+    receiveList.then((res)=>{
+      this.searchFormList[1].options = res;
+    })
+  },
   methods: {
-    prevHandleSubmit() {}
+    getIvrReport(){
+      
+      let{inputDateStart,groupIds} = this.defaultSearchFormValues
+      let inputAccs = ''
+      if(groupIds&&groupIds.length){
+        inputAccs = groupIds.join()
+      }
+      let params = {
+        beginDate: inputDateStart[0],
+        endDate: inputDateStart[1],
+        groupIds:inputAccs
+      }
+      api.ivrReport(params).then(res=>{
+        console.log('ivr导航数据分析',res.data)
+        if(res.data.status){
+          let {groupAnalysis,personAnalysis} = res.data.data
+          this.dataSource = groupAnalysis;
+          this.callDataSource = personAnalysis;
+        }
+      })
+    },
+    prevHandleSubmit(val) {
+      this.defaultSearchFormValues = {
+        ...val
+      }
+      this.getIvrReport();
+    }
   }
 };
 </script>
