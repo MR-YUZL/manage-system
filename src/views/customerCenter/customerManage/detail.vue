@@ -54,11 +54,11 @@
               </li>
             </ul>
             <!-- 服务小结 -->
-            <ServiceSummary :custId="detailId" />
+            <ServiceSummary :guestId="detailId" :custId="detailId" />
             <!-- 跟进记录 -->
             <ServiceRecord :questionList="followList" />
             <!-- 工单信息 -->
-            <OrderInf :userInfList="userInfList" />
+            <OrderInf :guestId="detailId" />
           </a-tab-pane>
           <a-tab-pane key="2" tab="资料">
             <div class="materialFlex">

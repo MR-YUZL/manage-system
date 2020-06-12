@@ -36,6 +36,9 @@
           :rowKey="record => record.custId"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
         >
+          <div slot="mergeLinkman" slot-scope="record,row">
+            <span><img v-if="row.custLinkPhone" src="../../../assets/imgs/phoneIcon.png" alt="">{{row.custLinkPhone}}</span>
+          </div>
           <div slot="detailSkip" slot-scope="record,row">
             <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
           </div>
@@ -56,7 +59,7 @@
     <createOrder
       :createdWorkOrderVisible="createdWorkOrderVisible"
       v-if="createdWorkOrderVisible"
-      :relevObj="relevObj"
+      :orderInfo="relevObj"
       @newOrder="newOrder"
     />
     <SetManagerModal
@@ -341,7 +344,16 @@ export default {
                 key: item.fieldCode,
                 scopedSlots: { customRender: "detailSkip" }
               });
-            } else {
+            } 
+            else if(item.fieldCode == "custLinkPhone"){
+              this.columns.unshift({
+                title: item.fieldName,
+                dataIndex: item.fieldCode,
+                key: item.fieldCode,
+                scopedSlots: { customRender: "mergeLinkman" }
+              });
+            }
+            else {
               this.columns.unshift({
                 title: item.fieldName,
                 dataIndex: item.fieldCode,
@@ -350,7 +362,6 @@ export default {
             }
           }
         });
-
         // this.mockData = newArr;
         // this.targetKeys = newArr.filter(v => v.isShow == 1).map(item => item.key);
       });
@@ -456,6 +467,7 @@ export default {
     },
     createOrder(custId,custManager) {
       this.relevObj = {
+        userType:0,
         detailId:custId,
         custManager:custManager
       }
