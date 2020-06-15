@@ -29,7 +29,7 @@
         :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <a-input v-model="formObject.defaultValues[item.ruleName]" :placeholder="item.placeholder" />
+        <a-input  :maxLength="item.maxLength" v-model="formObject.defaultValues[item.ruleName]" :placeholder="item.placeholder" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"

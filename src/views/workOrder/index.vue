@@ -31,13 +31,16 @@
         v-model="closeOrderRemark"
         placeholder="若有备注请填写，若无请直接完结"
         :auto-size="{ minRows: 3, maxRows: 5 }"
+        :maxLength="200"
         />
     </a-modal>
     <a-modal title="批量重启" :visible="batchRestartShow" v-if="batchRestartShow" @cancel="handleCancelBatchRestart" @ok="handleBatch(4)">
       <a-textarea
         v-model="batchRestartValue"
         placeholder="请输入备注"
-        :auto-size="{ minRows: 3, maxRows: 5 }"/>
+        :auto-size="{ minRows: 3, maxRows: 5 }"
+        :maxLength="200"
+        />
     </a-modal>
     <Modal :currentModal="batchTransmit"  @toggleModal="toggleModal" v-if="batchTransmit.visible">
       <div slot='content'>
@@ -68,7 +71,14 @@
       <div slot="content">
         <div class="workOrderDetail">
           <div class="left">
-            <ReplyWorkOrder :workOrderId="workOrderId" :orderInfo="info" @updataOrderRecord="updataOrderRecord"></ReplyWorkOrder>
+            <ReplyWorkOrder 
+            :workOrderId="workOrderId" 
+            :orderInfo="info" 
+            @updataOrderRecord="updataOrderRecord"
+             @updataWorkOrderDetails="getWorkOrderDetails"
+             :receiverAcc="formObject.modelList[0].options"
+             :receiverGroupId="formObject.modelList[1].options"
+             ></ReplyWorkOrder>
             <RecordList ref="RecordList" :workOrderId="workOrderId"></RecordList>
           </div>
           <div class="right">
@@ -154,6 +164,7 @@ export default {
               label: "备注",
               placeholder: "请输入备注内容",
               ruleName: "remark",
+              maxLength:200
             }
           ]
         },
@@ -168,6 +179,7 @@ export default {
                 label: "工单标题",
                 placeholder: "请选择",
                 ruleName: "title",
+                maxLength:40,
                 rules: [{
                   required: true,
                   message: "请输入工单标题",
@@ -179,6 +191,7 @@ export default {
                 label: "工单内容",
                 placeholder: "请选择",
                 ruleName: "content",
+                maxLength:256,
                 rules: [{
                   required: true,
                   message: "请输入工单内容",
