@@ -119,7 +119,7 @@
         :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <Upload @change="handleUploadChange" :list="formObject.defaultValues[item.ruleName]" :propName="item.ruleName" />
+        <Upload @change="handleUploadChange"  ref="upload" :list="formObject.defaultValues[item.ruleName]" :propName="item.ruleName" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
@@ -273,6 +273,8 @@ export default {
       // })
       tempFormObject.defaultValues = Object.assign({},_that.formObject.defaultValues);
       tempFormObject = Object.assign({},_that.formObject);
+      // upload的不在弹窗内 重置upload
+      // this.$refs.upload[0].fileList = []  
     },
     handleModalState() {
       this.$emit("toggleModal", false);
