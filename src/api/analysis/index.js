@@ -53,4 +53,8 @@ export default {
     sessionServiceGroups(params) {
         return axios.get('/staff/hfwStaffSkillGroups/listJson', {params})
     },
+    //ivr导航分析  
+    ivrReport(params) {
+        return axios.get('/hfw/ivr/getIvrReport', {params})
+    },
 }

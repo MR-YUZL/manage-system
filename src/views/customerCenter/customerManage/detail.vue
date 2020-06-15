@@ -7,7 +7,7 @@
         <div class="btn-area">
           <a-button type="primary" @click="editCustomerModalShow">编辑</a-button>
           <a-button type="primary" @click="createContactModalShow($event,'contactModalInner')">新建联系人</a-button>
-          <a-button v-if="dataSource=='2' || dataSource=='3'" type="primary" @click="customerFollow">客户跟进</a-button>
+          <a-button v-if="dataSource=='2' || dataSource=='3' || dataSource=='4'" type="primary" @click="customerFollow">客户跟进</a-button>
         </div>
         <ul class="lastFollowFlex">
           <li>
@@ -54,15 +54,15 @@
               </li>
             </ul>
             <!-- 服务小结 -->
-            <ServiceSummary :custId="detailId" />
+            <ServiceSummary :guestId="detailId" :custId="detailId" />
             <!-- 跟进记录 -->
             <ServiceRecord :questionList="followList" />
             <!-- 工单信息 -->
-            <OrderInf :userInfList="userInfList" />
+            <OrderInf :guestId="detailId" />
           </a-tab-pane>
           <a-tab-pane key="2" tab="资料">
             <div class="materialFlex">
-              <li v-for="(item,index) in materialList">{{item.fieldName}}：{{item.fieldOptionValue}}</li>
+              <li v-for="(item,index) in materialList">{{item.fieldName}}：{{item.fieldValue}}</li>
             </div>
           </a-tab-pane>
           <a-tab-pane key="3" tab="日志">

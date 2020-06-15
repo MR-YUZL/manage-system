@@ -20,8 +20,8 @@
       </div>
     </div>
     <div v-if="isShow" class="information">
-      <visitor-info guestId="8c730589aa1d41a19d2ce8ca23f9fb1e" />
-      <Tags guestId="8c730589aa1d41a19d2ce8ca23f9fb1e" />
+      <visitor-info  :guestId="this.visitorInf.guestId" />
+      <Tags :guestId="this.visitorInf.guestId" />
     </div>
     <Modal :currentModal="currentModal" @toggleModal="toggleModal" v-if="currentModal.visible">
       <template slot="content">
@@ -31,16 +31,21 @@
           @formSubmit="formSubmit"
           v-if="currentModal.visible"
         />
-      </template> 
+      </template>
     </Modal>
-    <createOrder :createdWorkOrderVisible="createdWorkOrderVisible" v-if="createdWorkOrderVisible" @newOrder="newOrder" />
+    <createOrder
+      :createdWorkOrderVisible="createdWorkOrderVisible"
+      :orderInfo="orderInfo"
+      v-if="createdWorkOrderVisible"
+      @newOrder="newOrder"
+    />
   </div>
 </template>
 
 <script>
 import VisitorInfo from "./../../../../components/userInf/VisitorInfo";
 import Tags from "./../../../../components/userInf/Tags";
-import createOrder from './../../../../components/userInf/CreateOrder'
+import createOrder from "./../../../../components/userInf/CreateOrder";
 import Modal from "./../../../../components/Modal";
 import baseForm from "./../../../../components/BaseForm/BaseFrom";
 import { mapState } from "vuex";
@@ -49,7 +54,8 @@ export default {
   data: () => ({
     isShow: false,
     visitorInfoData: "",
-    createdWorkOrderVisible:false,
+    createdWorkOrderVisible: false,
+    orderInfo:{},
     serviceAcc: "", //客服账号
     arr: [],
     relateRedio: [], // 关联客户rediolist
@@ -57,7 +63,7 @@ export default {
     tagsList: [],
     currentModal: {},
     time: "00分00秒",
-    timer:null,
+    timer: null,
     endServerObj: {
       title: "结束服务",
       visible: false,
@@ -127,8 +133,7 @@ export default {
           }
         }
       ]
-    },
-   
+    }
   }),
   components: {
     VisitorInfo,
@@ -146,10 +151,17 @@ export default {
     userInf() {
       this.isShow = !this.isShow;
     },
-  
+
     //新增工单
     newAddOrder() {
-      this.createdWorkOrderVisible = true
+      this.createdWorkOrderVisible = true;
+      this.orderInfo = {
+        userType:1,
+        customerId:this.visitorInf.guestId
+      }
+    },
+    newOrder(e) {
+      this.createdWorkOrderVisible = e;
     },
     toggleModal(data) {
       console.log(data);
@@ -172,7 +184,7 @@ export default {
           this["transferObj"]["visible"] = data.visible;
           obj = {
             serviceAcc: obj.receiverGroupId[obj.receiverGroupId.length - 1],
-            sessionId: ""
+            sessionId: this.visitorInf.id
           };
           url = "/session/transfer/to";
           break;
@@ -184,7 +196,7 @@ export default {
           obj.threeConsuleId = threeConsuleId;
           delete obj.consuleId;
           obj = {
-            sessionId: "",
+            sessionId: this.visitorInf.id,
             status: obj.status,
             advisoryRemark: obj.advisoryRemark
           };
@@ -202,24 +214,23 @@ export default {
     //转接
     async transfer() {
       let obj = {
-        sessionId: "75cda64b9bb1461997a85334627a576b"
+        sessionId: this.visitorInf.id
       };
       let result = await this.Request.get(
         "/session/transfer/service/acc/search",
         obj
       );
-      // if(result.data.status){
-      //   if(result.data.list.length){
-      this.getCustomer();
-      this["transferObj"]["visible"] = true;
-      this.currentModal = this.transferObj;
-      //   }else{
-      //     this.$message.warning('当前没有其他客服在线，无法转接！');
-      //   }
-
-      // }else{
-      //   this.$message.warning(result.data.msg);
-      // }
+      if (result.data.status) {
+        if (result.data.list.length) {
+          this.getCustomer();
+          this["transferObj"]["visible"] = true;
+          this.currentModal = this.transferObj;
+        } else {
+          this.$message.warning("当前没有其他客服在线，无法转接！");
+        }
+      } else {
+        this.$message.warning(result.data.msg);
+      }
     },
 
     //获取客服列表
@@ -296,23 +307,23 @@ export default {
       }
 
       return result;
-    },
-    newOrder(e){
-      this.createdWorkOrderVisible = e
     }
   },
   watch: {
-    sessionDuration(a, b) {
-     
-    }
+    sessionDuration(a, b) {}
   },
   computed: {
     ...mapState({
       visitorInf: state => state.basic.visitorInf
     }),
     sessionDuration: function() {
-      // console.log(this.visitorInf.endTime,'---------------------',this.visitorInf.beginTime);
-      clearInterval(this.timer)
+      console.log(
+        this.visitorInf.endTime,
+        "---------------------",
+        this.visitorInf.beginTime,
+        this.visitorInf
+      );
+      clearInterval(this.timer);
       // let date = moment().format("X") - this.visitorInf.beginTime;
       if (this.visitorInf.endTime) {
         let date = this.visitorInf.endTime - this.visitorInf.beginTime;

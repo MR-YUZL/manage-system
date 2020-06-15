@@ -22,10 +22,10 @@ export default {
         type:String,
         default:''
       },
-      custId:{
-        type:String,
-        default:''
-      }
+      // custId:{
+      //   type:String,
+      //   default:''
+      // }
     },
     data(){
         return{
@@ -59,7 +59,7 @@ export default {
       getServiceList(){
         let params = {
           guestId:this.guestId,
-          custId:this.custId
+          // custId:this.custId
         }
         this.Request.get('/hfw/workbench/getServiceSummary',params).then(res => {
           console.log('服务小结',res.data)

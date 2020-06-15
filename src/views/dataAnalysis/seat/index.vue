@@ -12,7 +12,7 @@
           <span></span>
           <a-button type="primary" @click="exportSeat">导出</a-button>
         </div>
-        <a-table :columns="seatColumns" :dataSource="seatDataSource" :pagination="false"></a-table>
+        <a-table :columns="seatColumns" :dataSource="seatDataSource" :pagination="false" :rowKey="record => record.id"></a-table>
       </a-tab-pane>
       <a-tab-pane key="2" tab="会话数据" force-render>
           <FormModelSearchForm

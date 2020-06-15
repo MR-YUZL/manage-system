@@ -47,7 +47,8 @@
           />
         </div>
         <div class="information">
-          <UserInformation guestId="8c730589aa1d41a19d2ce8ca23f9fb1e"  />
+          <!-- 8c730589aa1d41a19d2ce8ca23f9fb1e -->
+          <UserInformation :guestId="guestId"  />
         </div>
       </div>
     </a-modal>
@@ -185,8 +186,8 @@ export default {
         },
         {
           title: "咨询分类",
-          dataIndex: "consultType",
-          key: "consultType"
+          dataIndex: "consultTypeName",
+          key: "consultTypeName"
         },
         {
           title: "会话结束时间",

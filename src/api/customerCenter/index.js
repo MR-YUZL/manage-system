@@ -110,7 +110,7 @@ export default {
   // },
   //跟进记录list有分页 
   followRecordList(params){
-    return axios.post('/customers/hfwCustomersFollow/listPageJson', params)
+    return axios.get('/customers/hfwCustomersFollow/listPageJson', {params})
   },
   //历史会话list 
   sessionList(params) {

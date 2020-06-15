@@ -99,7 +99,8 @@ export default {
     ...mapGetters(["toAccount", "currentConversationType"]),
     ...mapState({
       memberList: state => state.group.currentMemberList,
-      userID: state => state.user.userID
+      userID: state => state.user.userID,
+      imInfo: state =>  state.basic.imInfo
     })
   },
   mounted() {
@@ -195,6 +196,7 @@ export default {
         });
         return;
       }
+      console.log(this.imInfo)
       const message = this.tim(this.imInfo.SDKAppID).createTextMessage({
         to: this.toAccount,
         conversationType: this.currentConversationType,
