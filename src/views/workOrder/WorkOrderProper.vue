@@ -33,11 +33,11 @@
                 </li>
                 <li> 
                   <span>受理组</span>
-                  <p>{{info.receiverGroupId}}</p>
+                  <p>{{info.receiverGroupName}}</p>
                 </li>
                 <li>  
                   <span>受理人</span>
-                  <p>{{info.receiverAcc}}</p>
+                  <p>{{info.receiverAccName}}</p>
                 </li>
                  <li>
                   <span>工单分类</span>
@@ -54,7 +54,7 @@
               <ul>
                 <li>
                   <span>客户名称</span>
-                  <p>{{customerInfo.custName}}</p>
+                  <p>{{customerInfo.customerName}}</p>
                 </li>
                 <li>
                   <span>客户级别</span>

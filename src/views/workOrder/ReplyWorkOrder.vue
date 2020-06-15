@@ -1,15 +1,17 @@
 <template>
   <div class="ReplayWorkOrder">
-    <div class="funBtn" v-if="info.status == 0">
-      <a-button type="primary" @click="handleWorkOrder(2)">接单</a-button> 
-    </div>
-    <div class="funBtn" v-if="info.status == 1">
-      <!-- 转交可以转交多次 -->
-      <a-button type="primary" @click="batchTransmitModal()">转交</a-button>  
-      <a-button type="primary" @click="endWorkOrderModal()">完结</a-button>
-    </div>
-    <div class="funBtn" v-else>
-      <a-button type="primary" @click="reopenWorkOrderModal()">重启</a-button>
+    <div class="funBtn">
+      <div class="funBtn" v-if="info.status == 0">
+        <a-button type="primary" @click="handleWorkOrder(2)">接单</a-button> 
+      </div>
+      <div class="funBtn" v-if="info.status == 1">
+        <!-- 转交可以转交多次 -->
+        <a-button type="primary" @click="batchTransmitModal()">转交</a-button>  
+        <a-button type="primary" @click="endWorkOrderModal()">完结</a-button>
+      </div>
+      <div class="funBtn" v-else>
+        <a-button type="primary" @click="reopenWorkOrderModal()">重启</a-button>
+      </div>
     </div>
     <p class="text">{{info.content}}</p>
     <div v-if="info.fileList&&info.fileList.length>0" class="fileListStyle">

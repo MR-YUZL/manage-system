@@ -645,6 +645,7 @@ export default {
         this.Request.post('/workflow/saveWorkflow',params).then(res=>{
           console.log('工单创建成功',res)
           this.createdWorkOrder.visible = false
+          this.$refs.formObjectCreated.resetForm()
           this.getList()
         })
       },
@@ -658,11 +659,14 @@ export default {
       prevHandleSubmit(data){
         console.log('搜索条件',data)
         this.pager.currentPage = 1
-        let {sessionDate,...others} = data
+        let {typeId,sessionDate,...others} = data
         this.searchField = {...others}
         if(sessionDate&&sessionDate.length>0){
           this.searchField.startDate = sessionDate[0]
           this.searchField.endDate = sessionDate[1]
+        }
+        if(typeId&&typeId.length>0){
+          this.searchField.typeId=typeId[typeId.length-1]
         }
         this.getList()
       },
