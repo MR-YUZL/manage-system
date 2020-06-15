@@ -25,10 +25,10 @@
             </a-radio-group>
            </a-form-model-item>
            <a-form-model-item label="角色名称" prop="roleName"> 
-               <a-input v-model="formData.roleName" placeholder="请输入角色名称" />
+               <a-input v-model="formData.roleName" placeholder="请输入角色名称" :maxLength="16"/>
            </a-form-model-item>
            <a-form-model-item label="角色描述" prop="roleDesc"> 
-              <a-textarea v-model="formData.roleDesc" placeholder="请输入角色描述" :auto-size="{ minRows: 3, maxRows: 5 }" />
+              <a-textarea v-model="formData.roleDesc" placeholder="请输入角色描述" :auto-size="{ minRows: 3, maxRows: 5 }" :maxLength="50" />
            </a-form-model-item>
         </div>
         <h5>管理端</h5>

@@ -11,7 +11,7 @@
           :columns="columns"
           :dataSource="dataSource"
           :pagination="false"
-          :rowKey="record => record.userAccount">
+          :rowKey="record => record.phone">
           <div slot="action" slot-scope="record,row">
             <span class="blue" style="margin-right:10px;" @click="editStaff(record)">编辑</span>
             <span class="blue" @click="deleteStaff(record)">删除</span>
@@ -20,7 +20,7 @@
         </div>
         <div style="padding:10px 0 30px;"><TablePagination :parentPager="pager" @paginationChange="paginationChange"></TablePagination></div>
     </div>
-    <a-modal title="添加成员" :visible="addCustomerShow" v-if="addCustomerShow" @cancel="handleCancelAdd" @ok="handleOkAdd" >
+    <a-modal title="添加成员" :visible="addCustomerShow" :maskClosable='false' v-if="addCustomerShow" @cancel="handleCancelAdd" @ok="handleOkAdd" >
       <div>
         选择成员：<a-tree-select
                   v-model="addStaffValue"
@@ -188,7 +188,7 @@ export default {
       prevHandleSubmit(data){
         console.log(data,'搜索参数')
         this.searchField = {...data}
-        this.page.currentPage = 1
+        this.pager.currentPage = 1
         this.getStaffList()
       },
       editStaff(row){

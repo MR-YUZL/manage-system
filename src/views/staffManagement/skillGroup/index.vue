@@ -93,6 +93,9 @@ export default {
       addSkill(){
         this.eidtName = ''
         this.addSkillShow =  true
+        this.skillGroups.map(item=>{
+          item.editShow = false
+        })
       },
       // 新增技能组
       // addSkillGroup(){
@@ -119,6 +122,7 @@ export default {
       editSkillGroup(index,name){
         this.skillGroups[index].editShow=true
         this.eidtName = name
+        this.addSkillShow = false
       },
       deleteSkillGroup(id){
         let params = {
@@ -131,6 +135,7 @@ export default {
       //成员管理
       staffManage(){
         this.staffManageShow = true
+        this.getStaffList(this.currentGroupId)
       },
       // 获取技能组
       getStaffSkillGroups(){
@@ -138,7 +143,6 @@ export default {
           groupName:this.groupName
         }
         this.skillGroups = []
-        console.log('咋地没东西了')
         this.Request.get('/staff/hfwStaffSkillGroups/listJson',params).then(res=>{
           console.log('技能组列表',res.data)
           let list = res.data.list
@@ -161,6 +165,7 @@ export default {
       },
       // 获取技能组员工列表
       getStaffList(groupId,type){
+        this.targetKeys = []
         let params = {}
         if(type&&type=="all"){
              params = {}
@@ -219,14 +224,17 @@ export default {
           groupId:this.currentGroupId,
           staffs:[...this.targetKeys]
         }
+        if(params.staffs.length == 0){
+          this.$message.warning('请选择成员')
+          return false;
+        }
         this.Request.post('/staff/hfwStaffSkillGroupsMember/staffGroupEdit',params).then(res=>{
-          console.log(res.data,'保存成员管理')
           this.$message.success('成员保存成功!')
           this.getStaffList(this.currentGroupId)
           this.staffManageShow = false
         })
       },
-      handleChange(targetKeys, direction, moveKeys){
+      handleChange(targetKeys){
         this.targetKeys = targetKeys;
       },
       handleSearch(){}
