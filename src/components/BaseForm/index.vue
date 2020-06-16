@@ -119,7 +119,7 @@
         :prop="'defaultValues.'+item.ruleName"
         :rules="item.rules"
       >
-        <Upload @change="handleUploadChange"  ref="upload" :list="formObject.defaultValues[item.ruleName]" :propName="item.ruleName" />
+        <Upload @change="handleUploadChange"  ref="upload" :list="formObject.defaultValues[item.ruleName]" :propName="item.ruleName" :uploadParams="item.uploadParams" />
       </a-form-model-item>
       <a-form-model-item
         :label="item.label"
