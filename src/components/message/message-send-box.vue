@@ -14,7 +14,9 @@
       <i class="iconfont icon-tupian" title="发图片" @click="handleSendImageClick">
         <img src="./../../assets/imgs/current_session/picture.jpg" alt />
       </i>
-
+      <i class="iconfont icon-wenjian" title="发视频" @click="handleSendVideoClick">
+        <img src="./../../assets/imgs/video.png" alt />
+      </i>
       <i class="iconfont icon-wenjian" title="发文件" @click="handleSendFileClick">
         <img src="./../../assets/imgs/current_session/file_s.jpg" alt />
       </i>

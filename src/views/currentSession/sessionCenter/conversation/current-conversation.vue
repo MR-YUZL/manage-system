@@ -174,7 +174,6 @@ export default {
       currentMessageList: state => {
         console.log('*----------------------------------*')
         state.conversation.currentMessageList.forEach(item => {
-          console.log(item)
           if (item.type == "TIMCustomElem") {
             item.payload.data =
               typeof item.payload.data == "string"

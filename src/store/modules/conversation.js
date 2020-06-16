@@ -87,7 +87,7 @@ const conversationModules = {
      * @returns
      */
     pushCurrentMessageList(state, data) {
-      state.messageList = [data]
+      state.messageList = Array.isArray(data) ?[...data] : [data]
     
       // 还没当前会话，则跳过
       if (!state.currentConversation.conversationID) {

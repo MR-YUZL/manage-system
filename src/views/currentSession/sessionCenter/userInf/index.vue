@@ -317,12 +317,6 @@ export default {
       visitorInf: state => state.basic.visitorInf
     }),
     sessionDuration: function() {
-      console.log(
-        this.visitorInf.endTime,
-        "---------------------",
-        this.visitorInf.beginTime,
-        this.visitorInf
-      );
       clearInterval(this.timer);
       // let date = moment().format("X") - this.visitorInf.beginTime;
       if (this.visitorInf.endTime) {

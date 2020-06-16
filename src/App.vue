@@ -14,8 +14,8 @@ export default {
     locale: zhCN,
   }),
   mounted(){
-      console.log(this)
-  }
+      
+  },
 };
 </script>
 <style lang="less" scoped>

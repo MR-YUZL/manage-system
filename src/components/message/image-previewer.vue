@@ -56,8 +56,6 @@ export default {
   methods: {
    
     handlePreview({ url }) {
-      console.log("事件总线")
-      console.log(url)
       this.url = url
       this.index = this.imgUrlList.findIndex(item => item === url)
       this.visible = true
