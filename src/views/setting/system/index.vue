@@ -5,9 +5,9 @@
         <a-tabs :activeKey="activeKey" @change="clickTabs">
           <a-tab-pane key="0" tab="咨询分类"></a-tab-pane>
           <a-tab-pane key="1" tab="工单分类"></a-tab-pane>
-          <a-tab-pane key="2" tab="客户标签"></a-tab-pane>
-          <a-tab-pane key="3" tab="访客标签"></a-tab-pane>
-          <a-tab-pane key="4" tab="客户分组"></a-tab-pane>
+          <a-tab-pane key="2" tab="客户标签设置"></a-tab-pane>
+          <a-tab-pane key="3" tab="访客标签设置"></a-tab-pane>
+          <!-- <a-tab-pane key="4" tab="客户分组"></a-tab-pane> -->
         </a-tabs>
         <div>
           <AddSort v-if="activeKey==0||activeKey==1" :list="list" :currentType="activeKey"/>

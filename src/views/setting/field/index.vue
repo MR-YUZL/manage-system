@@ -19,7 +19,7 @@
         >
           <div slot="action" slot-scope="record,row">
             <span class="blue" style="margin-right:10px;" @click="editField(row)">编辑</span>
-            <span class="blue" @click="deleteField(row)">删除</span>
+            <span class="blue" v-if="row.isDefined!=0" @click="deleteField(row)">删除</span>
           </div>
         </a-table>
       </div>
