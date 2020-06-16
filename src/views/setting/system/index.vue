@@ -16,7 +16,7 @@
       </div>
   </div>
 </template>
-s
+
 <script>
 import AddSort from "./AddSort"
 import TagsEdit from './TagsEdit'
