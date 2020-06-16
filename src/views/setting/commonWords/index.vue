@@ -76,10 +76,10 @@
           </a-select>
         </a-form-model-item>
         <a-form-model-item label="快捷词" prop="keyword">
-            <a-input placeholder="请输入快捷词"  v-model="addWordsObj.keyword"/>
+            <a-input placeholder="请输入快捷词"  v-model="addWordsObj.keyword" :maxLength="10"/>
         </a-form-model-item>
         <a-form-model-item label="回复内容" prop="content">
-            <a-textarea placeholder="请输入回复内容" v-model="addWordsObj.content" />
+            <a-textarea placeholder="请输入回复内容" v-model="addWordsObj.content" :maxLength="100" />
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -276,19 +276,16 @@ export default {
         })
       },
       deleteGroupWordsOK(id,type){
-         console.log('选中的id',id) 
-         let selectedRowsArray = []
           let params = {
             commonSpeechIds:id
           }
           let that = this
-          // if(type=="batchDelete"){
-          //   // id.map((item) =>{
-          //   //   selectedRowsArray.push(item)
-          //   // })
-          //   params.commonSpeechIds = id
-          // }
-          console.log(params,'参数')
+          if(type=="batchDelete"){
+            if(id.length==0){
+                this.$message.warning('请选择列表数据！')
+                return false
+            }
+          }
           this.$confirm({
             title: '',
             content:<div style="color:red;">删除分组的同时会删除该分组下的常用语，请确认是否删除？</div>,
