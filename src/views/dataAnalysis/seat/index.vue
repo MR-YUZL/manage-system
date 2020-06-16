@@ -24,7 +24,7 @@
           <span></span>
           <a-button type="primary" @click="exportSession">导出</a-button>
         </div>
-        <a-table :columns="sessionColumns" :dataSource="sessionDataSource" :pagination="false"></a-table>
+        <a-table :columns="sessionColumns" :dataSource="sessionDataSource" :pagination="false" :rowKey="record => record.id"></a-table>
       </a-tab-pane>
       <a-tab-pane key="3" tab="质检统计">
         <FormModelSearchForm
@@ -36,7 +36,7 @@
           <span></span>
           <a-button type="primary" @click="exportQuality">导出</a-button>
         </div>
-        <a-table :columns="qcColumns" :dataSource="qcDataSource" :pagination="false"></a-table>
+        <a-table :columns="qcColumns" :dataSource="qcDataSource" :pagination="false" :rowKey="record => record.id"></a-table>
       </a-tab-pane>
     </a-tabs>
     <a-modal
