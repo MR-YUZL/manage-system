@@ -4,7 +4,7 @@
       <div  class="flex-between">
         <div>类型：
           <a-select v-model="roleType" default-value="1" style="width:200px;" @change="roleTypeChange">
-            <a-select-option :value="null">全部类型</a-select-option>
+            <a-select-option :value="2">全部类型</a-select-option>
             <a-select-option :value="1">管理员</a-select-option>
             <a-select-option :value="0">普通客服</a-select-option>
           </a-select>
@@ -37,7 +37,7 @@ export default {
     props:{},
     data() {
       return {
-        roleType:'',
+        roleType:2,
         pager:{},
         columns:[
           {
@@ -91,7 +91,7 @@ export default {
       },
       roleTypeChange(){
         let params = {
-          roleType:this.roleType
+          roleType:this.roleType==2?'':this.roleType
         }
         this.getList(params)
       },

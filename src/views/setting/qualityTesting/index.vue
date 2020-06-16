@@ -28,10 +28,10 @@
             :wrapper-col="wrapperCol"
             >
               <a-form-model-item label="评分项" prop="gradeName">
-                <a-input v-model="addScoreFormData.gradeName"/>
+                <a-input v-model="addScoreFormData.gradeName" :maxLength="15"/>
               </a-form-model-item>
-              <a-form-model-item label="说明" prop="gradeExplain">
-                <a-input v-model="addScoreFormData.gradeExplain"/>
+              <a-form-model-item label="说明">
+                <a-input v-model="addScoreFormData.gradeExplain" :maxLength="100"/>
               </a-form-model-item>
               <a-form-model-item label="评分类型" prop="gradeType">
                 <a-radio-group v-model="addScoreFormData.gradeType" :default-value="1">
@@ -75,9 +75,9 @@ export default {
             gradeName: [
               { required: true, message: '请输入  ', trigger: 'blur' },
             ],
-            gradeExplain: [
-              { required: true, message: '请输入  ', trigger: 'blur' },
-            ],
+            // gradeExplain: [
+            //   { required: true, message: '请输入  ', trigger: 'blur' },
+            // ],
             gradeType: [
               { required: true, message: '请选择  ', trigger: 'blur' },
             ],

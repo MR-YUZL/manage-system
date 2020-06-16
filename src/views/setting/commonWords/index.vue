@@ -3,7 +3,7 @@
     <a-page-header title="公共常用语"/>
     <div class="common-phrases">
       <div class="side">
-        <div class="side-head"><strong>常用语分类</strong><p><a-icon @click="addPhrases" type="plus" /></p></div>
+        <div class="side-head"><strong>常用语分类</strong><p style="padding-right:10px;"><a-icon @click="addPhrases" type="plus" /></p></div>
         <div class="group">
           <ul>
             <li v-for="(item,index) in groupList" :key="index" :class="{active:item.active}" @click="changeGroup(item.id,index)">
@@ -33,7 +33,7 @@
            >
              <div slot="action" slot-scope="record,row,index">
                <span class="blue" style="margin-right:10px;" @click="editCommonWords(row,index)">编辑</span>
-               <span class="blue" @click="deleteGroupWordsOK(row.id,'words')">删除</span>
+               <span class="blue" @click="deleteGroupWordsOK([row.id],'words')">删除</span>
              </div>
            </a-table>
         </div>
@@ -258,6 +258,7 @@ export default {
       addPhrases(){
         this.addGroupShow= true
         this.groupType = 'add'
+        this.addGroupObj.keyword = ''
       },
       cancelAddGroup(){
         this.addGroupShow = false
@@ -281,12 +282,13 @@ export default {
             commonSpeechIds:id
           }
           let that = this
-          if(type=="batchDelete"){
-            id.map((item) =>{
-              selectedRowsArray.push(item.id)
-            })
-            params.commonSpeechIds = selectedRowsArray
-          }
+          // if(type=="batchDelete"){
+          //   // id.map((item) =>{
+          //   //   selectedRowsArray.push(item)
+          //   // })
+          //   params.commonSpeechIds = id
+          // }
+          console.log(params,'参数')
           this.$confirm({
             title: '',
             content:<div style="color:red;">删除分组的同时会删除该分组下的常用语，请确认是否删除？</div>,

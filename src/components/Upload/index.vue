@@ -7,8 +7,9 @@
       :beforeUpload="beforeUpload"
       @change="handleChange"
       :fileList="fileList"
+      :accept="accept"
     >
-      <a-button>
+      <a-button v-if="fileList.length < maxFiles">
         <a-icon type="upload" />Upload
       </a-button>
     </a-upload>
@@ -21,7 +22,9 @@ export default {
   data() {
     return {
       defaultFileList: [],
-      fileList: []
+      fileList: [],
+      accept: ".doc,.docx,.xls,.xlsx,.pdf,.png,.jpg",
+      maxFiles: 5
     };
   },
   watch: {
@@ -42,10 +45,19 @@ export default {
     },
     propName: {
       type: String
+    },
+    uploadParams: {
+      type: Object
     }
   },
   created() {
     this.updateDefaultFileList(this.list);
+    if(this.uploadParams && this.uploadParams["accept"]) {
+      this.accept = this.uploadParams["accept"]
+    }
+    if(this.uploadParams && this.uploadParams["maxFiles"]) {
+      this.maxFiles = this.uploadParams["maxFiles"]
+    }
   },
   mounted() {
     this.$emit("change", this.defaultFileList);
@@ -53,10 +65,15 @@ export default {
   methods: {
     beforeUpload(file) {
       const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        this.$message.error("图片大小不超过2MB！");
+      let fileType = file.name.split(".").pop();
+      const acceptFile = (this.accept.indexOf(fileType) > -1)
+      if(!acceptFile) {
+        this.$message.error("文件格式只支持"+this.accept);
       }
-      return isLt2M;
+      if (!isLt2M) {
+        this.$message.error("文件大小不超过2MB！");
+      }
+      return isLt2M && acceptFile;
     },
     updateDefaultFileList(list) {
       let tempList = [];

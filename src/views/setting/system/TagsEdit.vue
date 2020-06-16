@@ -6,7 +6,7 @@
         <p >{{item.name}}</p><div class="tags-icon"><a-icon type="edit" @click="editGroupTags(item.name,item.id)"/><a-icon type="delete" @click="deleteGroupTags(item.id)"/></div>
       </div>
     </div>
-    <a-modal :title="type=='edit'?'编辑分组':'添加分组'"  v-if="editTagsShow" :visible="editTagsShow" @ok="handleSubmit" @cancel="handleCancelModal">
+    <a-modal :title="type=='edit'?'编辑标签':'添加标签'"  v-if="editTagsShow" :visible="editTagsShow" @ok="handleSubmit" @cancel="handleCancelModal">
        <a-form-model 
        ref="tagsForm" 
        :rules="rules" 
@@ -14,7 +14,7 @@
        :label-col="labelCol" 
        :wrapper-col="wrapperCol"
        >
-          <a-form-model-item label="分组名称" prop="keyword">
+          <a-form-model-item label="标签名称" prop="name">
             <a-input v-model="tagsFormData.name" placeholder="请输入"></a-input>
           </a-form-model-item>
        </a-form-model>
