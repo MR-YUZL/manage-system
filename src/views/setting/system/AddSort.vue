@@ -12,7 +12,6 @@
           </div>
           <div class="addSortStyle" @click="addSort('first')"  v-if="!firstAddShow"><a-icon type="plus" />添加分类</div>
         </li>
-
         <li v-for="(item,index) in firstLevel " :key="index" :class="{active:item.active}" @click="handleFirstLevel(index)">
           <span  v-if="!item.edit">{{item.name}}</span>
           <a-input v-if="item.edit" v-model="editName"/> 
@@ -160,6 +159,7 @@ export default {
       this.firstIndex = index
       this.firstLevel.map(item=>{
         item.active = false
+        item.edit = false
       })
       this.firstLevel[index].active = true
       this.secondLevel = this.firstLevel[index].childList
@@ -179,6 +179,7 @@ export default {
       this.secondIndex = index
       this.secondLevel.map(item=>{
         item.active = false
+        item.edit = false
       })
       this.secondLevel[index].active = true
       this.threeLevel = this.secondLevel[index].childList || []
@@ -186,12 +187,13 @@ export default {
         this.threeLevel.map(item=>{
           item.active = false
         })
-
       }
       this.threeLevelShow = true
     },
     handlethreeLevel(index){
-      console.log(index)
+      this.threeLevel.map(item=>{
+        item.edit = false
+      })
     },
     saveTags(type,id,index){
       // id name  type pid   id 用于编辑  pid 用于新增 父类的

@@ -293,6 +293,7 @@ export default {
           that.Request.post("/config/hfwConfigFields/delJson", {
             ...params
           }).then(res => {
+            that.getList()
             console.log("删除字段", res.data);
           });
         },
@@ -371,7 +372,7 @@ export default {
       this.$forceUpdate()
     },
     removeDomain(idx) {
-      if (this.addFormData.options.length > 1) {
+      if (this.addFormData.options.length > 1) {  
         this.addFormData.options.splice(idx, 1);
       }
       this.$forceUpdate()
