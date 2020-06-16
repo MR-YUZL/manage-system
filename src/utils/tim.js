@@ -2,7 +2,6 @@
 import TIM from 'tim-js-sdk';
 import COS from "cos-js-sdk-v5";
 
-
 function tim (SDKAppID){
   console.log(SDKAppID)
   let options = {

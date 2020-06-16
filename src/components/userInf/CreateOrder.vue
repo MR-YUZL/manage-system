@@ -245,19 +245,10 @@ export default {
           this.info = res.data.data
         })
         this.$forceUpdate()
-      },
-      
-     
-     
+      },         
       handleCancelBatchRestart(){
         this.batchRestartShow = false
       },
-     
- 
-     
-     
-    
-      
       createdToggleModal(){
         this.$emit('newOrder',false)
         this.createdWorkOrder.visible = false

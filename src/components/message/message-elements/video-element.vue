@@ -40,7 +40,6 @@ export default {
       return this.message.status === 'unSend'
     },
     percentage() {
-        console.log(this.$parent)
       return Math.floor((this.$parent.message.progress || 0) * 100)
     }
   },

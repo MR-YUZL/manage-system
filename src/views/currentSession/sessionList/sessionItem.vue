@@ -34,7 +34,7 @@
 <script>
 import { mapGetters, mapState } from "vuex";
 import { isToday, getDate, getTime } from "./../../../utils/date";
-import moment from 'moment'
+import moment from "moment";
 export default {
   data: () => ({}),
   props: ["conversation"],
@@ -56,7 +56,7 @@ export default {
         );
         let obj = {
           guestId: this.conversation.guestId,
-          di:this.conversation.id,
+          di: this.conversation.id,
           guestName: this.conversation.guestName,
           beginTime: moment(this.conversation.beginTime).valueOf() / 1000,
           endTime: moment(this.conversation.endTime).valueOf() / 1000
@@ -113,18 +113,23 @@ export default {
         }
         return `${this.conversation.lastMessage.fromAccount}撤回了一条消息`;
       }
-    
-      console.log(this.conversation,this.conversation.latestMsgContent)
-      if(this.conversation.latestMsgType == 'TIMCustomElem'){
-        //  let 
 
-      }else{
+      console.log(this.conversation, this.conversation.lastMessage);
+      if (this.conversation.lastMessage.type == "TIMCustomElem") {
+         this.conversation.lastMessage.payload.data = typeof this.conversation.lastMessage.payload.data == "string"
+                ? JSON.parse(this.conversation.lastMessage.payload.data)
+                : this.conversation.lastMessage.payload.data;
+        return this.conversation.lastMessage.payload.data.subMsgType == "image" ? '[图片]' :
+        this.conversation.lastMessage.payload.data.subMsgType == "file" ? '[文件]' :
+        this.conversation.lastMessage.payload.data.subMsgType == "video" ? '[视频]' :
+         this.conversation.lastMessage.payload.data.msgText 
+      } else {
+              
         //  this.conversation.lastMessage.messageForShow
-          return this.conversation.lastMessage.messageForShow != ""
-        ? this.conversation.lastMessage.messageForShow
-        : this.conversation.latestMsgContent;
+        return this.conversation.lastMessage.messageForShow != ""
+          ? this.conversation.lastMessage.messageForShow
+          : this.conversation.latestMsgContent;
       }
-     
     },
     date() {
       if (
@@ -141,8 +146,10 @@ export default {
     },
     time() {
       if (this.conversation.endTime) {
-        let date = moment(this.conversation.endTime) - moment(this.conversation.beginTime);
-        let time = this.formateSeconds(date/1000);
+        let date =
+          moment(this.conversation.endTime) -
+          moment(this.conversation.beginTime);
+        let time = this.formateSeconds(date / 1000);
         return time;
       }
     }
@@ -178,8 +185,8 @@ export default {
           text-overflow: ellipsis;
           white-space: nowrap;
         }
-        .time{
-          padding-left:10px;
+        .time {
+          padding-left: 10px;
         }
       }
       .row-2 {

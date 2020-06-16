@@ -244,7 +244,7 @@ export default {
             })
           })
         }
-        console.log('创建工单参数',params)
+        console.log('创建工单参数',params) 
         this.Request.post('/workflow/saveWorkflow',params).then(res=>{
           console.log('工单创建成功',res)
            this.createdWorkOrder.visible = false

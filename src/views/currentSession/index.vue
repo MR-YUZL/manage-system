@@ -1,6 +1,6 @@
 <template>
   <div class="sessionList">
-    <session-list v-if="status" />
+    <session-list v-if="status" :sessionList="sessionList" />
     <session-center v-if="status" />
     <information-list v-if="status" />
     <div class="noData" v-if="!status">
@@ -16,7 +16,8 @@ import informationList from "./informationList/index";
 export default {
   data: () => ({
     status: true,
-    infoObj:{}
+    infoObj: {},
+    sessionList:['fsdafd']
   }),
   components: {
     sessionList,
@@ -26,9 +27,23 @@ export default {
   mounted() {
     // this.login();
     // this.initListener();
-    this.getIM()
+    this.getSessionList();
+    this.getIM();
   },
   methods: {
+    // listLength(e){
+    //   this.status = e
+    // },
+    getSessionList() {
+      this.Request.get("/session/guest/my/all/list").then(res => {
+        if (res.data.status) {
+          this.status = res.data.list.length;
+          this.sessionList = res.data.list
+        } else {
+          this.$message.warning(res.data.msg);
+        }
+      });
+    },
     getIM() {
       this.Request.get("/api/chat/customer/status/query").then(res => {
         if (res.data.status) {
@@ -44,11 +59,11 @@ export default {
       this.Request.get("/guest/session/im/query/user/sig", params).then(res => {
         if (res.data.status) {
           this.infoObj = {
-            userID : imAccount,
-            userSig:res.data.userSig,
-            SDKAppID:res.data.sdkAppid
-          }
-          this.$store.commit('getImInfo',this.infoObj)
+            userID: imAccount,
+            userSig: res.data.userSig,
+            SDKAppID: res.data.sdkAppid
+          };
+          this.$store.commit("getImInfo", this.infoObj);
           this.login();
           this.initListener();
         }
@@ -58,7 +73,7 @@ export default {
       this.tim(this.infoObj.SDKAppID)
         .login({
           userID: this.infoObj.userID,
-          userSig:this.infoObj.userSig
+          userSig: this.infoObj.userSig
         })
         .then(() => {
           this.$store.commit("toggleIsLogin", true);
@@ -74,15 +89,29 @@ export default {
     },
     initListener() {
       // 登录成功后会触发 SDK_READY 事件，该事件触发后，可正常使用 SDK 接口
-     this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.SDK_READY, this.onReadyStateUpdate, this);
+      this.tim(this.infoObj.SDKAppID).on(
+        this.TIM.EVENT.SDK_READY,
+        this.onReadyStateUpdate,
+        this
+      );
       // SDK NOT READT
-      this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.SDK_NOT_READY, this.onReadyStateUpdate, this);
+      this.tim(this.infoObj.SDKAppID).on(
+        this.TIM.EVENT.SDK_NOT_READY,
+        this.onReadyStateUpdate,
+        this
+      );
       // 被踢出
-      this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.KICKED_OUT, this.onKickOut);
+      this.tim(this.infoObj.SDKAppID).on(
+        this.TIM.EVENT.KICKED_OUT,
+        this.onKickOut
+      );
       // SDK内部出错
       this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.ERROR, this.onError);
       // 收到新消息
-      this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.MESSAGE_RECEIVED, this.onReceiveMessage);
+      this.tim(this.infoObj.SDKAppID).on(
+        this.TIM.EVENT.MESSAGE_RECEIVED,
+        this.onReceiveMessage
+      );
       // 会话列表更新
       this.tim(this.infoObj.SDKAppID).on(
         this.TIM.EVENT.CONVERSATION_LIST_UPDATED,
@@ -145,6 +174,7 @@ export default {
     },
     onUpdateConversationList(event) {
       console.log("会话列表更新");
+      console.log(event.data);
 
       this.$store.commit("updateConversationList", event.data);
     }

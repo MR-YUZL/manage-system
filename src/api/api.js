@@ -40,20 +40,30 @@ method.forEach(item => {
           _options
         )
       )
-        .then(res => resolve(res))
-        .catch(error => {
-          const regPath = ['/login', '/register']
-
-          if (
-            error.response &&
-            error.response.status === 401 &&
-            regPath.indexOf(location.pathname) == -1
-          ) {
-            window.location.href = '/login'
-            reject(error.response)
-            return
+        .then(res =>
+          {
+            if(res.data.status){
+              resolve(res)
+              return;
+            }else{
+              message.error(res.data.msg)
+            }   
           }
+         
+        )
+        .catch(error => {
+          // const regPath = ['/login', '/register']
 
+          // if (
+          //   error.response &&
+          //   error.response.status === 401 &&
+          //   regPath.indexOf(location.pathname) == -1
+          // ) {
+          //   window.location.href = '/login'
+          //   reject(error.response)
+          //   return
+          // }
+        
           // if (error.response && error.response.status === 419) {
           //     return refreshCrsfToken(item, url, data, options).then(r => resolve(r)).catch(err => reject(err.response));
           // }
