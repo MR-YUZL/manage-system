@@ -6,7 +6,7 @@
         <div class="conversationCon routineSet">
           <a-form-model>
              <p>常规分配方式</p>
-             <a-form-model-item label="常规分配方式">
+             <a-form-model-item>
               <a-radio-group v-model="sessionAssignParams.DATA_80010">
                 <a-radio value="3">
                   客服均衡工作量（访客将优先分配给当天总会话接待量最少的客服）
