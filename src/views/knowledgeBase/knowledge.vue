@@ -5,31 +5,38 @@
         添加知识
         </a-button>
     </div>
-    <div class="content">
-        <div v-for="(item,index) in knowledgeList" :key="index" class="ledge">
-            <h3>{{item.title}}</h3>
-            <div class="item">
-                <div>{{item.content}}</div>
-                <div class="action"><span @click="updateData(2,item,index)">修改</span><span @click="deleteData(item.id,index)">删除</span></div>
+    <div class="content knowledgeContent" v-if="knowledgeList.length>0">
+       <a-collapse >
+          <a-collapse-panel  v-for="(item,index) in knowledgeList" :key="index" >
+            <pre v-html="item.content"></pre>
+            <div class="title" slot="header" style="width:300px;">
+              <p>{{item.title}}</p>
+              <p style="color:#aaa">作者：{{item.author}}</p>
             </div>
-        </div>
+            <div style="margin-top:-30px;" slot="extra" class="action"><span class="blue" @click.stop="updateData(2,item,index)">修改</span><i class="blue" style="padding:0 5px;">|</i><span class="blue" @click.stop="deleteData(item.id,index)">删除</span></div>
+          </a-collapse-panel>
+       </a-collapse>
     </div>
-     <Modal :currentModal="transferObj" @toggleModal="toggleModal" v-if="transferObj.visible">
-        <template slot="content">
-            <base-form :formObject="transferObj" @toggleModal="toggleModal" @formSubmit="formSubmit" v-if="transferObj.visible"/>
-        </template>
-        
+    <div v-else class="flex noData">
+     <img src="../../assets/imgs/noData.png" />
+    </div>
+    <Modal :currentModal="knowledgeModal" @toggleModal="toggleModal" v-if="knowledgeModal.visible">
+      <div slot='content'>
+        <BaseForm 
+          ref="addKnowledgeForm"
+          :formObject="knowledgeObj" 
+          @toggleModal="toggleModal"
+          @formSubmit="editKnowledge"
+        ></BaseForm>
+      </div>
     </Modal>
+
   </div>
 </template>
-
 <script>
-
-
-import moment from "moment";
 import { mapState } from 'vuex';
 import Modal from './../../components/Modal'
-import BaseForm from './../../components/BaseForm/BaseFrom'
+import BaseForm from './../../components/BaseForm/index'
 export default {
   components: {
    Modal,
@@ -38,38 +45,42 @@ export default {
   data(){
     return {
      knowledgeList:[],
-     transferObj:{},
-     id:'',
-     knowledgeObj:{
-      title:'',
+     activeKey:['1'],
+     knowledgeModal:{
       visible:false,
-      ref:'knowledge',
-      type :'modalForm',
-      width:'500px',
+      title:'添加知识'
+     },
+     id:'',
+     type:'add',
+     knowledgeObj:{
+      type:'modalForm',
+      ref: "testModal",
+      sureBtn:'确定',
+      defaultValues:{
+      },
       modelList:[
-        {
-          type:'input',
-          label:'标题',
-          placeholder:'请输入标题',
-          model:undefined,
-          ruleName:'title', //receiverGroupId 工单受理组id
-          options:[],
-          rules:{
-            required: true,
-            message: '请输入标题',
-            trigger: 'blur',
-          }
-        },
+          {
+            type: "input",
+            label: "标题",
+            placeholder: "请选择",
+            ruleName: "title",
+            maxLength:20,
+            rules: [{
+              required: true,
+              message: "请输入标题",
+              trigger: "blur"
+            }]
+          },
         {
           type:'input',
           label:'作者名称',
           placeholder:'请输入作者名称',
-          model:undefined,
           ruleName:'author', 
           options:[],
+          maxLength:20,
           rules:{
             required: true,
-            message: '请指定客服人员',
+            message: '请输入作者名称',
             trigger: 'blur'
           }
         },
@@ -77,7 +88,6 @@ export default {
           type:'select',
           label:'分类',
           placeholder:'请选择分类',
-          model:undefined,
           ruleName:'groupId', 
           options:[],
           rules:{
@@ -89,8 +99,7 @@ export default {
         {
           type:'textarea',
           label:'知识内容',
-          placeholder:'',
-          model:'',
+          placeholder:'请输入知识内容',
           ruleName:'content', 
           rules:{
             required: true,
@@ -107,72 +116,69 @@ export default {
   },
   methods: {
    getList(id){
-       this.Request.get('/hfw/hfwKnowlegeInfo/listJson',{groupId:id}).then(res => {
-           if(res.data.status){
-               this.knowledgeList = res.data.list
-           }
-       })
+      this.Request.get('/hfw/hfwKnowlegeInfo/listJson',{groupId:id}).then(res => {
+        if(res.data.status){
+            this.knowledgeList = res.data.list
+        }
+      })
    },
    deleteData(id,index){
        let that = this
        this.$confirm({
         content:<div style="color:red;">确定要删除知识吗？</div>,
         onOk() {
-            that.Request.get('/hfw/hfwKnowlegeInfo/delJson',{id}).then(res => {
-                console.log(res)
-                if(res.data.status){
-                   that.knowledgeList.splice(index,1)
-                    that.$forceUpdate()
-                }
-            })
-          
+          that.Request.get('/hfw/hfwKnowlegeInfo/delJson',{id}).then(res => {
+            console.log(res)
+            if(res.data.status){
+              that.knowledgeList.splice(index,1)
+              that.$forceUpdate()
+            }
+          })
         },
       });
       
    },
    updateData(status,item,index){
-       this.getSortList()
-       
+      this.knowledgeModal.visible = true
+      this.getSortList()
        if(status ==1){
-           this["knowledgeObj"]["title"] = '添加知识';
+          this.type = 'add'
+          this["knowledgeModal"]["title"] = '添加知识';
+          this.knowledgeObj.defaultValues = {}
+          this.knowledgeObj.defaultValues.groupId = this.classificationId!=''?this.classificationId:undefined
        }else{
-           this["knowledgeObj"]["title"] = '编辑知识';
-           this["knowledgeObj"]["modelList"][0]['model'] = item.title
-           this["knowledgeObj"]["modelList"][1]['model'] = item.author
-           this["knowledgeObj"]["modelList"][2]['model'] = item.groupId
-           this["knowledgeObj"]["modelList"][3]['model'] = item.content
-           this.id = item.id
+         this.type = 'edit'
+          console.log(item,'编辑的数据')
+          let { title,author ,groupId,content} = item
+          this["knowledgeModal"]["title"] = '编辑知识';
+          this.knowledgeObj.defaultValues = {
+            title,
+            author,
+            groupId,
+            content
+          }
+          this.id = item.id
        }
        this["knowledgeObj"]["visible"] = true;
-       this.transferObj = this.knowledgeObj
    },
-   toggleModal(data){
-       this.transferObj = {}
-       switch(data.ref){
-          case 'knowledge':
-            this['knowledgeObj']['visible'] = data.visible
-            this.id = ''
-            break;
+    toggleModal(){
+      this.$refs.addKnowledgeForm.resetForm()
+      this.knowledgeModal.visible = false
+    },
+   editKnowledge(data){
+      let params = {
+        ...data
+      }
+      if(this.type == 'edit'){
+          params.id = this.id
+      }
+      this.Request.post('/hfw/hfwKnowlegeInfo/saveJson',params).then(res => {
+        if(res.data.status){
+          this.$message.success('操作成功！');
+          this.knowledgeModal.visible = false
+          this.getList(this.classificationId)
         }
-   },
-   formSubmit(data){
-       this.transferObj = {}
-       let url = ''
-       let obj = data.obj
-       switch(data.ref){
-          case 'knowledge':
-            this['knowledgeObj']['visible'] = data.visible
-            url = '/hfw/hfwKnowlegeInfo/saveJson'
-            obj.id = this.id
-            break;
-        }
-        this.Request.post(url,obj).then(res => {
-            if(res.data.status){
-                 this.$message.success('操作成功！');
-                 this.id = ''
-                 this.getList(this.classificationId)
-            }
-        })
+      })
    },
    getSortList(){
     let arr = []
@@ -187,13 +193,14 @@ export default {
             })
             this["knowledgeObj"]["modelList"][2]['options'] = arr
         }
+        this.$forceUpdate()
       })
     },
   },
   watch: {
-      classificationId(newVal,oldVal){
-          this.getList(newVal)
-      }
+    classificationId(newVal,oldVal){
+        this.getList(newVal)
+    }
   },
   computed: {
       ...mapState({
@@ -204,7 +211,7 @@ export default {
 </script>
 <style lang="less" scoped>
   .knowledge{
-      width: calc(100% - 340px);
+      width: calc(100% - 300px);
       .btn{
           line-height: 60px;
           text-align: right;
@@ -232,4 +239,23 @@ export default {
           
       }
   }
+  .noData{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height:250px;
+  }
+</style>
+<style lang="less">
+   .knowledgeContent .ant-collapse{
+     border-radius:0;
+   }
+   .knowledgeContent .ant-collapse > .ant-collapse-item > .ant-collapse-header{
+     background:#fafafa
+   }
+    .knowledgeContent .title{
+      p{
+        margin-bottom:0;
+      }
+   }
 </style>
