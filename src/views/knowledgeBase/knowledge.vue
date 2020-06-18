@@ -144,6 +144,7 @@ export default {
        if(status ==1){
           this.type = 'add'
           this["knowledgeModal"]["title"] = '添加知识';
+          this.knowledgeObj.defaultValues = {}
           this.$set(this.knowledgeObj.defaultValues,'groupId',this.classificationId?this.classificationId:undefined)
        }else{
          this.type = 'edit'
