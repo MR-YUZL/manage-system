@@ -124,7 +124,9 @@ export default {
           classifyList:[],
           classify:'',
           filedValue:[],
-          custId:''
+          custId:'',
+          customerId:'',
+          id:''
         }
     },
     watch:{
@@ -137,8 +139,11 @@ export default {
       orderInfo(){
         this.info  = this.orderInfo
         this.level = this.orderInfo.level
-        this.typeId[0] = this.orderInfo.typeId
+        this.typeId = this.orderInfo.typeIds
         this.filedValue = this.orderInfo.filedValue
+        this.id =  this.orderInfo.id
+        this.customerId = this.orderInfo.customerId
+        console.log(this.orderInfo,'=======================this.orderInfo')
       }
     },
     created(){
@@ -147,8 +152,9 @@ export default {
       this.getClassification()
       this.info = this.orderInfo
       this.level = this.orderInfo.level
-      this.typeId[0] = this.orderInfo.typeId
+      this.typeId = this.orderInfo.typeIds
       this.filedValue = this.orderInfo.filedValue
+      this.id =  this.orderInfo.id
     },
     mounted(){},
     methods: {
@@ -166,7 +172,7 @@ export default {
       // },
       getCustomerList(){
         let params = {
-          custId:''  // 工单信息中取这个值
+          custId:this.customerId  // 工单信息中取这个值
         }
         this.Request.get('/customers/hfwCustomersInfo/infoJson',params).then(res=>{
           console.log('客户信息',res.data,'=====================')
@@ -203,11 +209,12 @@ export default {
       },
       modifyWorkOrder(){
         let params = {
+          id:this.id,
           level:this.level,
-          typeId:this.typeId.join(',')
+          typeId:this.typeId.length>0?this.typeId[this.typeId.length-1]:''
         }
         this.Request.post('/workflow/updateWorkflow',params).then(res=>{
-            this.$message.success('修改成功')
+          this.$message.success('修改成功')
         })
       }
     }
