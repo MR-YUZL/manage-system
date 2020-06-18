@@ -19,7 +19,7 @@
         :label-col="labelCol" 
         :wrapper-col="wrapperCol">
           <a-form-model-item :label="textName" prop="con">
-            <a-textarea v-model="wordsFormData.con"  placeholder="您好，有什么可以帮助的吗？" :auto-size="{ minRows: 7 }" allow-clear></a-textarea>
+            <a-textarea v-model="wordsFormData.con"  placeholder="您好，有什么可以帮助的吗？" :auto-size="{ minRows: 7 }" allow-clear :maxLength="50"></a-textarea>
           </a-form-model-item>
           <a-form-model-item>
             <a-button style="margin-left:100px;" type="primary" @click="saveData">保存</a-button>

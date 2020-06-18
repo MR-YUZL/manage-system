@@ -8,7 +8,7 @@
     <div class="content knowledgeContent" v-if="knowledgeList.length>0">
        <a-collapse >
           <a-collapse-panel  v-for="(item,index) in knowledgeList" :key="index" >
-            <pre v-html="item.content"></pre>
+            <pre style="width:100%; white-space: pre-wrap;word-wrap: break-word;">{{item.content}}</pre>
             <div class="title" slot="header" style="width:300px;">
               <p>{{item.title}}</p>
               <p style="color:#aaa">作者：{{item.author}}</p>
@@ -101,6 +101,7 @@ export default {
           label:'知识内容',
           placeholder:'请输入知识内容',
           ruleName:'content', 
+          maxLength:180,
           rules:{
             required: true,
             message: '请输入内容',
@@ -136,7 +137,6 @@ export default {
           })
         },
       });
-      
    },
    updateData(status,item,index){
       this.knowledgeModal.visible = true
@@ -144,8 +144,7 @@ export default {
        if(status ==1){
           this.type = 'add'
           this["knowledgeModal"]["title"] = '添加知识';
-          this.knowledgeObj.defaultValues = {}
-          this.knowledgeObj.defaultValues.groupId = this.classificationId!=''?this.classificationId:undefined
+          this.$set(this.knowledgeObj.defaultValues,'groupId',this.classificationId?this.classificationId:undefined)
        }else{
          this.type = 'edit'
           console.log(item,'编辑的数据')
@@ -160,6 +159,7 @@ export default {
           this.id = item.id
        }
        this["knowledgeObj"]["visible"] = true;
+       this.$forceUpdate()
    },
     toggleModal(){
       this.$refs.addKnowledgeForm.resetForm()
@@ -185,20 +185,21 @@ export default {
       this.Request.post('/hfw/tsmHfwKnowlegeGroup/listJson').then(res => {
         if(res.data.status){
             res.data.list.map(item => {
-                let obj ={
-                    key:item.id,
-                    value:item.groupName
-                }
-                arr.push(obj)
-            })
-            this["knowledgeObj"]["modelList"][2]['options'] = arr
+              let obj ={
+                key:item.id,
+                value:item.groupName
+              }
+              arr.push(obj)
+          })
+          this.knowledgeObj.modelList[2].options = arr
+          // this["knowledgeObj"]["modelList"][2]['options'] = arr
         }
         this.$forceUpdate()
       })
     },
   },
   watch: {
-    classificationId(newVal,oldVal){
+    classificationId(newVal){
         this.getList(newVal)
     }
   },

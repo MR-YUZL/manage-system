@@ -290,7 +290,7 @@ export default {
         title: "",
         content: <div style="color:red;"> 确定要删除吗？</div>,
         onOk() {
-          that.Request.post("/config/hfwConfigFields/delJson", {
+          that.Request.get("/config/hfwConfigFields/delJson", {
             ...params
           }).then(res => {
             that.getList()
