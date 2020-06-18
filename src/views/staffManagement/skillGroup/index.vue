@@ -115,7 +115,12 @@ export default {
           groupId:id,
           groupName:this.eidtName
         }
+        if(params.groupName==''){
+          this.$message.warning('请输入名称！')
+          return false
+        }
         this.Request.post('/staff/hfwStaffSkillGroups/editJson',params).then(()=>{
+          this.addSkillShow = false
           this.getStaffSkillGroups()
         })
       },
@@ -128,7 +133,7 @@ export default {
         let params = {
           groupId:id
         }
-        this.Request.post('/staff/hfwStaffSkillGroups/delJson',params).then(()=>{
+        this.Request.get('/staff/hfwStaffSkillGroups/delJson',params).then(()=>{
           this.getStaffSkillGroups()
         })
       },
