@@ -6,8 +6,8 @@
         </a-button>
     </div>
     <div class="content knowledgeContent" v-if="knowledgeList.length>0">
-       <a-collapse >
-          <a-collapse-panel  v-for="(item,index) in knowledgeList" :key="index" >
+       <a-collapse v-model="activeKey">
+          <a-collapse-panel  v-for="(item,index) in knowledgeList" :key="''+index+1" >
             <pre style="width:100%; white-space: pre-wrap;word-wrap: break-word;">{{item.content}}</pre>
             <div class="title" slot="header" style="width:300px;">
               <p>{{item.title}}</p>
@@ -119,7 +119,8 @@ export default {
    getList(id){
       this.Request.get('/hfw/hfwKnowlegeInfo/listJson',{groupId:id}).then(res => {
         if(res.data.status){
-            this.knowledgeList = res.data.list
+          this.activeKey = ['1']
+          this.knowledgeList = res.data.list
         }
       })
    },
