@@ -145,6 +145,7 @@ export default {
    },
    updateData(status,item){
       this.knowledgeModal.visible = true
+      this.getSortList()
       if(status ==1){
         this.type = 'add'
         this["knowledgeModal"]["title"] = '添加知识';
