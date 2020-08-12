@@ -14,9 +14,9 @@
       </div>
 
       <div class="right">
-        <span @click="transfer">转接</span>
+        <span @click="transfer" v-if="visitorInf.status">转接</span>
         <span @click="newAddOrder">新增工单</span>
-        <span @click="endServer">结束服务</span>
+        <span @click="endServer" v-if="visitorInf.status">结束服务</span>
       </div>
     </div>
     <div v-if="isShow" class="information">
@@ -317,12 +317,16 @@ export default {
       visitorInf: state => state.basic.visitorInf
     }),
     sessionDuration: function() {
+     
       clearInterval(this.timer);
       // let date = moment().format("X") - this.visitorInf.beginTime;
+      console.log(this.visitorInf)
       if (this.visitorInf.endTime) {
         let date = this.visitorInf.endTime - this.visitorInf.beginTime;
         this.time = this.formateSeconds(date);
-      } else {
+      } 
+      else if(this.visitorInf.beginTime){
+        // console.log(moment().format("X"),this.visitorInf.beginTime,moment().format("X") - this.visitorInf.beginTime)
         this.timer = setInterval(() => {
           let date = moment().format("X") - this.visitorInf.beginTime;
           this.time = this.formateSeconds(date);

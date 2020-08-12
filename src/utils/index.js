@@ -57,3 +57,38 @@ export function titleNotify(count) {
     document.title = document.title.replace(/\((.*?)\)/, '')
   }
 }
+
+
+//剔除历史消息中无用消息
+export function deleteHistory(list,account){ 
+  console.log(list, account, '==================')
+  list.map((item, index) => {
+    if (
+      (item.toAccount != account &&
+        item.imMsgType == "TIMCustomElem" &&
+        item.subMsgType == "queuinglocation") ||
+      item.subMsgType == "inviteevaluate" ||
+      item.subMsgType == "transfer" ||
+      item.subMsgType == "reception" ||
+      item.subMsgType == "stopsession" ||
+      item.subMsgType == "createsession"
+    ) {
+      list.splice(index,1,'')
+    }
+  });
+  let arr = []
+  list.forEach(item => {
+    if (item) arr.push(item);
+  });
+  console.log(list, arr, arr.length);
+  return arr
+}
+
+//数组去空
+export function arrEmpty(list) {
+  let arr = []
+  list.map(item => {
+    if(item) arr.push(item)
+  })
+  return arr
+ }

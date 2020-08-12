@@ -9,14 +9,14 @@
       />
     </div>
     <a-icon type="close" class="el-icon-close close-button" @click="close" />
-    <a-icon type="left" class="el-icon-back prev-button" @click="goPrev" />
-    <a-icon type="right" class="el-icon-right next-button" @click="goNext" />
+    <!-- <a-icon type="left" class="el-icon-back prev-button" @click="goPrev" />
+    <a-icon type="right" class="el-icon-right next-button" @click="goNext" /> -->
     <div class="actions-bar">
       <a-icon type="minus-circle" class="el-icon-zoom-out" @click="zoomOut" />
       <a-icon type="plus-circle" class="el-icon-zoom-in" @click="zoomIn"></a-icon>
       <a-icon type="undo" class="el-icon-refresh-left" @click="rotateLeft"></a-icon>
       <a-icon type="redo" class="el-icon-refresh-right" @click="rotateRight"></a-icon>
-      <span class="image-counter">{{index+1}} / {{imgUrlList.length}}</span>
+      <!-- <span class="image-counter">{{index+1}} / {{imgUrlList.length}}</span> -->
     </div>
   </div>
 </template>

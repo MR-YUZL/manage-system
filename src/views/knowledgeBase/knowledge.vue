@@ -1,7 +1,7 @@
 <template>
   <div class="knowledge">
     <div class="btn">
-        <a-button type="primary" @click="updateData(1)">
+        <a-button v-if="isShow" type="primary" @click="updateData(1)">
         添加知识
         </a-button>
     </div>
@@ -13,7 +13,7 @@
               <p>{{item.title}}</p>
               <p style="color:#aaa">作者：{{item.author}}</p>
             </div>
-            <div style="margin-top:-30px;" slot="extra" class="action"><span class="blue" @click.stop="updateData(2,item,index)">修改</span><i class="blue" style="padding:0 5px;">|</i><span class="blue" @click.stop="deleteData(item.id,index)">删除</span></div>
+            <div v-if="isShow" style="margin-top:-30px;" slot="extra" class="action"><span class="blue" @click.stop="updateData(2,item,index)">修改</span><i class="blue" style="padding:0 5px;">|</i><span class="blue" @click.stop="deleteData(item.id,index)">删除</span></div>
           </a-collapse-panel>
        </a-collapse>
     </div>
@@ -42,6 +42,7 @@ export default {
    Modal,
    BaseForm
   },
+  props:["isShow"],
   data(){
     return {
      knowledgeList:[],
@@ -202,12 +203,14 @@ export default {
   },
   watch: {
     classificationId(newVal){
-        this.getList(newVal)
-    }
+        this.getList(newVal) //knowledge_base_maintianing
+    },
+    
   },
   computed: {
       ...mapState({
-          classificationId:state => state.basic.classificationId
+          classificationId:state => state.basic.classificationId,
+          
       })
   }
 };

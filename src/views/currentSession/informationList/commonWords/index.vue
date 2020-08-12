@@ -38,7 +38,9 @@ export default {
       list: []
     };
   },
-  computed: {},
+  computed: {
+    visitorInf: state => state.basic.visitorInf,
+  },
   watch: {},
   //方法集合
   methods: {
@@ -84,8 +86,10 @@ export default {
     },
 
     handleChangeItem(key) {
-      this.message = this.mapData(this.list, key.key);
-      this.$bus.$emit("message", this.message);
+      if (this.visitorInf.status) {
+        this.message = this.mapData(this.list, key.key);
+        this.$bus.$emit("message", this.message);
+      }
     },
     mapData(list, key) {
       list.map(item => {

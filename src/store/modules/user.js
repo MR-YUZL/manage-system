@@ -58,11 +58,16 @@ const user = {
       if (context.rootState.conversation.currentConversation.conversationID) {
         tim(store.state.basic.imInfo.SDKAppID).setMessageRead({ conversationID: context.rootState.conversation.currentConversation.conversationID })
       }
-      tim(store.state.basic.imInfo.SDKAppID).logout().then(() => {
-        context.commit('toggleIsLogin')
-        context.commit('stopComputeCurrent')
-        context.commit('reset')
-      })
+      if (store.state.basic.imInfo.SDKAppID) {
+        tim(store.state.basic.imInfo.SDKAppID)
+          .logout()
+          .then(() => {
+            context.commit("toggleIsLogin");
+            context.commit("stopComputeCurrent");
+            context.commit("reset");
+          });
+      }
+      
     }
   }
 }

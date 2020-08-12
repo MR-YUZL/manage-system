@@ -1,9 +1,9 @@
 <template>
   <div class="sessionList">
-    <session-list v-if="status" :sessionList="sessionList" />
+    <session-list v-show="status" @isStatus="isStatus" />
     <session-center v-if="status" />
-    <information-list v-if="status" />
-    <div class="noData" v-if="!status">
+    <information-list v-show="status" />
+    <div class="noData" v-show="!status">
       <img src="./../../assets/imgs/current_session/session_img.png" alt />
     </div>
   </div>
@@ -15,9 +15,8 @@ import sessionCenter from "./sessionCenter/index";
 import informationList from "./informationList/index";
 export default {
   data: () => ({
-    status: true,
+    status: false,
     infoObj: {},
-    sessionList:['fsdafd']
   }),
   components: {
     sessionList,
@@ -27,31 +26,26 @@ export default {
   mounted() {
     // this.login();
     // this.initListener();
-    this.getSessionList();
+    this.$store.dispatch("logout");
     this.getIM();
   },
   methods: {
     // listLength(e){
     //   this.status = e
     // },
-    getSessionList() {
-      this.Request.get("/session/guest/my/all/list").then(res => {
-        if (res.data.status) {
-          this.status = res.data.list.length;
-          this.sessionList = res.data.list
-        } else {
-          this.$message.warning(res.data.msg);
-        }
-      });
-    },
+   isStatus(a){
+     console.log(a)
+     
+       this.status = a
+   },
     getIM() {
       this.Request.get("/api/chat/customer/status/query").then(res => {
         if (res.data.status) {
-          this.getSig(res.data.imAccount, res.data.imPassword);
+          this.getSig(res.data.imAccount, res.data.imPassword,res.data.serviceAccInfo.orgId);
         }
       });
     },
-    getSig(imAccount, imPassword) {
+    getSig(imAccount, imPassword, orgId) {
       let params = {
         imAccount,
         imPassword
@@ -61,7 +55,8 @@ export default {
           this.infoObj = {
             userID: imAccount,
             userSig: res.data.userSig,
-            SDKAppID: res.data.sdkAppid
+            SDKAppID: res.data.sdkAppid,
+            orgId: orgId
           };
           this.$store.commit("getImInfo", this.infoObj);
           this.login();
@@ -81,6 +76,7 @@ export default {
         })
         .catch(error => {
           this.loading = false;
+          console.log(error)
           this.$store.commit("showMessage", {
             message: "登录失败：" + error.message,
             type: "error"

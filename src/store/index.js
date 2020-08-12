@@ -19,7 +19,6 @@ export default new Vuex.Store({
   getters: {
     hidden(state) {
       // eslint-disable-next-line no-unused-vars
-      // console.log('--------hidden---------')
       const temp = state.current 
       if (typeof document.hasFocus !== 'function') {
         return document.hidden

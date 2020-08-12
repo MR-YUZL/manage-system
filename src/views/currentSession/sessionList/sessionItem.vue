@@ -1,30 +1,60 @@
 <template>
   <div
     class="session_item"
-    :class="{ 'choose': conversation.conversationID === currentConversation.conversationID,'end': conversation.endTime && conversation.conversationID != currentConversation.conversationID}"
+    :class="{
+      choose:
+        conversation.conversationID === currentConversation.conversationID,
+      end:
+        conversation.endTime &&
+        conversation.conversationID != currentConversation.conversationID
+    }"
     @click="selectConversation"
   >
     <div class="wrap">
       <div>
-        <a-badge :count="conversation.unreadCount" :overflow-count="10">
+        <a-badge
+          :count="conversation.unreadCount"
+          :overflow-count="10"
+          v-if="showUnreadCount"
+        >
           <a-avatar
             :size="45"
-            :src="conversation.userProfile.avatar ? 
-                conversation.userProfile.avatar : require('./../../../assets/imgs/current_session/header.png')"
+            :src="
+              conversation.guestAvatar
+                ? conversation.guestAvatar
+                : require('./../../../assets/imgs/current_session/header.png')
+            "
           />
         </a-badge>
+        <a-avatar
+          v-else
+          :size="45"
+          :src="
+            conversation.guestAvatar
+              ? conversation.guestAvatar
+              : require('./../../../assets/imgs/current_session/header.png')
+          "
+        />
       </div>
       <div class="content">
         <div class="row-1">
-          <div class="name" :title="conversation.guestName">{{conversation.guestName}}</div>
-          <div v-if="conversation.endTime" class="time">{{time}}</div>
+          <div class="name" :title="conversation.guestName">
+            {{ conversation.guestName }}
+          </div>
+          <div v-if="conversation.endTime" class="time">{{ time }}</div>
         </div>
         <div class="row-2">
           <div
             class="summary"
-            :title="conversation.lastMessage.messageForShow != '' ? conversation.lastMessage.messageForShow : conversation.latestMsgContent"
-          >{{messageForShow}}</div>
-          <div class="date">{{date}}</div>
+            :title="
+              conversation.lastMessage.messageForShow != ''
+                ? conversation.lastMessage.messageForShow
+                : conversation.latestMsgContent
+            "
+          >
+            {{ messageForShow }}
+          </div>
+          <div class="date">{{ date }}</div>
         </div>
       </div>
     </div>
@@ -39,29 +69,58 @@ export default {
   data: () => ({}),
   props: ["conversation"],
   components: {},
-  mounted() {
-    console.log(this.conversation);
-    // console.log(this.currentConversation)
-  },
+  mounted() {},
+
   methods: {
     moment,
     selectConversation() {
+      console.log(this.conversation);
       if (
         this.conversation.conversationID !==
         this.currentConversation.conversationID
       ) {
-        this.$store.dispatch(
-          "checkoutConversation",
-          this.conversation.conversationID
-        );
-        let obj = {
-          guestId: this.conversation.guestId,
-          di: this.conversation.id,
-          guestName: this.conversation.guestName,
-          beginTime: moment(this.conversation.beginTime).valueOf() / 1000,
-          endTime: moment(this.conversation.endTime).valueOf() / 1000
+        let params = {
+          orgId: this.conversation.orgId,
+          visitorAccount: this.conversation.guestImAccount,
+          msgTimeEnd: this.conversation.endTime
+            ? moment(this.conversation.endTime).format(
+                "YYYY-MM-DD HH:mm:ss.SSS"
+              )
+            : moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
+          pageSize: 20
         };
-        this.$store.commit("getVisitorInf", obj);
+
+        this.Request.get("/session/chat/record/search", params).then(res => {
+          if (res.data.status) {
+            let data = res.data;
+            let list = [...data.list];
+            this.$store.commit("getSelectStatus", true);
+            this.$store.commit("getHistoryList", list);
+            this.$store.dispatch(
+              "checkoutConversation",
+              this.conversation.conversationID
+            );
+            this.$emit("selectId", this.conversation.conversationID);
+            let obj1 = {
+              previous: this.currentConversation.conversationID,
+              selectId: this.conversation.conversationID
+            };
+            this.$emit("selectObj", obj1);
+            let obj = {
+              guestId: this.conversation.guestId,
+              id: this.conversation.id,
+              guestName: this.conversation.guestName,
+              beginTime: moment(this.conversation.beginTime).valueOf() / 1000,
+              endTime: this.conversation.endTime
+                ? moment(this.conversation.endTime).valueOf() / 1000
+                : "",
+              status: this.conversation.endTime ? false : true,
+              orgId: this.conversation.orgId
+            };
+            console.log(obj);
+            this.$store.commit("getVisitorInf", obj);
+          }
+        });
       }
     },
     //将秒转化为时分秒
@@ -114,22 +173,38 @@ export default {
         return `${this.conversation.lastMessage.fromAccount}撤回了一条消息`;
       }
 
-      console.log(this.conversation, this.conversation.lastMessage);
+      // console.log(this.conversation, this.conversation.lastMessage);
       if (this.conversation.lastMessage.type == "TIMCustomElem") {
-         this.conversation.lastMessage.payload.data = typeof this.conversation.lastMessage.payload.data == "string"
-                ? JSON.parse(this.conversation.lastMessage.payload.data)
-                : this.conversation.lastMessage.payload.data;
-        return this.conversation.lastMessage.payload.data.subMsgType == "image" ? '[图片]' :
-        this.conversation.lastMessage.payload.data.subMsgType == "file" ? '[文件]' :
-        this.conversation.lastMessage.payload.data.subMsgType == "video" ? '[视频]' :
-         this.conversation.lastMessage.payload.data.msgText 
+        this.conversation.lastMessage.payload.data =
+          typeof this.conversation.lastMessage.payload.data == "string"
+            ? JSON.parse(this.conversation.lastMessage.payload.data)
+            : this.conversation.lastMessage.payload.data;
+        return this.conversation.lastMessage.payload.data.subMsgType == "image"
+          ? "[图片]"
+          : this.conversation.lastMessage.payload.data.subMsgType == "file"
+          ? "[文件]"
+          : this.conversation.lastMessage.payload.data.subMsgType == "video"
+          ? "[视频]"
+          : this.conversation.lastMessage.payload.data.msgText;
       } else {
-              
         //  this.conversation.lastMessage.messageForShow
         return this.conversation.lastMessage.messageForShow != ""
           ? this.conversation.lastMessage.messageForShow
           : this.conversation.latestMsgContent;
       }
+    },
+    showUnreadCount() {
+      // console.log(this.$store.getters.hidden, this.conversation,this.currentConversation.conversationID !==
+      //     this.conversation.conversationID , this.conversation.unreadCount > 0,this.currentConversation.conversationID !==
+      //     this.conversation.conversationID && this.conversation.unreadCount > 0)
+      if (this.$store.getters.hidden) {
+        return this.conversation.unreadCount > 0;
+      }
+      // 是否显示未读计数。当前会话和未读计数为0的会话，不显示。
+      return (
+        this.currentConversation.conversationID !==
+          this.conversation.conversationID && this.conversation.unreadCount > 0
+      );
     },
     date() {
       if (

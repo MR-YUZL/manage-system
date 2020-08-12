@@ -132,16 +132,15 @@ const conversationModules = {
     getMessageList(context, conversationID) {
       console.log(context.state.isCompleted)
       if (context.state.isCompleted) {
-        context.commit('showMessage', {
-          message: '已经没有更多的历史消息了哦',
-          type: 'info'
-        })
+        // context.commit('showMessage', {
+        //   message: '已经没有更多的历史消息了哦',
+        //   type: 'info'
+        // })
         return
       }
       
       const { nextReqMessageID, currentMessageList } = context.state
       tim(store.state.basic.imInfo.SDKAppID).getMessageList({ conversationID, nextReqMessageID, count: 15 }).then(imReponse => {
-        console.log(imReponse)
         // 更新messageID，续拉时要用到
         context.state.nextReqMessageID = imReponse.data.nextReqMessageID
         context.state.isCompleted = imReponse.data.isCompleted

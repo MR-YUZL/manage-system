@@ -88,7 +88,7 @@ export default {
         span{
           white-space : pre-wrap;
           margin :0;
-          text-shadow :#495060 0 0 0.05em;
+          // text-shadow :#495060 0 0 0.05em;
         }
         img{
           vertical-align : bottom;

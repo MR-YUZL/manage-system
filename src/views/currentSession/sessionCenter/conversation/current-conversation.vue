@@ -1,25 +1,41 @@
 <template>
   <div class="current-conversation-wrapper">
-    <div class="current-conversation" @scroll="onScroll" v-if="showCurrentConversation">
+    <div
+      class="current-conversation"
+      @scroll="onScroll"
+      v-if="showCurrentConversation"
+    >
       <div class="content">
-        <div class="message-list scroll" ref="message-list" @scroll="this.onScroll">
-          <div class="more" v-if="!isCompleted">
-            <a-button
-              @click="$store.dispatch('getMessageList', currentConversation.conversationID)"
-            >查看更多</a-button>
+        <div
+          class="message-list scroll"
+          ref="message-list"
+          @scroll="this.onScroll"
+        >
+          <div class="more" v-if="!this.status">
+            <a-button @click="getMOreFn">查看更多</a-button>
           </div>
           <div class="no-more" v-else>没有更多了</div>
-          <history-message /> 
-          <message-item v-for="message in currentMessageList" :key="message.ID" :message="message" />
+          <history-message
+            :historySessionList="historySessionList"
+            v-if="isSave"
+          />
+          <message-item
+            v-for="message in progressSessionList"
+            :key="message.ID"
+            :message="message"
+          />
         </div>
         <div
           v-show="isShowScrollButtomTips"
           class="newMessageTips"
           @click="scrollMessageListToButtom"
-        >回到最新位置</div>
+        >
+          回到最新位置
+        </div>
       </div>
       <div class="footer" v-if="showMessageSendBox">
         <message-send-box />
+        <div class="mask" v-if="!visitorInf.status">当前对话已结束</div>
       </div>
     </div>
   </div>
@@ -29,7 +45,9 @@
 import { mapGetters, mapState } from "vuex";
 import MessageSendBox from "./../../../../components/message/message-send-box";
 import MessageItem from "./../../../../components/message/message-item";
-import historyMessage from "./../../../../components/historyMessage"
+import historyMessage from "./../../../../components/historyMessage";
+import { deleteHistory, arrEmpty } from "@/utils/index";
+import moment from "moment";
 
 export default {
   name: "CurrentConversation",
@@ -45,134 +63,21 @@ export default {
       showConversationProfile: false,
       timeout: "",
       messageList: [],
-      data: [
-        {
-          ID: "C2C13800571501-158441420-10-0",
-          conversationID: "C2C13800571501",
-          conversationType: "C2C",
-          time: 1590632962,
-          sequence: 158441420,
-          clientSequence: 158441420,
-          random: 10,
-          priority: "Normal",
-          nick: "",
-          avatar: "",
-          _elements: [
-            {
-              type: "TIMCustomElem",
-              content: {
-                data:
-                  {"msgText":"https://image1.aliyun.com","sendType":"manual","subMsgType":"image"},
-                description: "",
-                extension: ""
-              }
-            }
-          ],
-          isPlaceMessage: 0,
-          isRevoked: false,
-          geo: {},
-          from: "13800571501",
-          to: "13800571503",
-          flow: "in",
-          isSystemMessage: false,
-          protocol: "JSON",
-          isResend: false,
-          isRead: false,
-          status: "success",
-          payload: {
-            data:
-              {"msgText":"https://image1.aliyun.com","sendType":"manual","subMsgType":"image"},
-            description: "",
-            extension: ""
-          },
-          type: "TIMCustomElem"
-        },
-
-        // {
-        //   ID: "C2C13800571500-1847961126-10-0",
-        //   conversationID: "C2C13800571500",
-        //   conversationType: "C2C",
-        //   time: 1590055345,
-        //   sequence: 1847961126,
-        //   clientSequence: 1847961126,
-        //   random: 10,
-        //   priority: "Normal",
-        //   nick: "",
-        //   avatar: "",
-        //   _elements: [
-        //     {
-        //       type: "TIMCustomElem",
-        //       content: {
-        //         data:
-        //           '{"msgText":"客服xxxx为您服务","sendType":"automatic","subMsgType":"prompts"}'
-        //       }
-        //     }
-        //   ],
-        //   isPlaceMessage: 0,
-        //   isRevoked: false,
-        //   geo: {},
-        //   from: "13800571500",
-        //   to: "13800571503",
-        //   flow: "in",
-        //   isSystemMessage: false,
-        //   protocol: "JSON",
-        //   isResend: false,
-        //   isRead: false,
-        //   status: "success",
-        //   payload: {
-        //     data:
-        //       {"msgText":"客服xxxx为您服务","sendType":"automatic","subMsgType":"prompts"}
-        //   },
-        //   type: "TIMCustomElem"
-        // },
-        {
-          ID: "C2C13800571500-1847961126-10-0",
-          conversationID: "C2C13800571500",
-          conversationType: "C2C",
-          time: 1590055345,
-          sequence: 1847961126,
-          clientSequence: 1847961126,
-          random: 10,
-          priority: "Normal",
-          nick: "",
-          avatar: "",
-          _elements: [
-            {
-              type: "TIMCustomElem",
-              content: {
-                data:
-                  '{"msgText":"客服xxxx为您服务","sendType":"automatic","subMsgType":"prompts"}'
-              }
-            }
-          ],
-          isPlaceMessage: 0,
-          isRevoked: false,
-          geo: {},
-          from: "13800571500",
-          to: "13800571503",
-          flow: "in",
-          isSystemMessage: false,
-          protocol: "JSON",
-          isResend: false,
-          isRead: false,
-          status: "success",
-          payload: {
-            data:
-              {"msgText":"客服xxxx为您服务","sendType":"automatic","subMsgType":"prompts"}
-          },
-          type: "TIMCustomElem"
-        }
-      ],
+      status: false,
+      historySessionList: [], //历史消息会话列表
+      progressSessionList: [], //实时消息会话列表
+      isSave: false
     };
   },
   computed: {
     ...mapState({
+      conversationList: state => state.conversation.conversationList,
       currentConversation: state => state.conversation.currentConversation,
       currentUnreadCount: state =>
         state.conversation.currentConversation.unreadCount,
       imInfo: state => state.basic.imInfo,
+      visitorInf: state => state.basic.visitorInf,
       currentMessageList: state => {
-        console.log('*----------------------------------*')
         state.conversation.currentMessageList.forEach(item => {
           if (item.type == "TIMCustomElem") {
             item.payload.data =
@@ -181,9 +86,11 @@ export default {
                 : item.payload.data;
           }
         });
-        return state.conversation.currentMessageList
+        return state.conversation.currentMessageList;
       },
-      isCompleted: state => state.conversation.isCompleted
+      isCompleted: state => state.conversation.isCompleted,
+      selectStatus: state => state.basic.selectStatus,
+      historyList: state => state.basic.historyList
     }),
     ...mapGetters(["toAccount", "hidden"]),
     // 是否显示当前会话组件
@@ -223,12 +130,113 @@ export default {
       this.showConversationProfile = false;
     }
   },
+  destroyed() {
+    this.$bus.$emit(
+      "currentUnreadCount",
+      this.currentConversation.conversationID
+    );
+  },
   watch: {
+    currentMessageList(a, b) {
+      console.log(a, b, this.historyList);
+      this.$store.commit("getSelectStatus", false);
+      this.progressSessionList = [];
+      this.historySessionList = [];
+      if (a.length) {
+        if (this.historyList && this.historyList.length) {
+          let progressSessionList = [...a];
+          let historySessionList = [...this.historyList];
+          a.forEach((item, index) => {
+            //校验是否存在历史消息和实时消息重合情况
+            console.log(
+              this.historyList[0].msgTime / 1000 > item.time,
+              this.historyList[0].msgTime / 1000 == item.time
+            );
+            if (this.historyList[0].msgTime / 1000 > item.time) {
+              progressSessionList.splice(index, 1, "");
+            } else if (item.time == this.historyList[0].msgTime / 1000) {
+              historySessionList.forEach((val, i) => {
+                let msgKey = val.msgKey.replace(/_/g, "-").split("-");
+                let str = msgKey[0] + "-" + msgKey[1];
+                if (item.ID.indexOf(str) > -1) {
+                  progressSessionList.splice(index, 1, "");
+                }
+              });
+            }
+          });
+          progressSessionList.forEach(item => {
+            if (item) this.progressSessionList.push(item);
+          });
+          this.historySessionList = historySessionList;
+          console.log(this.progressSessionList, this.historySessionList);
+          let arr = []
+          if (this.historySessionList.length) {
+            this.progressSessionList.forEach((item, inde) => {
+              if (this.historySessionList[0].msgTime / 1000 < item.time) {
+                arr.push(item);
+              }
+            });
+            if (arr.length && arr.length > 15) {
+              this.isSave = false;
+            } else {
+              this.isSave = true;
+            }
+          } else {
+            this.isSave = false;
+          }
+        } else {
+          this.progressSessionList = [...a];
+        }
+      }
+    },
+    //历史消息数据变化检测
+    historyList: {
+      handler(a, b) {
+        if (this.selectStatus) {
+          this.historySessionList = [];
+        }
+        console.log(
+          a.length,
+          this.historySessionList.length,
+          !this.selectStatus
+        );
+        if (
+          a &&
+          a.length &&
+          this.historySessionList.length &&
+          !this.selectStatus
+        ) {
+          let arr = [...a];
+          // console.log('1-=-===============')
+          a.forEach((item, index) => {
+            if (
+              item.msgTime == this.historySessionList[0].msgTime &&
+              item.id == this.historySessionList[0].id
+            ) {
+              arr.splice(index, 1);
+            }
+          });
+          this.historySessionList = [...this.historySessionList, ...arr];
+          // this.historySessionList = [...a]
+        } else {
+          // console.log('2-=-===============')
+          this.status = false;
+          this.progressSessionList = [];
+          this.historySessionList = [...a];
+        }
+      }
+      // immediate: true,
+      // deep: true
+    },
     currentUnreadCount(next) {
       if (!this.hidden && next > 0) {
         this.tim(this.imInfo.SDKAppID).setMessageRead({
           conversationID: this.currentConversation.conversationID
         });
+        this.$bus.$emit(
+          "currentUnreadCount",
+          this.currentConversation.conversationID
+        );
       }
     },
     hidden(next) {
@@ -236,11 +244,116 @@ export default {
         this.tim(this.imInfo.SDKAppID).setMessageRead({
           conversationID: this.currentConversation.conversationID
         });
+        this.$bus.$emit(
+          "currentUnreadCount",
+          this.currentConversation.conversationID
+        );
       }
-    },
-    
+    }
   },
   methods: {
+    moment,
+    //获取更多
+    getMOreFn() {
+      //一旦历史消息时间与腾讯云消息时间有大于等于情况，均拉去历史消息
+      if (this.historyList.length) {
+        console.log(
+          this.historySessionList,
+          this.progressSessionList,
+          this.currentMessageList.length
+        );
+        if (this.progressSessionList.length) {
+          if (
+            this.historySessionList.length &&
+            this.historySessionList[0].msgTime / 1000 >
+              this.progressSessionList[0].time
+          ) {
+            console.log("3-=-===============");
+            this.searchChatRecords();
+            this.isSave = true;
+          } else if (
+            this.historySessionList.length &&
+            this.historySessionList[0].msgTime / 1000 <
+              this.progressSessionList[0].time
+          ) {
+            console.log("4-=-===============");
+            this.$store.dispatch(
+              "getMessageList",
+              this.currentConversation.conversationID
+            );
+            this.isSave = false;
+          } else {
+            console.log("5-=-===============");
+            this.searchChatRecords();
+            this.$store.dispatch(
+              "getMessageList",
+              this.currentConversation.conversationID
+            );
+            this.isSave = true;
+          }
+        } else {
+          this.searchChatRecords();
+          this.isSave = true;
+        }
+      } else {
+        this.$store.dispatch(
+          "getMessageList",
+          this.currentConversation.conversationID
+        );
+        this.status = this.isCompleted;
+      }
+    },
+    //获取历史消息
+    searchChatRecords() {
+      console.log(
+        this.historySessionList,
+        this.historySessionList[this.historySessionList.length - 1].msgTime,
+        this.historySessionList[0].msgTime
+      );
+      let params = {
+        orgId: this.visitorInf.orgId,
+        visitorAccount: this.visitorInf.guestImAccount,
+        msgTimeEnd: moment(
+          this.historySessionList[this.historySessionList.length - 1].msgTime
+        ).format("YYYY-MM-DD HH:mm:ss.SSS"),
+        pageSize: 20
+      };
+
+      this.Request.get("/session/chat/record/search", params).then(res => {
+        if (res.data.status) {
+          let data = res.data;
+          let list = [...data.list];
+          console.log(list.length);
+          let arr = deleteHistory(list, this.imInfo.userID);
+          this.historySessionList.map(item => {
+            arr.map((val, index) => {
+              if (val.id == item.id) {
+                arr.splice(index, 1, "");
+              }
+            });
+          });
+          arr = arrEmpty(arr);
+          console.log(arr, arr.length);
+          if (arr.length) {
+            list.forEach((item, index) => {
+              if (
+                (item.msgTime == this.historySessionList[0].msgTime &&
+                  item.id == this.historySessionList[0].id) ||
+                item.subMsgType == "queuinglocation"
+              ) {
+                arr.splice(index, 1, "");
+              }
+            });
+            console.log(arr, arr.arr);
+            arr = arrEmpty(arr);
+            this.historySessionList = [...this.historySessionList, ...arr];
+            // this.$store.commit("getHistoryList", data.list);
+          } else {
+            this.status = true;
+          }
+        }
+      });
+    },
     onScroll({ target: { scrollTop } }) {
       let messageListNode = this.$refs["message-list"];
       if (!messageListNode) {
@@ -332,9 +445,9 @@ export default {
       position: relative;
       .message-list {
         width: 100%;
-        // height:calc(100% - 224px);
+        height: 100%;
         -webkit-box-sizing: border-box;
-        overflow-y: scroll;
+        overflow-y: auto;
         padding: 0 20px;
         .more {
           display: flex;
@@ -381,6 +494,19 @@ export default {
 
 .footer {
   border-top: 1px solid #e7e7e7;
+  position: relative;
+  .mask {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    bottom: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #949bb1;
+    opacity: 0.4;
+  }
 }
 
 .show-more {

@@ -2,10 +2,10 @@
   <div class="addSort">
     <div class="sort">
       <ul>
-        <li class="firstLi">
+        <li class="firstLi" v-if="isShow">
           <div v-if="groupAddShow" class="firstLiDiv">
             <a-input  v-model="groupAdd" placeholder="请输入" :maxLength="10" style="width:200px;" /> 
-            <div class="sort-icon">
+            <div class="sort-icon" v-if="isShow">
               <a-icon type="check" @click="saveNewTags()"/>
               <a-icon type="delete" @click="deleteAddNewSort()"/>
             </div>
@@ -15,7 +15,7 @@
         <li v-for="(item,index) in groupList " :key="index" :class="{active:item.active == true}" @click="handlegroupList(index)">
           <span  v-if="!item.edit">{{item.groupName}}</span>
           <a-input @click.stop v-if="item.edit" v-model="editName" :maxLength="10" style="width:200px;" /> 
-          <div class="sort-icon" v-if="item.id!=''" @click.stop>  
+          <div class="sort-icon" v-if="item.id!='' && isShow" @click.stop>  
             <a-icon type="check" v-if="item.edit" @click="saveTags('first',item.id,index)"/>
             <a-icon type="edit" @click="editTags(index,item.groupName)" v-if="!item.edit"/>
             <a-icon type="delete" @click="delteTags(item.id)" />
@@ -29,9 +29,7 @@
 export default {
   name: "addSort",
   components: {},
-  props:{
-  
-  },
+  props:["isShow"],
   data() {
     return {
       groupList:[],

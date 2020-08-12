@@ -145,7 +145,8 @@ export default {
   computed: {
     ...mapState({
       currentConversation: state => state.conversation.currentConversation,
-      currentUserProfile: state => state.user.currentUserProfile
+      currentUserProfile: state => state.user.currentUserProfile,
+      imInfo: state => state.basic.imInfo
     }),
     // 是否显示头像，群提示消息不显示头像
     showAvatar() {
@@ -199,8 +200,8 @@ export default {
       return this.currentConversation.type;
     },
     isMine() {
-      // console.log(this.currentUserProfile, this.currentConversation);
-      return this.message.flow === "out";
+      console.log(this.message,this.message.fromAccount ,this.imInfo.userID);
+      return this.message.fromAccount === this.imInfo.userID;
     },
     messagePosition() {
       if (
