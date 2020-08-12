@@ -12,9 +12,9 @@
           </div>
           <div class="addSortStyle" @click="addSort('first')"  v-if="!firstAddShow"><a-icon type="plus" />添加分类</div>
         </li>
-        <li v-for="(item,index) in firstLevel " :key="index" :class="{active:item.active}" @click="handleFirstLevel(index)">
+        <li v-for="(item,index) in firstLevel " :key="index" :class="{active:item.active}" @click.self="handleFirstLevel(index)">
           <span  v-if="!item.edit">{{item.name}}</span>
-          <a-input v-if="item.edit" v-model="editName"/> 
+          <a-input v-if="item.edit"  v-model="editName"/> 
           <div class="sort-icon">
             <a-icon type="check" v-if="item.edit" @click="saveTags('first',item.id,index)"/>
             <a-icon type="edit" @click="editTags('first',index,item.name)" v-if="!item.edit"/>
@@ -35,7 +35,7 @@
           </div>
           <div class="addSortStyle" @click="addSort('second')"  v-if="!secondAddShow"><a-icon type="plus" />添加分类</div>
         </li>
-        <li v-for="(item,index) in secondLevel " :key="index" :class="{active:item.active}" @click="handleSecondLevel(index)">
+        <li v-for="(item,index) in secondLevel " :key="index" :class="{active:item.active}" @click.self="handleSecondLevel(index)">
           <span v-if="!item.edit" >{{item.name}}</span>
           <a-input v-if="item.edit" v-model="editName"/> 
           <div class="sort-icon">
@@ -58,7 +58,7 @@
           </div>
           <div class="addSortStyle" @click="addSort('three')"  v-if="!threeAddShow"><a-icon type="plus" />添加分类</div>
         </li>
-        <li v-for="(item,index) in threeLevel " :key="index" :class="{active:item.active}"  @click="handlethreeLevel(index)">
+        <li v-for="(item,index) in threeLevel " :key="index" :class="{active:item.active}"  @click.self="handlethreeLevel(index)">
           <span  v-if="!item.edit">{{item.name}}</span>
           <a-input v-if="item.edit" v-model="editName"/> 
           <div class="sort-icon">
@@ -212,9 +212,7 @@ export default {
         this.threeLevel[index].edit = false 
         params.pid =  this.secondLevel[this.secondIndex].id
       }
-      console.log('保存的参数',params)
       this.Request.post('/config/system/saveJson',params).then(res => {
-        console.log('编辑过的',res.data.data)
         if(type=='first'){
           this.firstLevel[index].name = res.data.data.name
         }else if(type=='second'){
@@ -279,8 +277,7 @@ export default {
           item.edit = false
         })
         this.secondLevel[index].edit = true
-      }else if(type=='three'){
-        console.log('====================')
+      }else if(type=='three'){ 
          this.threeLevel.map(item=>{
           item.edit = false
         })

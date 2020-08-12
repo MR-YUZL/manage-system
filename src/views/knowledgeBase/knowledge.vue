@@ -110,8 +110,12 @@ export default {
           }
         },
       ],
-    },
+     },
+     categoryList:[]
     }
+  },
+  created(){
+        this.getSortList()
   },
   mounted() {
    this.getList(this.classificationId)
@@ -140,29 +144,37 @@ export default {
         },
       });
    },
-   updateData(status,item,index){
+   updateData(status,item){
       this.knowledgeModal.visible = true
       this.getSortList()
-       if(status ==1){
-          this.type = 'add'
-          this["knowledgeModal"]["title"] = '添加知识';
-          this.knowledgeObj.defaultValues = {}
-          this.$set(this.knowledgeObj.defaultValues,'groupId',this.classificationId?this.classificationId:undefined)
-       }else{
-         this.type = 'edit'
-          console.log(item,'编辑的数据')
-          let { title,author ,groupId,content} = item
-          this["knowledgeModal"]["title"] = '编辑知识';
-          this.knowledgeObj.defaultValues = {
-            title,
-            author,
-            groupId,
-            content
+      if(status ==1){
+        this.type = 'add'
+        this["knowledgeModal"]["title"] = '添加知识';
+        this.knowledgeObj.defaultValues = {}
+        this.$set(this.knowledgeObj.defaultValues,'groupId',this.classificationId?this.classificationId:undefined)
+      }else{
+        this.type = 'edit'
+        let { title,author,content,groupId} = item 
+        this["knowledgeModal"]["title"] = '编辑知识';
+         this.knowledgeObj.defaultValues = {
+          title,
+          author,
+          groupId,
+          content
+        }
+        // 分类删除，下面的数据还在
+        this.categoryList.map(it=>{
+          if(it.key == groupId){
+            this.$set(this.knowledgeObj.defaultValues,'groupId',groupId)
+            console.log(it)
+          }else {
+            this.$set(this.knowledgeObj.defaultValues,'groupId',undefined)
           }
-          this.id = item.id
-       }
-       this["knowledgeObj"]["visible"] = true;
-       this.$forceUpdate()
+        })
+        this.id = item.id
+      }
+      this["knowledgeObj"]["visible"] = true;
+      this.$forceUpdate()
    },
     toggleModal(){
       this.$refs.addKnowledgeForm.resetForm()
@@ -173,7 +185,7 @@ export default {
         ...data
       }
       if(this.type == 'edit'){
-          params.id = this.id
+        params.id = this.id
       }
       this.Request.post('/hfw/hfwKnowlegeInfo/saveJson',params).then(res => {
         if(res.data.status){
@@ -195,7 +207,7 @@ export default {
               arr.push(obj)
           })
           this.knowledgeObj.modelList[2].options = arr
-          // this["knowledgeObj"]["modelList"][2]['options'] = arr
+          this.categoryList = arr
         }
         this.$forceUpdate()
       })

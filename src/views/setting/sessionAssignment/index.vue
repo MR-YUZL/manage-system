@@ -47,7 +47,7 @@
         <h6 class="conversationTitle">渠道分配接待组</h6>
         <div  class="conversationCon">
           <p class="pStyle"><span>开启渠道分配接待组，你可以将访客按照设定的规则分配给特定的客服组或者客服；不使用指定分配则默认分配给所有客服</span></p>
-          <a-tabs :activeKey="activeKey" @change="clickTabs" type="editable-card" >
+          <a-tabs :activeKey="activeKey" @change="clickTabs" type="card" >
             <a-tab-pane key="1" tab="web分配">
               <a-form-model :modal="webParams" ref="channelForm">
                 <a-form-model-item>
