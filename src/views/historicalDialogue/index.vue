@@ -45,6 +45,9 @@
             :formObject="formObject"
             @formSubmit="formSubmit"
           />
+          <div style="width:379px">
+            <HistoryList :sessionInf="sessionInf" />
+          </div>
         </div>
         <div class="information">
           <!-- 8c730589aa1d41a19d2ce8ca23f9fb1e -->
@@ -64,6 +67,7 @@ import UserInformation from "@/components/userInf";
 // import MessageDetail from "@/views/messageRecord/messageDetail";
 import BaseForm from "@/components/BaseForm";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
+import HistoryList from '@/components/historyMessage/historyList'
 export default {
   data() {
     return {
@@ -286,7 +290,8 @@ export default {
     TablePagination,
     UserInformation,
     // MessageDetail
-    BaseForm
+    BaseForm,
+    HistoryList
   },
   mounted() {
     this.getList();
@@ -369,9 +374,17 @@ export default {
           this.handleResultCon.name = data.followAccName;
           this.recordList = data.detailBeanList;
           this.guestId = data.guestId;
+          console.log(data.orgId,data.id,data.endTime,'123')
+          this.sessionInf = {
+            orgId:data.orgId,
+            sessionId:data.id,
+            msgTimeEnd:moment(data.endTime).format("YYYY-MM-DD HH:mm:ss.SSS"),
+            type:1
+            
+          }
+          this.detailsShow = true;
         }
       );
-      this.detailsShow = true;
     },
     handleCancel() {
       this.detailsShow = false;

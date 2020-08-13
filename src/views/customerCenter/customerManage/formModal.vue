@@ -27,13 +27,14 @@
           >{{it.optionName}}</a-select-option>
         </a-select>
 
-        <!-- <a-cascader
+        <a-cascader
           v-if="item.dataType==3"
-          :options="cityOptions"
+          :options="areaDictionary"
+          :field-names="fieldNames"
           placeholder="请选择省市"
-          v-model="item.fieldValue"
+          change-on-select
           @change="cityChange"
-        /> -->
+        />
 
         <a-range-picker
           v-if="item.dataType==4"
@@ -51,31 +52,21 @@
 </template>
 
 <script>
+import { areaDictionary } from "@/utils/areaDictionary";
 export default {
   data() {
     return {
+      fieldNames:{
+        label: "name",
+        value: "adcode",
+        children: "districts"
+      },
+      areaDictionary,
       formItemLayout: {
         labelCol: { span: 6 },
         wrapperCol: { span: 14 }
       },
-      cityOptions: [
-        {
-          value: "浙江",
-          label: "浙江",
-          children: [
-            {
-              value: "杭州",
-              label: "杭州",
-              children: [
-                {
-                  value: "西湖",
-                  label: "西湖"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      
     };
   },
   props: {
