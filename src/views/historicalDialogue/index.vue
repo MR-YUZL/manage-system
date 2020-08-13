@@ -379,8 +379,8 @@ export default {
             orgId:data.orgId,
             sessionId:data.id,
             msgTimeEnd:moment(data.endTime).format("YYYY-MM-DD HH:mm:ss.SSS"),
-            type:1
-            
+            type:1,
+            serviceImAccount:data.serviceImAccount
           }
           this.detailsShow = true;
         }

@@ -143,7 +143,6 @@ export default {
     };
   },
   mounted() {
-    console.log(this.message,this.infoObj)
   },
   created() {},
   computed: {
@@ -195,10 +194,11 @@ export default {
     },
     isMine() {
       // console.log(this.message,this.message.fromAccount ,this.imInfo.userID);
-      // return this.message.fromAccount === this.imInfo.userID;
-      if(this.infoObj.type == 'history'){
+      
+      if(this.infoObj && this.infoObj.type == 'history'){
         return this.message.fromAccount === this.infoObj.serviceImAccount;
       }
+      return this.message.fromAccount === this.imInfo.userID;
     },
     messagePosition() {
       if (
