@@ -98,6 +98,7 @@ export default {
           ).format("YYYY-MM-DD HH:mm:ss.SSS");
           break;
         case 1:
+          break;
         case 2:
           params.msgTimeEnd = moment().format("YYYY-MM-DD HH:mm:ss.SSS")
           break;

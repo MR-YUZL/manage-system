@@ -140,7 +140,7 @@ const conversationModules = {
       }
       
       const { nextReqMessageID, currentMessageList } = context.state
-      tim(store.state.basic.imInfo.SDKAppID).getMessageList({ conversationID, nextReqMessageID, count: 15 }).then(imReponse => {
+      tim(store.state.basic.imInfo.SDKAppID).getMessageList({ conversationID, nextReqMessageID, count: 20 }).then(imReponse => {
         // 更新messageID，续拉时要用到
         context.state.nextReqMessageID = imReponse.data.nextReqMessageID
         context.state.isCompleted = imReponse.data.isCompleted

@@ -218,6 +218,7 @@ export default {
       return false;
     },
     avatar() {
+      console.log(this.message)
       if (this.currentConversation.type === "C2C") {
         if (this.isMine) {
           return this.currentUserProfile.avatar
