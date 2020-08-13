@@ -1,7 +1,6 @@
 <template>
   <div class="message-wrapper" :class="messagePosition">
     <div
-      v-if="currentConversationType === TIM.TYPES.CONV_C2C"
       class="c2c-layout"
       :class="messagePosition"
     >
@@ -140,7 +139,9 @@ export default {
       renderDom: []
     };
   },
-  mounted() {},
+  mounted() {
+    console.log(this.message)
+  },
   created() {},
   computed: {
     ...mapState({

@@ -45,11 +45,11 @@ export default {
       this.custId = val;
     }
   },
-
-  mounted() {
+  mounted(){
     this.getForm();
-    this.getEditInfo();
-    console.log(this.custId, "this.detailId");
+    if(this.custId){
+      this.getEditInfo();
+    }
   },
   methods: {
     getForm() {
@@ -57,12 +57,13 @@ export default {
         console.log(res, "列表字段**********-------------");
         if (res.data.status) {
           this.cusFormObj.formList = res.data.list;
+          
         }
       });
     },
     //编辑客户
     getEditInfo() {
-      api.customerDetail({ custId: this.detailId }).then(res => {
+      api.customerDetail({ custId: this.custId }).then(res => {
         console.log("编辑客户回显", res);
         this.cusFormObj.formList = res.data.list;
         // let editArray = res.data.list;

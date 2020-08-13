@@ -2,16 +2,12 @@
   <div class="current-conversation-wrapper">
     <div class="current-conversation" @scroll="onScroll">
       <div class="content">
-        <div
-          class="message-list scroll"
-          ref="message-list"
-          @scroll="this.onScroll"
-        >
+        <div class="message-list scroll" ref="message-list" @scroll="this.onScroll">
           <div class="more" v-if="!this.status">
             <a-button @click="getMOreFn">查看更多</a-button>
           </div>
           <div class="no-more" v-else>没有更多了</div>
-          <history-message />
+          <history-message :historySessionList='historySessionList' />
         </div>
       </div>
     </div>
@@ -22,17 +18,16 @@
 import { mapGetters, mapState } from "vuex";
 
 import historyMessage from "./index";
-import moment from 'moment';
+import moment from "moment";
 
 export default {
   name: "CurrentConversation",
   components: {
-    historyMessage
+    historyMessage,
   },
-  props:['sessionInf'],
+  props: ["sessionInf"],
   data() {
     return {
-
       preScrollHeight: 0,
       showConversationProfile: false,
       timeout: "",
@@ -41,9 +36,7 @@ export default {
     };
   },
   computed: {
-    ...mapState({
-
-    }),
+    ...mapState({}),
 
     name() {
       if (this.currentConversation.type === "C2C") {
@@ -55,79 +48,80 @@ export default {
       }
       return this.toAccount;
     },
-
   },
   mounted() {
-    this.searchChatRecords(1)  //0获取更多，1：历史会话，2：工单管理
+    this.searchChatRecords(this.sessionInf.type); //0获取更多，1：历史会话，2：工单管理
   },
-  updated() {
-  },
-  destroyed() {
-
-  },
-  watch: {
-
-  },
+  updated() {},
+  destroyed() {},
+  watch: {},
   methods: {
     //获取更多
     getMOreFn() {
       //一旦历史消息时间与腾讯云消息时间有大于等于情况，均拉去历史消息
       this.searchChatRecords(0);
-
     },
     //获取历史消息
     searchChatRecords(val) {
-      console.log(
-        this.historySessionList,
-        this.historySessionList[this.historySessionList.length - 1].msgTime,
-        this.historySessionList[0].msgTime
-      );
+      // console.log(
+      //   this.historySessionList,
+      //   this.historySessionList[this.historySessionList.length - 1].msgTime,
+      //   this.historySessionList[0].msgTime
+      // );
       //sessionInf传递的参数
       // let params = {
       //   orgId: this.guestInfo.orgId,
       //   sessionId: this.sessionObj.guestImAccount,
-      //   // msgTimeEnd: 
+      //   // msgTimeEnd:
       //   //   ,
       //   pageSize: 20
       // };
-      let params = Object.assign({},this.sessionInf)
-      params.pageSize = 20
-      switch (val){
+      let params = Object.assign({}, this.sessionInf);
+      // let params = {...this.sessionInf};
+      params.pageSize = 20;
+      switch (val) {
         case 0:
-          params.msgTimeEnd = moment(this.historySessionList[this.historySessionList.length - 1].msgTime
+          params.msgTimeEnd = moment(
+            this.historySessionList[this.historySessionList.length - 1].msgTime
           ).format("YYYY-MM-DD HH:mm:ss.SSS");
           break;
         case 1:
+          break;
         case 2:
-          params.msgTimeEnd = moment().format("YYYY-MM-DD HH:mm:ss.SSS")
+          params.msgTimeEnd = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
           break;
         default:
-          break;  
+          break;
       }
-      this.Request.get("/session/chat/record/search", params).then(res => {
+      this.Request.get("/session/chat/record/search", params).then((res) => {
         if (res.data.status) {
           let data = res.data;
           let list = [...data.list];
           console.log(list.length);
-          this.historySessionList.map(item => {
+          this.historySessionList.map((item) => {
             list.map((val, index) => {
               if (val.id == item.id) {
                 list.splice(index, 1);
               }
             });
           });
-          console.log(list, list.length);
+          console.log(list, list.length,this.historySessionList.length);
           if (list.length) {
-            list.forEach((item, index) => {
-              if (
-                (item.msgTime == this.historySessionList[0].msgTime &&
-                  item.id == this.historySessionList[0].id)
-              ) {
-                list.splice(index, 1);
-              }
-            });
-            console.log(list, arr.list);
-            this.historySessionList = [...this.historySessionList, ...list];
+            if (this.historySessionList.length) {
+              list.forEach((item, index) => {
+                if (
+                  item.msgTime == this.historySessionList[0].msgTime &&
+                  item.id == this.historySessionList[0].id
+                ) {
+                  list.splice(index, 1);
+                }
+              });
+              console.log(list);
+              this.historySessionList = [...this.historySessionList, ...list];
+            }else{
+              this.historySessionList = [...list];
+            }
+
             // this.$store.commit("getHistoryList", data.list);
           } else {
             this.status = true;
@@ -147,8 +141,7 @@ export default {
         this.isShowScrollButtomTips = false;
       }
     },
-
-  }
+  },
 };
 </script>
 
