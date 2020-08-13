@@ -7,7 +7,7 @@
             <a-button @click="getMOreFn">查看更多</a-button>
           </div>
           <div class="no-more" v-else>没有更多了</div>
-          <history-message :historySessionList='historySessionList' />
+          <history-message :historySessionList='historySessionList' :infoObj='infoObj' />
         </div>
       </div>
     </div>
@@ -19,7 +19,7 @@ import { mapGetters, mapState } from "vuex";
 
 import historyMessage from "./index";
 import moment from "moment";
-
+import {deleteHistory} from '@/utils/index'
 export default {
   name: "CurrentConversation",
   components: {
@@ -33,6 +33,7 @@ export default {
       timeout: "",
       status: false,
       historySessionList: [], //历史消息会话列表
+      infoObj:{}
     };
   },
   computed: {
@@ -50,6 +51,10 @@ export default {
     },
   },
   mounted() {
+    this.infoObj = {
+      type: 'history',
+      serviceImAccount: this.sessionInf.serviceImAccount
+    }
     this.searchChatRecords(this.sessionInf.type); //0获取更多，1：历史会话，2：工单管理
   },
   updated() {},
@@ -77,7 +82,6 @@ export default {
       //   pageSize: 20
       // };
       let params = Object.assign({}, this.sessionInf);
-      // let params = {...this.sessionInf};
       params.pageSize = 20;
       switch (val) {
         case 0:
@@ -96,7 +100,8 @@ export default {
       this.Request.get("/session/chat/record/search", params).then((res) => {
         if (res.data.status) {
           let data = res.data;
-          let list = [...data.list];
+          let list = deleteHistory([...data.list], this.sessionInf.serviceImAccount);
+          
           console.log(list.length);
           this.historySessionList.map((item) => {
             list.map((val, index) => {

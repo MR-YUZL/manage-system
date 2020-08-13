@@ -119,6 +119,9 @@ export default {
     message: {
       type: Object,
       required: true
+    },
+    infoObj:{
+      type:Object
     }
   },
   components: {
@@ -140,7 +143,7 @@ export default {
     };
   },
   mounted() {
-    console.log(this.message)
+    console.log(this.message,this.infoObj)
   },
   created() {},
   computed: {
@@ -179,30 +182,23 @@ export default {
       return false;
     },
     avatar() {
-      if (this.currentConversation.type === "C2C") {
+    
         if (this.isMine) {
-          return this.currentUserProfile.avatar
-            ? this.currentUserProfile.avatar
-            : require("./../../assets/imgs/current_session/customer_header.jpg");
+          return this.message.serviceAccAvatar
         } else {
-          return this.currentConversation.userProfile.avatar
-            ? this.currentConversation.userProfile.avatar
-            : require("./../../assets/imgs/current_session/header.png");
+          return this.message.guestAvatar
         }
-      } else if (this.currentConversation.type === "GROUP") {
-        return this.isMine
-          ? this.currentUserProfile.avatar
-          : this.message.avatar;
-      } else {
-        return "";
-      }
+     
     },
     currentConversationType() {
       return this.currentConversation.type;
     },
     isMine() {
-      console.log(this.message,this.message.fromAccount ,this.imInfo.userID);
-      return this.message.fromAccount === this.imInfo.userID;
+      // console.log(this.message,this.message.fromAccount ,this.imInfo.userID);
+      // return this.message.fromAccount === this.imInfo.userID;
+      if(this.infoObj.type == 'history'){
+        return this.message.fromAccount === this.infoObj.serviceImAccount;
+      }
     },
     messagePosition() {
       if (

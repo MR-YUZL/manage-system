@@ -1,7 +1,7 @@
 <!--  -->
 <template>
   <div class>
-    <message-item v-for="message in historyList" :key="message.id" :message="message" />
+    <message-item v-for="message in historyList" :key="message.id" :message="message" :infoObj="infoObj"/>
   </div>
 </template>
 
@@ -12,7 +12,7 @@ export default {
   components: {
     messageItem
   },
-  props:['historySessionList'],
+  props:['historySessionList','infoObj'],
   data() {
     return {
      
