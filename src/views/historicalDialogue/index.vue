@@ -45,8 +45,9 @@
             :formObject="formObject"
             @formSubmit="formSubmit"
           />
-          <div style="width:379px">
-            <HistoryList :sessionInf="sessionInf" />
+          <div class="customerGrading">客户评级:{{appraiseValue}}</div>
+          <div style="width:355px">
+            <HistoryList style="position:relative;background-color:#fff;" :sessionInf="sessionInf" />
           </div>
         </div>
         <div class="information">
@@ -71,6 +72,7 @@ import HistoryList from '@/components/historyMessage/historyList'
 export default {
   data() {
     return {
+      sessionInf:{},
       pager: {
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         currentPage: 1,
@@ -285,6 +287,18 @@ export default {
       historicalRefer:{}
     };
   },
+  computed:{
+    appraiseValue(){
+      let obj = {
+        '0':'不太满意',
+        '1':'一般满意',
+        '2':'满意',
+        '3':'很满意',
+        '4':'非常满意',
+      }
+      return obj[this.formObject.appraiseValue]
+    }
+  },
   components: {
     FormModelSearchForm,
     TablePagination,
@@ -400,6 +414,12 @@ export default {
   .message {
     width: 380px;
     border-right: 1px solid #e6e6e6;
+    .customerGrading {
+      border-top: 1px solid #ccc;
+      border-bottom: 1px solid #ccc;
+      padding: 10px 0;
+      margin: 0 20px 20px 0;
+    }
     /deep/button{
         margin-right: 20px;
       }

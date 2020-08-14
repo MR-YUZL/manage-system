@@ -96,7 +96,7 @@ export default {
             type: "pie",
             selectedMode: "single",
             radius: ["20%", "21%"],
-            center: ["50%", "50%"],
+            center: ['30%', '50%'],
             label: {
               normal: {
                 show: true,
@@ -126,6 +126,7 @@ export default {
             name: "接待来源",
             type: "pie",
             radius: ["50%", "70%"],
+            center: ['30%', '50%'],
             avoidLabelOverlap: false,
             hoverAnimation: false,
             legendHoverLink: false,

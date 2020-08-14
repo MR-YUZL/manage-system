@@ -12,8 +12,11 @@
             @toggleModal="toggleModal"
             @formSubmit="sessionSubmit"
           />
-          <div class="customerGrading">客户评级:满意</div>
-          <div class="sessionCard">
+          <div class="customerGrading">客户评级:{{appraiseValue}}</div>
+          <div style="width:355px">
+            <HistoryList style="position:relative;top:0;background-color:#fff" :sessionInf="sessionInf" v-if="JSON.stringify(sessionInf) != '{}'" />
+          </div>
+          <!-- <div class="sessionCard">
             <dl>
               <dt>
                 <img src alt />
@@ -23,7 +26,7 @@
                 <span>08-02 14:30</span>
               </dd>
             </dl>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="information">
@@ -41,13 +44,16 @@
 </template>
 
 <script>
+import moment from "moment";
 import api from "@/api/customerCenter";
 import UserInformation from "@/components/userInf";
 import Grade from "@/views/qualityTesting/grade";
 import BaseForm from "@/components/BaseForm";
+import HistoryList from '@/components/historyMessage/historyList'
 export default {
   data() {
     return {
+      sessionInf:{},
       qualityType:'session',
       guestId: "",
       formItemLayout: {
@@ -108,6 +114,18 @@ export default {
       }
     };
   },
+  computed:{
+    appraiseValue(){
+      let obj = {
+        '0':'不太满意',
+        '1':'一般满意',
+        '2':'满意',
+        '3':'很满意',
+        '4':'非常满意',
+      }
+      return obj[this.qualityForm.appraiseValue]
+    }
+  },
   props: {
     detailsShow: Boolean,
     qcId: String,
@@ -116,7 +134,8 @@ export default {
   components: {
     UserInformation,
     Grade,
-    BaseForm
+    BaseForm,
+    HistoryList
   },
   watch: {
     detailsShow(val) {
@@ -126,6 +145,7 @@ export default {
   mounted() {
     this.getDetailInfo();
     this.getReferClassify();
+    // console.log(this.qualityForm.session.appraiseValue,'1411')
   },
   methods: {
     getDetailInfo() {
@@ -133,6 +153,16 @@ export default {
         console.log("会话质检的详情", res);
         if (res.data.status) {
           this.qualityForm = res.data;
+          this.guestId = res.data.session.guestId;
+          let data = res.data.session;
+          console.log(res.data.session,'res.data.session')
+          this.sessionInf = {
+            orgId:data.orgId,
+            sessionId:data.id,
+            msgTimeEnd:data.endTime?moment(data.endTime).format("YYYY-MM-DD HH:mm:ss.SSS"):'',
+            type:1,
+            // serviceImAccount:data.serviceImAccount
+          }
         }
       });
     },
@@ -203,7 +233,7 @@ export default {
   border-top: 1px solid #ccc;
   border-bottom: 1px solid #ccc;
   padding: 10px 0;
-  margin-right: 20px;
+  margin: 0 20px 20px 0;
 }
 .sessionCard {
   dl {
