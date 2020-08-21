@@ -95,12 +95,20 @@
       @closeUpdate="closeUpdate"
       @successLoadList="successLoadList"
     />
-    <setLabelModal
+    <!-- <setLabelModal
       :visible="modals.setLabelVisible"
       v-if="modals.setLabelVisible"
       @closeUpdate="closeUpdate"
       @successLoadList="successLoadList"
-    />
+    /> -->
+
+    <Transfer
+      :visible="modals.setLabelVisible"
+      v-if="modals.setLabelVisible"
+      @closeUpdate="closeUpdate"
+      @successLoadList="successLoadList"
+     />
+
     <followCustomerModal
       :visible="modals.followCustomerVisible"
       v-if="modals.followCustomerVisible"
@@ -130,7 +138,8 @@ import ExportCustomerModal from "@/views/customerCenter/customerManage/modal/exp
 import ImportCustomerModal from "@/views/customerCenter/customerManage/modal/importCustomer";
 import ImportResultModal from "@/views/customerCenter/customerManage/modal/importResult";
 import CreateCustomerModal from "@/views/customerCenter/customerManage/modal/createCustomer";
-import setLabelModal from "@/views/customerCenter/customerManage/modal/setLabel";
+// import setLabelModal from "@/views/customerCenter/customerManage/modal/setLabel";
+import Transfer from "@/views/customerCenter/customerManage/modal/transfer";
 import followCustomerModal from "@/views/customerCenter/customerManage/modal/followCustomer";
 import DetailModal from "@/views/customerCenter/customerManage/detail";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
@@ -148,7 +157,8 @@ export default {
     ImportCustomerModal,
     ImportResultModal,
     CreateCustomerModal,
-    setLabelModal,
+    // setLabelModal,
+    Transfer,
     followCustomerModal,
     DetailModal,
     Modal,

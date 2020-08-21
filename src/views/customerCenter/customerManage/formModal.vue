@@ -6,7 +6,7 @@
         :key="item.fieldId"
         :label="item.fieldName"
         :prop="'formList.' + index + '.fieldValue'"
-        :rules="[{ required: item.isRequired?true:false, message: '不能为空' },{validator:checkForm,trigger:'blur'}]"
+        :rules="[{ required: item.isRequired?true:false, message: '不能为空',trigger:'blur' },{validator:checkForm}]"
       >
         <a-input
           v-if="item.dataType==1"
@@ -76,9 +76,11 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      console.log(formName, "formName");
-      console.log(this.$refs[formName],'this.$refs[formName]')
+      // console.log(formName, "formName");
+      // console.log(this.$refs[formName],'this.$refs[formName]')
       this.$refs[formName].validate(valid => {
+        console.log('111111')
+
         if (valid) {
           console.log(this.formObj.formList,'this.formObj.formList==========')
           this.$emit("cusSubmitForm", this.formObj.formList);
@@ -92,30 +94,33 @@ export default {
       this.$emit("cusCloseForm");
     },
     onChange() {},
-    cityChange(value) {},
+    cityChange(value) {
+      console.log(value)
+    },
     checkForm(rule, value, callback) {
-      console.log(rule, value,1)
       let ind =  rule.field.replace(/[^0-9]/ig,"");
-      this.formObj.formList.map((item,index)=>{
-        if(ind == index){
-          if(item.fieldCode == 'contactsPhone'){
-            let reg = /^((1[123456789][0-9]))\d{8}$|^0\d{2,3}-?\d{7,8}$/;
-            if(value!=''&&!reg.test(value)){
-              callback('联系人号码不正确');
-            }else{
-              callback();
-            }
-          }
-          if(item.fieldCode == 'contactsEmail'){
-            let regs = /\w@\w*\.\w/;
-            if(value!=''&&!regs.test(value)){
-              callback('邮箱格式不正确');
-            }else{
-              callback();
-            }
-          }
+      const index = Number(ind);
+      let fieldCode = this.formObj.formList[index].fieldCode;
+
+      if(fieldCode == 'custPhone' || fieldCode == 'contactsPhone'){
+        let reg = /^((1[123456789][0-9]))\d{8}$|^0\d{2,3}-?\d{7,8}$/;
+        if(value!=''&&!reg.test(value)){
+          callback('联系人号码不正确');
+        }else{
+          callback();
         }
-      })
+      }
+
+      if(fieldCode == 'custEmail' || fieldCode == 'contactsEmail'){
+        let regs = /\w@\w*\.\w/;
+        if(value!=''&&!regs.test(value)){
+          callback('邮箱格式不正确');
+        }else{
+          callback();
+        }
+      }
+      
+      callback();
     },
   }
 };
