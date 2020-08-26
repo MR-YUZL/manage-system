@@ -112,8 +112,9 @@ export default {
             params = {
               roleId:this.roleId,
               ...this.formData,
-              resourceIds:this.formData.resourceIds.checked
+              resources:this.formData.resourceIds.checked
             }
+            delete params.resourceIds
             this.Request.post('/staff/hfwStaffRole/saveJson',params).then(()=>{
               this.$message.success('保存成功')
                this.$router.push({ path:'/staffManagement/role'})
@@ -136,7 +137,7 @@ export default {
         return array;
       },
       goBack(){
-         this.$router.go(-1);
+        this.$router.go(-1);
       }
     }
   }

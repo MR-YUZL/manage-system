@@ -87,9 +87,10 @@
                </ul>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="2" tab="咨询记录">
-            <div style="padding:10px;">
-              <historyMessage />
+          <a-tab-pane key="2" tab="咨询记录" >
+            <div style="position:relative;height:1000px; ">
+                <HistoryList  v-if="sessionInf.sessionId&&sessionInf.sessionId!=''" :sessionInf="sessionInf" />
+                <img v-else src="../../assets/imgs/noData.png" alt="" style="display:block;margin:0 auto;width:286px"> 
             </div>
           </a-tab-pane>
         </a-tabs>
@@ -97,11 +98,11 @@
 </template>
 
 <script>
-import historyMessage from "@/components/historyMessage"
+import HistoryList from '@/components/historyMessage/historyList'
 export default {
     name: "wor",
     components: {
-      historyMessage
+      HistoryList
     },
     props:{
       workOrderId:{
@@ -117,6 +118,7 @@ export default {
     },
     data() {
         return {
+          sessionInf:{},
           info:{},
           level:'',
           typeId:[],
@@ -143,6 +145,11 @@ export default {
         this.filedValue = this.orderInfo.filedValue
         this.id =  this.orderInfo.id
         this.customerId = this.orderInfo.customerId
+        this.sessionInf =  {
+            orgId:this.orderInfo.orgId,
+            sessionId:this.orderInfo.sessionId,
+            type:2,
+          },
         console.log(this.orderInfo,'=======================this.orderInfo')
       }
     },

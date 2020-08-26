@@ -8,6 +8,9 @@ module.exports = {
   //     }
   //   }
   // },
+  configureWebpack: { // webpack 配置
+    devtool: 'source-map',
+  },
   lintOnSave: false,
   devServer: {
     host: "0.0.0.0",
