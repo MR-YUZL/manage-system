@@ -23,7 +23,7 @@
         <div class="right-side">
           <a-button @click="exportCustomer" v-if="isShowBtn('customer_manager_export')">导出客户</a-button>
           <a-button @click="importCustomer" v-if="isShowBtn('customer_manager_import')">导入客户</a-button>
-          <a-button @click="importResult" v-if="isShowBtn('customer_manager_set_principal')">导入结果</a-button>
+          <a-button @click="importResult">导入结果</a-button>
           <a-button type="primary" @click="createCustomer" v-if="isShowBtn('customer_manager_insert')">创建客户</a-button>
         </div>
       </div>
