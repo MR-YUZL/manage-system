@@ -46,7 +46,9 @@ export default {
       }
     },
     previewUrl() {
-      return this.formatUrl(this.imgUrlList[this.index])
+      return this.url
+
+      // return this.formatUrl(this.imgUrlList[this.index])
     }
   },
   mounted() {

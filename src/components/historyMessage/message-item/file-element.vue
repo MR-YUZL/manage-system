@@ -46,13 +46,14 @@ export default {
   },
   computed: {
     fileName() {
-      return this.payload.fileName
+      return this.payload.FileName
     },
     fileUrl() {
-      return this.payload.fileUrl
+      return this.payload.Url
     },
     size() {
-      const size = this.payload.fileSize
+      console.log(this.payload)
+      const size = this.payload.FileSize
       if (size > 1024) {
         if (size / 1024 > 1024) {
           return `${this.toFixed(size / 1024 / 1024)} Mb`

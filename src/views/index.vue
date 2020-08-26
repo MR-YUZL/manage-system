@@ -50,6 +50,7 @@ export default {
         }
         .l-left{
           box-sizing: border-box;
+          z-index: 100;
         }
     }
 </style>

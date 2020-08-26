@@ -176,6 +176,7 @@ export default {
                 arr.push(item);
               }
             });
+            console.log(arr)
             if (arr.length && arr.length > 15) {
               this.isSave = false;
             } else {
@@ -258,15 +259,17 @@ export default {
       //一旦历史消息时间与腾讯云消息时间有大于等于情况，均拉去历史消息
       if (this.historyList.length) {
         console.log(
-          this.historySessionList,
-          this.progressSessionList,
-          this.currentMessageList.length
+          this.currentMessageList[0].time,
+          this.historySessionList[0].msgTime,
+          this.historySessionList[this.historySessionList.length - 1].msgTime ,
+          this.progressSessionList[0].time,
+          this.progressSessionList[this.progressSessionList.length - 1].time
         );
         if (this.progressSessionList.length) {
           if (
             this.historySessionList.length &&
             this.historySessionList[0].msgTime / 1000 >
-              this.progressSessionList[0].time
+              this.currentMessageList[0].time
           ) {
             console.log("3-=-===============");
             this.searchChatRecords();
@@ -274,7 +277,7 @@ export default {
           } else if (
             this.historySessionList.length &&
             this.historySessionList[0].msgTime / 1000 <
-              this.progressSessionList[0].time
+              this.currentMessageList[0].time
           ) {
             console.log("4-=-===============");
             this.$store.dispatch(

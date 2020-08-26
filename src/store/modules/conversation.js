@@ -144,6 +144,7 @@ const conversationModules = {
         // 更新messageID，续拉时要用到
         context.state.nextReqMessageID = imReponse.data.nextReqMessageID
         context.state.isCompleted = imReponse.data.isCompleted
+        console.log(imReponse.data.messageList,'-=--=-=-=-=--=');
         // 更新当前消息列表，从头部插入
         context.state.currentMessageList = [...imReponse.data.messageList, ...currentMessageList]
       })

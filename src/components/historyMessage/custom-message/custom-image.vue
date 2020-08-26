@@ -35,7 +35,6 @@ export default {
   computed: {
     ...mapGetters(['imgUrlList']),
     imageUrl() {
-      console.log(this.payload)  
       const url = this.payload.url
     //   const url = this.payload.imageInfoArray[0].url
       if (typeof url !== 'string') {

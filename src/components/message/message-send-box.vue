@@ -102,7 +102,8 @@ export default {
     ...mapState({
       memberList: state => state.group.currentMemberList,
       userID: state => state.user.userID,
-      imInfo: state =>  state.basic.imInfo
+      imInfo: state =>  state.basic.imInfo,
+      visitorInf: state => state.basic.visitorInf,
     })
   },
   mounted() {
@@ -374,7 +375,10 @@ export default {
       let that = this;
       if (this.status) {
         this.status = false;
-        this.Request.get("/session/appraise").then(res => {
+        let params ={
+          sessionId: this.visitorInf.id
+        }
+        this.Request.get("/session/send/dos/tip",params).then(res => {
           // console.log("发起满意度调查事件");
         });
         this.timer = setTimeout(function() {

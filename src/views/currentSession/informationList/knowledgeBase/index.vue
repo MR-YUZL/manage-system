@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   name: "knowledgeBase",
   components: {},
@@ -41,7 +42,9 @@ export default {
     };
   },
   computed: {
-    visitorInf: state => state.basic.visitorInf
+    ...mapState({
+      visitorInf: state => state.basic.visitorInf,
+    })
   },
   watch: {},
   //方法集合

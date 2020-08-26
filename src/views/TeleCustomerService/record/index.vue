@@ -1,6 +1,6 @@
 <template>
   <div class="record">
-    <a-page-header title="留言记录" style="padding:16px 0;" />
+    <a-page-header title="通话记录" style="padding:16px 0;" />
     <div class="box">
       <Search :tools="formList" @onSearch="searchFun" />
       <div class="btn">
@@ -81,8 +81,9 @@ export default {
           title: "通话类型:",
           key: "callType",
           defaultValue: "",
+          allowClear: true,
           options: [
-            { value: "0", name: "null" },
+            // { value: "0", name: "null" },
             { value: "1", name: "来电已接" },
             { value: 2, name: "来电未接" },
             { value: 3, name: "去电已接" },
