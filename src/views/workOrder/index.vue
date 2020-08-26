@@ -8,7 +8,7 @@
           <a-button @click="closeWorkOrderModal">批量完结</a-button><a-button @click="batchRestartModal">批量重启</a-button><a-button @click="batchTransmitModal">批量转交</a-button>
         </div>
         <div>
-          <a-button @click="exportDataModal">当前数据导出</a-button><a-button type="primary" @click="createdWorkOrderModal">新建工单</a-button>
+          <a-button @click="exportDataModal" v-if="this.$store.state.basic.btnRealms.indexOf('work_order_manager_export')>-1">当前数据导出</a-button><a-button type="primary" @click="createdWorkOrderModal">新建工单</a-button>
         </div>
       </div>
       <div>
@@ -97,6 +97,7 @@ import BaseForm from "@/components/BaseForm/index";
 import ReplyWorkOrder from "./ReplyWorkOrder"
 import RecordList from "./RecordList"
 import WorkOrderProper from "./WorkOrderProper"
+import { mapState } from "vuex";
 export default {
     name: "worlOrder",
     components: {
@@ -418,6 +419,9 @@ export default {
       }
     },
     computed:{
+      // ...mapState({
+      //   btnRealms: state => state.basic.btnRealms
+      // }),
       rowSelection(){
         return {
           onChange: (selectedRowKeys, selectedRows) => {
@@ -439,6 +443,7 @@ export default {
       this.getStaffListAll()
       this.getClassification()
       this.getRelatedCustomerList()
+
     },
     mounted(){},
     methods: {
