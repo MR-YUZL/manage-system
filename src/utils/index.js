@@ -75,6 +75,13 @@ export function deleteHistory(list,account){
     ) {
       list.splice(index,1,'')
     }
+    if (
+      item.toAccount != account &&
+      item.imMsgType == "TIMCustomElem" &&
+      item.subMsgType == "prompts"
+    ) {
+      list.splice(index, 1, "");
+    }
   });
   let arr = []
   list.forEach(item => {
@@ -91,4 +98,4 @@ export function arrEmpty(list) {
     if(item) arr.push(item)
   })
   return arr
- }
+}

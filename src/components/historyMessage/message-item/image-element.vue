@@ -35,7 +35,7 @@ export default {
   computed: {
     ...mapGetters(['imgUrlList']),
     imageUrl() {
-      const url = this.payload.imageInfoArray[0].url
+      const url = this.payload.ImageInfoArray[0].URL
       if (typeof url !== 'string') {
         return ''
       }
@@ -53,10 +53,8 @@ export default {
       this.$bus.$emit('image-loaded', event)
     },
     handlePreview() {
-      // console.log(this.payload.imageInfoArray[0].url)
-      
       this.$bus.$emit('imagePreview', {
-        url: this.payload.imageInfoArray[0].url
+        url: this.payload.ImageInfoArray[0].URL
       })
     }
   }

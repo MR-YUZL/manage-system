@@ -1,7 +1,7 @@
 <template>
   <message-bubble :isMine=isMine :message=message>
     <video
-      :src="payload.videoUrl"
+      :src="payload.VideoUrl"
       controls
       class="video"
       @error="videoError"
@@ -34,7 +34,8 @@ export default {
       type: Boolean
     }
   },
-
+  mounted(){
+  },
   computed: {
     showProgressBar() {
       return this.message.status === 'unSend'

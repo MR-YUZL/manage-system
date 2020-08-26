@@ -27,7 +27,7 @@
 
 <script>
 import { mapState } from "vuex";
-import {deleteHistory} from '@/utils/index'
+import { deleteHistory } from "@/utils/index";
 import sessionItem from "./sessionItem";
 import moment from "moment";
 export default {
@@ -101,7 +101,7 @@ export default {
           if (res.data.status) {
             let data = res.data;
             let list = [...data.list];
-            let arr = deleteHistory(list,this.imInfo.userID)
+            let arr = deleteHistory(list, this.imInfo.userID);
             this.$store.commit("getSelectStatus", true);
             this.$store.commit("getHistoryList", arr);
             this.$store
@@ -126,7 +126,7 @@ export default {
               orgId: this.penddingList[0].orgId,
               guestImAccount: this.penddingList[0].guestImAccount
             };
-
+            console.log(obj, "初始化");
             this.$store.commit("getVisitorInf", obj);
             this.penddingList[0].unreadCount = 0;
           }
@@ -137,8 +137,8 @@ export default {
           orgId: this.endList[0].orgId,
           visitorAccount: this.endList[0].guestImAccount,
           msgTimeEnd: moment(this.endList[0].endTime).format(
-                "YYYY-MM-DD HH:mm:ss.SSS"
-              ),
+            "YYYY-MM-DD HH:mm:ss.SSS"
+          ),
           pageSize: 20
         };
 
@@ -146,7 +146,7 @@ export default {
           if (res.data.status) {
             let data = res.data;
             let list = [...data.list];
-            let arr = deleteHistory(list,this.imInfo.userID)
+            let arr = deleteHistory(list, this.imInfo.userID);
             this.$store.commit("getSelectStatus", true);
             this.$store.commit("getHistoryList", arr);
             this.$store
@@ -167,7 +167,7 @@ export default {
               orgId: this.endList[0].orgId,
               guestImAccount: this.endList[0].guestImAccount
             };
-            console.log(obj)
+            console.log(obj, "初始化");
             this.$store.commit("getVisitorInf", obj);
             this.endList[0].unreadCount = 0;
           }
@@ -177,7 +177,7 @@ export default {
     //获取会话列表
     getSessionList() {
       this.Request.get("/session/guest/my/all/list").then(res => {
-        console.log('*******************',res.data.list)
+        console.log("*******************", res.data.list);
         if (res.data.status) {
           this.list = res.data.list;
           this.penddingList = [];
@@ -205,7 +205,7 @@ export default {
               }
             });
           });
-          console.log(this.penddingList,this.endList)
+          console.log(this.penddingList, this.endList);
           if (this.penddingList.length + this.endList.length) {
             this.$emit("isStatus", true);
           } else {
@@ -221,7 +221,7 @@ export default {
       });
     },
     testList() {
-      console.log(this.penddingList, this.endList);
+      // console.log(this.penddingList, this.endList);
       this.chatList.forEach((item, i) => {
         var status;
         if (item.type == "TIMCustomElem") {
@@ -242,7 +242,6 @@ export default {
           if (this.endList && this.endList.length) {
             this.endList.forEach((val, index) => {
               if (val.conversationID == item.conversationID) {
-                console.log(this.endList);
                 this.endList.splice(index, 1);
               }
             });
@@ -278,27 +277,35 @@ export default {
                     } else {
                       this_.$emit("isStatus", false);
                     }
-                    if (this_.penddingList.length == 1) {
+                    if (
+                      this_.penddingList.length == 1 &&
+                      !this_.penddingList.length
+                    ) {
                       this_.getIsSDKReady();
                     }
                     if (this_.penddingList && this_.penddingList.length) {
                       // console.log(this.penddingList);
                       this_.timeoutHandler();
                     }
-                    if (this_.visitorInf.guestId == item.from) {
-                      console.log("------------------------1");
-                      let obj = {
-                        guestId: item.guestId,
-                        guestName: item.guestName,
-                        id: item.id,
-                        beginTime: moment(item.beginTime).valueOf() / 1000,
-                        endTime: moment(item.endTime).valueOf() / 1000,
-                        status: false,
-                        orgId: item.orgId,
-                        guestImAccount: item.guestImAccount
+                    if (this_.visitorInf.guestImAccount == item.from) {
+                      console.log("------------------------1",moment(
+                      res.data.sessionInfo.beginTime
+                    ).format("X"),moment(res.data.sessionInfo.beginTime).valueOf() /
+                          1000,res.data.sessionInfo.beginTime);
+                      let obj1 = {
+                        guestId: res.data.sessionInfo.guestId,
+                        guestName: res.data.sessionInfo.guestName,
+                        id: res.data.sessionInfo.id,
+                        beginTime:
+                          moment(res.data.sessionInfo.beginTime).valueOf() /
+                          1000,
+                        endTime: "",
+                        status: true,
+                        orgId: res.data.sessionInfo.orgId,
+                        guestImAccount: res.data.sessionInfo.guestImAccount
                       };
-
-                      this_.$store.commit("getVisitorInf", obj);
+                      console.log(obj1)
+                      this_.$store.commit("getVisitorInf", obj1);
                     }
                   })
                   .catch(function(imError) {
@@ -313,7 +320,7 @@ export default {
             item.payload.data.subMsgType == "transfer")
         ) {
           //转接或结束会话
-          console.log(this.penddingList, this.endList);
+          // console.log(this.penddingList, this.endList);
           //正在进行的会话设置为已结束的会话
           this.penddingList.forEach((val, index) => {
             if (val.conversationID == item.conversationID) {
@@ -331,7 +338,7 @@ export default {
                     ...val,
                     ...imResponse.data.conversation
                   };
-                  obj["endTime"] = moment().format("X");
+                  obj["endTime"] = moment().format("YYYY-MM-DD HH:mm:ss");
                   console.log(obj);
                   this_.penddingList.splice(index, 1);
                   this_.endList = [obj, ...this_.endList];
@@ -340,24 +347,31 @@ export default {
                   } else {
                     this_.$emit("isStatus", false);
                   }
+                  console.log(this_.penddingList);
                   if (this_.penddingList && this_.penddingList.length) {
                     // console.log(this.penddingList);
                     this_.timeoutHandler();
                   }
-                  if (this_.visitorInf.guestId == item.from) {
-                    console.log("------------------------2");
-                    let obj = {
-                      guestId: item.guestId,
-                      guestName: item.guestName,
-                      id: item.id,
-                      beginTime: moment(item.beginTime).valueOf() / 1000,
-                      endTime: moment(item.endTime).valueOf() / 1000,
-                      status: true,
-                      orgId: item.orgId,
-                      guestImAccount: item.guestImAccount
+                 
+                  if (this_.visitorInf.guestImAccount == item.from) {
+                    console.log(
+                      "------------------------2",
+                      this_.visitorInf.beginTime,
+                      moment().valueOf() / 1000,
+                      moment().format("X") 
+                    );
+                    let obj1 = {
+                      guestId: this_.visitorInf.guestId,
+                      guestName: this_.visitorInf.guestName,
+                      id: this_.visitorInf.id,
+                      beginTime: this_.visitorInf.beginTime,
+                      endTime: moment().format("X"),
+                      status: false,
+                      orgId: this_.visitorInf.orgId,
+                      guestImAccount: this_.visitorInf.guestImAccount
                     };
 
-                    this_.$store.commit("getVisitorInf", obj);
+                    this_.$store.commit("getVisitorInf", obj1);
                   }
                 })
                 .catch(function(imError) {
@@ -373,48 +387,51 @@ export default {
             }
           });
         } else {
-          console.log(this.penddingList, this.endList);
-          this.penddingList.forEach((val, index) => {
-            if (val.conversationID == item.conversationID) {
-              status = true;
-              let this_ = this;
-              let promise = this.tim(
-                this_.imInfo.SDKAppID
-              ).getConversationProfile(item.conversationID);
-              promise
-                .then(function(imResponse) {
-                  // 获取成功
-                  console.log(imResponse.data.conversation, val); // 会话资料
-                  let obj = { ...val, ...imResponse.data.conversation };
-                  if (val.lastMessage.fromAccount != this_.imInfo.userID) {
-                    if (
-                      (val.lastMessage.type == "TIMCustomElem" &&
-                        val.payload.data.sendType == "manual") ||
-                      val.lastMessage.type != "TIMCustomElem"
-                    ) {
-                      // console.log('访客进入')
-                      //手动消息需重新计时最后一条消息时间
-                      obj["latestVisitorMsgTime"] = moment().format("X");
+          // console.log(this.penddingList, this.endList);
+          if (this.penddingList.length) {
+            this.penddingList.forEach((val, index) => {
+              if (val.conversationID == item.conversationID) {
+                status = true;
+                let this_ = this;
+                let promise = this.tim(
+                  this_.imInfo.SDKAppID
+                ).getConversationProfile(item.conversationID);
+                promise
+                  .then(function(imResponse) {
+                    // 获取成功
+                    console.log(imResponse.data.conversation, val); // 会话资料
+                    let obj = { ...val, ...imResponse.data.conversation };
+                    if (val.lastMessage.fromAccount != this_.imInfo.userID) {
+                      if (
+                        (val.lastMessage.type == "TIMCustomElem" &&
+                          val.payload.data.sendType == "manual") ||
+                        val.lastMessage.type != "TIMCustomElem"
+                      ) {
+                        // console.log('访客进入')
+                        //手动消息需重新计时最后一条消息时间
+                        obj["latestVisitorMsgTime"] = moment().format("X");
+                      }
                     }
-                  }
-                  console.log(obj);
-                  this_.penddingList.splice(index, 1);
-                  this_.penddingList = [obj, ...this_.penddingList];
-                  if (this_.penddingList.length + this_.endList.length) {
-                    this_.$emit("isStatus", true);
-                  } else {
-                    this_.$emit("isStatus", false);
-                  }
-                  if (this_.penddingList && this_.penddingList.length) {
-                    // console.log(this.penddingList);
-                    this_.timeoutHandler();
-                  }
-                })
-                .catch(function(imError) {
-                  console.warn("getConversationProfile error:", imError); // 获取会话资料失败的相关信息
-                });
-            }
-          });
+                    console.log(obj);
+                    this_.penddingList.splice(index, 1);
+                    this_.penddingList = [obj, ...this_.penddingList];
+                    if (this_.penddingList.length + this_.endList.length) {
+                      this_.$emit("isStatus", true);
+                    } else {
+                      this_.$emit("isStatus", false);
+                    }
+                    if (this_.penddingList && this_.penddingList.length) {
+                      // console.log(this.penddingList);
+                      this_.timeoutHandler();
+                    }
+                  })
+                  .catch(function(imError) {
+                    console.warn("getConversationProfile error:", imError); // 获取会话资料失败的相关信息
+                  });
+              }
+            });
+          }
+
           // this.endList.forEach((val, index) => {
           //   if (val.conversationID == item.conversationID) {
           //     status = false;
@@ -446,172 +463,25 @@ export default {
           //       });
           //   }
           // });
-          if (this.visitorInf.guestId == item.from) {
-            let obj = {
-              guestId: item.guestId,
-              guestName: item.guestName,
-              id: item.id,
-              beginTime: moment(item.beginTime).valueOf() / 1000,
-              endTime: moment(item.endTime).valueOf() / 1000,
-              status: this.visitorInf.status,
-              orgId: item.orgId,
-              guestImAccount: item.guestImAccount
-            };
-
-            this.$store.commit("getVisitorInf", obj);
-          }
+         
+          // if (this.visitorInf.guestImAccount == item.from) {
+          //   let obj = {
+          //     guestId: this.visitorInf.guestId,
+          //     guestName: this.visitorInf.guestName,
+          //     id: this.visitorInf.id,
+          //     beginTime: moment(this.visitorInf).valueOf() / 1000,
+          //     endTime: this.visitorInf.endTime,
+          //     status: this.visitorInf.status,
+          //     orgId: this.visitorInf.orgId,
+          //     guestImAccount: this.visitorInf.guestImAccount
+          //   };
+          //   console.log(obj, "正常");
+          //   this.$store.commit("getVisitorInf", obj);
+          // }
         }
       });
     },
-    //检测列表数据变化
-    watchTest() {
-      console.log(this.readyOk, this.penddingList, this.endList);
-      if (!this.readyOk) {
-        return;
-      }
-      let time =
-        moment(moment().format("YYYY/MM/DD"), "YYYY/MM/DD").valueOf() / 1000;
-      this.chatList.forEach((item, index) => {
-        // console.log(item);
-        if (item.lastMessage.lastTime > time) {
-          var status;
-          if (item.lastMessage.type == "TIMCustomElem") {
-            item.lastMessage.payload.data =
-              typeof item.lastMessage.payload.data == "string"
-                ? JSON.parse(item.lastMessage.payload.data)
-                : item.lastMessage.payload.data;
-          }
-          if (
-            item.lastMessage.type == "TIMCustomElem" &&
-            item.lastMessage.payload.data.subMsgType == "createsession"
-          ) {
-            console.log("创建新会话", item);
-            status = true;
-            //创建新会话
-            //从已结束会话中查找，确定是否有已结束的会话重新启用
-            if (this.endList && this.endList.length) {
-              this.endList.forEach((val, index) => {
-                if (val.conversationID == item.conversationID) {
-                  this.endList.splice(index, 1);
-                }
-              });
-            }
-            console.log(item);
-            let params = {
-              guestImAccount: item.userProfile.userID,
-              serviceImAccount: this.imInfo.userID
-            };
-            // console.log(params)
-            this.Request.get("/session/guest/query/from/msg", params).then(
-              res => {
-                if (res.data.status) {
-                  let obj = { ...res.data.sessionInfo, ...item };
-                  console.log(obj);
-                  obj["latestVisitorMsgTime"] = moment(item.beginTime).format(
-                    "X"
-                  );
-                  let arr = [...this.penddingList];
-                  let a = true;
-                  this.penddingList.forEach((value, inde) => {
-                    if (value.conversationID == item.conversationID) {
-                      this.penddingList.splice(inde, 1, obj);
-                      a = false;
-                    }
-                  });
-                  if (a) {
-                    this.penddingList = [obj, ...arr];
-                  }
-                  if (this.penddingList.length == 1) {
-                    this.getIsSDKReady();
-                  }
-                  this.timeoutHandler();
-                }
-              }
-            );
-          } else if (
-            item.lastMessage.type == "TIMCustomElem" &&
-            (item.lastMessage.payload.data.subMsgType == "stopsession" ||
-              item.lastMessage.payload.data.subMsgType == "transfer")
-          ) {
-            console.log("结束会话");
-            //转接或结束会话
-            //正在进行的会话设置为已结束的会话
-            this.penddingList.forEach((val, index) => {
-              if (val.conversationID == item.conversationID) {
-                status = false;
-                this.penddingList.splice(index, 1);
-                let data = { ...val };
 
-                data["endTime"] = moment().format("X");
-
-                this.endList = [...this.endList, data];
-
-                let type =
-                  item.lastMessage.payload.data.subMsgType == "stopsession"
-                    ? 0
-                    : 1;
-                this.endSession(item.id, type);
-              }
-            });
-          } else {
-            console.log(this.penddingList, this.endList);
-            this.penddingList.forEach((val, index) => {
-              console.log(val);
-              if (val.conversationID == item.conversationID) {
-                status = true;
-                this.penddingList.splice(index, 1);
-                var data = { ...val, ...item };
-                // console.log(val, item, val.payload);
-                if (val.lastMessage.fromAccount != this.imInfo.userID) {
-                  if (
-                    (val.lastMessage.type == "TIMCustomElem" &&
-                      val.lastMessage.payload.data.sendType == "manual") ||
-                    val.lastMessage.type != "TIMCustomElem"
-                  ) {
-                    // console.log('访客进入')
-                    //手动消息需重新计时最后一条消息时间
-                    data["latestVisitorMsgTime"] = moment().format("X");
-                  }
-                }
-
-                this.penddingList = [...this.penddingList, data];
-              }
-            });
-            this.endList.forEach((val, index) => {
-              if (val.conversationID == item.conversationID) {
-                status = false;
-                this.endList.splice(index, 1);
-                let data = { ...val, ...item };
-                this.endList = [...this.endList, data];
-              }
-            });
-          }
-          if (this.visitorInf.guestId == item.userProfile.userID) {
-            let obj = {
-              guestId: item.guestId,
-              guestName: item.guestName,
-              id: item.id,
-              beginTime: moment(item.beginTime).valueOf() / 1000,
-              endTime: moment(item.endTime).valueOf() / 1000,
-              status: this.visitorInf.status,
-              orgId: item.orgId,
-              guestImAccount: item.guestImAccount
-            };
-            console.log(obj);
-            this.$store.commit("getVisitorInf", obj);
-          }
-        }
-      });
-      if (this.penddingList && this.penddingList.length) {
-        // console.log(this.penddingList);
-        this.timeoutHandler();
-      }
-      if (this.penddingList.length + this.endList.length) {
-        this.$emit("isStatus", true);
-      } else {
-        this.$emit("isStatus", false);
-      }
-    },
     //结束会话
     endSession(sessionId, endWay) {
       let params = {
@@ -648,7 +518,7 @@ export default {
             if (
               this.visitorInf &&
               (this.visitorInf.guestId == item.guestId ||
-                this.visitorInf.guestId == item.userProfile.userID)
+                this.visitorInf.guestImAccount == item.userProfile.userID)
             ) {
               let obj = {
                 guestId: data.guestId,
@@ -660,7 +530,7 @@ export default {
                 orgId: item.orgId,
                 guestImAccount: item.guestImAccount
               };
-              console.log(obj);
+              console.log(obj, "超时结束");
               this.$store.commit("getVisitorInf", obj);
             }
             this.endSession(item.id, 2);

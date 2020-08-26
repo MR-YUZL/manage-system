@@ -115,7 +115,8 @@ export default {
                 ? moment(this.conversation.endTime).valueOf() / 1000
                 : "",
               status: this.conversation.endTime ? false : true,
-              orgId: this.conversation.orgId
+              orgId: this.conversation.orgId,
+              guestImAccount: this.conversation.guestImAccount
             };
             console.log(obj);
             this.$store.commit("getVisitorInf", obj);

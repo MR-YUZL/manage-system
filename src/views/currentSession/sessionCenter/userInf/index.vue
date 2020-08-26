@@ -190,22 +190,24 @@ export default {
           break;
         case "endServer":
           this["endServerObj"]["visible"] = data.visible;
-          let [firstConsuleId, secondConsuleId, threeConsuleId] = obj.consuleId;
-          obj.firstConsuleId = firstConsuleId;
-          obj.secondConsuleId = secondConsuleId;
-          obj.threeConsuleId = threeConsuleId;
+          let [firstConsuleId, secondConsuleId, threeConsuleId] = obj.consultId;
+          
           delete obj.consuleId;
           obj = {
             sessionId: this.visitorInf.id,
             status: obj.status,
-            advisoryRemark: obj.advisoryRemark
+            advisoryRemark: obj.advisoryRemark,
+            endWay: 0
           };
+          obj.firstConsuleId = firstConsuleId;
+          obj.secondConsuleId = secondConsuleId;
+          obj.threeConsuleId = threeConsuleId;
+        
           url = "/session/end";
           break;
       }
 
-      console.log(obj);
-      this.Request.post(url, obj).then(res => {
+      this.Request.get(url, obj).then(res => {
         if (res.data.status) {
           this.$message.success("操作成功！");
         }
@@ -275,7 +277,6 @@ export default {
       this.Request.get("/hfw/workbench/getSummarySort").then(res => {
         let re = res.data;
         if (re.status) {
-          console.log(re);
           this.endServerObj["modelList"][0]["options"] = re.list;
         }
       });
@@ -320,8 +321,8 @@ export default {
      
       clearInterval(this.timer);
       // let date = moment().format("X") - this.visitorInf.beginTime;
-      console.log(this.visitorInf)
       if (this.visitorInf.endTime) {
+        console.log(this.visitorInf.endTime,this.visitorInf.beginTime)
         let date = this.visitorInf.endTime - this.visitorInf.beginTime;
         this.time = this.formateSeconds(date);
       } 
