@@ -1,7 +1,10 @@
 <template>
-    <div class="">
-        <a-page-header title="渠道设置" />
-        <div>渠道设置</div>
+    <div class="flex-container">
+        <a-page-header class="flex-page-header" title="渠道设置" />
+        <div class="flex-content">
+            <iframe width="100%" height="100%" src="../channelSettings/index.html" frameborder="0"></iframe>
+        </div>
+        
     </div>
 </template>
 
@@ -19,5 +22,18 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="less" scoped>
+.flex-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .flex-page-header {
+        flex-shrink: unset;
+    }
+
+    .flex-content {
+        flex: 1;
+    }
+}
 </style>
