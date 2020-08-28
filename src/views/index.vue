@@ -40,11 +40,14 @@ export default {
             height: 100%;
             .content{
                 width: 100%;
+                height: 100%;
                 float: right;
                 background: #f1f2f5;
-                padding: 10px;
+                padding: 0 10px;
             }
             .box{
+              box-sizing: border-box;
+              height: 100%;
               background:#fff;
             }
         }
