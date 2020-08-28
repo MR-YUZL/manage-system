@@ -51,7 +51,7 @@ export default {
     padding:0 15px;
     padding-bottom:0px;
     width:100%;
-    padding-bottom:27px;
+    padding-bottom:20px;
     border-bottom:1px solid #dedede;
     position: relative;
     .flex{
@@ -59,6 +59,7 @@ export default {
       justify-content: space-between;
       height:40px;
       line-height:40px;
+      margin-top:10px;
       h5{
         font-size:14px;
       }
@@ -71,12 +72,13 @@ export default {
       margin:0;
       padding:0;
       line-height:22px;
+      font-size:12px;
     }
   }
   li:after{
     position: absolute;
     left:0;
-    bottom:0;
+    top:17px;
     content:'';
     width:5px;
     height:5px;
