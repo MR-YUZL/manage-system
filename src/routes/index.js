@@ -200,6 +200,10 @@ const routes = [
   {
     path: "*",
     component: () => import("@/components/NotFound")
+  },
+  {
+    path: "/newsCenter",
+    component: () => import('@/views/newsCenter/index.vue')
   }
 
 ]

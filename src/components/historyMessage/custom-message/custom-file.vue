@@ -1,5 +1,5 @@
 <template>
-<message-bubble :isMine=isMine :message=message>  
+<message-bubble :isMine=isMine :message=message :infoObj="infoObj">  
   <div class="file-element-wrapper" title="单击下载" @click="downloadFile">
     <div class="header">
       <i class="el-icon-document file-icon"></i>
@@ -39,6 +39,9 @@ export default {
     },
     isMine: {
       type: Boolean
+    },
+    infoObj: {
+      type:Object
     }
   },
   components: {

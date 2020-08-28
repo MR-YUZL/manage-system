@@ -89,6 +89,7 @@ export default {
     },
     getIsSDKReady() {
       if (this.penddingList && this.penddingList.length) {
+        console.log(this.penddingList)
         this.isCheckouting = true;
         let params = {
           orgId: this.penddingList[0].orgId,
@@ -277,10 +278,12 @@ export default {
                     } else {
                       this_.$emit("isStatus", false);
                     }
+             
                     if (
                       this_.penddingList.length == 1 &&
-                      !this_.penddingList.length
+                      !this_.endList.length
                     ) {
+                    
                       this_.getIsSDKReady();
                     }
                     if (this_.penddingList && this_.penddingList.length) {
@@ -288,10 +291,10 @@ export default {
                       this_.timeoutHandler();
                     }
                     if (this_.visitorInf.guestImAccount == item.from) {
-                      console.log("------------------------1",moment(
-                      res.data.sessionInfo.beginTime
-                    ).format("X"),moment(res.data.sessionInfo.beginTime).valueOf() /
-                          1000,res.data.sessionInfo.beginTime);
+                    //   console.log("------------------------1",moment(
+                    //   res.data.sessionInfo.beginTime
+                    // ).format("X"),moment(res.data.sessionInfo.beginTime).valueOf() /
+                    //       1000,res.data.sessionInfo.beginTime);
                       let obj1 = {
                         guestId: res.data.sessionInfo.guestId,
                         guestName: res.data.sessionInfo.guestName,
@@ -354,12 +357,12 @@ export default {
                   }
                  
                   if (this_.visitorInf.guestImAccount == item.from) {
-                    console.log(
-                      "------------------------2",
-                      this_.visitorInf.beginTime,
-                      moment().valueOf() / 1000,
-                      moment().format("X") 
-                    );
+                    // console.log(
+                    //   "------------------------2",
+                    //   this_.visitorInf.beginTime,
+                    //   moment().valueOf() / 1000,
+                    //   moment().format("X") 
+                    // );
                     let obj1 = {
                       guestId: this_.visitorInf.guestId,
                       guestName: this_.visitorInf.guestName,

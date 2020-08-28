@@ -18,18 +18,21 @@
             :isMine="isMine"
             :payload="message.msgContent"
             :message="message"
+            :infoObj="infoObj"
           />
           <image-element
             v-else-if="message.imMsgType === TIM.TYPES.MSG_IMAGE"
             :isMine="isMine"
             :payload="message.msgContent"
             :message="message"
+            :infoObj="infoObj"
           />
           <file-element
             v-else-if="message.imMsgType === TIM.TYPES.MSG_FILE"
             :isMine="isMine"
             :payload="message.msgContent"
             :message="message"
+            :infoObj="infoObj"
           />
 
           <div v-else-if="message.imMsgType === TIM.TYPES.MSG_CUSTOM">
@@ -46,24 +49,28 @@
               :isMine="isMine"
               :payload="message.msgContent"
               :message="message"
+              :infoObj="infoObj"
             />
             <custom-image
               v-else-if="message.subMsgType === 'image'"
               :isMine="isMine"
               :payload="message.msgContent"
               :message="message"
+              :infoObj="infoObj"
             />
             <custom-file
               v-else-if="message.subMsgType === 'file'"
               :isMine="isMine"
               :payload="message.msgContent"
               :message="message"
+              :infoObj="infoObj"
             />
             <custom-video
               v-else-if="message.subMsgType === 'video'"
               :isMine="isMine"
               :payload="message.msgContent"
               :message="message"
+              :infoObj="infoObj"
             />
           </div>
           <!-- <custom-element
@@ -78,6 +85,7 @@
             :isMine="isMine"
             :payload="message.msgContent"
             :message="message"
+            :infoObj="infoObj"
           />
           <span v-else>暂未支持的消息类型：{{message.type}}</span>
         </div>
@@ -228,13 +236,23 @@ export default {
         // 撤回消息
         return "position-center";
       }
-      if (this.isMine) {
+      if(this.infoObj && this.infoObj.type == 'history'){
+        if (this.isMine) {
+        return "position-right";
+       
+      } else {
+        return "position-left";
+      }
+      }else{
+        if (this.isMine) {
         // return "position-right";
         return "position-left";
       } else {
         // return "position-left";
         return "position-right";
       }
+      }
+      
     },
     showMessageHeader() {
       if (

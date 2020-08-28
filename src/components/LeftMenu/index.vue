@@ -1,5 +1,5 @@
 <template>
-  <div class="qf-components-leftmenu">
+  <div class="qf-components-leftmenu scroll">
     <a-menu
       theme="dark"
       mode="inline"
