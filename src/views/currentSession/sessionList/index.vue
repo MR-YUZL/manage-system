@@ -49,9 +49,7 @@ export default {
   },
   methods: {
     moment,
-    // currentUnreadCount(val){
-    //   console.log(val)
-    // },
+   
     currentUnreadCount(selectId) {
       console.log(selectId);
       for (let i = 0; i < this.penddingList.length; i++) {
@@ -375,6 +373,14 @@ export default {
                     };
 
                     this_.$store.commit("getVisitorInf", obj1);
+                    if(item.payload.data.subMsgType == "transfer"){
+                      let obj2 = {
+                        previous: '',
+                        selectId: item.conversationID
+                      };
+                      this_.selectObj(obj2)
+                    }
+                    
                   }
                 })
                 .catch(function(imError) {
