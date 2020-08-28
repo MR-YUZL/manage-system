@@ -1,5 +1,5 @@
 <template>
-  <message-bubble :isMine='isMine' :message='message'>
+  <message-bubble :isMine='isMine' :message='message' :infoObj="infoObj">
     <video
       :src="payload.url"
       controls
@@ -32,6 +32,9 @@ export default {
     },
     isMine: {
       type: Boolean
+    },
+    infoObj: {
+      type:Object
     }
   },
 
