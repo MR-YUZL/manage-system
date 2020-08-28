@@ -17,14 +17,14 @@
       <!-- 按钮区 -->
       <div class="button-area">
         <div class="left-side">
-          <a-button @click="setManager">设置负责人</a-button>
-          <a-button @click="delCustomer">删除</a-button>
+          <a-button @click="setManager" v-if="isShowBtn('customer_manager_set_principal')">设置负责人</a-button>
+          <a-button @click="delCustomer" v-if="isShowBtn('customer_manager_delete')">删除</a-button>
         </div>
         <div class="right-side">
-          <a-button @click="exportCustomer">导出客户</a-button>
-          <a-button @click="importCustomer">导入客户</a-button>
+          <a-button @click="exportCustomer" v-if="isShowBtn('customer_manager_export')">导出客户</a-button>
+          <a-button @click="importCustomer" v-if="isShowBtn('customer_manager_import')">导入客户</a-button>
           <a-button @click="importResult">导入结果</a-button>
-          <a-button type="primary" @click="createCustomer">创建客户</a-button>
+          <a-button type="primary" @click="createCustomer" v-if="isShowBtn('customer_manager_insert')">创建客户</a-button>
         </div>
       </div>
       <!-- 按钮区 -->
@@ -313,8 +313,12 @@ export default {
       ],
       defaultSearchFormValues: {
         queryType: "1"
-      }
+      },
+     
     };
+  },
+  computed:{
+    
   },
   mounted() {
     this.getList();
@@ -322,8 +326,12 @@ export default {
     this.getStaffSkillGroups(0);
     this.getStaffSkillGroups(1);
     this.getColumns();
+    console.log(this.$store.state.basic.btnRealms,'角色权限')
   },
   methods: {
+    isShowBtn(str){
+      return this.$store.state.basic.btnRealms.indexOf(str)> -1
+    },
     getColumns() {
       api.setFieldsJson().then(res => {
         console.log("操作设置", res);
