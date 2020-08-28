@@ -149,7 +149,8 @@ export default {
     ...mapState({
       currentConversation: state => state.conversation.currentConversation,
       currentUserProfile: state => state.user.currentUserProfile,
-      imInfo: state => state.basic.imInfo
+      imInfo: state => state.basic.imInfo,
+      visitorInf: state => state.basic.visitorInf
     }),
     // 是否显示头像，群提示消息不显示头像
     showAvatar() {
@@ -183,9 +184,10 @@ export default {
     avatar() {
     
         if (this.isMine) {
-          return this.message.serviceAccAvatar
-        } else {
           return this.message.guestAvatar
+        } else {
+           return this.message.serviceAccAvatar
+          
         }
      
     },
@@ -193,12 +195,14 @@ export default {
       return this.currentConversation.type;
     },
     isMine() {
-      // console.log(this.message,this.message.fromAccount ,this.imInfo.userID);
+      console.log(this.message,this.message.fromAccount ,this.imInfo.userID,this.message.guestImAccount, this.visitorInf.guestImAccount);
       
       if(this.infoObj && this.infoObj.type == 'history'){
         return this.message.fromAccount === this.infoObj.serviceImAccount;
       }
-      return this.message.fromAccount === this.imInfo.userID;
+      // return this.message.fromAccount === this.imInfo.userID;
+      return this.message.toAccount === this.visitorInf.guestImAccount
+
     },
     messagePosition() {
       if (
@@ -225,9 +229,11 @@ export default {
         return "position-center";
       }
       if (this.isMine) {
-        return "position-right";
-      } else {
+        // return "position-right";
         return "position-left";
+      } else {
+        // return "position-left";
+        return "position-right";
       }
     },
     showMessageHeader() {

@@ -44,9 +44,10 @@ export default {
     bubbleStyle() {
       let classString = ''
       if (this.isMine) {
-        classString += 'message-send'
-      } else {
         classString += 'message-received'
+      } else {
+        classString += 'message-send'
+        
       }
       if (this.isNew) {
         classString += 'new'
