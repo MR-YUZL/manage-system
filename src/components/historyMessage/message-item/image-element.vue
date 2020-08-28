@@ -1,5 +1,5 @@
 <template>
-  <message-bubble :isMine='isMine' :message="message">
+  <message-bubble :isMine='isMine' :message="message" :infoObj="infoObj">
      <!-- el-image在IE下会自动加上用于兼容object-fit的类，该类的样式在没设置图片宽高是会 GG -->
     <img class="image-element" :src="imageUrl" @load="onImageLoaded" @click="handlePreview" />
     <a-progress
@@ -26,6 +26,9 @@ export default {
     },
     isMine: {
       type: Boolean
+    },
+    infoObj: {
+      type:Object
     }
   },
   components: {

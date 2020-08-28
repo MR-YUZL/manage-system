@@ -165,6 +165,9 @@ export default {
   },
   methods: {
     moment,
+    handleChange(tag, checked,index){
+      console.log(tag, checked,index)
+    },
     //重置传入的值
     resetVal() {
       this.formObject.modelList.map(item => {

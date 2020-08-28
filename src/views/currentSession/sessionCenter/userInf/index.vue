@@ -77,7 +77,7 @@ export default {
           placeholder: "请选择",
           model: undefined,
           ruleName: "consultId",
-          fieldNames: { label: "name", value: "id", children: "childrens" },
+          fieldNames: { label: "text", value: "id", children: "children" },
           options: [],
           rules: {
             required: true,

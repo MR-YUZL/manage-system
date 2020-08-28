@@ -63,6 +63,7 @@
 
 <script>
 import { mapGetters, mapState } from "vuex";
+import { deleteHistory, arrEmpty } from "@/utils/index";
 import { isToday, getDate, getTime } from "./../../../utils/date";
 import moment from "moment";
 export default {
@@ -93,7 +94,7 @@ export default {
         this.Request.get("/session/chat/record/search", params).then(res => {
           if (res.data.status) {
             let data = res.data;
-            let list = [...data.list];
+            let list = deleteHistory([...data.list], this.imInfo.userID);
             this.$store.commit("getSelectStatus", true);
             this.$store.commit("getHistoryList", list);
             this.$store.dispatch(
@@ -157,7 +158,8 @@ export default {
   computed: {
     ...mapState({
       currentConversation: state => state.conversation.currentConversation,
-      currentUserProfile: state => state.user.currentUserProfile
+      currentUserProfile: state => state.user.currentUserProfile,
+      imInfo: state => state.basic.imInfo,
     }),
     ...mapGetters(["toAccount"]),
     messageForShow() {

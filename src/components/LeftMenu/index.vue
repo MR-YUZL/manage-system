@@ -233,8 +233,11 @@ export default {
       this.selection = routerArr[0];
     },
     onOpenChange(openKeys) {
+      console.log(openKeys)
       if(openKeys && openKeys.length){
         this.openKeysList = [openKeys[openKeys.length - 1]]; //展开事件触发的子菜单
+      }else{
+        this.openKeysList = []
       }
       
     }

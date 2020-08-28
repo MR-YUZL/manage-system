@@ -18,18 +18,21 @@
             :isMine="isMine"
             :payload="message.msgContent"
             :message="message"
+            :infoObj="infoObj"
           />
           <image-element
             v-else-if="message.imMsgType === TIM.TYPES.MSG_IMAGE"
             :isMine="isMine"
             :payload="message.msgContent"
             :message="message"
+            :infoObj="infoObj"
           />
           <file-element
             v-else-if="message.imMsgType === TIM.TYPES.MSG_FILE"
             :isMine="isMine"
             :payload="message.msgContent"
             :message="message"
+            :infoObj="infoObj"
           />
 
           <div v-else-if="message.imMsgType === TIM.TYPES.MSG_CUSTOM">
@@ -46,24 +49,28 @@
               :isMine="isMine"
               :payload="message.msgContent"
               :message="message"
+              :infoObj="infoObj"
             />
             <custom-image
               v-else-if="message.subMsgType === 'image'"
               :isMine="isMine"
               :payload="message.msgContent"
               :message="message"
+              :infoObj="infoObj"
             />
             <custom-file
               v-else-if="message.subMsgType === 'file'"
               :isMine="isMine"
               :payload="message.msgContent"
               :message="message"
+              :infoObj="infoObj"
             />
             <custom-video
               v-else-if="message.subMsgType === 'video'"
               :isMine="isMine"
               :payload="message.msgContent"
               :message="message"
+              :infoObj="infoObj"
             />
           </div>
           <!-- <custom-element
@@ -78,6 +85,7 @@
             :isMine="isMine"
             :payload="message.msgContent"
             :message="message"
+            :infoObj="infoObj"
           />
           <span v-else>暂未支持的消息类型：{{message.type}}</span>
         </div>
@@ -149,7 +157,8 @@ export default {
     ...mapState({
       currentConversation: state => state.conversation.currentConversation,
       currentUserProfile: state => state.user.currentUserProfile,
-      imInfo: state => state.basic.imInfo
+      imInfo: state => state.basic.imInfo,
+      visitorInf: state => state.basic.visitorInf
     }),
     // 是否显示头像，群提示消息不显示头像
     showAvatar() {
@@ -183,9 +192,10 @@ export default {
     avatar() {
     
         if (this.isMine) {
-          return this.message.serviceAccAvatar
-        } else {
           return this.message.guestAvatar
+        } else {
+           return this.message.serviceAccAvatar
+          
         }
      
     },
@@ -193,12 +203,14 @@ export default {
       return this.currentConversation.type;
     },
     isMine() {
-      // console.log(this.message,this.message.fromAccount ,this.imInfo.userID);
+      console.log(this.message,this.message.fromAccount ,this.imInfo.userID,this.message.guestImAccount, this.visitorInf.guestImAccount);
       
       if(this.infoObj && this.infoObj.type == 'history'){
         return this.message.fromAccount === this.infoObj.serviceImAccount;
       }
-      return this.message.fromAccount === this.imInfo.userID;
+      // return this.message.fromAccount === this.imInfo.userID;
+      return this.message.toAccount === this.visitorInf.guestImAccount
+
     },
     messagePosition() {
       if (
@@ -224,11 +236,23 @@ export default {
         // 撤回消息
         return "position-center";
       }
-      if (this.isMine) {
+      if(this.infoObj && this.infoObj.type == 'history'){
+        if (this.isMine) {
         return "position-right";
+       
       } else {
         return "position-left";
       }
+      }else{
+        if (this.isMine) {
+        // return "position-right";
+        return "position-left";
+      } else {
+        // return "position-left";
+        return "position-right";
+      }
+      }
+      
     },
     showMessageHeader() {
       if (
