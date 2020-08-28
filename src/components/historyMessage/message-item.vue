@@ -203,8 +203,6 @@ export default {
       return this.currentConversation.type;
     },
     isMine() {
-      console.log(this.message,this.message.fromAccount ,this.imInfo.userID,this.message.guestImAccount, this.visitorInf.guestImAccount);
-      
       if(this.infoObj && this.infoObj.type == 'history'){
         return this.message.fromAccount === this.infoObj.serviceImAccount;
       }
