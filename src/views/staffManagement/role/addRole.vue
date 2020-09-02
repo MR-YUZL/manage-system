@@ -31,7 +31,7 @@
               <a-textarea v-model="formData.roleDesc" placeholder="请输入角色描述" :auto-size="{ minRows: 3, maxRows: 5 }" :maxLength="50" />
            </a-form-model-item>
         </div>
-        <h5>管理端</h5>
+        <h5>功能权限</h5>
          <div style="width:300px;margin-left:80px;">
             <a-form-model-item> 
             <a-tree

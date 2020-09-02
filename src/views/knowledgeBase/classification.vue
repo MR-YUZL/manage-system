@@ -1,5 +1,5 @@
 <template>
-  <div class="addSort">
+  <div class="addSort scroll">
     <div class="sort">
       <ul>
         <li class="firstLi" v-if="isShow">
@@ -7,7 +7,8 @@
             <a-input  v-model="groupAdd" placeholder="请输入" :maxLength="10" style="width:200px;" /> 
             <div class="sort-icon" v-if="isShow">
               <a-icon type="check" @click="saveNewTags()"/>
-              <a-icon type="delete" @click="deleteAddNewSort()"/>
+              <!-- <a-icon type="delete" @click="deleteAddNewSort()"/> -->
+              <a-icon type="close" @click="deleteAddNewSort()" />
             </div>
           </div>
           <div class="addSortStyle" @click="addSort()"  v-if="!groupAddShow"><a-icon type="plus" />   添加分类</div>
@@ -15,10 +16,11 @@
         <li v-for="(item,index) in groupList " :key="index" :class="{active:item.active == true}" @click="handlegroupList(index)">
           <span  v-if="!item.edit">{{item.groupName}}</span>
           <a-input @click.stop v-if="item.edit" v-model="editName" :maxLength="10" style="width:200px;" /> 
-          <div class="sort-icon" v-if="item.id!='' && isShow" @click.stop>  
+          <div class="sort-icon" v-if="item.id!='' && isShow && !item.isisEdit" @click.stop>  
             <a-icon type="check" v-if="item.edit" @click="saveTags('first',item.id,index)"/>
             <a-icon type="edit" @click="editTags(index,item.groupName)" v-if="!item.edit"/>
-            <a-icon type="delete" @click="delteTags(item.id)" />
+            <a-icon type="delete" @click="delteTags(index,item.id)" v-if="isLook" />
+            <a-icon type="close" @click="closeTags(index,item.id)" v-if="!isLook"/>
           </div> 
         </li>
       </ul>
@@ -38,6 +40,9 @@ export default {
       groupAdd:'',
       pid:'',
       firstIndex:'',
+      isEdit:true,
+      isDelete:true,
+      isLook:true
     }
   },
   watch:{},
@@ -71,15 +76,21 @@ export default {
         item.edit = false
       })
       let obj = this.groupList[index]
+      
       obj['active'] = true
       this.$set(this.groupList,index,obj)
       this.$store.commit('getClassificationId',this.groupList[index].id)
+      this.isLook = true
     },
    
     saveTags(type,id,index){
       // id name  type pid   id 用于编辑  pid 用于新增 父类的
       if(this.editName ==''){
         this.$message.warn('分类名不能为空！')
+        return false;
+      }
+      if(this.groupList[index].groupName == this.editName){
+        console.log('111')
         return false;
       }
       let params = {
@@ -116,9 +127,10 @@ export default {
         item.edit = false
       })
       this.groupList[index].edit = true
+      this.isLook = false
       this.$forceUpdate()
     },
-    delteTags(id){
+    delteTags(index,id){
       let that = this
        this.$confirm({
         content:<div style="color:red;">确定要删除这个分类吗？</div>,
@@ -129,6 +141,13 @@ export default {
           })
         },
       });
+    },
+    closeTags(index,id){
+      this.isLook = false
+      this.editName = ''
+      this.groupList.map(item=>{
+        item.edit = false
+      })
     },
     addSort(){
       this.groupAdd = ''
@@ -146,6 +165,8 @@ export default {
   display:flex;
   margin-right:20px;
   border-right:1px solid #e6e6e6;
+  height: calc(100vh - 112px);
+  overflow-x: auto;
   .sort{
     // margin:0 15px;
     box-sizing: border-box;
@@ -188,7 +209,7 @@ export default {
     li.active{
     
       .sort-icon{
-        display: block;
+        display: flex;
         i{
           margin:0 10px;
         }

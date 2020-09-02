@@ -1,5 +1,5 @@
 <template>
-  <div class="knowledge">
+  <div class="knowledge scroll">
     <div class="btn">
         <a-button v-if="isShow" type="primary" @click="updateData(1)">
         添加知识
@@ -153,8 +153,10 @@ export default {
         this.knowledgeObj.defaultValues = {}
         this.$set(this.knowledgeObj.defaultValues,'groupId',this.classificationId?this.classificationId:undefined)
       }else{
+       
         this.type = 'edit'
         let { title,author,content,groupId} = item 
+       
         this["knowledgeModal"]["title"] = '编辑知识';
          this.knowledgeObj.defaultValues = {
           title,
@@ -163,16 +165,18 @@ export default {
           content
         }
         // 分类删除，下面的数据还在
-        this.categoryList.map(it=>{
-          if(it.key == groupId){
-            this.$set(this.knowledgeObj.defaultValues,'groupId',groupId)
-            console.log(it)
-          }else {
-            this.$set(this.knowledgeObj.defaultValues,'groupId',undefined)
-          }
-        })
+        
+        // this.categoryList.map(it=>{
+        //   if(it.key == groupId){
+        //     this.$set(this.knowledgeObj.defaultValues,'groupId',groupId)
+        //     console.log(it)
+        //   }else {
+        //     this.$set(this.knowledgeObj.defaultValues,'groupId',undefined)
+        //   }
+        // })
         this.id = item.id
       }
+     
       this["knowledgeObj"]["visible"] = true;
       this.$forceUpdate()
    },
@@ -230,6 +234,9 @@ export default {
 <style lang="less" scoped>
   .knowledge{
       width: calc(100% - 300px);
+      height: calc(100vh - 112px);
+      overflow-x: auto;
+      padding-right: 15px;
       .btn{
           line-height: 60px;
           text-align: right;

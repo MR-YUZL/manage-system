@@ -20,7 +20,7 @@
         </div>
         <div style="padding:10px 0 30px;"><TablePagination :parentPager="pager" @paginationChange="paginationChange"></TablePagination></div>
     </div>
-    <a-modal title="添加成员" :visible="addCustomerShow" :maskClosable='false' v-if="addCustomerShow" @cancel="handleCancelAdd" @ok="handleOkAdd" >
+    <a-modal title="添加客服" :visible="addCustomerShow" :maskClosable='false' v-if="addCustomerShow" @cancel="handleCancelAdd" @ok="handleOkAdd" >
       <div>
         选择成员：<a-tree-select
                   v-model="addStaffValue"
