@@ -149,8 +149,8 @@ export default {
           key: "4",
           customRender: value => {
             let obj = {
-              "0": "否",
-              "1": "是"
+              "0": "禁用",
+              "1": "启用"
             };
             return obj[value];
           }
@@ -340,7 +340,7 @@ export default {
         if (valid) {
           console.log("表单数据", params);
            // 先进行字段名称查重复
-          this.Request.get("/config/hfwConfigFields/detectJson", { state:this.activeKey, fieldName:this.addFormData.fieldName}).then( () => {
+          this.Request.get("/config/hfwConfigFields/detectJson", { state:this.activeKey, fieldName:this.addFormData.fieldName,fieldId:this.addFormData.fieldId}).then( () => {
             this.Request.post("/config/hfwConfigFields/edit", {
               ...params
             }).then(() => {

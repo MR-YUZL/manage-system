@@ -41,7 +41,8 @@ export default {
         wrapperCol: { span: 10 },
         activeKey:'2',
         wordsFormData:{
-          con:''
+          con:'',
+          id:''
         },
         rules:{
           con:[{required: true, message: '请输入分组名称',trigger: 'blur'}]
@@ -61,14 +62,16 @@ export default {
       },
       getData(){
         this.Request.get('/hfw/tsmHfwLeaveCommentsSet/infoJson?source='+this.activeKey).then(res=>{
-          console.log('欢迎语言，',res.data.data.content)
+          console.log('欢迎语言::',res.data.data.content)
           this.wordsFormData.con = res.data.data.content
+          this.wordsFormData.id  = res.data.data.id
         })
       },
       saveData(){
         let params = {
           source:this.activeKey,
-          content:this.wordsFormData.con
+          content:this.wordsFormData.con,
+          id:this.wordsFormData.id
         }
         this.Request.post('/hfw/tsmHfwLeaveCommentsSet/saveJson',params).then(res=>{
             console.log('保存',res)

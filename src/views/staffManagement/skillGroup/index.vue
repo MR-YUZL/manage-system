@@ -19,7 +19,8 @@
                 <span v-if="item.editShow"><a-input v-model="eidtName"  /></span>
                 <a-icon v-if="item.editShow" type="check" @click='editOkSkillGroup(item.groupId)'/>
                 <a-icon v-if="!item.editShow" type="edit" @click="editSkillGroup(index,item.groupName)"/>
-                <a-icon type="delete"  @click="deleteSkillGroup(item.groupId)"/>
+                <a-icon v-if="item.editShow" type="close" @click="closeSkillGroup(index)" />
+                <a-icon v-if="!item.editShow"  type="delete"  @click="deleteSkillGroup(item.groupId)"/>
               </li>
             </ul>
         </div>
@@ -29,7 +30,8 @@
             <strong>成员：{{staffList.length}}人</strong>
             <ul>
               <li v-for="(item,index) in staffList" :key="index">
-                <img :src="item.imgUrl" alt="">
+                <img v-if="item.imgUrl==''"  src="../../../assets/imgs/current_session/header.png" alt="">
+                 <img v-else :src="item.imgUrl" alt="">
                 <div>
                   <p>{{item.userName}}</p>
                   <span>{{item.phone}}</span>
@@ -129,6 +131,9 @@ export default {
         this.eidtName = name
         this.addSkillShow = false
       },
+      closeSkillGroup(index){
+       this.skillGroups[index].editShow = false
+      },
       deleteSkillGroup(id){
         let params = {
           groupId:id
@@ -185,7 +190,7 @@ export default {
           let list = res.data.list
           if(type&&type=="all"){
             this.allStaffList = list
-            console.log('所有列表',list)
+            console.log('所有列表', this.allStaffList )
             this.allStaffList.map(item=>{
               item.title = item.userName
               item.key = item.userAccount
