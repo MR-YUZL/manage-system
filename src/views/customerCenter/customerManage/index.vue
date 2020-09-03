@@ -207,21 +207,21 @@ export default {
       exportJson: [],
       custIds: [],
       columns: [
-        {
-          title: currentPageData => {
-            return (
-              <div>
-                操作
-                <span style="padding-left:2px">
-                  <AIcon onClick={this.setLabelClick} type="setting" />
-                </span>
-              </div>
-            );
-          },
-          dataIndex: "status",
-          key: "3",
-          scopedSlots: { customRender: "action" }
-        }
+        // {
+        //   title: currentPageData => {
+        //     return (
+        //       <div>
+        //         操作
+        //         <span style="padding-left:2px">
+        //           <AIcon onClick={this.setLabelClick} type="setting" />
+        //         </span>
+        //       </div>
+        //     );
+        //   },
+        //   dataIndex: "status",
+        //   key: "3",
+        //   scopedSlots: { customRender: "action" }
+        // }
       ], // 表头
       tableList: [], // 表格数据
       modals: {
@@ -334,9 +334,10 @@ export default {
     },
     getColumns() {
       api.setFieldsJson().then(res => {
-        console.log("操作设置", res);
+        console.log("操作设置", res,this.columns);
         let list = res.data.list;
-        this.columns = [
+        this.columns = []
+        let columns = [
           {
             title: currentPageData => {
               return (
@@ -356,7 +357,7 @@ export default {
         res.data.list.map(item => {
           if (item.isShow == 1) {
             if (item.fieldCode == "custName") {
-              this.columns.unshift({
+              this.columns.push({
                 title: item.fieldName,
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
@@ -364,7 +365,7 @@ export default {
               });
             } 
             else if(item.fieldCode == "custLinkPhone"){
-              this.columns.unshift({
+              this.columns.push({
                 title: item.fieldName,
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
@@ -372,14 +373,16 @@ export default {
               });
             }
             else {
-              this.columns.unshift({
+              this.columns.push({
                 title: item.fieldName,
                 dataIndex: item.fieldCode,
                 key: item.fieldCode
               });
             }
           }
+          
         });
+        this.columns = [...this.columns,...columns]
         // this.mockData = newArr;
         // this.targetKeys = newArr.filter(v => v.isShow == 1).map(item => item.key);
       });
@@ -398,6 +401,7 @@ export default {
       this.modals.followCustomerVisible = false;
       this.modals.setManagerVisible = false;
       this.modals.setLabelVisible = false;
+      this.createCusObj.visible = false
       this.custIds = [];
       this.getList();
       if (val == "setLable") {
@@ -409,7 +413,7 @@ export default {
         ...this.searchParams,
         ...this.pager
       };
-      console.log(params, "你对不对");
+    
       api.custManageList(params).then(res => {
         console.log(res, "res-----");
         if (res.data.status) {
@@ -452,6 +456,7 @@ export default {
       this.modals.setLabelVisible = false;
       this.modals.followCustomerVisible = false;
       this.modals.detailVisible = false;
+      this.createCusObj.visible = false;
     },
     onSelectChange(selectedRowKeys, selectedRows) {
       this.custIds = [];

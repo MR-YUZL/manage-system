@@ -34,6 +34,7 @@
           placeholder="请选择省市"
           change-on-select
           @change="cityChange"
+          v-model="item.fieldValue"
         />
 
         <a-range-picker
@@ -79,10 +80,14 @@ export default {
       // console.log(formName, "formName");
       // console.log(this.$refs[formName],'this.$refs[formName]')
       this.$refs[formName].validate(valid => {
-        console.log('111111')
-
         if (valid) {
           console.log(this.formObj.formList,'this.formObj.formList==========')
+          
+          this.formObj.formList.map((item,index) => {
+            if(item.fieldCode == "contactsArea"){
+              item.fieldValue = item.fieldValue.join(',')
+            }
+          })
           this.$emit("cusSubmitForm", this.formObj.formList);
         }else {
           console.log("error submit!!");

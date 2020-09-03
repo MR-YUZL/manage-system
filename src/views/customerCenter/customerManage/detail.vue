@@ -62,19 +62,19 @@
           </a-tab-pane>
           <a-tab-pane key="2" tab="资料">
             <div class="materialFlex">
-              <li v-for="(item,index) in materialList">{{item.fieldName}}：{{item.fieldValue}}</li>
+              <li v-for="(item,index) in materialList" :key="index">{{item.fieldName}}：{{item.fieldValue}}</li>
             </div>
           </a-tab-pane>
           <a-tab-pane key="3" tab="日志">
             <div class="logFlex">
-              <li v-for="(item,index) in logList">
+              <li v-for="(item,index) in logList" :key="index">
                 <span>{{item.logDate}}</span>
                 <span>{{item.logContent}}</span>
               </li>
             </div>
           </a-tab-pane>
         </a-tabs>
-        <Modal :currentModal="contactModalInner">
+        <Modal :currentModal="contactModalInner" v-if="contactModalInner.visible">
           <template v-slot:content>
             <CreateContact
               @closeCreateContact="closeCreateContact"
@@ -96,6 +96,7 @@ import OrderInf from "@/components/userInf/OrderInf";
 import ServiceSummary from "@/components/userInf/Summary";
 import ServiceRecord from "@/components/userInf/ServiceRecord";
 import CreateContact from "@/views/customerCenter/customerManage/modal/createContact";
+import { areaDictionary } from "@/utils/areaDictionary";
 export default {
   data() {
     return {
@@ -161,11 +162,62 @@ export default {
     },
     getMaterialInfo(params) {
       api.customerDetail(params).then(res => {
-        console.log("资料", res);
+    
         if (res.data.status) {
+        
+          res.data.list.map((item,index) => {
+            if(item.dataType == 2 || item.dataType == 3){
+           
+              if(item.fieldCode == "custArea"){
+                let arr = item.fieldValue.split(',')
+                let list = [...areaDictionary]
+                let str;
+                arr.map((val,i) => {
+                  // list = list[i].districts
+                  // console.log(list)
+                  list.map((it,j) => {
+                    if(val == it.adcode){
+                      str = str ? str + ',' +it.name : it.name
+                      list = it.districts
+                    }
+                  })
+                  // this.findArea(list,val)
+                  // console.log(this.findArea(list,val))
+                  // if(list.adcode == val){
+                  //   str = str + areaDictionary[Number(i)]
+                  //   list = list[val]
+                  // }
+                  
+                })
+                item.fieldValue = str
+              }else{
+                item.options.map(val => {
+                  if(val.optionId == item.fieldValue){
+                    item.fieldValue = val.optionName
+                  }
+                })
+              }
+            }
+          })
           this.materialList = res.data.list;
+
         }
       });
+    },
+    findArea(list,id){
+      console.log(list,id)
+      let str
+      list.map(item => {
+        if(item.adcode == id){
+          if(item.districts){
+            str = str + ',' +item.name
+            return item.districts
+          }else{
+            return str
+          }
+          
+        }
+      })
     },
     getLogJson(params) {
       api.logJson(params).then(res => {
@@ -218,6 +270,7 @@ export default {
       this.contactModalInner.visible = false;
     },
     createContactModalShow(e, name) {
+      this.contactsId = ''
       if (name) {
         this[name]["visible"] = true;
       } else {

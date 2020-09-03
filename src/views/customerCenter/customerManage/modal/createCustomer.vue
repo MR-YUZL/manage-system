@@ -6,7 +6,11 @@
       :footer="null"
       @cancel="handleCancel"
     >
-      <FormModal :formObj="cusFormObj" @cusCloseForm="handleCancel" @cusSubmitForm="cusSubmitForm" />
+      <FormModal
+        :formObj="cusFormObj"
+        @cusCloseForm="handleCancel"
+        @cusSubmitForm="cusSubmitForm"
+      />
     </a-modal>
   </div>
 </template>
@@ -45,9 +49,9 @@ export default {
       this.custId = val;
     }
   },
-  mounted(){
+  mounted() {
     this.getForm();
-    if(this.custId){
+    if (this.custId) {
       this.getEditInfo();
     }
   },
@@ -56,8 +60,11 @@ export default {
       api.formFieldsJson({ state: 0 }).then(res => {
         console.log(res, "列表字段**********-------------");
         if (res.data.status) {
+          res.data.list.map(item => {
+            if (item.fieldCode == "custArea")
+              item.fieldValue = item.fieldValue.split(",");
+          });
           this.cusFormObj.formList = res.data.list;
-          
         }
       });
     },
@@ -65,6 +72,10 @@ export default {
     getEditInfo() {
       api.customerDetail({ custId: this.custId }).then(res => {
         console.log("编辑客户回显", res);
+        res.data.list.map(item => {
+          if (item.fieldCode == "custArea")
+            item.fieldValue = item.fieldValue.split(",");
+        });
         this.cusFormObj.formList = res.data.list;
         // let editArray = res.data.list;
         // this.cusFormObj.formList.map((item, index) => {
@@ -88,6 +99,10 @@ export default {
       //     fieldValue:v.fieldValue
       //   })
       // })
+      arr.map(item => {
+        if (item.fieldCode == "custArea")
+          item.fieldValue = item.fieldValue.join(",");
+      });
       let params = {
         fields: arr
       };

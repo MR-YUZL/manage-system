@@ -66,7 +66,13 @@ export default {
       api.editContactsInfo({ contactsId: this.contactsId }).then(res=>{
         console.log("编辑联系人回显", res);
         if(res.data.status){
+          res.data.list.map(item => {
+            if (item.fieldCode == "contactsArea")
+              item.fieldValue = item.fieldValue.split(",");
+          });
           this.contactFormObj.formList = res.data.list;
+          console.log( this.contactFormObj.formList)
+
         }
       })
     },
@@ -74,6 +80,10 @@ export default {
       api.formFieldsJson({ state: 1 }).then(res => {
         console.log(res, "创建联系人");
         if (res.data.status) {
+          res.data.list.map(item => {
+            if (item.fieldCode == "contactsArea")
+              item.fieldValue = item.fieldValue.split(",");
+          });
           this.contactFormObj.formList = res.data.list;
         }
       });

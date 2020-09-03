@@ -100,6 +100,7 @@ export default {
       api.setFieldsJson().then((res) => {
         console.log("操作设置", res);
         this.tableHeadList = res.data.list.filter((v) => v.isShow == 1);
+        this.removList = res.data.list.filter((v) => v.isShow == 0);
         this.tableHeadList = this.tableHeadList.map((v) => {
           return {
             ...v,
@@ -196,6 +197,7 @@ export default {
     //右边移到左边
     rightToLeft() {
       this.checkList.map((item) => {
+        item.isShow = 0
         this.removList.push({
           ...item,
           isChecked: false,
@@ -214,6 +216,7 @@ export default {
     //左边移到右边
     leftToRight() {
       this.leftCheckList.map((item) => {
+        item.isShow = 1
         this.tableHeadList.push({
             ...item,
             isChecked: false,
@@ -261,8 +264,8 @@ export default {
     },
     //保存表头
     handleSubmit() {
-      let newArr = [...this.tableHeadList];
-      console.log("提交改变后的数组", newArr);
+      let newArr = [...this.tableHeadList,...this.removList];
+      console.log("提交改变后的数组", newArr,this.removList);
       api.fieldsShowSave({ list: newArr }).then((res) => {
         if (res.data.status) {
           this.$message.success("保存成功");
