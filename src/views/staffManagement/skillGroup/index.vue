@@ -6,7 +6,7 @@
             <div class="addGroup">
               <div v-if="!addSkillShow" @click="addSkill" style="height:32px"><a-icon type="plus" />添加技能组</div>
               <div class="flex-between" v-if="addSkillShow">
-                <a-input placeholder="请输入名称" style='width:150px;' v-model="eidtName" /><a-icon type="check" @click="editOkSkillGroup('','add')"/><a-icon type="delete"  @click="deleteAddSkillGroup"/>
+                <a-input placeholder="请输入名称" :maxLength="10" style='width:150px;' v-model="eidtName" /><a-icon type="check" @click="editOkSkillGroup('','add')"/><a-icon type="delete"  @click="deleteAddSkillGroup"/>
               </div>
             </div>
             <div class="searchGroup">
@@ -24,7 +24,7 @@
             </ul>
         </div>
         <div class="skillGroupMain">
-          <div class="flex-between"><a-input-search placeholder="请输入名称" v-model="userName" style='width:250px;' @search="searchMemmber"/><a-button type="primary" @click="staffManage">成员管理</a-button></div>
+          <div class="flex-between"><a-input-search placeholder="请输入名称" v-model="userName" style='width:250px;' @search="searchMemmber"/><a-button type="primary" :disabled="!skillGroups.length" @click="staffManage">成员管理</a-button></div>
           <div class="ulstyle">
             <strong>成员：{{staffList.length}}人</strong>
             <ul>

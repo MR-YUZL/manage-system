@@ -18,7 +18,7 @@
           :pagination="false"
           :rowKey="record => record.roleId">
           <div slot="action" slot-scope="record,row">
-            <router-link :to="'role/addRole?roleId='+record.roleId+'&roleDesc='+record.roleDesc+'&roleName='+record.roleName"><span class="blue" style="margin-right:10px;" >编辑</span></router-link>
+            <router-link :to="'role/addRole?roleId='+record.roleId+'&roleDesc='+record.roleDesc+'&roleName='+record.roleName+'&roleType='+record.roleType"><span class="blue" style="margin-right:10px;" >编辑</span></router-link>
             <span v-if="record.canDel==1" class="blue" @click="deleteRole(record)">删除</span>
           </div>
         </a-table>
@@ -51,8 +51,8 @@ export default {
             key: "roleType",
             customRender:(values)=>{
               let obj = {
-                '0':'销售',
-                '1':'管理者'
+                '0':'普通客服',
+                '1':'管理员'
               }
               return obj[values]
             }
