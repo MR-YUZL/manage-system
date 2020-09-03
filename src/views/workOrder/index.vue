@@ -292,7 +292,7 @@ export default {
             type: "input",
             label: "客户名称",
             placeholder: "请输入",
-            name: "qcAcc"
+            name: "customerName"
           },
           {
             type:'select',
