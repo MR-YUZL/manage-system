@@ -2,12 +2,12 @@
     <div class="flex-container">
         <a-page-header class="flex-page-header" title="渠道设置" />
         <div class="flex-content">
-            <iframe width="100%" height="100%" :src="`../static/channelSettings/index.html?orgId + ${$store.state.basic.imInfo.orgId}`" frameborder="0"></iframe>
+            <iframe src="../static/channelSettings/index.html" frameborder="0"></iframe>
         </div>
         
     </div>
 </template>
-
+//?orgId + ${$store.state.basic.imInfo.orgId}
 <script>
 export default {
     name: "",
@@ -34,6 +34,10 @@ export default {
 
     .flex-content {
         flex: 1;
+        iframe{
+          width: 100%;
+          height: calc(100% - 5px);
+        }
     }
 }
 </style>

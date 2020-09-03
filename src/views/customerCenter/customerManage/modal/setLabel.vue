@@ -74,26 +74,26 @@ export default {
       this.moveKeys = moveKeys
     },
     handleSubmit() {
-      this.mockData = this.mockData.map(v=>{
-        let flag = 0;
-        this.targetKeys.forEach((tar) => {
-          if(tar == v.fieldCode) {
-            flag = 1;
-          }
-        })
-        return {
-          ...v,
-          isShow: flag
-        }
-      });
-      console.log(this.mockData,'this.mockData78455')
-      api.fieldsShowSave({list:this.mockData}).then(res => {
-        if(res.data.status){
-          this.$message.success("保存成功");
-          this.visibles = false;
-          this.$emit('successLoadList','setLable')
-        }
-      });
+      // this.mockData = this.mockData.map(v=>{
+      //   let flag = 0;
+      //   this.targetKeys.forEach((tar) => {
+      //     if(tar == v.fieldCode) {
+      //       flag = 1;
+      //     }
+      //   })
+      //   return {
+      //     ...v,
+      //     isShow: flag
+      //   }
+      // });
+      // console.log(this.mockData,'this.mockData78455')
+      // api.fieldsShowSave({list:this.mockData}).then(res => {
+      //   if(res.data.status){
+      //     this.$message.success("保存成功");
+      //     this.visibles = false;
+      //     this.$emit('successLoadList','setLable')
+      //   }
+      // });
     },
     handleCancel() {
       this.visibles = false;
