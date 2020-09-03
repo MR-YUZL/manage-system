@@ -19,7 +19,8 @@
                 <span v-if="item.editShow"><a-input v-model="eidtName"  /></span>
                 <a-icon v-if="item.editShow" type="check" @click='editOkSkillGroup(item.groupId)'/>
                 <a-icon v-if="!item.editShow" type="edit" @click="editSkillGroup(index,item.groupName)"/>
-                <a-icon type="delete"  @click="deleteSkillGroup(item.groupId)"/>
+                <a-icon v-if="item.editShow" type="close" @click="closeSkillGroup(index)" />
+                <a-icon v-if="!item.editShow"  type="delete"  @click="deleteSkillGroup(item.groupId)"/>
               </li>
             </ul>
         </div>
@@ -129,6 +130,9 @@ export default {
         this.skillGroups[index].editShow=true
         this.eidtName = name
         this.addSkillShow = false
+      },
+      closeSkillGroup(index){
+       this.skillGroups[index].editShow = false
       },
       deleteSkillGroup(id){
         let params = {
