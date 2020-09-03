@@ -15,7 +15,7 @@
        :wrapper-col="wrapperCol"
        >
           <a-form-model-item label="标签名称" prop="name">
-            <a-input v-model="tagsFormData.name" maxLength="5" placeholder="请输入"></a-input>
+            <a-input v-model="tagsFormData.name" :maxLength="5" placeholder="请输入"></a-input>
           </a-form-model-item>
        </a-form-model>
     </a-modal>
