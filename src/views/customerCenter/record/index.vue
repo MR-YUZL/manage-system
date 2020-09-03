@@ -87,7 +87,7 @@ export default {
         },
         {
           type: "selectGroup",
-          label: "客服姓名",
+          label: "客服名称",
           name: "followAccs",
           mode: "multiple",
           list: [],

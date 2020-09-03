@@ -10,7 +10,7 @@
       :accept="accept"
     >
       <a-button v-if="fileList.length < maxFiles">
-        <a-icon type="upload" />Upload
+        <a-icon type="upload" />上传文件
       </a-button>
     </a-upload>
   </div>

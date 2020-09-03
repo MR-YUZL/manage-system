@@ -143,11 +143,12 @@ export default {
       });
     },
     closeTags(index,id){
-      this.isLook = false
+      
       this.editName = ''
       this.groupList.map(item=>{
         item.edit = false
       })
+      this.isLook = true
     },
     addSort(){
       this.groupAdd = ''
@@ -190,6 +191,7 @@ export default {
     //   border-right:1px solid #e6e6e6;
       .sort-icon{
         display: none;
+        
       }
       input{
         width:220px;
@@ -226,7 +228,7 @@ export default {
         width:100%;
       }
       .sort-icon{
-        display: block;
+        display: flex;
         i{
           margin:0 10px;
         }
