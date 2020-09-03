@@ -52,7 +52,7 @@
         :label-col="labelCol"
         :wrapper-col="wrapperCol">
         <a-form-model-item label="分组名称" prop="keyword">
-          <a-input placeholder="请输入" v-model="addGroupObj.keyword" ></a-input>
+          <a-input placeholder="请输入" :maxLength="10" v-model="addGroupObj.keyword" ></a-input>
         </a-form-model-item>
       </a-form-model>
     </a-modal>
@@ -93,14 +93,14 @@
 
 <script>
 import TablePagination from "@/components/Table/TablePagination";
-import Model from '../../../components/Modal/index';
-import BaseForm from "@/components/BaseForm/index";
+// import Model from '../../../components/Modal/index';
+// import BaseForm from "@/components/BaseForm/index";
 export default {
     name: "group",
     components: {
-      Model,
+      // Model,
       TablePagination,
-      BaseForm
+      // BaseForm
     },
     props:{},
     data() {
@@ -286,9 +286,10 @@ export default {
                 return false
             }
           }
+          let  text = type=='group'?'删除分组的同时会删除该分组下的常用语，请确认是否删除？':'是否确认删除？'
           this.$confirm({
             title: '',
-            content:<div style="color:red;">删除分组的同时会删除该分组下的常用语，请确认是否删除？</div>,
+            content:<div style="color:red;">{{text}}</div>,
             onOk() {
               that.Request.post('/common/speech/remove',params).then(() => {
                 that.$message.success('删除成功');

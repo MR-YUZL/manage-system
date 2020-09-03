@@ -149,8 +149,8 @@ export default {
           key: "4",
           customRender: value => {
             let obj = {
-              "0": "否",
-              "1": "是"
+              "0": "禁用",
+              "1": "启用"
             };
             return obj[value];
           }

@@ -185,7 +185,7 @@ export default {
           let list = res.data.list
           if(type&&type=="all"){
             this.allStaffList = list
-            console.log('所有列表',list)
+            console.log('所有列表', this.allStaffList )
             this.allStaffList.map(item=>{
               item.title = item.userName
               item.key = item.userAccount
