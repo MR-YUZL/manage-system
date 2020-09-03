@@ -340,7 +340,7 @@ export default {
         if (valid) {
           console.log("表单数据", params);
            // 先进行字段名称查重复
-          this.Request.get("/config/hfwConfigFields/detectJson", { state:this.activeKey, fieldName:this.addFormData.fieldName}).then( () => {
+          this.Request.get("/config/hfwConfigFields/detectJson", { state:this.activeKey, fieldName:this.addFormData.fieldName,fieldId:this.addFormData.fieldId}).then( () => {
             this.Request.post("/config/hfwConfigFields/edit", {
               ...params
             }).then(() => {
