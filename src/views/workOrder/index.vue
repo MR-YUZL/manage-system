@@ -333,7 +333,7 @@ export default {
             options: [
               { value:0,label:'未受理'},
               { value:1,label:'受理中'},
-              { value:2,label:'已完场'},
+              { value:2,label:'已完结'},
             ],
           },
           {
@@ -432,6 +432,7 @@ export default {
             this.selectedRowKeys = selectedRows
           },
           onSelectAll: (selected, selectedRows, changeRows) => {
+            this.selectedRowKeys = selectedRows
             console.log(selected, selectedRows, changeRows);
           },
         }
