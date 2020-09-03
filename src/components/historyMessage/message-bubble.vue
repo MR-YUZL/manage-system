@@ -43,7 +43,6 @@ export default {
   computed: {
     bubbleStyle() {
       let classString = ''
-      console.log(this.infoObj,this.infoObj && this.infoObj.type == 'history')
       if(this.infoObj && this.infoObj.type == 'history'){
         if (this.isMine) {
           classString += 'message-send'

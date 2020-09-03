@@ -165,14 +165,30 @@ export default {
     this.Request.post("/config/hfwConfigResource/menuJson").then(res => {
       if (res.data.status) {
         this.menuData = res.data.list;
-        this.initMenu(this.menuData);
+        let url;
+        if(this.menuData[0].childs){
+          // this.$router.push(this.menuData[0].childs[0].resourceString)
+          url = '/'+this.menuData[0].childs[0].resourceString
+    
+        }else{
+          url = '/'+this.menuData[0].resourceString
+          
+        }
+        if(this.$route.path == '/'){
+          this.$router.push(url)
+        }else{
+          url = ''
+        }
+        
+        this.initMenu(this.menuData,url);
       }
     });
   },
   mounted() {},
   methods: {
-    initMenu(listMenu) {
-      const path = routeMatching(this.$route.path);
+    initMenu(listMenu,url) {
+      // console.log(this.$route.path)
+      const path = routeMatching(url ? url : this.$route.path);
       listMenu.map(it => {
         if (it.childs) {
           it.childs.map(val => {

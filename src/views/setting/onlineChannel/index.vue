@@ -2,7 +2,7 @@
     <div class="flex-container">
         <a-page-header class="flex-page-header" title="渠道设置" />
         <div class="flex-content">
-            <iframe width="100%" height="100%" src="../channelSettings/index.html" frameborder="0"></iframe>
+            <iframe width="100%" height="100%" :src="`../static/channelSettings/index.html?orgId + ${$store.state.basic.imInfo.orgId}`" frameborder="0"></iframe>
         </div>
         
     </div>

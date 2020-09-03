@@ -32,25 +32,23 @@ method.forEach(item => {
       axios(
         Object.assign(
           {
-            url: `${host ? host + url : url}`,
+            url: url,//`${host ? host + url : url}`,
             method: item,
-            params: item == 'get' ? {_t: new Date().getTime(),...data} : null,  //加时间戳，防止浏览器缓存,
+            params:
+              item == "get" ? { _t: new Date().getTime(), ...data } : null, //加时间戳，防止浏览器缓存,
             data
           },
           _options
         )
       )
-        .then(res =>
-          {
-            if(res.data.status){
-              resolve(res)
-              return;
-            }else{
-              message.error(res.data.msg)
-            }   
+        .then(res => {
+          if (res.data.status) {
+            resolve(res);
+            return;
+          } else {
+            message.error(res.data.msg);
           }
-         
-        )
+        })
         .catch(error => {
           // const regPath = ['/login', '/register']
 
@@ -63,7 +61,7 @@ method.forEach(item => {
           //   reject(error.response)
           //   return
           // }
-        
+
           // if (error.response && error.response.status === 419) {
           //     return refreshCrsfToken(item, url, data, options).then(r => resolve(r)).catch(err => reject(err.response));
           // }
@@ -71,18 +69,18 @@ method.forEach(item => {
           if (error.response && error.response.data) {
             if (!options.slient) {
               if (error.response.status >= 500) {
-                message.error('服务器开了个小差')
-              } else if (typeof error.response.data == 'object') {
+                message.error("服务器开了个小差");
+              } else if (typeof error.response.data == "object") {
                 message.error(
                   error.response.data.message || error.response.data.error
-                )
+                );
               } else {
-                message.error(error.response.data)
+                message.error(error.response.data);
               }
             }
-            reject(error.response)
+            reject(error.response);
           }
-        })
+        });
     })
 })
 

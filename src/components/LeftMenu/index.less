@@ -16,13 +16,15 @@
     // width: 180px;
     .ant-menu-item{
         padding-right: 16px;
-        
+        a > img{
+          padding: 0 12px 5px 0;
+        }
     }
     .ant-menu-submenu{
         .ant-menu-submenu-title{
             &>span{
                 img{
-                    padding: 0 5px  5px 0;
+                    padding: 0 12px  5px 0;
                 }
             }
         }
@@ -36,5 +38,13 @@
    }
    .ant-menu-dark, .ant-menu-dark .ant-menu-sub {
         background: #2D3A64;
+       
     }
+    // .ant-menu-dark .ant-menu-inline.ant-menu-sub{
+    //    box-shadow: transparent !important;
+    //    .ant-menu-item>a{
+    //     font-size: 14px !important;
+    //    }
+       
+    // }
 }

@@ -6,7 +6,7 @@ const routes = [
   {
     path:'/',
     component: () => import("@/views/index.vue"),
-    redirect: '/currentSession',
+    // redirect: '/currentSession',
     children: [
       {
         path:'currentSession',

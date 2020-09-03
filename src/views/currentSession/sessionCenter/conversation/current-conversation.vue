@@ -148,10 +148,10 @@ export default {
           let historySessionList = [...this.historyList];
           a.forEach((item, index) => {
             //校验是否存在历史消息和实时消息重合情况
-            console.log(
-              this.historyList[0].msgTime / 1000 > item.time,
-              this.historyList[0].msgTime / 1000 == item.time
-            );
+            // console.log(
+            //   this.historyList[0].msgTime / 1000 > item.time,
+            //   this.historyList[0].msgTime / 1000 == item.time
+            // );
             if (this.historyList[0].msgTime / 1000 > item.time) {
               progressSessionList.splice(index, 1, "");
             } else if (item.time == this.historyList[0].msgTime / 1000) {
