@@ -130,6 +130,11 @@ export default {
         this.threeLevel = []
       }
     },
+    currentType(){
+      this.firstAddShow = false
+      this.threeAddShow = false
+      this.secondAddShow = false
+    }
     // currentType(key){
     //     console.log(key,'我切换tab了')
     //     if(key==1||key==0){
@@ -313,12 +318,18 @@ export default {
       this.fristAdd = ''
       if(type=='first'){
         this.firstAddShow = true
+        this.threeAddShow = false
+        this.secondAddShow = false
       }
       if(type=='second'){
         this.secondAddShow = true
+        this.firstAddShow = false
+        this.threeAddShow = false
       }
       if(type=='three'){
         this.threeAddShow = true
+        this.secondAddShow = false
+        this.firstAddShow = false
       }
     },
     deleteAddNewSort(type){

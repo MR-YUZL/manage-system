@@ -9,7 +9,7 @@
         <a-button type="primary" @click="batchTransmitModal()">转交</a-button>  
         <a-button type="primary" @click="endWorkOrderModal()">完结</a-button>
       </div>
-      <div class="funBtn" v-else>
+      <div class="funBtn" v-if="info.status == 2">
         <a-button type="primary" @click="reopenWorkOrderModal()">重启</a-button>
       </div>
     </div>

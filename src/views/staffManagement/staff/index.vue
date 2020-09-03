@@ -13,8 +13,10 @@
           :pagination="false"
           :rowKey="record => record.phone">
           <div slot="action" slot-scope="record,row">
-            <span class="blue" style="margin-right:10px;" @click="editStaff(record)">编辑</span>
-            <span class="blue" @click="deleteStaff(record)">删除</span>
+            <div v-if="record.roleType!=2">
+              <span class="blue" style="margin-right:10px;" @click="editStaff(record)">编辑</span>
+              <span class="blue" @click="deleteStaff(record)">删除</span>
+            </div>
           </div>
           </a-table>
         </div>

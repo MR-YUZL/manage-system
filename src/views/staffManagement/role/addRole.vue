@@ -15,11 +15,11 @@
           <!-- <p>角色类型</p> -->
            <a-form-model-item label="角色类型">
              <a-radio-group v-model="formData.roleType" @change="onChange">
-              <a-radio  :value="1">
+              <a-radio  value="1">
                 管理员 <span style="font-size:12px;color:#acacac">(可以选取使用管理端，客服端的所有功能呢，适用于客服主管，小组长，质检员等)</span>
               </a-radio>
               <br />
-              <a-radio :value="0">
+              <a-radio value="0">
                 普通客服  <span style="font-size:12px;color:#acacac">(可以选取使用服务端所有功能，如在线会话，呼叫，工单等，适用于一线客服)</span>
               </a-radio>
             </a-radio-group>
@@ -68,7 +68,7 @@ export default {
           labelCol: { span: 3 },
           wrapperCol: { span: 14 },
           formData:{
-            roleType:1,
+            roleType:'',
             roleDesc:'',
             roleName:'',
             resourceIds:[]
@@ -87,8 +87,10 @@ export default {
          this.roleId = this.$route.query.roleId
          this.formData.roleDesc = this.$route.query.roleDesc
          this.formData.roleName = this.$route.query.roleName
+         this.formData.roleType = this.$route.query.roleType
+      }else{
+        this.formData.roleType = '1'
       }
-      console.log(this.$route.query)
       this.getRoleFiled()
     },
     mounted(){},
@@ -105,14 +107,18 @@ export default {
         })
       },
       saveRoleFiled(){
+        let resourceIds = this.formData.resourceIds.checked
+        let params = {}
         this.$refs.ruleForm.validate(valid => {
-          console.log(this.formData.resourceIds,'提交的数据')
-          let params = {}
+          if(!resourceIds){
+            this.$message.warning('权限至少选择一个')
+            return false
+          }
           if(valid){
             params = {
               roleId:this.roleId,
               ...this.formData,
-              resources:this.formData.resourceIds.checked
+              resources:resourceIds
             }
             delete params.resourceIds
             this.Request.post('/staff/hfwStaffRole/saveJson',params).then(()=>{

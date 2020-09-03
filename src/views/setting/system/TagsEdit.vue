@@ -58,10 +58,10 @@ export default {
     created(){},
     mounted(){},
     methods: {
-   
       addGroup(){
         this.editTagsShow = true
         this.type = 'add'
+        this.tagsFormData.name = ''
       },
       handleCancelModal(){
         this.$refs.tagsForm.resetFields()

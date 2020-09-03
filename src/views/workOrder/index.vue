@@ -292,7 +292,7 @@ export default {
             type: "input",
             label: "客户名称",
             placeholder: "请输入",
-            name: "qcAcc"
+            name: "customerName"
           },
           {
             type:'select',
@@ -333,7 +333,7 @@ export default {
             options: [
               { value:0,label:'未受理'},
               { value:1,label:'受理中'},
-              { value:2,label:'已完场'},
+              { value:2,label:'已完结'},
             ],
           },
           {
@@ -432,6 +432,7 @@ export default {
             this.selectedRowKeys = selectedRows
           },
           onSelectAll: (selected, selectedRows, changeRows) => {
+            this.selectedRowKeys = selectedRows
             console.log(selected, selectedRows, changeRows);
           },
         }
@@ -507,8 +508,7 @@ export default {
       },
       // 查询分类
       getClassification(){
-        this.Request.get('/config/system/findTypeListJson',{}).then(res=>{
-          console.log('分类列表',res.data)
+        this.Request.get('/config/system/findTypeListJson',{type:1}).then(res=>{
           let list = res.data.list
           this.classifyList  = this.treeChangeData(list)
           this.searchFormList[6].options = this.classifyList
@@ -684,8 +684,8 @@ export default {
         array.map((item) => {
           item['value'] = item.id;
           item['label'] = item.name; 
-          item['children'] = item.childList;
           if(item.childList.length>0){
+            item['children'] = item.childList;
             this.treeChangeData(item.childList);
           }
         })

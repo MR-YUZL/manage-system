@@ -46,7 +46,7 @@ export default {
           this.getList()
         }else{
           this.getTagList()
-              console.log(this.$refs.tag)
+          console.log(this.$refs.tag)
         }
       },
       getList(){
@@ -60,12 +60,12 @@ export default {
         })
       },
       handleSubmit(params){
-         this.Request.post('/config/system/saveJson',params).then(res=>{
-           console.log(res,this.$refs.tag)
-           this.$message.success('添加成功')
-           this.$refs.tag.editTagsShow = false
-           this.getTagList()
-        })
+        this.Request.post('/config/system/saveJson',params).then(res=>{
+          console.log(res,this.$refs.tag)
+          this.$message.success('添加成功')
+          this.$refs.tag.editTagsShow = false
+          this.getTagList()
+      })
       },
       deleteGroupTags(id){
         this.Request.post('/config/system/delJson',{id}).then(res=>{
