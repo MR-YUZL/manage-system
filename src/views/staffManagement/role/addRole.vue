@@ -36,6 +36,7 @@
             <a-form-model-item> 
             <a-tree
               v-model="formData.resourceIds"
+              :expandedKeys="formData.resourceIds"
               style="width: 100%"
               :tree-data="treeData"
               checkable
@@ -109,8 +110,9 @@ export default {
       saveRoleFiled(){
         let resourceIds = this.formData.resourceIds.checked
         let params = {}
+        console.log(resourceIds,'啦啦啦啦')
         this.$refs.ruleForm.validate(valid => {
-          if(!resourceIds){
+          if(!resourceIds||resourceIds.length==0){
             this.$message.warning('权限至少选择一个')
             return false
           }
@@ -121,10 +123,10 @@ export default {
               resources:resourceIds
             }
             delete params.resourceIds
-            this.Request.post('/staff/hfwStaffRole/saveJson',params).then(()=>{
-              this.$message.success('保存成功')
-               this.$router.push({ path:'/staffManagement/role'})
-            })
+            // this.Request.post('/staff/hfwStaffRole/saveJson',params).then(()=>{
+            //   this.$message.success('保存成功')
+            //    this.$router.push({ path:'/staffManagement/role'})
+            // })
           }
         })
       },
