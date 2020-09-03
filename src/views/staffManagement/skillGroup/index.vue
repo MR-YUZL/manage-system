@@ -29,7 +29,8 @@
             <strong>成员：{{staffList.length}}人</strong>
             <ul>
               <li v-for="(item,index) in staffList" :key="index">
-                <img :src="item.imgUrl" alt="">
+                <img v-if="item.imgUrl==''"  src="../../../assets/imgs/current_session/header.png" alt="">
+                 <img v-else :src="item.imgUrl" alt="">
                 <div>
                   <p>{{item.userName}}</p>
                   <span>{{item.phone}}</span>
