@@ -18,7 +18,8 @@
           <div class="sort-icon">
             <a-icon type="check" v-if="item.edit" @click="saveTags('first',item.id,index)"/>
             <a-icon type="edit" @click="editTags('first',index,item.name)" v-if="!item.edit"/>
-            <a-icon type="delete" @click="delteTags('first',index,item.id)" />
+            <a-icon type="delete" v-if="!item.edit" @click="delteTags('first',index,item.id)" />
+            <a-icon type="close" v-if="item.edit" @click="closeTags('first',index)" />
           </div> 
         </li>
       </ul>
@@ -41,7 +42,8 @@
           <div class="sort-icon">
             <a-icon type="check" v-if="item.edit" @click="saveTags('second',item.id,index)"/>
             <a-icon type="edit" @click="editTags('second',index,item.name)" v-if="!item.edit"/>
-            <a-icon type="delete" @click="delteTags('second',index,item.id)" />
+            <a-icon type="delete"  v-if="!item.edit"  @click="delteTags('second',index,item.id)" />
+            <a-icon type="close" v-if="item.edit" @click="closeTags('second',index)" />
           </div>
         </li>
       </ul>
@@ -64,7 +66,8 @@
           <div class="sort-icon">
             <a-icon type="check" v-if="item.edit" @click="saveTags('three',item.id,index)"/>
             <a-icon type="edit" @click="editTags('three',index,item.name)" v-if="!item.edit"/>
-            <a-icon type="delete" @click="delteTags('three',index,item.id)" />
+            <a-icon type="delete"  v-if="!item.edit"  @click="delteTags('three',index,item.id)" />
+            <a-icon type="close" v-if="item.edit" @click="closeTags('three',index)" />
           </div>
         </li>
       </ul>
@@ -313,6 +316,20 @@ export default {
           that.$forceUpdate()
         },
       });
+    },
+    closeTags(type,index){
+      console.log(this.firstLevel,index)
+      if(type=='first'){
+        this.firstLevel[index].edit = false
+      }
+       if(type=='second'){
+        this.secondLevel[index].edit = false
+      }
+       if(type=='three'){
+        this.threeLevel[index].edit = false
+      }
+       this.$forceUpdate()
+
     },
     addSort(type){
       this.fristAdd = ''
