@@ -100,13 +100,14 @@ export default {
     },
     onChange() {},
     cityChange(value) {
-      console.log(value)
+      // console.log(value)
     },
     checkForm(rule, value, callback) {
+      console.log(rule, value)
       let ind =  rule.field.replace(/[^0-9]/ig,"");
       const index = Number(ind);
       let fieldCode = this.formObj.formList[index].fieldCode;
-
+      console.log(fieldCode,value.trim())
       if(fieldCode == 'custPhone' || fieldCode == 'contactsPhone'){
         let reg = /^((1[123456789][0-9]))\d{8}$|^0\d{2,3}-?\d{7,8}$/;
         if(value!=''&&!reg.test(value)){
@@ -115,7 +116,13 @@ export default {
           callback();
         }
       }
-
+      if(fieldCode == 'custName'){
+        if(!value.trim()){
+          callback('客户名称不正确');
+        }else{
+          callback();
+        }
+      }
       if(fieldCode == 'custEmail' || fieldCode == 'contactsEmail'){
         let regs = /\w@\w*\.\w/;
         if(value!=''&&!regs.test(value)){

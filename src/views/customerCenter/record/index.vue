@@ -15,12 +15,17 @@
           :pagination="false"
           :rowKey="record => record.followId"
         >
-          <div slot="detailSkip" slot-scope="record,row">
-            <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
+          <div slot="detailSkip" slot-scope="record, row">
+            <span class="blue" @click="customerDetail(row.custId)">{{
+              row.custName
+            }}</span>
           </div>
         </a-table>
       </div>
-      <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
+      <TablePagination
+        :parentPager="pager"
+        @paginationChange="paginationChange"
+      />
     </div>
     <DetailModal
       :visibleProps="detailObj"
@@ -62,7 +67,7 @@ export default {
     return {
       modals: {
         createCustomerVisible: false,
-        followCustomerVisible: false,
+        followCustomerVisible: false
       },
       createCusObj: {
         title: "新建客户",
@@ -80,10 +85,12 @@ export default {
           compact: "input",
           compactName: "queryType",
           placeholder: "请输入",
-          options:[ {
+          options: [
+            {
               label: "客户姓名",
               value: "1"
-            }]
+            }
+          ]
         },
         {
           type: "selectGroup",
@@ -91,67 +98,67 @@ export default {
           name: "followAccs",
           mode: "multiple",
           list: [],
-          placeholder:'请选择',
+          placeholder: "请选择"
         },
         {
           type: "rangepicker",
           label: "跟进时间",
           name: "queryTimess",
-          placeholder:'请选择',
+          placeholder: "请选择"
         }
       ],
       columns: [
-          {
-            title: "跟进时间",
-            dataIndex: "followDate",
-            key: "followDate"
-          },
-          {
-            title: "客户名称",
-            dataIndex: "custName",
-            key: "custName",
-            scopedSlots: { customRender: 'detailSkip' },
-          },
-          {
-            title: "有效联系",
-            dataIndex: "followValid",
-            key: "followValid",
-            customRender: value => {
-              let con = {
-                children: (
-                  <div>
-                    {value == 0 && <div>是</div>}
-                    {value == 1 && <div>否</div>}
-                  </div>
-                )
-              };
-              return con;
-            }
-          },
-          {
-            title: "客服姓名",
-            dataIndex: "followAcc",
-            key: "followAcc"
-          },
-          {
-            title: "跟进记录",
-            dataIndex: "followRecord",
-            key: "followRecord"
+        {
+          title: "跟进时间",
+          dataIndex: "followDate",
+          key: "followDate"
+        },
+        {
+          title: "客户名称",
+          dataIndex: "custName",
+          key: "custName",
+          scopedSlots: { customRender: "detailSkip" }
+        },
+        {
+          title: "有效联系",
+          dataIndex: "followValid",
+          key: "followValid",
+          customRender: value => {
+            let con = {
+              children: (
+                <div>
+                  {value == 0 && <div>是</div>}
+                  {value == 1 && <div>否</div>}
+                </div>
+              )
+            };
+            return con;
           }
-        ], // 表头
-        dataSource: [], // 表格数据
-        pager: {
+        },
+        {
+          title: "客服姓名",
+          dataIndex: "followAcc",
+          key: "followAcc"
+        },
+        {
+          title: "跟进记录",
+          dataIndex: "followRecord",
+          key: "followRecord"
+        }
+      ], // 表头
+      dataSource: [], // 表格数据
+      pager: {
         pageSizeOptions: ["10", "20", "30", "40", "50"],
         currentPage: 1,
         pageSize: 10,
         totalRecord: 0,
         totalPage: 0
       },
-      searchParams:{},
+      searchParams: {},
       defaultSearchFormValues: {
         queryType: "1"
       },
-      dataSourceType:'4'
+      dataSourceType: "4"
     };
   },
   components: {
@@ -163,7 +170,7 @@ export default {
   },
   mounted() {
     this.getList();
-    this.getStaffSkillGroups()
+    this.getStaffSkillGroups();
   },
   methods: {
     prevHandleSubmit(val) {
@@ -171,19 +178,30 @@ export default {
       this.getList();
     },
     getList() {
-      let params = {
-        ...this.searchParams,
-        ...this.pager
+      console.log(this.searchParams);
+      let params = {};
+      if (JSON.stringify(this.searchParams) == "{}") {
+        params = {
+          ...this.pager
+        };
+      } else {
+        params = {
+          item: {
+            ...this.searchParams,
+            ...this.pager
+          }
+        };
       }
+
       api.followRecordList(params).then(res => {
-        console.log('回访记录',res)
-        if(res.data.status){
+        console.log("回访记录", res);
+        if (res.data.status) {
           this.dataSource = res.data.list;
           this.pager = res.data.pager;
         }
       });
     },
-    customerDetail(custId){
+    customerDetail(custId) {
       this.detailId = custId;
       this.detailObj.visible = true;
     },
@@ -208,12 +226,12 @@ export default {
       this.modals.followCustomerVisible = true;
     },
     //编辑客户
-    editCustomerShow(custId){
+    editCustomerShow(custId) {
       this.detailId = custId.custId;
       this.createCusObj.visible = true;
       this.createCusObj.title = "编辑客户";
     },
-    successLoadList(val){
+    successLoadList(val) {
       this.modals.followCustomerVisible = false;
       this.getList();
     },
@@ -225,5 +243,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

@@ -35,6 +35,7 @@
           :pagination="false"
           :rowKey="record => record.custId"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
+          :scroll="{ x: 100}"
         >
           <div slot="mergeLinkman" slot-scope="record,row">
             <span><img v-if="row.custLinkPhone" src="../../../assets/imgs/phoneIcon.png" alt="">{{row.custLinkPhone}}</span>
@@ -351,6 +352,7 @@ export default {
             },
             dataIndex: "status",
             key: "3",
+            fixed: 'right',
             scopedSlots: { customRender: "action" }
           }
         ];
@@ -409,10 +411,19 @@ export default {
       }
     },
     getList() {
-      let params = {
-        ...this.searchParams,
-        ...this.pager
-      };
+      let params = {};
+      if (JSON.stringify(this.searchParams) == "{}") {
+        params = {
+          ...this.pager
+        };
+      } else {
+        params = {
+          item: {
+            ...this.searchParams,
+            ...this.pager
+          }
+        };
+      }
     
       api.custManageList(params).then(res => {
         console.log(res, "res-----");
