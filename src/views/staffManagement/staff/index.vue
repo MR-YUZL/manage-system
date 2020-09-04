@@ -26,13 +26,14 @@
       <div>
         选择成员：<a-tree-select
                   v-model="addStaffValue"
+                  show-search
                   style="width: 80%"
                   :tree-data="treeData"
-                  tree-checkable
+                  tree-checkable  
                   :show-checked-strategy="SHOW_PARENT"
                   search-placeholder="请选择"
-                  @change="changeTree"
                   :maskClosable="false"
+                  treeNodeFilterProp="title"
                 />
       </div>
     </a-modal>
@@ -276,10 +277,6 @@ export default {
         })
         return array;
       },
-      changeTree(value,label){
-        console.log(value,label)
-        this.userAccounts = []
-      }
     }
 }
 </script>
