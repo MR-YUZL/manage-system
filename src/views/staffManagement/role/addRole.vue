@@ -36,14 +36,15 @@
             <a-form-model-item> 
             <a-tree
               v-model="formData.resourceIds"
-              :expandedKeys="formData.resourceIds"
+             :expandedKeys.sync="expandedKeys"
               style="width: 100%"
               :tree-data="treeData"
               checkable
               placeholder="请选择"
-              :autoExpandParent="true"
+              :autoExpandParent="autoExpandParent"
               :defaultExpandAll='true'
               :checkStrictly="true"
+               @expand="onExpand"
             />
             </a-form-model-item>
          </div>
@@ -74,6 +75,8 @@ export default {
             roleName:'',
             resourceIds:[]
           },
+          autoExpandParent:true,
+          expandedKeys:[],
           treeData:[],
           rules:{
             roleDesc:{ required: true, message: '请输入描述', trigger: 'blur'},
@@ -96,6 +99,10 @@ export default {
     },
     mounted(){},
     methods: {
+       onExpand(expandedKeys) {
+        this.expandedKeys = expandedKeys;
+        this.autoExpandParent = false;
+      },
       getRoleFiled(){
         let params = {
           roleType:this.formData.roleType,
@@ -105,6 +112,7 @@ export default {
           let list = res.data.data.resrouces
           this.treeData = this.treeChangeData(list)
           this.formData.resourceIds = res.data.data.resourceIds || []
+          this.expandedKeys = this.formData.resourceIds
         })
       },
       saveRoleFiled(){
@@ -123,10 +131,10 @@ export default {
               resources:resourceIds
             }
             delete params.resourceIds
-            // this.Request.post('/staff/hfwStaffRole/saveJson',params).then(()=>{
-            //   this.$message.success('保存成功')
-            //    this.$router.push({ path:'/staffManagement/role'})
-            // })
+            this.Request.post('/staff/hfwStaffRole/saveJson',params).then(()=>{
+              this.$message.success('保存成功')
+               this.$router.push({ path:'/staffManagement/role'})
+            })
           }
         })
       },

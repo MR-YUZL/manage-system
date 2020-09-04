@@ -52,7 +52,8 @@ export default {
             customRender:(values)=>{
               let obj = {
                 '0':'普通客服',
-                '1':'管理员'
+                '1':'管理员',
+                '2':'超级管理员'
               }
               return obj[values]
             }
