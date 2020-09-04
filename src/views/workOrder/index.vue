@@ -386,7 +386,7 @@ export default {
               let obj = {
                 '0':'未受理',
                 '1':'受理中',
-                '2':'已完成'
+                '2':'已完结'
               }
               return obj[values]
             }
