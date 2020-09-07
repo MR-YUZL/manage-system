@@ -51,7 +51,7 @@ export default {
   },
   methods: {
     getStaffSkillGroups() {
-      api.staffSkillGroups({ type: 1 }).then(res => {
+      api.staffSkillGroups().then(res => {
         console.log("设置负责人", res);
         if (res.data.status) {
           this.optList = res.data.list;

@@ -45,6 +45,6 @@ export default {
 .knowledgeBase {
   background: #fff;
   display: flex;
-  padding: 20px;
+  padding: 14px;
 }
 </style>

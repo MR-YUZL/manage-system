@@ -87,6 +87,7 @@ const conversationModules = {
      * @returns
      */
     pushCurrentMessageList(state, data) {
+      console.log(data)
       state.messageList = Array.isArray(data) ?[...data] : [data]
     
       // 还没当前会话，则跳过
@@ -130,7 +131,6 @@ const conversationModules = {
      * @param {String} conversationID
      */
     getMessageList(context, conversationID) {
-      console.log(context.state.isCompleted)
       if (context.state.isCompleted) {
         // context.commit('showMessage', {
         //   message: '已经没有更多的历史消息了哦',

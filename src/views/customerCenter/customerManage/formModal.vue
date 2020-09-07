@@ -77,20 +77,18 @@ export default {
   },
   methods: {
     submitForm(formName) {
-      // console.log(formName, "formName");
-      // console.log(this.$refs[formName],'this.$refs[formName]')
+    
       this.$refs[formName].validate(valid => {
         if (valid) {
           console.log(this.formObj.formList,'this.formObj.formList==========')
-          
-          this.formObj.formList.map((item,index) => {
+          let arr = [...this.formObj.formList]
+          arr.map((item,index) => {
             if(item.fieldCode == "contactsArea"){
               item.fieldValue = item.fieldValue.join(',')
             }
           })
-          this.$emit("cusSubmitForm", this.formObj.formList);
+          this.$emit("cusSubmitForm", arr);
         }else {
-          console.log("error submit!!");
           return false;
         }
       });
@@ -103,11 +101,9 @@ export default {
       // console.log(value)
     },
     checkForm(rule, value, callback) {
-      console.log(rule, value)
       let ind =  rule.field.replace(/[^0-9]/ig,"");
       const index = Number(ind);
       let fieldCode = this.formObj.formList[index].fieldCode;
-      console.log(fieldCode,value.trim())
       if(fieldCode == 'custPhone' || fieldCode == 'contactsPhone'){
         let reg = /^((1[123456789][0-9]))\d{8}$|^0\d{2,3}-?\d{7,8}$/;
         if(value!=''&&!reg.test(value)){

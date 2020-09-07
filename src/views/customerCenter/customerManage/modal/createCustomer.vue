@@ -104,8 +104,10 @@ export default {
           item.fieldValue = item.fieldValue.join(",");
       });
       let params = {
-        fields: arr
+        fields: arr,
+        custId: this.detailId
       };
+      console.log(params)
       api.createCustomer(params).then(res => {
         console.log("新建客户保存", res);
         if (res.data.status) {

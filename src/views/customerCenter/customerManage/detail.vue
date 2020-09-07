@@ -31,12 +31,12 @@
           <a-tab-pane key="1" tab="客户相关">
             <div class="contactFlex">
               <div class="contactHead">联系人({{contactLength}})</div>
-              <div
+              <!-- <div
                 style="cursor: pointer;"
                 @click="createContactModalShow($event,'contactModalInner')"
               >
                 <a-icon type="plus" />添加联系人
-              </div>
+              </div> -->
             </div>
             <ul class="contactUl">
               <li v-for="(item,index) in infoContactsJson" :key="item.contactsId">
@@ -270,8 +270,10 @@ export default {
       this.contactModalInner.visible = false;
     },
     createContactModalShow(e, name) {
-      this.contactsId = ''
+      
       if (name) {
+        this.contactsId = ''
+        this[name]['title'] = "新建联系人";
         this[name]["visible"] = true;
       } else {
         this["currentModal"]["visible"] = true;
