@@ -358,6 +358,10 @@ export default {
       display: block;
       i {
         font-style: normal;
+        width:21%;
+      }
+      & i:first-child{
+        width:35%;
       }
     }
     span:last-child {

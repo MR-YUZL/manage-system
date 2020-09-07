@@ -403,8 +403,8 @@ export default {
           },
           {
             title: '受理人',
-            dataIndex: 'receiverAcc',
-            key: 'receiverAcc',
+            dataIndex: 'receiverAccName',
+            key: 'receiverAccName',
           },
         ],
         dataSource:[],

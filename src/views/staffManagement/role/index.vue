@@ -46,7 +46,7 @@ export default {
             key: "roleName"
           },
           {
-            title: "角色名称",
+            title: "角色类型",
             dataIndex: "roleType",
             key: "roleType",
             customRender:(values)=>{

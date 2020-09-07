@@ -35,7 +35,7 @@
           :pagination="false"
           :rowKey="record => record.custId"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-          :scroll="{ x: 100}"
+          :scroll="{ x: 1500}"
         >
           <div slot="mergeLinkman" slot-scope="record,row">
             <span><img v-if="row.custLinkPhone" src="../../../assets/imgs/phoneIcon.png" alt="">{{row.custLinkPhone}}</span>
@@ -310,6 +310,13 @@ export default {
           name: "nextFollowDateStart",
           label: "下次跟进时间",
           placeholder: "请选择",
+        },
+        {
+          type: "select",
+          name: "custGroup",
+          label: "客户分组",
+          placeholder: "请选择",
+          options: []
         }
       ],
       defaultSearchFormValues: {
@@ -326,6 +333,7 @@ export default {
     this.getCustomerLabel();
     this.getStaffSkillGroups(0);
     this.getStaffSkillGroups(1);
+    this.getCustomerGroup();
     this.getColumns();
     console.log(this.$store.state.basic.btnRealms,'角色权限')
   },
@@ -456,6 +464,18 @@ export default {
           }
         }
       });
+    },
+    getCustomerGroup(){
+      api.customerGroups({fieldCode:'custGroup'}).then(res=>{
+        console.log(res.data,'客户分组')
+        let  list = res.data.list
+        list.forEach((item) =>{
+          this.searchFormList[7].options.push({
+            label:item.optionName,
+            value:item.optionId
+          })
+        })
+      })
     },
     closeUpdate() {
       this.modals.delCustomerVisible = false;
