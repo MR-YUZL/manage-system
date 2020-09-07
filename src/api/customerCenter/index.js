@@ -160,4 +160,8 @@ export default {
   saveServiceSummary(params) {
     return axios.post('/hfw/workbench/saveServiceSummary', params)
   },
+  // 获取客户分组
+  customerGroups(params) {
+    return axios.get('/config/hfwConfigFieldsOptions/list', {params})
+  },
 }
