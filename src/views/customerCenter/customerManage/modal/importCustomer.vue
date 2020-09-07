@@ -173,17 +173,15 @@ export default {
       this.current--;
     },
     nexStep() {
-      this.current++;
       console.log(this.fileInfos.listMatchCode, "selectArr");
       let arr = [...this.fileInfos.listMatchCode];
       arr = arr.sort();
       for (var i = 0; i < arr.length; i++) {
         if (arr[i] && arr[i] == arr[i + 1]) {
-          this.$message.error(arr[i] + "重复选择");
+          this.$message.error("匹配字段不能重复");
           return;
         }
       }
-
       let params = {
         fileId: this.fileId,
         fieldsStr: this.fileInfos.listMatchCode.join(),
@@ -192,6 +190,7 @@ export default {
       console.log(params);
       api.matchJson(params).then(res => {
         if (res.data.status) {
+          this.current++;
           this.step = "third";
         }
       });
