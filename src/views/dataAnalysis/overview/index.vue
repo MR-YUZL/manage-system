@@ -98,8 +98,8 @@ export default {
         }
       ],
       defaultSearchFormValues: {
-        // inputDateStart:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")],
-        inputDateStart:['2020-06-01','2020-06-10']
+        inputDateStart:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")],
+        // inputDateStart:['2020-06-01','2020-06-10']
       },
       echartObj: {
         // legend: ["消息总数", "访客发出消息", "客服发出消息"],

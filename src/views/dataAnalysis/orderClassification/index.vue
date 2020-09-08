@@ -18,12 +18,16 @@
         >
           <a-select-option v-for="(it,ind) in item.childList" :key="ind" :value="it.id">{{it.name}}</a-select-option>
         </a-select>
-        <CircleChart
-          :id="item.id"
-          :key="item.id"
-          :echartObj="item.echartObj"
-          styles="width:100%;height:300px;margin:auto"
-        />
+        <div v-if="JSON.stringify(item.echartObj)!='{}'">
+
+          <CircleChart
+            :id="item.id"
+            :key="item.id"
+            :echartObj="item.echartObj"
+            styles="width:100%;height:300px;margin:auto"
+          />
+        </div>
+        <div v-else class="noData">暂无数据</div>
       </div>
     </div>
   </div>
@@ -61,8 +65,8 @@ export default {
         }
       ],
       defaultSearchFormValues: {
-        // inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
-        inputDateStart: ["2020-06-03", "2020-06-11"]
+        inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
+        // inputDateStart: ["2020-06-03", "2020-06-11"]
       },
 
       searchParams: {},
@@ -294,6 +298,9 @@ export default {
       right: 20px;
       top: 20px;
       z-index: 10;
+    }
+    .noData{
+      text-align: center;
     }
   }
 }
