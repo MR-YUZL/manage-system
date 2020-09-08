@@ -2,7 +2,7 @@ import axios from 'axios'
 export default {
     //客户管理列表
   custManageList(params) {
-    return axios.post('/customers/hfwCustomersInfo/listPageJson', {params})
+    return axios.post('/customers/hfwCustomersInfo/listPageJson', params)
   },
   //设置列表字段  
   setFieldsJson(params) {
@@ -102,7 +102,7 @@ export default {
   },
   //线索管理list 
   clueManageList(params){
-    return axios.post('/customers/hfwCustomersClue/listPageJson', {params})
+    return axios.post('/customers/hfwCustomersClue/listPageJson', params)
   },
   //线索管理-导出 
   // exportClue(params){
@@ -110,7 +110,7 @@ export default {
   // },
   //跟进记录list有分页 
   followRecordList(params){
-    return axios.post('/customers/hfwCustomersFollow/listPageJson', {params})
+    return axios.post('/customers/hfwCustomersFollow/listPageJson', params)
   },
   //历史会话list 
   sessionList(params) {

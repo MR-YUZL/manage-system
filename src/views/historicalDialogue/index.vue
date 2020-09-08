@@ -208,7 +208,8 @@ export default {
             let con = {
               children: (
                 <div>
-                  {value == 0 && <div>不太愿意</div>}
+                  {value == '' && <div>未评价</div>}
+                  {value == 0 && value!='' && <div>不太愿意</div>}
                   {value == 1 && <div>一般满意</div>}
                   {value == 2 && <div>满意</div>}
                   {value == 3 && <div>很满意</div>}
