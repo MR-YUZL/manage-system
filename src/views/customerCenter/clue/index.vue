@@ -218,10 +218,21 @@ export default {
       window.location.href = url;
     },
     getList() {
-      let params = {
-        ...this.searchParams,
-        ...this.pager
-      };
+      // let params = {
+      //   ...this.searchParams,
+      //   ...this.pager
+      // };
+      let params = {};
+      if (JSON.stringify(this.searchParams) == "{}") {
+        params = {
+          ...this.pager
+        };
+      } else {
+        params = {
+          ...this.pager
+        };
+        params.item = this.searchParams
+      }
       api.clueManageList(params).then(res => {
         console.log("线索管理列表", res);
         if (res.data.status) {

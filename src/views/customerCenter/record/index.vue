@@ -186,11 +186,9 @@ export default {
         };
       } else {
         params = {
-          item: {
-            ...this.searchParams,
-            ...this.pager
-          }
+          ...this.pager
         };
+        params.item = this.searchParams
       }
 
       api.followRecordList(params).then(res => {
