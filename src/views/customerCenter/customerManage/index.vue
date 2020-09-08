@@ -419,6 +419,7 @@ export default {
       }
     },
     getList() {
+      console.log(this.searchParams,'this.searchParams123')
       let params = {};
       if (JSON.stringify(this.searchParams) == "{}") {
         params = {
@@ -426,11 +427,9 @@ export default {
         };
       } else {
         params = {
-          item: {
-            ...this.searchParams,
-            ...this.pager
-          }
+          ...this.pager
         };
+        params.item = this.searchParams
       }
     
       api.custManageList(params).then(res => {
