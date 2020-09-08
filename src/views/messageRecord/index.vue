@@ -21,7 +21,7 @@
     <a-modal title="记录" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
       <div class="record-detail">
         <div class="message"><MessageDetail :recordList="recordList" :handleRecordBtn="handleRecordBtn" :handleResult="handleResultCon" @setHandleResult="setHandleResult" /> </div>
-        <div class="information"><UserInformation  guestId="8c730589aa1d41a19d2ce8ca23f9fb1e"/></div>
+        <div class="information"><UserInformation  :guestId="guestId"/></div>
       </div>
     </a-modal>
     <a-modal title="留言处理" v-if="leaveModalShow" :visible="leaveModalShow" @cancel="handleleaveModalCancel" @ok="handleleaveModalOk">

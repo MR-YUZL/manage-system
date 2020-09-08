@@ -136,7 +136,7 @@ export default {
           }
         },
         {
-          title: "客服姓名",
+          title: "客服名称",
           dataIndex: "followAcc",
           key: "followAcc"
         },

@@ -7,19 +7,33 @@
       <ul>
         <li>
           <span>接入来源</span>
-          <p>adsfadsfa</p>
+          <p>{{ moreInf.channelName }}</p>
         </li>
         <li>
           <span>来源终端</span>
-          <p>dasfasdfasdf来源终端</p>
+          <p>
+            {{
+              moreInf.channelType == 0
+                ? "网站咨询"
+                : moreInf.channelType == 1
+                ? "微信公众号"
+                : moreInf.channelType == 2
+                ? "微信小程序"
+                : moreInf.channelType == 3
+                ? "IOS"
+                : moreInf.channelType == 4
+                ? "安卓"
+                : moreInf.channelType == 5
+                ? "QQ"
+                : moreInf.channelType == 6
+                ? "微信"
+                : ""
+            }}
+          </p>
         </li>
         <li>
           <span>地域&ip地址</span>
-          <p></p>
-        </li>
-        <li>
-          <span>发起咨询页</span>
-          <p></p>
+          <p>{{ moreInf.address }} {{ moreInf.ip }}</p>
         </li>
       </ul>
     </div>
@@ -35,21 +49,23 @@ export default {
     }
   },
   data() {
-    return {};
+    return {
+      moreInf: {}
+    };
   },
 
   mounted() {
-    this.getMoreInf()
+    this.getMoreInf();
   },
   components: {},
   methods: {
     getMoreInf() {
-      this.Request.get(
-        "/hfw/workbench/getGuestInfo?guestId=" + this.guestId
-      ).then(res => {
-        // this.userInfList = res.data.list;
-        // console.log("工单信息", res.data.list);
-      });
+      this.Request.get("/session/guest/infoJson?guestId=" + this.guestId).then(
+        res => {
+          this.moreInf = res.data.data;
+          // console.log("工单信息", res.data.list);
+        }
+      );
     }
   }
 };
