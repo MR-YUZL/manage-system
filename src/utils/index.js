@@ -61,7 +61,6 @@ export function titleNotify(count) {
 
 //剔除历史消息中无用消息
 export function deleteHistory(list,account){ 
-  console.log(list, account, '==================')
   list.map((item, index) => {
     if (
       (item.toAccount != account &&
@@ -87,7 +86,7 @@ export function deleteHistory(list,account){
   list.forEach(item => {
     if (item) arr.push(item);
   });
-  console.log(list, arr, arr.length);
+  // console.log(list, arr, arr.length);
   return arr
 }
 

@@ -131,12 +131,12 @@ const conversationModules = {
      * @param {String} conversationID
      */
     getMessageList(context, conversationID) {
-      if (context.state.isCompleted) {
+      if (context.state.isCompleted ) {
         // context.commit('showMessage', {
         //   message: '已经没有更多的历史消息了哦',
         //   type: 'info'
         // })
-        return
+        return;
       }
       
       const { nextReqMessageID, currentMessageList } = context.state

@@ -13,10 +13,11 @@
 import sessionList from "./sessionList/index";
 import sessionCenter from "./sessionCenter/index";
 import informationList from "./informationList/index";
+import {mapState} from 'vuex'
 export default {
   data: () => ({
-    status: false,
-    infoObj: {},
+    status: true,
+    infoObj: {}
   }),
   components: {
     sessionList,
@@ -24,24 +25,44 @@ export default {
     informationList
   },
   mounted() {
-    // this.login();
-    // this.initListener();
-    this.$store.dispatch("logout");
-    this.getIM();
+    if(this.imInfo.SDKAppID){
+      this.$store.commit("toggleIsSDKReady", true);
+    }else{
+      this.getIM()
+    }
+   
+  },
+  destroyed(){
+    this.$store.commit("toggleIsSDKReady", false);
+    // if(this.imInfo.SDKAppID){
+    //   console.log('------------',this.imInfo.SDKAppID)
+    //    this.tim(this.imInfo.SDKAppID).off(
+    //     this.TIM.EVENT.CONVERSATION_LIST_UPDATED,
+    //     this.onUpdateConversationList
+    //   );
+    //   // this.initListener()
+    // }
+    // // if(this.isSDKReady){
+    // //   this.$store.dispatch("logout")
+    // // }
   },
   methods: {
     // listLength(e){
     //   this.status = e
     // },
-   isStatus(a){
-     console.log(a)
-     
-       this.status = a
-   },
+    isStatus(a) {
+      console.log(a);
+
+      this.status = a;
+    },
     getIM() {
       this.Request.get("/api/chat/customer/status/query").then(res => {
         if (res.data.status) {
-          this.getSig(res.data.imAccount, res.data.imPassword,res.data.serviceAccInfo.orgId);
+          this.getSig(
+            res.data.imAccount,
+            res.data.imPassword,
+            res.data.serviceAccInfo.orgId
+          );
         }
       });
     },
@@ -76,7 +97,7 @@ export default {
         })
         .catch(error => {
           this.loading = false;
-          console.log(error)
+          console.log(error);
           this.$store.commit("showMessage", {
             message: "登录失败：" + error.message,
             type: "error"
@@ -84,42 +105,44 @@ export default {
         });
     },
     initListener() {
+      console.log('initListener')
       // 登录成功后会触发 SDK_READY 事件，该事件触发后，可正常使用 SDK 接口
-      this.tim(this.infoObj.SDKAppID).on(
+      this.tim(this.imInfo.SDKAppID).on(
         this.TIM.EVENT.SDK_READY,
         this.onReadyStateUpdate,
         this
       );
       // SDK NOT READT
-      this.tim(this.infoObj.SDKAppID).on(
+      this.tim(this.imInfo.SDKAppID).on(
         this.TIM.EVENT.SDK_NOT_READY,
         this.onReadyStateUpdate,
         this
       );
       // 被踢出
-      this.tim(this.infoObj.SDKAppID).on(
+      this.tim(this.imInfo.SDKAppID).on(
         this.TIM.EVENT.KICKED_OUT,
         this.onKickOut
       );
       // SDK内部出错
-      this.tim(this.infoObj.SDKAppID).on(this.TIM.EVENT.ERROR, this.onError);
+      this.tim(this.imInfo.SDKAppID).on(this.TIM.EVENT.ERROR, this.onError);
       // 收到新消息
-      this.tim(this.infoObj.SDKAppID).on(
+      this.tim(this.imInfo.SDKAppID).on(
         this.TIM.EVENT.MESSAGE_RECEIVED,
         this.onReceiveMessage
       );
       // 会话列表更新
-      this.tim(this.infoObj.SDKAppID).on(
+      this.tim(this.imInfo.SDKAppID).on(
         this.TIM.EVENT.CONVERSATION_LIST_UPDATED,
         this.onUpdateConversationList
       );
     },
     onReadyStateUpdate({ name }) {
+      console.log('*******')
       const isSDKReady = name === this.TIM.EVENT.SDK_READY ? true : false;
       this.$store.commit("toggleIsSDKReady", isSDKReady);
 
       if (isSDKReady) {
-        this.tim(this.infoObj.SDKAppID)
+        this.tim(this.imInfo.SDKAppID)
           .getMyProfile()
           .then(({ data }) => {
             this.$store.commit("updateCurrentUserProfile", data);
@@ -176,7 +199,12 @@ export default {
     }
   },
   watch: {},
-  computed: {}
+  computed: {
+    ...mapState({
+      isSDKReady: state => state.user.isSDKReady,
+      imInfo:state => state.basic.imInfo
+    })
+  }
 };
 </script>
 <style lang="less" scoped>

@@ -21,6 +21,7 @@ export default {
      this.$store.commit('getBtnRealms',res.data.list)
     });
   },
+  
 };
 </script>
 <style lang="less" scoped>

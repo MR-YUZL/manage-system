@@ -90,7 +90,8 @@ export default {
       },
       isCompleted: state => state.conversation.isCompleted,
       selectStatus: state => state.basic.selectStatus,
-      historyList: state => state.basic.historyList
+      historyList: state => state.basic.historyList,
+      isSDKReady: state => state.user.isSDKReady,
     }),
     ...mapGetters(["toAccount", "hidden"]),
     // 是否显示当前会话组件
@@ -230,7 +231,7 @@ export default {
       // deep: true
     },
     currentUnreadCount(next) {
-      if (!this.hidden && next > 0) {
+      if (!this.hidden && next > 0 && this.isSDKReady) {
         this.tim(this.imInfo.SDKAppID).setMessageRead({
           conversationID: this.currentConversation.conversationID
         });
@@ -241,7 +242,7 @@ export default {
       }
     },
     hidden(next) {
-      if (!next && this.currentUnreadCount > 0) {
+      if (!next && this.currentUnreadCount > 0 && this.isSDKReady) {
         this.tim(this.imInfo.SDKAppID).setMessageRead({
           conversationID: this.currentConversation.conversationID
         });

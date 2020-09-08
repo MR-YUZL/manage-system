@@ -2,12 +2,15 @@
     <div class="newsCenter">
       <a-page-header title="消息中心" style="padding:16px 16px;" />
       <div class="newsList">
-        <ul>
+        <ul v-if="newsList.length">
           <li v-for="(item,index) in  newsList" :key="index">
             <div class="flex"><h5>{{item.title}}</h5><span style="color:#9f9f9f">{{item.sendTime}}</span></div>
             <p>{{item.msgCenterContent}}</p>
           </li>
         </ul>
+        <div class="noData" v-else>
+          <img src="./../../assets/imgs/noData.png" alt="">
+        </div>
       </div>
     </div>
 </template>
@@ -84,6 +87,9 @@ export default {
     height:5px;
     background:#3e7bf8;
     border-radius:50%;
+  }
+  .noData{
+    text-align: center;
   }
 }
 </style>
