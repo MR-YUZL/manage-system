@@ -27,7 +27,7 @@
             styles="width:100%;height:300px;margin:auto"
           />
         </div>
-        <div v-else class="noData">暂无数据</div>
+        <div v-else class="noData"></div>
       </div>
     </div>
   </div>
@@ -300,6 +300,8 @@ export default {
       z-index: 10;
     }
     .noData{
+      background: url(../../../assets/imgs/noData.png) no-repeat;
+      width: 286px;height: 248px;
       text-align: center;
     }
   }
