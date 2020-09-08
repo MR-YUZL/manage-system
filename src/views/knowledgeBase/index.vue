@@ -23,7 +23,9 @@ export default {
       isShow: false
     };
   },
-  mounted() {},
+  mounted() {
+    // window.showMsgCenterEx()
+  },
   methods: {},
   watch: {
     btnRealms: {
