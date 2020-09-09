@@ -41,7 +41,12 @@
             <span><img v-if="row.custLinkPhone" src="../../../assets/imgs/phoneIcon.png" alt="">{{row.custLinkPhone}}</span>
           </div>
           <div slot="detailSkip" slot-scope="record,row">
-            <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
+            <span class="blue" @click="customerDetail(row.custId)">
+              {{row.custName}}
+            </span>
+            <div v-for="(it,index) in row.custLabelList">
+              <span class="custLabelList">{{it}}</span>
+            </div>
           </div>
           <div slot="action" slot-scope="record,row">
             <span
@@ -615,5 +620,10 @@ export default {
       margin-right: 10px;
     }
   }
+}
+.custLabelList{
+  border: 1px solid #3e7bf8;
+  color: #3e7bf8;
+  padding: 0 5px;
 }
 </style>

@@ -16,6 +16,9 @@
                   <span class="blue" style="margin-right:10px;" @click="editItem(record)">编辑</span>
                   <span class="blue" @click="deleteItem(record.id)">删除</span>
                 </div>
+                <div slot="gradeLimit" slot-scope="text,record">
+                     {{record.gradeMin}}-{{record.gradeMax}}
+                </div>
             </a-table>
           </div>
           <!-- <div style="padding-bottom:50px;"><TablePagination :parentPager="pager" @paginationChange="paginationChange"></TablePagination></div> -->
@@ -40,7 +43,7 @@
                 </a-radio-group>
               </a-form-model-item>
               <a-form-model-item label="得分分值" prop="gradeLimit">
-                <a-input-number v-model="addScoreFormData.gradeLimit"/>
+                <a-input-number :min="0" :max="100000" v-model="addScoreFormData.gradeLimit" />
               </a-form-model-item>
             </a-form-model>
         </a-modal>
@@ -64,7 +67,7 @@ export default {
           addScoreFormData:{
             gradeName:'',
             gradeExplain:'',
-            gradeLimit:'',
+            gradeLimit:0,
             gradeType:0,
             type:0
           },
@@ -121,6 +124,7 @@ export default {
               title: '得分范围',
               dataIndex: 'gradeLimit',
               key: '4',
+              scopedSlots: { customRender: 'gradeLimit' },
             },
              {
               title: '操作',
@@ -166,7 +170,7 @@ export default {
               this.addScoreFormData = {
                   gradeName:'',
                   gradeExplain:'',
-                  gradeLimit:'',
+                  gradeLimit:null,
                   gradeType:0
               }
               this.$refs.addScoreForm.resetFields()
@@ -181,7 +185,7 @@ export default {
         this.addScoreFormData = {
           gradeName:'',
           gradeExplain:'',
-          gradeLimit:'',
+          gradeLimit:null,
           gradeType:0
         }
         this.$refs.addScoreForm.resetFields()

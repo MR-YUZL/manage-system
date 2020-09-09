@@ -154,6 +154,7 @@ export default {
           fieldName: "不导入该字段"
         });
         this.fileInfos = fileInfo;
+        console.log(this.fileInfos,'this.fileInfos====')
       }
     },
     uploadSuccessNext() {
@@ -178,8 +179,13 @@ export default {
       arr = arr.sort();
       for (var i = 0; i < arr.length; i++) {
         if (arr[i] && arr[i] == arr[i + 1]) {
-          this.$message.error("匹配字段不能重复");
-          return;
+          var allArr = this.fileInfos.importFields;
+          for(var j=0;j<allArr.length;j++){
+            if(allArr[j].fieldCode == arr[i]){
+              this.$message.error( allArr[j].fieldName +"不能重复");
+              return;
+            }
+          }
         }
       }
       let params = {
