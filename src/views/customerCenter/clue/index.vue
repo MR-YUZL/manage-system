@@ -159,8 +159,8 @@ export default {
         },
         {
           title: "创建来源",
-          dataIndex: "clueSource",
-          key: "clueSource"
+          dataIndex: "clueShowSource",
+          key: "clueShowSource"
         },
         {
           title: "创建人",

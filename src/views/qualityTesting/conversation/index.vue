@@ -221,14 +221,14 @@ export default {
     },
     //质检人和客服
     getStaffSkillGroups(type) {
-      api.staffSkillGroups({ type: 0 }).then(res => {
+      api.sessionAccMember({ type: 0 }).then(res => {
         console.log("质检人和客服没有权限", res);
         if (res.data.status) {
           let newArr = res.data.list.map((item)=>{
             return{
               ...item,
-              label:item.groupName,
-              value:item.groupId
+              label:item.userName,
+              value:item.userAccount
             }
           })
           this.searchFormList[2].options = newArr;

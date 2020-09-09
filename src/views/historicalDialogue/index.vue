@@ -46,7 +46,7 @@
             @formSubmit="formSubmit"
           />
           <div class="customerGrading">客户评级:{{appraiseValue}}</div>
-          <div style="width:355px">
+          <div style="width:355px" class="historyScroll">
             <HistoryList style="position:relative;background-color:#fff;" :sessionInf="sessionInf" />
           </div>
         </div>
@@ -415,6 +415,11 @@ export default {
   .message {
     width: 380px;
     border-right: 1px solid #e6e6e6;
+    .historyScroll{
+      .message-list{
+        height: 270px;
+      }
+    }
     .customerGrading {
       border-top: 1px solid #ccc;
       border-bottom: 1px solid #ccc;
