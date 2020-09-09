@@ -20,7 +20,7 @@
       </div>
     </div>
     <div v-if="isShow" class="information">
-      <visitor-info  :guestId="this.visitorInf.guestId" />
+      <visitor-info  :guestId="this.visitorInf.guestId" :page="page"/>
       <Tags :guestId="this.visitorInf.guestId" />
     </div>
     <Modal :currentModal="currentModal" @toggleModal="toggleModal" v-if="currentModal.visible">
@@ -52,6 +52,7 @@ import { mapState } from "vuex";
 import moment from "moment";
 export default {
   data: () => ({
+    page:'session',
     isShow: false,
     visitorInfoData: "",
     createdWorkOrderVisible: false,

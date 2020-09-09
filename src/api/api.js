@@ -1,9 +1,10 @@
-import axios from 'axios'
-import { message } from 'ant-design-vue'
-import { getToken } from '@/utils/auth'
-const host = process.env.NODE_ENV === "development" ? "" : "http://hfw.test.com/";
-const Api = {}
-const method = ['get', 'post', 'put', 'delete']
+import axios from "axios";
+import { message } from "ant-design-vue";
+import { getToken } from "@/utils/auth";
+const host =
+  process.env.NODE_ENV === "development" ? "" : "http://hfw.test.com/";
+const Api = {};
+const method = ["get", "post", "put", "delete"];
 
 method.forEach(item => {
   /**
@@ -14,25 +15,25 @@ method.forEach(item => {
    *
    * @return {Promise}
    */
-  Api[item] = (url = '', data, options = {}) =>
+  Api[item] = (url = "", data, options = {}) =>
     new Promise((resolve, reject) => {
       const headers = {
         // 'X-CSRF-TOKEN': _global && _global.csrf_token
-      }
-      const token = getToken()
-      if (token) headers['Authorization'] = `Bearer ${token}`
+      };
+      const token = getToken();
+      if (token) headers["Authorization"] = `Bearer ${token}`;
 
       let _options = {
         headers
-      }
+      };
       if (options && options.headers) {
-        _options.headers = Object.assign({}, headers, options.headers)
+        _options.headers = Object.assign({}, headers, options.headers);
       }
-  
+
       axios(
         Object.assign(
           {
-            url: url,//`${host ? host + url : url}`,
+            url: url, //`${host ? host + url : url}`,
             method: item,
             params:
               item == "get" ? { _t: new Date().getTime(), ...data } : null, //加时间戳，防止浏览器缓存,
@@ -70,6 +71,18 @@ method.forEach(item => {
             if (!options.slient) {
               if (error.response.status >= 500) {
                 message.error("服务器开了个小差");
+              } else if (error.response.status === 403) {
+                try {
+                  external.call(
+                    "CppRefreshPage",
+                    { url: "0" },
+                    (error, result) => {
+                      console.log(result);
+                    }
+                  );
+                } catch (e) {
+                  console.log("external call failed",e)
+                }
               } else if (typeof error.response.data == "object") {
                 message.error(
                   error.response.data.message || error.response.data.error
@@ -81,7 +94,7 @@ method.forEach(item => {
             reject(error.response);
           }
         });
-    })
-})
+    });
+});
 
-export default Api
+export default Api;

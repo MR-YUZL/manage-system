@@ -195,6 +195,7 @@
           v-model="formObject.defaultValues[item.ruleName]"
           change-on-select
           @change="areaOnChange"
+          :placeholder="item.placeholder"
         />
       </a-form-model-item>
     </div>

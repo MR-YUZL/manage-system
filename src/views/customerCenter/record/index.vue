@@ -87,14 +87,14 @@ export default {
           placeholder: "请输入",
           options: [
             {
-              label: "客户姓名",
+              label: "客户名称",
               value: "1"
             }
           ]
         },
         {
           type: "selectGroup",
-          label: "客服名称",
+          label: "客服姓名",
           name: "followAccs",
           mode: "multiple",
           list: [],
@@ -189,6 +189,10 @@ export default {
           ...this.pager
         };
         params.item = this.searchParams
+        // let [followDateStart,followDateEnd] = this.searchParams.queryTimess
+        // delete this.searchParams.queryTimess 
+        // params.item.followDateStart = followDateStart
+        // params.item.followDateEnd = followDateEnd
       }
 
       api.followRecordList(params).then(res => {
