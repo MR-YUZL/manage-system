@@ -16,7 +16,7 @@ import informationList from "./informationList/index";
 import {mapState} from 'vuex'
 export default {
   data: () => ({
-    status: true,
+    status: false,
     infoObj: {}
   }),
   components: {
