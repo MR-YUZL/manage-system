@@ -1,8 +1,13 @@
 <template>
-  <a-form-model layout="inline" :model="formInline" @submit="handleSubmit" @submit.native.prevent>
+  <a-form-model
+    layout="inline"
+    :model="formInline"
+    @submit="handleSubmit"
+    @submit.native.prevent
+  >
     <a-form-model-item
-      v-for="(item,index) in formList"
-      :key="'formModalItem_'+index"
+      v-for="(item, index) in formList"
+      :key="'formModalItem_' + index"
       :label="item.label"
     >
       <!-- input -->
@@ -15,94 +20,115 @@
       <!-- select 下拉框 -->
       <a-select
         style="width: 200px;"
-        v-if="item.type=='select'"
+        v-if="item.type == 'select'"
         v-model="formInline[item.name]"
-        :mode="item.mode?item.mode:'default'"
+        :mode="item.mode ? item.mode : 'default'"
         optionFilterProp="children"
         :placeholder="item.placeholder"
         allowClear
       >
         <a-select-option
-          v-for="(it,idx) in item.options"
-          :key="'formModelOption_'+idx"
-          :value="item.optionValue?it[item.optionValue]:it['value']"
-        >{{item.optionLabel?it[item.optionLabel]:it['label']}}</a-select-option>
+          v-for="(it, idx) in item.options"
+          :key="'formModelOption_' + idx"
+          :value="item.optionValue ? it[item.optionValue] : it['value']"
+          >{{
+            item.optionLabel ? it[item.optionLabel] : it["label"]
+          }}</a-select-option
+        >
       </a-select>
       <!-- select group 下拉框 -->
       <a-select
         style="width: 200px;"
-        v-if="item.type=='selectGroup'"
+        v-if="item.type == 'selectGroup'"
         v-model="formInline[item.name]"
-        :mode="item.mode?item.mode:'default'"
+        :mode="item.mode ? item.mode : 'default'"
         optionFilterProp="children"
         :placeholder="item.placeholder"
         allowClear
       >
         <a-select-opt-group
-          v-for="(group,groupIdx) in item.list"
-          :key="'formModelSelectGroup_'+groupIdx+'_'+group.groupId"
+          v-for="(group, groupIdx) in item.list"
+          :key="'formModelSelectGroup_' + groupIdx + '_' + group.groupId"
         >
           <span slot="label">
             <a-icon type="apartment" />
-            {{group.groupName}}
+            {{ group.groupName }}
           </span>
           <a-select-option
-            v-for="(groupOption,optionIdx) in item.groupOptionsName?group[item.groupOptionsName]:group['staffs']"
-            :key="'groupOption_'+optionIdx"
+            v-for="(groupOption, optionIdx) in item.groupOptionsName
+              ? group[item.groupOptionsName]
+              : group['staffs']"
+            :key="'groupOption_' + optionIdx"
             :value="groupOption.value"
-          >{{groupOption.name}}</a-select-option>
+            >{{ groupOption.name }}</a-select-option
+          >
         </a-select-opt-group>
       </a-select>
       <!-- compact 组合 -->
-      <a-input-group compact v-if="item.type=='compact'">
-        <a-select style="min-width: 94px;" v-model="formInline[item.compactName]">
+      <a-input-group compact v-if="item.type == 'compact'">
+        <a-select
+          style="min-width: 94px;"
+          v-model="formInline[item.compactName]"
+        >
           <a-select-option
-            v-for="(it,idx) in item.options"
-            :key="'formModelOption_'+idx"
+            v-for="(it, idx) in item.options"
+            :key="'formModelOption_' + idx"
             :value="it.value"
-          >{{it.label}}</a-select-option>
+            >{{ it.label }}</a-select-option
+          >
         </a-select>
         <a-input
-          v-if="item.compact=='input'"
+          v-if="item.compact == 'input'"
           v-model="formInline[item.name]"
           :placeholder="item.placeholder"
           style="width:200px;"
         />
         <a-range-picker
-          v-if="item.compact=='datepicker'"
+          v-if="item.compact == 'datepicker'"
           format="YYYY-MM-DD"
           v-model="formInline[item.name]"
         />
       </a-input-group>
-      <a-input-group compact v-if="item.type=='inputCompact'">
-        <a-input v-model="formInline[item.name][0]" style=" width: 80px;" allowClear />
+      <a-input-group compact v-if="item.type == 'inputCompact'">
+        <a-input
+          v-model="formInline[item.name][0]"
+          style=" width: 80px;"
+          allowClear
+        />
         <a-input
           style=" width: 30px; border-left: 0; pointer-events: none; backgroundColor: #fff"
           placeholder="~"
           disabled
         />
-        <a-input v-model="formInline[item.name][1]" style="width: 80px; border-left: 0" allowClear />
+        <a-input
+          v-model="formInline[item.name][1]"
+          style="width: 80px; border-left: 0"
+          allowClear
+        />
       </a-input-group>
 
       <!-- datepicker 时间选择器 -->
       <a-date-picker
-        v-if="item.type=='datepicker'"
+        v-if="item.type == 'datepicker'"
         v-model="formInline[item.name]"
-        :valueFormat="item.format?item.format:'YYYY-MM-DD'"
+        :valueFormat="item.format ? item.format : 'YYYY-MM-DD'"
       />
       <a-month-picker
-        v-if="item.type=='monthpicker'"
+        v-if="item.type == 'monthpicker'"
         v-model="formInline[item.name]"
-        :valueFormat="item.format?item.format:'YYYY-MM'"
+        :valueFormat="item.format ? item.format : 'YYYY-MM'"
       />
       <a-range-picker
         style="width: 200px"
-        v-if="item.type=='rangepicker'"
+        v-if="item.type == 'rangepicker'"
         v-model="formInline[item.name]"
-        :valueFormat="item.format?item.format:'YYYY-MM-DD'"
-        :ranges="item.ranges?item.ranges:dateRanges"
+        :valueFormat="item.format ? item.format : 'YYYY-MM-DD'"
+        :ranges="item.ranges ? item.ranges : dateRanges"
       />
-      <a-week-picker v-if="item.type=='weekpicker'" v-model="formInline[item.name]" />
+      <a-week-picker
+        v-if="item.type == 'weekpicker'"
+        v-model="formInline[item.name]"
+      />
 
       <!-- treeselect -->
 
@@ -192,18 +218,30 @@ export default {
   },
   methods: {
     handleSubmit(e) {
-      console.log(this.formInline);
-      this.$emit("prevHandleSubmit", this.formInline);
+      let obj = Object.assign({},this.formInline)
+      this.formList.map((item, index) => {
+        if (item.type == "rangepicker") {
+          for (let key in obj) {
+            if(key == item.name){
+               console.log(key,obj[key])
+               obj[key] = obj[key].join(',')
+            }
+           
+          }
+          // item.name = item.name;
+        }
+      });
+      this.$emit("prevHandleSubmit", obj);
     },
     areaOnChange(value) {
       console.log(value);
       this.$emit("prevAreaOnChange", value);
     },
     //普通级联
-    referOnChange(value){
+    referOnChange(value) {
       console.log(value);
       this.$emit("prevReferOnChange", value);
-    },
+    }
   }
 };
 </script>
@@ -212,10 +250,9 @@ export default {
   padding: 10px 15px;
   border-bottom: 1px solid #e8e8e8;
 }
-.ant-form-inline .ant-form-item{
+.ant-form-inline .ant-form-item {
   margin-bottom: 10px;
 }
-.ant-form{
-  
+.ant-form {
 }
 </style>

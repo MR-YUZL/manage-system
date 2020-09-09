@@ -21,7 +21,7 @@
     <a-modal title="记录" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
       <div class="record-detail">
         <div class="message"><MessageDetail :recordList="recordList" :handleRecordBtn="handleRecordBtn" :handleResult="handleResultCon" @setHandleResult="setHandleResult" /> </div>
-        <div class="information"><UserInformation  :guestId="guestId"/></div>
+        <div class="information" v-if="guestId"><UserInformation  :guestId="guestId"/></div>
       </div>
     </a-modal>
     <a-modal title="留言处理" v-if="leaveModalShow" :visible="leaveModalShow" @cancel="handleleaveModalCancel" @ok="handleleaveModalOk">
@@ -58,7 +58,7 @@ export default {
         {
           type: 'rangepicker',
           label: '留言时间:',
-          name: 'leaveFollowTime',
+          name: 'beginTime',
           
         },
         {
@@ -181,7 +181,7 @@ export default {
     },
     checkMessage(id,status){   // 调取接口
     //  "0":'未处理',  "1":'已处理'
-      console.log(id,status)
+      console.log(id,'--',status)
       this.handleRecordBtn = !status?true:false
       this.detailsShow = true
       this.Request.get('/hfw/hfwSessionInfo/infoJson?id='+ id).then(res=>{
