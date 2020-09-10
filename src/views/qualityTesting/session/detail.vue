@@ -32,7 +32,7 @@
       <div class="information">
         <a-tabs default-active-key="1" @change="tabChange">
           <a-tab-pane key="1" tab="质检评分">
-            <Grade :qualityType="qualityType" :qcObj="qualityForm" v-if="JSON.stringify(qualityForm) != '{}'" />
+            <Grade :qualityType="qualityType" :qcObj="qualityForm" v-if="JSON.stringify(qualityForm) != '{}'" @onSubmitGrade="onSubmitGrade" />
           </a-tab-pane>
           <a-tab-pane key="2" tab="用户信息">
             <UserInformation :guestId="guestId" />
@@ -94,7 +94,7 @@ export default {
             ruleName: "solveStatus",
             options: [
               { key: "1", value: "已解决" },
-              { key: "2", value: "未解决" }
+              { key: "0", value: "未解决" }
             ],
             rules: {
               required: true,
@@ -107,7 +107,8 @@ export default {
             label: "咨询备注",
             placeholder: "请选择",
             model: undefined,
-            ruleName: "consuleRemark"
+            ruleName: "consuleRemark",
+            maxLength:100
           }
         ],
         defaultValues: {}
@@ -148,6 +149,10 @@ export default {
     // console.log(this.qualityForm.session.appraiseValue,'1411')
   },
   methods: {
+    onSubmitGrade(){
+      this.detailShow = false;
+      this.$emit('onSubmitGrade')
+    },
     getDetailInfo() {
       api.sessionDetail({ sessionId: this.qcId }).then(res => {
         console.log("会话质检的详情", res);
@@ -184,7 +189,13 @@ export default {
     },
     toggleModal() {},
     sessionSubmit(values) {
-      api.saveServiceSummary({ ...values }).then(res => {
+      let [firstConsuleId, secondConsuleId, threeConsuleId] = values.consuleId;
+      values.firstConsuleId = firstConsuleId;
+      values.secondConsuleId = secondConsuleId;
+      values.threeConsuleId = threeConsuleId;
+      values.sessionId = this.qcId;
+      delete values.consuleId;
+      api.saveServiceSummary(values).then(res => {
         console.log(res, "保存会话检测详情左侧");
         if (res.data.status) {
           this.$message.success("保存成功");

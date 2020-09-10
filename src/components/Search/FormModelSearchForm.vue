@@ -201,7 +201,7 @@ export default {
     this.formList.map((item, index) => {
       if (
         item.type == "inputCompact" &&
-        !(this.formInline[item.name] && thisformInline[item.name].length)
+        !(this.formInline[item.name] && this.formInline[item.name].length)
       ) {
         this.formInline[item.name] = [undefined, undefined];
       } else if (

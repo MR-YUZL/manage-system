@@ -395,7 +395,8 @@ export default {
             sessionId:data.id,
             msgTimeEnd:moment(data.endTime).format("YYYY-MM-DD HH:mm:ss.SSS"),
             type:1,
-            serviceImAccount:data.serviceImAccount
+            serviceImAccount:data.serviceImAccount,
+            visitorAccount:data.guestImAccount,
           }
           this.detailsShow = true;
         }
@@ -416,9 +417,10 @@ export default {
     width: 380px;
     border-right: 1px solid #e6e6e6;
     .historyScroll{
-      .message-list{
-        height: 270px;
-      }
+      height: 270px;
+      // .message-list{
+      //   height: 270px;
+      // }
     }
     .customerGrading {
       border-top: 1px solid #ccc;
