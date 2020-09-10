@@ -1,9 +1,6 @@
 <template>
   <div class="message-wrapper" :class="messagePosition">
-    <div
-      class="c2c-layout"
-      :class="messagePosition"
-    >
+    <div class="c2c-layout" :class="messagePosition">
       <div class="col-1" v-if="showAvatar">
         <!-- 头像 -->
         <a-avatar :src="avatar" class="avatar" />
@@ -36,14 +33,21 @@
           />
 
           <div v-else-if="message.imMsgType === TIM.TYPES.MSG_CUSTOM">
-            <span class="prompts"
-              v-if="message.subMsgType === 'prompts' 
-              || message.subMsgType == 'transfer' 
-              || message.subMsgType == 'reception' 
-              || message.subMsgType == 'stopsession'
-              || message.subMsgType == 'createsession'"
-            >{{message.msgContent.text}}</span>
-            <span v-if="message.subMsgType === 'repository'" v-html="message.msgContent.text"></span>
+            <span
+              class="prompts"
+              v-if="
+                message.subMsgType === 'prompts' ||
+                  message.subMsgType == 'transfer' ||
+                  message.subMsgType == 'reception' ||
+                  message.subMsgType == 'stopsession' ||
+                  message.subMsgType == 'createsession'
+              "
+              >{{ message.msgContent.text }}</span
+            >
+            <span
+              v-if="message.subMsgType === 'repository'"
+              v-html="message.msgContent.text"
+            ></span>
             <custom-text
               v-else-if="message.subMsgType === 'text'"
               :isMine="isMine"
@@ -87,7 +91,7 @@
             :message="message"
             :infoObj="infoObj"
           />
-          <span v-else>暂未支持的消息类型：{{message.type}}</span>
+          <span v-else>暂未支持的消息类型：{{ message.type }}</span>
         </div>
       </div>
       <div class="col-3">
@@ -95,7 +99,10 @@
       </div>
     </div>
 
-    <div class="system-layout" v-if="currentConversationType === TIM.TYPES.CONV_SYSTEM ">
+    <div
+      class="system-layout"
+      v-if="currentConversationType === TIM.TYPES.CONV_SYSTEM"
+    >
       <div class="col-1">
         <avatar :src="avatar" :type="currentConversationType" />
       </div>
@@ -128,8 +135,8 @@ export default {
       type: Object,
       required: true
     },
-    infoObj:{
-      type:Object
+    infoObj: {
+      type: Object
     }
   },
   components: {
@@ -150,8 +157,7 @@ export default {
       renderDom: []
     };
   },
-  mounted() {
-  },
+  mounted() {},
   created() {},
   computed: {
     ...mapState({
@@ -187,28 +193,34 @@ export default {
         // group且没有撤回的消息
         return this.message.type !== this.TIM.TYPES.MSG_GRP_TIP;
       }
-      return false;
+      return true;
     },
     avatar() {
-    
+      if (this.infoObj && this.infoObj.type == "history") {
+        console.log(this.isMine)
         if (this.isMine) {
-          return this.message.guestAvatar
-        } else {
-           return this.message.serviceAccAvatar
+          return this.message.serviceAccAvatar;
           
+        } else {
+          return this.message.guestAvatar;
         }
-     
+      } else {
+        if (this.isMine) {
+          return this.message.guestAvatar;
+        } else {
+          return this.message.serviceAccAvatar;
+        }
+      }
     },
     currentConversationType() {
       return this.currentConversation.type;
     },
     isMine() {
-      if(this.infoObj && this.infoObj.type == 'history'){
+      if (this.infoObj && this.infoObj.type == "history") {
         return this.message.fromAccount === this.infoObj.serviceImAccount;
       }
       // return this.message.fromAccount === this.imInfo.userID;
-      return this.message.toAccount === this.visitorInf.guestImAccount
-
+      return this.message.toAccount === this.visitorInf.guestImAccount;
     },
     messagePosition() {
       if (
@@ -234,23 +246,22 @@ export default {
         // 撤回消息
         return "position-center";
       }
-      if(this.infoObj && this.infoObj.type == 'history'){
+      console.log(this.infoObj, this.message);
+      if (this.infoObj && this.infoObj.type == "history") {
         if (this.isMine) {
-        return "position-right";
-       
+          return "position-right";
+        } else {
+          return "position-left";
+        }
       } else {
-        return "position-left";
-      }
-      }else{
         if (this.isMine) {
-        // return "position-right";
-        return "position-left";
-      } else {
-        // return "position-left";
-        return "position-right";
+          // return "position-right";
+          return "position-left";
+        } else {
+          // return "position-left";
+          return "position-right";
+        }
       }
-      }
-      
     },
     showMessageHeader() {
       if (
@@ -294,7 +305,7 @@ export default {
   .content-wrapper {
     display: flex;
     align-items: center;
-    .prompts{
+    .prompts {
       font-size: 12px;
     }
   }

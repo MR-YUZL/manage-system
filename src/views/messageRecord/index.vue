@@ -20,7 +20,7 @@
     </div>
     <a-modal title="记录" :footer="null" width="880px" v-if="detailsShow" :visible="detailsShow" @cancel="handleCancel">
       <div class="record-detail">
-        <div class="message"><MessageDetail :recordList="recordList" :handleRecordBtn="handleRecordBtn" :handleResult="handleResultCon" @setHandleResult="setHandleResult" /> </div>
+        <div class="message"><MessageDetail  :sessionObj="sessionObj" :handleRecordBtn="handleRecordBtn" :handleResult="handleResultCon" @setHandleResult="setHandleResult" /> </div>
         <div class="information" v-if="guestId"><UserInformation  :guestId="guestId"/></div>
       </div>
     </a-modal>
@@ -33,6 +33,7 @@
 </template>
 
 <script>
+import moment from "moment";
 import UserInformation from './../../components/userInf'
 // import Search from './../../components/Search/index'
 import MessageDetail from './messageDetail'
@@ -150,16 +151,17 @@ export default {
         totalPage: 0
       },
       detailsShow:false,
-      recordList:[],
+      guestImAccount:'',
       handleRecordBtn:false,
       detailsId:'',
       leaveModalShow:false,
       resultContent:'',
+      guestId:'',
+      sessionObj:{},
       handleResultCon:{
         name:'',
         con:''
       },
-      guestId:''
     }
   },
   mounted() {
@@ -188,10 +190,17 @@ export default {
         console.log(res.data.data,'记录详情')
         let data = res.data.data
         this.detailsId = data.id
+        this.guestId = data.guestId
         this.handleResultCon.con = data.leaveResult
         this.handleResultCon.name = data.leaveFollowAcc
-        this.recordList = data.detailBeanList  // 参数要改
-        this.guestId = data.guestId
+        this.sessionObj = {
+          orgId:data.orgId,
+          sessionId: data.id,
+          msgTimeEnd: moment(data.lastMsgTime).format("YYYY-MM-DD HH:mm:ss.SSS"),
+          type: 2,
+          serviceImAccount: data.serviceImAccount
+        }
+      
       })
     },
     handleCancel(){
@@ -218,7 +227,8 @@ export default {
         console.log(res)
         this.leaveModalShow=false
         this.handleRecordBtn = false
-        this.handleResultCon.con = this.resultContent
+        this.getList()
+        // this.handleResultCon.con = this.resultContent
       })
     },
   },

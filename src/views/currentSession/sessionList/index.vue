@@ -123,7 +123,8 @@ export default {
               endTime: moment(this.penddingList[0].endTime).valueOf() / 1000,
               status: true,
               orgId: this.penddingList[0].orgId,
-              guestImAccount: this.penddingList[0].guestImAccount
+              guestImAccount: this.penddingList[0].guestImAccount,
+              channelType: this.penddingList[0].channelType
             };
             console.log(obj, "初始化");
             this.$store.commit("getVisitorInf", obj);
@@ -164,7 +165,8 @@ export default {
               endTime: moment(this.endList[0].endTime).valueOf() / 1000,
               status: false,
               orgId: this.endList[0].orgId,
-              guestImAccount: this.endList[0].guestImAccount
+              guestImAccount: this.endList[0].guestImAccount,
+              channelType: this.endList[0].channelType
             };
             console.log(obj, "初始化");
             this.$store.commit("getVisitorInf", obj);
@@ -303,7 +305,8 @@ export default {
                         endTime: "",
                         status: true,
                         orgId: res.data.sessionInfo.orgId,
-                        guestImAccount: res.data.sessionInfo.guestImAccount
+                        guestImAccount: res.data.sessionInfo.guestImAccount,
+                        channelType: res.data.sessionInfo.channelType
                       };
                       console.log(obj1)
                       this_.$store.commit("getVisitorInf", obj1);
@@ -369,7 +372,8 @@ export default {
                       endTime: moment().format("X"),
                       status: false,
                       orgId: this_.visitorInf.orgId,
-                      guestImAccount: this_.visitorInf.guestImAccount
+                      guestImAccount: this_.visitorInf.guestImAccount,
+                      channelType: this_.visitorInf.channelType
                     };
 
                     this_.$store.commit("getVisitorInf", obj1);
@@ -537,7 +541,8 @@ export default {
                 endTime: moment(data.endTime).valueOf() / 1000, //data.endTime,
                 status: false,
                 orgId: item.orgId,
-                guestImAccount: item.guestImAccount
+                guestImAccount: item.guestImAccount,
+                channelType: item.channelType
               };
               console.log(obj, "超时结束");
               this.$store.commit("getVisitorInf", obj);
