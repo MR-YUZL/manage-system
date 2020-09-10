@@ -163,8 +163,8 @@ export default {
         },
         {
           title: "咨询分类",
-          dataIndex: "consultType",
-          key: "consultType"
+          dataIndex: "consultTypeName",
+          key: "consultTypeName"
         },
         {
           title: "问题解决状态",

@@ -93,16 +93,16 @@ export default {
       _that.$refs["ruleForm"].validate(valid => {
         if (valid) {
           let [
-            firstConsuleId,
-            secondConsuleId,
-            threeConsuleId
+            firstConsultId,
+            secondConsultId,
+            threeConsultId
           ] = this.form.consuleId;
           let obj = { ...this.form };
-          obj.firstConsuleId = firstConsuleId;
-          obj.secondConsuleId = secondConsuleId;
-          obj.threeConsuleId = threeConsuleId;
+          obj.firstConsultId = firstConsultId;
+          obj.secondConsultId = secondConsultId;
+          obj.threeConsultId = threeConsultId;
           delete obj.consuleId;
-          obj.guestId = "7ca88132f26949b6bbc82f3b5a339735";
+          obj.guestId = this.guestId;
           console.log(obj);
           this.Request.post("/hfw/workbench/saveServiceSummary", obj).then(res => {
             if (res.data.status) {

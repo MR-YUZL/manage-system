@@ -274,10 +274,10 @@ export default {
           break;
         case "addServer":
           this["addServerObj"]["visible"] = data.visible;
-          let [firstConsuleId, secondConsuleId, threeConsuleId] = obj.consuleId;
-          obj.firstConsuleId = firstConsuleId;
-          obj.secondConsuleId = secondConsuleId;
-          obj.threeConsuleId = threeConsuleId;
+          let [firstConsultId, secondConsultId, threeConsultId] = obj.consuleId;
+          obj.firstConsultId = firstConsultId;
+          obj.secondConsultId = secondConsultId;
+          obj.threeConsultId = threeConsultId;
           delete obj.consuleId;
           obj.guestId = callStatus.guestId;
           obj.id = callStatus.id;
