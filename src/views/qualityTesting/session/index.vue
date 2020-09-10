@@ -29,6 +29,7 @@
       :qcId="qcId"
       :type="qcType"
       @closeModal="closeModal"
+      @onSubmitGrade="onSubmitGrade"
     />
   </div>
 </template>
@@ -216,8 +217,13 @@ export default {
     this.getSessionAccMember();
     this.getSessionServiceGroups();
     this.getReferClassify();
+    this.defaultSearchFormValues = Object.assign({},this.defaultSearchFormValues,{test:1})
   },
   methods: {
+    onSubmitGrade(){
+      this.detailsShow = false
+      this.getList();
+    },
     prevReferOnChange(val){
       this.sessionRefer = {
         firstConsultId:val[0],

@@ -20,7 +20,7 @@
         <a-input v-model="item.gradeValue" placeholder="请输入" />
       </a-form-model-item>
       <a-form-model-item label="评语">
-        <a-input v-model="gradeForm.reniews" type="textarea" />
+        <a-input v-model="qcObj.qcDesc" type="textarea" />
       </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
         <a-button type="primary" html-type="submit" @click="submitGrade('gradeForm')">提交</a-button>
@@ -85,6 +85,7 @@ export default {
             api.saveSessionGrade(sessionJson).then(res => {
               if (res.data.status) {
                 this.$message.success("提交评分成功");
+                this.$emit('onSubmitGrade')
               }
             });
           } 
@@ -98,6 +99,7 @@ export default {
             api.saveQc(conversationJson).then(res => {
               if (res.data.status) {
                 this.$message.success("提交评分成功");
+                this.$emit('onSubmitGrade')
               }
             });
           }
