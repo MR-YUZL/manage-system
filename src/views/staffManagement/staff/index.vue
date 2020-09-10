@@ -117,8 +117,8 @@ export default {
               key: "roleType",
               customRender:(value)=>{
                 let obj = {
-                  "0":'销售',
-                  "1":'管理者',
+                  "0":'普通客服',
+                  "1":'管理员',
                   "2":'超级管理员',
                 }
                 return obj[value]
