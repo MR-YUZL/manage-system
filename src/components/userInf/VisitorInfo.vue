@@ -30,13 +30,17 @@
           <span>地区</span>
           <p>{{ vistorInfoObj.country }}</p>
         </li>
-        <li>
-          <span>上次访问时间</span>
-          <p>{{ vistorInfoObj.lastMsgTime }}</p>
+         <li>
+          <span>手机号</span>
+          <p>{{ vistorInfoObj.telephone }}</p>
         </li>
         <li>
-          <span>上次接待时间</span>
-          <p>{{ vistorInfoObj.lastServiceTime }}</p>
+          <span>上次访问时间</span>
+          <p>{{ vistorInfoObj.lastMsgTime}}</p>
+        </li>
+        <li>
+          <span>上次接待客服</span>
+          <p>{{ vistorInfoObj.lastServiceAcc }}</p>
         </li>
       </ul>
     </div>
