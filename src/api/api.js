@@ -19,6 +19,7 @@ method.forEach(item => {
     new Promise((resolve, reject) => {
       const headers = {
         // 'X-CSRF-TOKEN': _global && _global.csrf_token
+        "X-Requested-With": "XMLHttpRequest"
       };
       const token = getToken();
       if (token) headers["Authorization"] = `Bearer ${token}`;

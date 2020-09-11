@@ -65,7 +65,7 @@
           v-model="resultContent"
           placeholder="请输入处理结果"
           :auto-size="{ minRows: 3, maxRows: 5 }"
-          maxLength="100"
+          :maxLength="100"
         />
       </div>
     </a-modal>
@@ -163,7 +163,9 @@ export default {
         {
           title: "处理结果",
           dataIndex: "leaveResult",
-          key: "4"
+          width:300,
+          key: "4",
+          ellipsis: true,
         },
         {
           title: "跟进人",
