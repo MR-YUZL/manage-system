@@ -7,9 +7,9 @@
           >设为已处理</a-button
         >
       </div>
-      <div class="recordList" style="position:relative;height:1000px; ">
+      <div class="recordList" style="position:relative;">
         <HistoryList
-        v-if="sessionObj.sessionId"
+          v-if="sessionObj.sessionId"
           style="position:relative;background-color:#fff;"
           :sessionInf="sessionObj"
         />
@@ -25,8 +25,8 @@
                   </li>
               </ul> -->
       </div>
-      <div v-if="handleResult.con && handleResult.con !== ''">
-        <div class="d-head" style="margin-top:30px;">
+      <div v-if="handleResult.con" class="record">
+        <div class="d-head1" style="margin-top:30px;">
           <h5>处理结果</h5>
           <p>跟进人:{{ handleResult.name }}</p>
         </div>
@@ -66,9 +66,7 @@ export default {
   created() {
     console.log("guestId", this.guestId);
   },
-  mounted() {
-    
-  },
+  mounted() {},
   methods: {
     setHandleResult() {
       this.$emit("setHandleResult");
@@ -80,6 +78,7 @@ export default {
 <style lang="less" scoped>
 .messageDetail {
   display: flex;
+  height: 100%;
   .recordDetail {
     // border-right:1px solid #e6e6e6;
     width: 400px;
@@ -103,6 +102,7 @@ export default {
 }
 .recordList {
   overflow: hidden;
+  height: calc(100% - 200px);
   .record-style1 li {
     display: flex;
     margin-top: 25px;
@@ -115,6 +115,19 @@ export default {
       width: 35px;
       height: 35px;
       border-radius: 50%;
+    }
+  }
+}
+.record {
+  padding: 0 23px 0 23px;
+  .d-head1 {
+    // margin-bottom:18px
+    display: flex;
+    justify-content: space-between;
+    h5,
+    p {
+      font-size: 16px;
+      color: #353535;
     }
   }
 }

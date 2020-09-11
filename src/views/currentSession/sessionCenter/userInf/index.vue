@@ -2,15 +2,34 @@
   <div class="userInf">
     <div class="content">
       <div class="left">
-        <img :src="require('./../../../../assets/imgs/current_session/app.png')" alt />
+        <img
+          :src="
+            visitorInf.channelType == 0
+              ? require('./../../../../assets/imgs/current_session/pc.png')
+              : visitorInf.channelType == 1
+              ? require('./../../../../assets/imgs/current_session/official.png')
+              : visitorInf.channelType == 2
+              ? require('./../../../../assets/imgs/current_session/applet.png')
+              : visitorInf.channelType == 3
+              ? require('./../../../../assets/imgs/current_session/applet.png')
+              : visitorInf.channelType == 4
+              ? require('./../../../../assets/imgs/current_session/app.png')
+              : visitorInf.channelType == 5
+              ? require('./../../../../assets/imgs/current_session/app.png')
+              :visitorInf.channelType == 6
+              ? require('./../../../../assets/imgs/current_session/weixin.png')
+              : ''
+          "
+          alt
+        />
         <div class="user" @click="userInf">
           <div class="name">
-            {{this.visitorInf.guestName}}
+            {{ this.visitorInf.guestName }}
             <a-icon :type="isShow ? 'down' : 'up'" class="icon" />
           </div>
           <span></span>
         </div>
-        <div class="time">当前会话时长：{{time}}</div>
+        <div class="time">当前会话时长：{{ time }}</div>
       </div>
 
       <div class="right">
@@ -20,10 +39,14 @@
       </div>
     </div>
     <div v-if="isShow" class="information">
-      <visitor-info  :guestId="this.visitorInf.guestId" :page="page"/>
+      <visitor-info :guestId="this.visitorInf.guestId" :page="page" />
       <Tags :guestId="this.visitorInf.guestId" />
     </div>
-    <Modal :currentModal="currentModal" @toggleModal="toggleModal" v-if="currentModal.visible">
+    <Modal
+      :currentModal="currentModal"
+      @toggleModal="toggleModal"
+      v-if="currentModal.visible"
+    >
       <template slot="content">
         <base-form
           :formObject="currentModal"
@@ -52,11 +75,11 @@ import { mapState } from "vuex";
 import moment from "moment";
 export default {
   data: () => ({
-    page:'session',
+    page: "session",
     isShow: false,
     visitorInfoData: "",
     createdWorkOrderVisible: false,
-    orderInfo:{},
+    orderInfo: {},
     serviceAcc: "", //客服账号
     arr: [],
     relateRedio: [], // 关联客户rediolist
@@ -155,11 +178,12 @@ export default {
 
     //新增工单
     newAddOrder() {
+      console.log(this.visitorInf.channelType);
       this.createdWorkOrderVisible = true;
       this.orderInfo = {
-        userType:1,
-        customerId:this.visitorInf.guestId
-      }
+        userType: 1,
+        customerId: this.visitorInf.guestId
+      };
     },
     newOrder(e) {
       this.createdWorkOrderVisible = e;
@@ -192,7 +216,7 @@ export default {
         case "endServer":
           this["endServerObj"]["visible"] = data.visible;
           let [firstConsuleId, secondConsuleId, threeConsuleId] = obj.consultId;
-          
+
           delete obj.consuleId;
           obj = {
             sessionId: this.visitorInf.id,
@@ -203,7 +227,7 @@ export default {
           obj.firstConsuleId = firstConsuleId;
           obj.secondConsuleId = secondConsuleId;
           obj.threeConsuleId = threeConsuleId;
-        
+
           url = "/session/end";
           break;
       }
@@ -319,15 +343,13 @@ export default {
       visitorInf: state => state.basic.visitorInf
     }),
     sessionDuration: function() {
-     
       clearInterval(this.timer);
       // let date = moment().format("X") - this.visitorInf.beginTime;
       if (this.visitorInf.endTime) {
-        console.log(this.visitorInf.endTime,this.visitorInf.beginTime)
+        console.log(this.visitorInf.endTime, this.visitorInf.beginTime);
         let date = this.visitorInf.endTime - this.visitorInf.beginTime;
         this.time = this.formateSeconds(date);
-      } 
-      else if(this.visitorInf.beginTime){
+      } else if (this.visitorInf.beginTime) {
         // console.log(moment().format("X"),this.visitorInf.beginTime,moment().format("X") - this.visitorInf.beginTime)
         this.timer = setInterval(() => {
           let date = moment().format("X") - this.visitorInf.beginTime;
