@@ -36,7 +36,7 @@
         </li>
         <li>
           <span>上次访问时间</span>
-          <p>{{ vistorInfoObj.lastMsgTime }}</p>
+          <p>{{ vistorInfoObj.lastServiceTime }}</p>
         </li>
         <li>
           <span>上次接待客服</span>
@@ -188,7 +188,7 @@ export default {
           }
         ]
       },
-      type: ""
+      type: "",
     };
   },
   watch: {
@@ -385,6 +385,9 @@ export default {
     },
     onRelatedCusSearch() {
       console.log("=====================", this.relateSearchKey);
+      if(this.relateSearchKey == ''){
+        return
+      }
       this.relateRadio = [];
       this.Request.get(
         "/hfw/workbench/blurMatchCustName?matchKey=" + this.relateSearchKey
@@ -398,7 +401,7 @@ export default {
           this.$message.warning(res.data.msg)
         }
 
-        console.log("模糊搜索", res.data);
+       
       });
     }
   }
