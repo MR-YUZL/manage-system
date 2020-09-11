@@ -264,12 +264,12 @@ export default {
             model: undefined,
             ruleName: "status", 
             options: [
-              { key: "1", value: "已解决" },
-              { key: "0", value: "未解决" }
+              { key: 1, value: "已解决" },
+              { key: 0, value: "未解决" }
             ],
             rules: {
               required: true,
-              message: "请选择咨询分类",
+              message: "请选择解决问题",
               trigger: "change"
             }
           },
@@ -330,7 +330,7 @@ export default {
     },
     toggleModal() {},
     formSubmit(data) {
-      console.log(data,'data')
+      console.log(data,'data566')
       let consultArr = data.consultType;
       let consultObj = {
         firstConsultId:consultArr[0],
@@ -389,7 +389,11 @@ export default {
           this.handleResultCon.name = data.followAccName;
           this.recordList = data.detailBeanList;
           this.guestId = data.guestId;
-          console.log(data.orgId,data.id,data.endTime,'123')
+          console.log(data,'123')
+          let {advisoryRemark,status,firstConsultId,secondConsultId,threeConsultId} = data;
+          this.formObject.defaultValues = {
+            advisoryRemark,status,
+            consultType:[firstConsultId,secondConsultId,threeConsultId]};
           this.sessionInf = {
             orgId:data.orgId,
             sessionId:data.id,

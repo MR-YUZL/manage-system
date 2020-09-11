@@ -279,15 +279,14 @@ export default {
   },
   methods: {
     getSeatControlList(){
-      console.log(this.defaultSearchFormValues,'this.defaultSearchFormValues')
-      let { loginDate,serviceAccs} = this.defaultSearchFormValues;
-      let date = loginDate.join();
+      let { loginDate,serviceAccs} = this.searchParams;
+      
       let acc = ''
       if(serviceAccs && serviceAccs.length > 0){
         acc = serviceAccs.join();
       }
       let param = {
-        loginDate:date,
+        loginDate:loginDate,
         serviceAccs:acc
       }
       api.seatControlList(param).then(res=>{
@@ -308,14 +307,12 @@ export default {
       })
     },
     changeTabFn() {},
-    prevHandleSubmit(val) {
-      this.defaultSearchFormValues = {
-        ...val
-      }
+    prevHandleSubmit(data) {
+      this.searchParams = { ...data }
       this.getSeatControlList()
     },
     handleOkExportSeat(){
-      let { loginDate,serviceAccs} = this.defaultSearchFormValues;
+      let { loginDate,serviceAccs} = this.searchParams;
       let date = loginDate.join();
       let acc = ''
       if(serviceAccs && serviceAccs.length > 0){
@@ -330,7 +327,7 @@ export default {
       this.exportModal.showSeat = false
     },
     handleOkExportSession(){
-      let { loginDate,serviceAccs} = this.defaultSearchFormValues;
+      let { loginDate,serviceAccs} = this.searchParams;
       let date = loginDate.join();
       let acc = ''
       if(serviceAccs && serviceAccs.length > 0){
@@ -346,7 +343,7 @@ export default {
       
     },
     handleOkExportQc(){
-      let { loginDate,serviceAccs} = this.defaultSearchFormValues;
+      let { loginDate,serviceAccs} = this.searchParams;
       let date = loginDate.join();
       let acc = ''
       if(serviceAccs && serviceAccs.length > 0){

@@ -55,6 +55,7 @@ export default {
       defaultSearchFormValues: {
         inputDateStart:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")]
       },
+      searchParams:{},
       columns:[
         {
           title: "技能组",
@@ -161,14 +162,15 @@ export default {
   methods: {
     getIvrReport(){
       
-      let{inputDateStart,groupIds} = this.defaultSearchFormValues
+      let{inputDateStart,groupIds} = this.searchParams
+      let dateArr = inputDateStart.split(',')
       let inputAccs = ''
       if(groupIds&&groupIds.length){
         inputAccs = groupIds.join()
       }
       let params = {
-        beginDate: inputDateStart[0],
-        endDate: inputDateStart[1],
+        beginDate: dateArr[0],
+        endDate: dateArr[1],
         groupIds:inputAccs
       }
       api.ivrReport(params).then(res=>{
@@ -180,10 +182,9 @@ export default {
         }
       })
     },
-    prevHandleSubmit(val) {
-      this.defaultSearchFormValues = {
-        ...val
-      }
+    prevHandleSubmit(data) {
+      console.log(data,'data')
+      this.searchParams = { ...data }
       this.getIvrReport();
     }
   }

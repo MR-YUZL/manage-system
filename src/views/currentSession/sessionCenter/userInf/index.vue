@@ -82,7 +82,7 @@ export default {
           options: [],
           rules: {
             required: true,
-            message: "请选择咨询分类",
+            message: "请选择",
             trigger: "change"
           }
         },

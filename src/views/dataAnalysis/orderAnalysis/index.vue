@@ -141,7 +141,6 @@ export default {
   },
   mounted() {
     this.getOrderAccList();
-    console.log(this.defaultSearchFormValues.inputDateStart,'123******')
     let receiveList =  analysis.getSkill();
     receiveList.then((res)=>{
       this.searchFormList[1].options = res;
@@ -155,7 +154,7 @@ export default {
           click:()=>{
             this.detailShowTable = true;
             let dateObj = {
-              ...this.defaultSearchFormValues
+              ...this.searchParams
             }
             let dateArr = dateObj.inputDateStart
             let params = {
@@ -174,7 +173,8 @@ export default {
       }
     },
     getOrderAccList() {
-      let{inputDateStart,inputAcc} = this.defaultSearchFormValues
+      let{inputDateStart,inputAcc} = this.searchParams
+      console.log(inputDateStart,'inputDateStart')
       let inputAccs = ''
       if(inputAcc&&inputAcc.length){
         inputAccs = inputAcc.join()
@@ -193,10 +193,8 @@ export default {
         // }
       });
     },
-    prevHandleSubmit(val) {
-      this.defaultSearchFormValues = {
-        ...val
-      }
+    prevHandleSubmit(data) {
+      this.searchParams = { ...data }
       this.getOrderAccList();
     },
   }

@@ -103,7 +103,7 @@ export default {
         {
           type: "rangepicker",
           label: "跟进时间",
-          name: "queryTimess",
+          name: "followDates",
           placeholder: "请选择"
         }
       ],
