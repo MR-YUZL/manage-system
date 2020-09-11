@@ -318,10 +318,8 @@ export default {
       };
       this.$router.push({ path: "/dataAnalysis/personDetail", query: params });
     },
-    prevHandleSubmit(val) {
-      this.defaultSearchFormValues = {
-        ...val
-      }
+    prevHandleSubmit(data) {
+      this.searchParams = { ...data }
       this.getPhoneDepartmentInfo();
     },
     exportGroup() {

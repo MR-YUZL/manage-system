@@ -30,13 +30,13 @@
           <span>地区</span>
           <p>{{ vistorInfoObj.country }}</p>
         </li>
-         <li>
+        <li>
           <span>手机号</span>
           <p>{{ vistorInfoObj.telephone }}</p>
         </li>
         <li>
           <span>上次访问时间</span>
-          <p>{{ vistorInfoObj.lastMsgTime}}</p>
+          <p>{{ vistorInfoObj.lastServiceTime }}</p>
         </li>
         <li>
           <span>上次接待客服</span>
@@ -188,7 +188,7 @@ export default {
           }
         ]
       },
-      type: ""
+      type: "",
     };
   },
   watch: {
@@ -206,8 +206,17 @@ export default {
         "/hfw/workbench/getGuestInfo?guestId=" + this.guestId
       ).then(res => {
         console.log("访客信息", res.data);
+        if(this.relatedCusModal){
+          this.relateSearchKey = ''
+          this.custId = ""
+          this.relateRadio = []
+        }
         this.vistorInfoObj = res.data.data;
-        let arr = [res.data.data.provinceId,res.data.data.cityId,res.data.data.countyId];
+        let arr = [
+          res.data.data.provinceId,
+          res.data.data.cityId,
+          res.data.data.countyId
+        ];
         let list = [...areaDictionary];
         let str;
         arr.map((val, i) => {
@@ -242,8 +251,12 @@ export default {
           : "",
         qq: this.vistorInfoObj.qq ? this.vistorInfoObj.qq : "",
         email: this.vistorInfoObj.email ? this.vistorInfoObj.email : "",
-        address: [this.vistorInfoObj.provinceId,this.vistorInfoObj.cityId,this.vistorInfoObj.countyId],
-        wechat: this.vistorInfoObj.wxId ? this.vistorInfoObj.wxId : "",
+        address: [
+          this.vistorInfoObj.provinceId,
+          this.vistorInfoObj.cityId,
+          this.vistorInfoObj.countyId
+        ],
+        wechat: this.vistorInfoObj.wxId ? this.vistorInfoObj.wxId : ""
       };
       this.formObjectClue.modelList[7] = {};
     },
@@ -282,13 +295,25 @@ export default {
       //   params.countyId = address[2]?address[2]:''
       // }
 
-      console.log("保存为线索的参数1", params, this.type);
+      console.log("保存为线索的参数1", data,params, this.type);
+      if (
+        !data.telPhone &&
+        !data.wechat &&
+        !data.email &&
+        !data.qq &&
+        !data.dingding && 
+        this.type == 'edit'
+      ) {
+        this.$message.warn("请至少填写一个联系方式");
+        return false;
+      }
       if (
         !data.phone &&
         !data.wechat &&
         !data.email &&
         !data.qq &&
-        !data.dingding
+        !data.dingding && 
+        this.type == 'save'
       ) {
         this.$message.warn("请至少填写一个联系方式");
         return false;
@@ -333,6 +358,9 @@ export default {
       this.relatedCusModal = true;
     },
     handleRelatedCusCancel() {
+      this.relateSearchKey = ''
+      this.custId = ""
+      this.relateRadio = []
       this.relatedCusModal = false;
     },
     handleRelatedCusOk() {
@@ -350,20 +378,30 @@ export default {
           this.relatedCusModal = false;
           this.getVisitorInfo();
           this.relateRadio = [];
+          this.relateSearchKey = ''
+          this.custId = ""
         }
       );
     },
     onRelatedCusSearch() {
       console.log("=====================", this.relateSearchKey);
+      if(this.relateSearchKey == ''){
+        return
+      }
       this.relateRadio = [];
       this.Request.get(
         "/hfw/workbench/blurMatchCustName?matchKey=" + this.relateSearchKey
       ).then(res => {
-        let data = res.data.list;
-        if (data.length > 0) {
-          this.relateRadio = data;
+        if (res.data.list.legnth) {
+          let data = res.data.list;
+          if (data.length > 0) {
+            this.relateRadio = data;
+          }
+        }else{
+          this.$message.warning(res.data.msg)
         }
-        console.log("模糊搜索", res.data);
+
+       
       });
     }
   }

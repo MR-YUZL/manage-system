@@ -161,7 +161,7 @@ export default {
   methods: {
     getPhonePersonInfo(){
       let dateObj = {
-        ...this.defaultSearchFormValues
+        ...this.searchParams
       };
       let dateArr = dateObj.inputDateStart
       let params = {
@@ -174,10 +174,8 @@ export default {
         this.info = res.data.totalDto;
       })
     },
-    prevHandleSubmit(val) {
-      this.defaultSearchFormValues = {
-        ...val
-      }
+    prevHandleSubmit(data) {
+      this.searchParams = { ...data }
       this.getPhonePersonInfo();
     }
   }

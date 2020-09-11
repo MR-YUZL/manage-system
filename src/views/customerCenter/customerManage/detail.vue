@@ -106,7 +106,6 @@
 
       </template>
     </Modal>
-    <Tags />
   </div>
 </template>
 

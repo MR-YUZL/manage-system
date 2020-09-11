@@ -93,12 +93,12 @@ export default {
             model: undefined,
             ruleName: "solveStatus",
             options: [
-              { key: "1", value: "已解决" },
-              { key: "0", value: "未解决" }
+              { key: 1, value: "已解决" },
+              { key: 0, value: "未解决" }
             ],
             rules: {
               required: true,
-              message: "请选择咨询分类",
+              message: "请选择解决问题",
               trigger: "change"
             }
           },
@@ -107,7 +107,7 @@ export default {
             label: "咨询备注",
             placeholder: "请选择",
             model: undefined,
-            ruleName: "consuleRemark",
+            ruleName: "remark",
             maxLength:100
           }
         ],
@@ -144,8 +144,8 @@ export default {
     }
   },
   mounted() {
-    this.getDetailInfo();
     this.getReferClassify();
+    this.getDetailInfo();
     // console.log(this.qualityForm.session.appraiseValue,'1411')
   },
   methods: {
@@ -161,6 +161,8 @@ export default {
           this.guestId = res.data.session.guestId;
           let data = res.data.session;
           console.log(res.data.session,'res.data.session')
+          let {remark,solveStatus,firstConsultId,secondConsultId,threeConsultId} = res.data
+          this.sessionObject.defaultValues = {remark,solveStatus,consuleId:[firstConsultId,secondConsultId,threeConsultId]};
           this.sessionInf = {
             orgId:data.orgId,
             sessionId:data.id,
@@ -189,10 +191,10 @@ export default {
     },
     toggleModal() {},
     sessionSubmit(values) {
-      let [firstConsuleId, secondConsuleId, threeConsuleId] = values.consuleId;
-      values.firstConsuleId = firstConsuleId;
-      values.secondConsuleId = secondConsuleId;
-      values.threeConsuleId = threeConsuleId;
+      let [firstConsultId, secondConsultId, threeConsultId] = values.consuleId;
+      values.firstConsultId = firstConsultId;
+      values.secondConsultId = secondConsultId;
+      values.threeConsultId = threeConsultId;
       values.sessionId = this.qcId;
       delete values.consuleId;
       api.saveServiceSummary(values).then(res => {

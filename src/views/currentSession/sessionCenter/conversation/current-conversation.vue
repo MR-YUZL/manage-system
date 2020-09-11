@@ -177,7 +177,7 @@ export default {
                 arr.push(item);
               }
             });
-            console.log(arr)
+            console.log(arr,arr.length)
             if (arr.length && arr.length > 15) {
               this.isSave = false;
             } else {

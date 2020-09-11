@@ -101,6 +101,7 @@ export default {
         inputDateStart:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")],
         // inputDateStart:['2020-06-01','2020-06-10']
       },
+      searchParams:{},
       echartObj: {
         // legend: ["消息总数", "访客发出消息", "客服发出消息"],
         // xAxis: ["周一", "周二", "周三", "周四", "周五", "周六", "周日"],
@@ -238,7 +239,7 @@ export default {
         inputDateStart,
         serviceAcc,
         ...others
-      } = this.defaultSearchFormValues;
+      } = this.searchParams;
       let inputAccs = "";
       if (serviceAcc && serviceAcc.length > 0) {
         inputAccs = serviceAcc.join();
@@ -267,7 +268,7 @@ export default {
       })
     },
     getOverviewInfo(){
-      let{inputDateStart,serviceAcc} = this.defaultSearchFormValues
+      let{inputDateStart,serviceAcc} = this.searchParams
       let inputAccs = ''
       if(serviceAcc&&serviceAcc.length){
         inputAccs = serviceAcc.join()
@@ -298,12 +299,10 @@ export default {
         this.$set(this.circleObj,'total',total)
       })
     },
-    prevHandleSubmit(val) {
-       this.defaultSearchFormValues = {
-        ...val
-      }
+    prevHandleSubmit(data) {
+      console.log(data,'data')
+      this.searchParams = { ...data }
       this.getOverviewInfo()
-     
     },
   }
 };

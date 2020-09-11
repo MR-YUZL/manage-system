@@ -71,6 +71,7 @@ export default {
         this.Request.get('/hfw/workbench/getAllGuestLabel').then(res => {
           let data = res.data.list
           if(data.length>0){
+            this.tagsModalShow = true
             this.allTags = data
            this.allTags.map(it=>{
              if(this.tagsList.length>0){
@@ -81,6 +82,8 @@ export default {
               })
              }
            })
+          }else{
+            this.$message.warning('请联系管理员-前往系统属性设置维护访客标签选项值')
           }
         })
       },
@@ -94,7 +97,7 @@ export default {
       // 设置访客标签
       tagsFn(){
        this.getAllTags()
-       this.tagsModalShow = true
+       
       },
       handleCancelTags(){
         this.tagsModalShow = false
