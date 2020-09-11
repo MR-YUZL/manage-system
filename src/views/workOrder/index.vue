@@ -184,7 +184,8 @@ export default {
                 rules: [{
                   required: true,
                   message: "请输入工单标题",
-                  trigger: "blur"
+                  trigger: "blur",
+                  whitespace: true
                 }]
               },
               {
@@ -196,7 +197,8 @@ export default {
                 rules: [{
                   required: true,
                   message: "请输入工单内容",
-                  trigger: "blur"
+                  trigger: "blur",
+                  whitespace: true
                 }]
               },
               {
