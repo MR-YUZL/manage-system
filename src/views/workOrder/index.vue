@@ -56,6 +56,9 @@
          是否确认导出当前条件下的工单数据？
          <br />
          本次导出工{{pager.totalRecord}}条数据
+         <!-- <form action="/workflow/export/workflow" method="post">
+           <button type="submit">test</button>
+         </form> -->
     </a-modal>
     <Modal :currentModal="createdWorkOrder" v-if="createdWorkOrder.visible"  @toggleModal="createdToggleModal">
       <div slot='content'>
@@ -94,6 +97,7 @@ import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import TablePagination from "@/components/Table/TablePagination";
 import Modal from "@/components/Modal/index";
 import BaseForm from "@/components/BaseForm/index";
+import {exportExcel} from "@/utils/exportExcel";
 import ReplyWorkOrder from "./ReplyWorkOrder"
 import RecordList from "./RecordList"
 import WorkOrderProper from "./WorkOrderProper"
@@ -184,7 +188,8 @@ export default {
                 rules: [{
                   required: true,
                   message: "请输入工单标题",
-                  trigger: "blur"
+                  trigger: "blur",
+                  whitespace: true
                 }]
               },
               {
@@ -448,6 +453,7 @@ export default {
     },
     mounted(){},
     methods: {
+      exportExcel,
       getList(){
         let params = {
           ...this.pager,
@@ -616,8 +622,12 @@ export default {
       },
       handleOkExport(){
         let searchField = {...this.searchField}
-        this.Request.post('/workflow/export/workflow',searchField).then(res=>{
+        // this.Request.post('/workflow/export/workflow',searchField).then(res=>{
+        //   this.$message.success('导出成功')
+        // })
+        this.exportExcel('/workflow/export/workflow',searchField).then(res=>{
           this.$message.success('导出成功')
+          this.exportDataShow = false;
         })
       },
       //创建工单
