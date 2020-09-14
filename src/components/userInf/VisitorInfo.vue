@@ -325,10 +325,13 @@ export default {
       console.log(params.address);
       // let [provinceId, cityId, countyId] = params.address;
       // let [provinceId, cityId, countyId] = params.address;
-      params.provinceId = params.address[0];
-      params.cityId = params.address[1];
-      params.countyId = params.address[2];
-      delete params.address;
+      if(params.address){
+        params.provinceId = params.address[0];
+        params.cityId = params.address[1];
+        params.countyId = params.address[2];
+        delete params.address;
+      }
+      
       // params.provinceId = provinceId;
       // params.cityId = cityId;
       // params.countyId = countyId;
@@ -343,7 +346,7 @@ export default {
         );
       } else if (this.type == "save") {
         // 保存为线索
-
+        params.clueSource = 0
         this.Request.post("/hfw/workbench/saveClue", { ...params }).then(() => {
           this.$message.success("保存成功");
           this.getVisitorInfo();
@@ -392,7 +395,8 @@ export default {
       this.Request.get(
         "/hfw/workbench/blurMatchCustName?matchKey=" + this.relateSearchKey
       ).then(res => {
-        if (res.data.list.legnth) {
+        console.log(res)
+        if (res.data.status && res.data.list.length) {
           let data = res.data.list;
           if (data.length > 0) {
             this.relateRadio = data;

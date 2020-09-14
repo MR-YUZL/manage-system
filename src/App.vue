@@ -21,7 +21,9 @@ export default {
      this.$store.commit('getBtnRealms',res.data.list)
     });
   },
-  
+  destroyed(){
+    this.Request.get('/api/chat/customer/status/update',{status:0})
+  }
 };
 </script>
 <style lang="less" scoped>

@@ -284,8 +284,12 @@ export default {
             this.$store.dispatch(
               "getMessageList",
               this.currentConversation.conversationID
-            );
-            this.isSave = false;
+            ).then(() => {
+                if(!this.isCompleted){
+                  this.isSave = true;
+                }
+              })
+            
           } else {
             console.log("5-=-===============");
             this.searchChatRecords();
