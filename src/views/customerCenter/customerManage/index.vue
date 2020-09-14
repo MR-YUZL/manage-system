@@ -300,19 +300,19 @@ export default {
 
         {
           type: "rangepicker",
-          name: "inputDateStart",
+          name: "inputDates",
           label: "创建时间",
           placeholder: "请选择",
         },
         {
           type: "rangepicker",
-          name: "lastFollowDateStart",
+          name: "lastFollowDates",
           label: "最近跟进时间",
           placeholder: "请选择",
         },
         {
           type: "rangepicker",
-          name: "nextFollowDateStart",
+          name: "nextFollowDates",
           label: "下次跟进时间",
           placeholder: "请选择",
         },

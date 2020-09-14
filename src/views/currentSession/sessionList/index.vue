@@ -328,6 +328,7 @@ export default {
           //正在进行的会话设置为已结束的会话
           this.penddingList.forEach((val, index) => {
             if (val.conversationID == item.conversationID) {
+              this.penddingList.splice(index, 1);
               status = false;
               // let data = { ...val };
               let this_ = this;
@@ -344,7 +345,7 @@ export default {
                   };
                   obj["endTime"] = moment().format("YYYY-MM-DD HH:mm:ss");
                   console.log(obj);
-                  this_.penddingList.splice(index, 1);
+                  
                   this_.endList = [obj, ...this_.endList];
                   if (this_.penddingList.length + this_.endList.length) {
                     this_.$emit("isStatus", true);
@@ -521,7 +522,7 @@ export default {
           let time = item.latestVisitorMsgTime
             ? item.latestVisitorMsgTime
             : moment(item.beginTime).format("X");
-          if (moment().format("X") - time >= 5 * 60) {
+          if (moment().format("X") - time >= 1 * 60) {
             this.penddingList.splice(index, 1);
             let data = { ...item };
 

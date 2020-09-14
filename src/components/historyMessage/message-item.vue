@@ -9,7 +9,7 @@
         <!-- 消息主体 -->
         <message-footer v-if="showMessageHeader" :message="message" />
         <div class="content-wrapper">
-          <message-status-icon v-if="isMine" :message="message" />
+          <message-status-icon v-if="!isMine" :message="message" />
           <text-element
             v-if="message.imMsgType === TIM.TYPES.MSG_TEXT"
             :isMine="isMine"
@@ -220,7 +220,8 @@ export default {
         return this.message.fromAccount === this.infoObj.serviceImAccount;
       }
       // return this.message.fromAccount === this.imInfo.userID;
-      return this.message.toAccount === this.visitorInf.guestImAccount;
+      console.log(this.message,this.message.toAccount === this.visitorInf.guestImAccount)
+      return this.message.fromAccount === this.visitorInf.guestImAccount;
     },
     messagePosition() {
       if (

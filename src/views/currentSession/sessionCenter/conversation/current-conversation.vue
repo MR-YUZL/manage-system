@@ -15,10 +15,10 @@
             <a-button @click="getMOreFn">查看更多</a-button>
           </div>
           <div class="no-more" v-else>没有更多了</div>
-          <!-- <history-message
+          <history-message
             :historySessionList="historySessionList"
             v-if="isSave"
-          /> -->
+          />
           <message-item
             v-for="message in progressSessionList"
             :key="message.ID"
@@ -177,7 +177,7 @@ export default {
                 arr.push(item);
               }
             });
-            console.log(arr)
+            console.log(arr,arr.length)
             if (arr.length && arr.length > 15) {
               this.isSave = false;
             } else {
@@ -284,8 +284,12 @@ export default {
             this.$store.dispatch(
               "getMessageList",
               this.currentConversation.conversationID
-            );
-            this.isSave = false;
+            ).then(() => {
+                if(!this.isCompleted){
+                  this.isSave = true;
+                }
+              })
+            
           } else {
             console.log("5-=-===============");
             this.searchChatRecords();

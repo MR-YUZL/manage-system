@@ -36,7 +36,7 @@
         </li>
         <li>
           <span>上次访问时间</span>
-          <p>{{ vistorInfoObj.lastMsgTime }}</p>
+          <p>{{ vistorInfoObj.lastServiceTime }}</p>
         </li>
         <li>
           <span>上次接待客服</span>
@@ -188,7 +188,7 @@ export default {
           }
         ]
       },
-      type: ""
+      type: "",
     };
   },
   watch: {
@@ -325,10 +325,13 @@ export default {
       console.log(params.address);
       // let [provinceId, cityId, countyId] = params.address;
       // let [provinceId, cityId, countyId] = params.address;
-      params.provinceId = params.address[0];
-      params.cityId = params.address[1];
-      params.countyId = params.address[2];
-      delete params.address;
+      if(params.address){
+        params.provinceId = params.address[0];
+        params.cityId = params.address[1];
+        params.countyId = params.address[2];
+        delete params.address;
+      }
+      
       // params.provinceId = provinceId;
       // params.cityId = cityId;
       // params.countyId = countyId;
@@ -343,7 +346,7 @@ export default {
         );
       } else if (this.type == "save") {
         // 保存为线索
-
+        params.clueSource = 0
         this.Request.post("/hfw/workbench/saveClue", { ...params }).then(() => {
           this.$message.success("保存成功");
           this.getVisitorInfo();
@@ -385,11 +388,15 @@ export default {
     },
     onRelatedCusSearch() {
       console.log("=====================", this.relateSearchKey);
+      if(this.relateSearchKey == ''){
+        return
+      }
       this.relateRadio = [];
       this.Request.get(
         "/hfw/workbench/blurMatchCustName?matchKey=" + this.relateSearchKey
       ).then(res => {
-        if (res.data.list.legnth) {
+        console.log(res)
+        if (res.data.status && res.data.list.length) {
           let data = res.data.list;
           if (data.length > 0) {
             this.relateRadio = data;
@@ -398,7 +405,7 @@ export default {
           this.$message.warning(res.data.msg)
         }
 
-        console.log("模糊搜索", res.data);
+       
       });
     }
   }
