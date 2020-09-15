@@ -59,7 +59,7 @@ export default {
         totalRecord: 0,
         totalPage: 0
       },
-      defaultSearchFormValues:{},
+      defaultSearchFormValues:{sessionTime:[]},
       searchFormList: [
         {
           type: "rangepicker",
@@ -217,7 +217,7 @@ export default {
     this.getSessionAccMember();
     this.getSessionServiceGroups();
     this.getReferClassify();
-    this.defaultSearchFormValues = Object.assign({},this.defaultSearchFormValues,{test:1})
+    // this.defaultSearchFormValues = Object.assign({},this.defaultSearchFormValues,{})
   },
   methods: {
     onSubmitGrade(){
