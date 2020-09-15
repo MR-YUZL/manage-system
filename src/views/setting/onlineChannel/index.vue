@@ -36,7 +36,7 @@ export default {
         flex: 1;
         iframe{
           width: 100%;
-          height: calc(100% - 5px);
+          height: calc(100vh - 89px);
         }
     }
 }

@@ -406,6 +406,7 @@ export default {
             this.penddingList.forEach((val, index) => {
               if (val.conversationID == item.conversationID) {
                 status = true;
+                this.penddingList.splice(index, 1);
                 let this_ = this;
                 let promise = this.tim(
                   this_.imInfo.SDKAppID
@@ -427,7 +428,7 @@ export default {
                       }
                     }
                     console.log(obj);
-                    this_.penddingList.splice(index, 1);
+                    
                     this_.penddingList = [obj, ...this_.penddingList];
                     if (this_.penddingList.length + this_.endList.length) {
                       this_.$emit("isStatus", true);
@@ -522,7 +523,7 @@ export default {
           let time = item.latestVisitorMsgTime
             ? item.latestVisitorMsgTime
             : moment(item.beginTime).format("X");
-          if (moment().format("X") - time >= 1 * 60) {
+          if (moment().format("X") - time >= 5 * 60) {
             this.penddingList.splice(index, 1);
             let data = { ...item };
 

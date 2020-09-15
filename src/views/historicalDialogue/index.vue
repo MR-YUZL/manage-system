@@ -182,8 +182,8 @@ export default {
         },
         {
           title: "平均响应时长",
-          dataIndex: "laveResponseDuration",
-          key: "laveResponseDuration"
+          dataIndex: "aveResponseDuration",
+          key: "aveResponseDuration"
         },
         {
           title: "接待客服",

@@ -22,13 +22,16 @@ export default {
     });
   },
   destroyed(){
-    this.Request.get('/api/chat/customer/status/update',{status:0})
+    //status: 0离线，1在线，2忙碌
+    this.Request.get('/api/chat/customer/status/update',{status:0}).then(res => {
+
+    })
   }
 };
 </script>
 <style lang="less" scoped>
 #app {
   min-width: 1280px;
-  height: 100%;
+  // height: 100%;
 }
 </style>

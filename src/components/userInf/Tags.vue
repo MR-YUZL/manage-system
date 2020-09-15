@@ -83,7 +83,8 @@ export default {
              }
            })
           }else{
-            this.$message.warning('请联系管理员-前往系统属性设置维护访客标签选项值')
+            this.tagsModalShow = false
+            this.$message.warning('请联系管理员-前往系统属性设置维护访客标签选项值!')
           }
         })
       },
