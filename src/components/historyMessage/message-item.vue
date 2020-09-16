@@ -216,11 +216,12 @@ export default {
       return this.currentConversation.type;
     },
     isMine() {
+      // console.log(this.message,this.infoObj,this.infoObj.serviceImAccount,this.message.fromAccount === this.visitorInf.guestImAccount)
       if (this.infoObj && this.infoObj.type == "history") {
         return this.message.fromAccount === this.infoObj.serviceImAccount;
       }
       // return this.message.fromAccount === this.imInfo.userID;
-      console.log(this.message,this.message.toAccount === this.visitorInf.guestImAccount)
+      
       return this.message.fromAccount === this.visitorInf.guestImAccount;
     },
     messagePosition() {

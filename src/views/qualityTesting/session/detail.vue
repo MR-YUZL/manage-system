@@ -168,7 +168,7 @@ export default {
             sessionId:data.id,
             msgTimeEnd:data.endTime?moment(data.endTime).format("YYYY-MM-DD HH:mm:ss.SSS"):'',
             type:1,
-            // serviceImAccount:data.serviceImAccount
+            serviceImAccount:data.serviceImAccount
           }
         }
       });

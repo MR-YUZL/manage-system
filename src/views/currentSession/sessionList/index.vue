@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     moment,
-   
+
     currentUnreadCount(selectId) {
       console.log(selectId);
       for (let i = 0; i < this.penddingList.length; i++) {
@@ -87,7 +87,7 @@ export default {
     },
     getIsSDKReady() {
       if (this.penddingList && this.penddingList.length) {
-        console.log(this.penddingList)
+        console.log(this.penddingList);
         this.isCheckouting = true;
         let params = {
           orgId: this.penddingList[0].orgId,
@@ -178,7 +178,11 @@ export default {
     //获取会话列表
     getSessionList() {
       this.Request.get("/session/guest/my/all/list").then(res => {
-        console.log("*******************", res.data.list);
+        console.log(
+          "*******************",
+          res.data.list,
+          this.conversationList
+        );
         if (res.data.status) {
           this.list = res.data.list;
           this.penddingList = [];
@@ -278,12 +282,11 @@ export default {
                     } else {
                       this_.$emit("isStatus", false);
                     }
-             
+
                     if (
                       this_.penddingList.length == 1 &&
                       !this_.endList.length
                     ) {
-                    
                       this_.getIsSDKReady();
                     }
                     if (this_.penddingList && this_.penddingList.length) {
@@ -291,10 +294,10 @@ export default {
                       this_.timeoutHandler();
                     }
                     if (this_.visitorInf.guestImAccount == item.from) {
-                    //   console.log("------------------------1",moment(
-                    //   res.data.sessionInfo.beginTime
-                    // ).format("X"),moment(res.data.sessionInfo.beginTime).valueOf() /
-                    //       1000,res.data.sessionInfo.beginTime);
+                      //   console.log("------------------------1",moment(
+                      //   res.data.sessionInfo.beginTime
+                      // ).format("X"),moment(res.data.sessionInfo.beginTime).valueOf() /
+                      //       1000,res.data.sessionInfo.beginTime);
                       let obj1 = {
                         guestId: res.data.sessionInfo.guestId,
                         guestName: res.data.sessionInfo.guestName,
@@ -308,8 +311,9 @@ export default {
                         guestImAccount: res.data.sessionInfo.guestImAccount,
                         channelType: res.data.sessionInfo.channelType
                       };
-                      console.log(obj1)
+                      console.log(obj1);
                       this_.$store.commit("getVisitorInf", obj1);
+                      this_.changeHistory(res.data.sessionInfo.orgId, res.data.sessionInfo.guestImAccount)
                     }
                   })
                   .catch(function(imError) {
@@ -345,7 +349,7 @@ export default {
                   };
                   obj["endTime"] = moment().format("YYYY-MM-DD HH:mm:ss");
                   console.log(obj);
-                  
+
                   this_.endList = [obj, ...this_.endList];
                   if (this_.penddingList.length + this_.endList.length) {
                     this_.$emit("isStatus", true);
@@ -357,13 +361,13 @@ export default {
                     // console.log(this.penddingList);
                     this_.timeoutHandler();
                   }
-                 
+
                   if (this_.visitorInf.guestImAccount == item.from) {
                     // console.log(
                     //   "------------------------2",
                     //   this_.visitorInf.beginTime,
                     //   moment().valueOf() / 1000,
-                    //   moment().format("X") 
+                    //   moment().format("X")
                     // );
                     let obj1 = {
                       guestId: this_.visitorInf.guestId,
@@ -378,14 +382,13 @@ export default {
                     };
 
                     this_.$store.commit("getVisitorInf", obj1);
-                    if(item.payload.data.subMsgType == "transfer"){
+                    if (item.payload.data.subMsgType == "transfer") {
                       let obj2 = {
-                        previous: '',
+                        previous: "",
                         selectId: item.conversationID
                       };
-                      this_.selectObj(obj2)
+                      this_.selectObj(obj2);
                     }
-                    
                   }
                 })
                 .catch(function(imError) {
@@ -428,7 +431,7 @@ export default {
                       }
                     }
                     console.log(obj);
-                    
+
                     this_.penddingList = [obj, ...this_.penddingList];
                     if (this_.penddingList.length + this_.endList.length) {
                       this_.$emit("isStatus", true);
@@ -478,7 +481,7 @@ export default {
           //       });
           //   }
           // });
-         
+
           // if (this.visitorInf.guestImAccount == item.from) {
           //   let obj = {
           //     guestId: this.visitorInf.guestId,
@@ -560,18 +563,48 @@ export default {
         }
       }, 1000);
     },
-    getChat() {
-      let promise = this.tim(this.imInfo.SDKAppID).getConversationProfile(
-        "C2Chfw1176193904"
-      );
-      promise
-        .then(function(imResponse) {
-          // 获取成功
-          console.log(imResponse.data.conversation); // 会话资料
-        })
-        .catch(function(imError) {
-          console.warn("getConversationProfile error:", imError); // 获取会话资料失败的相关信息
-        });
+    changeHistory(orgId,visitorAccount) {
+      let params = {
+        orgId,
+        visitorAccount,
+        msgTimeEnd: moment().format("YYYY-MM-DD HH:mm:ss.SSS"),
+        pageSize: 20
+      };
+
+      this.Request.get("/session/chat/record/search", params).then(res => {
+        if (res.data.status) {
+          let data = res.data;
+          let list = [...data.list];
+          let arr = deleteHistory(list, this.imInfo.userID);
+          // this.$store.commit("getSelectStatus", true);
+          this.$store.commit("getHistoryList", arr);
+          // this.$store
+          //   .dispatch(
+          //     "checkoutConversation",
+          //     this.penddingList[0].conversationID
+          //   )
+          //   .then(() => {
+          //     this.isCheckouting = false;
+          //   })
+          //   .catch(() => {
+          //     this.isCheckouting = false;
+          //   });
+          // let obj = {
+          //   guestId: this.penddingList[0].guestId,
+          //   id: this.penddingList[0].id,
+          //   beginTime: moment(this.penddingList[0].beginTime).valueOf() / 1000,
+          //   guestName: this.penddingList[0].guestName,
+          //   endTime: moment(this.penddingList[0].endTime).valueOf() / 1000,
+          //   status: true,
+          //   orgId: this.penddingList[0].orgId,
+          //   guestImAccount: this.penddingList[0].guestImAccount,
+          //   channelType: this.penddingList[0].channelType
+          // };
+          // console.log(obj, "初始化");
+          // this.$store.commit("getVisitorInf", obj);
+          // this.penddingList[0].unreadCount = 0;
+        }
+      });
     }
   },
   watch: {

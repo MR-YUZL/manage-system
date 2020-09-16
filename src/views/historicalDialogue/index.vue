@@ -320,7 +320,12 @@ export default {
     getService(){
       api.staffSkillGroups({type:1}).then(res=>{
         console.log(res,'接待客服')
-        this.searchFormList[3].list = res.data.list
+        if(res.data.role){
+          this.searchFormList[3].list = res.data.list
+        }else{
+          this.searchFormList.splice(3,1)
+        }
+        
       })
     },
     prevHandleSubmit(val){

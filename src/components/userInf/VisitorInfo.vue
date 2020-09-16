@@ -369,6 +369,7 @@ export default {
     handleRelatedCusOk() {
       if (this.custId == "") {
         this.$message.info("请选择要关联的客户");
+        return;
       }
       let params = {
         guestId: this.guestId,
