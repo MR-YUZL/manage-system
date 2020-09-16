@@ -12,7 +12,7 @@
             @toggleModal="toggleModal"
             @formSubmit="sessionSubmit"
           />
-          <div class="customerGrading">客户评级:{{appraiseValue}}</div>
+          <div class="customerGrading">客户评级：{{appraiseValue}}</div>
           <div style="width:355px">
             <HistoryList style="position:relative;top:0;background-color:#fff" :sessionInf="sessionInf" v-if="JSON.stringify(sessionInf) != '{}'" />
           </div>
@@ -53,6 +53,7 @@ import HistoryList from '@/components/historyMessage/historyList'
 export default {
   data() {
     return {
+      appraiseValue:'',
       sessionInf:{},
       qualityType:'session',
       guestId: "",
@@ -115,18 +116,6 @@ export default {
       }
     };
   },
-  computed:{
-    appraiseValue(){
-      let obj = {
-        '0':'不太满意',
-        '1':'一般满意',
-        '2':'满意',
-        '3':'很满意',
-        '4':'非常满意',
-      }
-      return obj[this.qualityForm.appraiseValue]
-    }
-  },
   props: {
     detailsShow: Boolean,
     qcId: String,
@@ -160,6 +149,14 @@ export default {
           this.qualityForm = res.data;
           this.guestId = res.data.session.guestId;
           let data = res.data.session;
+          let obj = {
+            '0':'不太满意',
+            '1':'一般满意',
+            '2':'满意',
+            '3':'很满意',
+            '4':'非常满意',
+          }
+          this.appraiseValue = obj[data.appraiseValue];
           console.log(res.data.session,'res.data.session')
           let {remark,solveStatus,firstConsultId,secondConsultId,threeConsultId} = res.data
           this.sessionObject.defaultValues = {remark,solveStatus,consuleId:[firstConsultId,secondConsultId,threeConsultId]};
@@ -170,6 +167,8 @@ export default {
             type:1,
             // serviceImAccount:data.serviceImAccount
           }
+        }else{
+          this.$message.error(res.data.msg);
         }
       });
     },

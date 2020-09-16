@@ -6,7 +6,7 @@
     </div>
     <div class="materialFlex">
       <li>上次检测人:{{qcObj.qcAcc}}</li>
-      <li>被检测人:{{qcObj.serviceName}}</li>
+      <li>被检测人:{{qcObj.serviceAccName}}</li>
       <li>检测时间:{{qcObj.qcDate}}</li>
     </div>
     <a-form-model ref="gradeForm" v-bind="formItemLayout" :model="gradeForm">
@@ -17,10 +17,10 @@
         :prop="'gradelist.' + index + '.gradeValue'"
         :rules="[{ required: true, message: '不能为空'}]"
       >
-        <a-input v-model="item.gradeValue" placeholder="请输入" />
+        <a-input-number style="width:220px" v-model.trim="item.gradeValue" placeholder="请输入" :max="item.gradeLimit" :precision="0" />
       </a-form-model-item>
       <a-form-model-item label="评语">
-        <a-input v-model="qcObj.qcDesc" type="textarea" />
+        <a-input v-model="qcObj.qcDesc" type="textarea" placeholder="最多可输入200个汉字" :maxLength="200" />
       </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
         <a-button type="primary" html-type="submit" @click="submitGrade('gradeForm')">提交</a-button>
@@ -40,7 +40,7 @@ export default {
         reniews: ""
       },
       formItemLayout: {
-        labelCol: { span: 6 },
+        labelCol: { span: 8 },
         wrapperCol: { span: 14 }
       }
     };
@@ -77,6 +77,7 @@ export default {
     submitGrade(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
+          this.gradeForm.reniews = this.qcObj.qcDesc;
           if (this.qualityType == "session") {
             let sessionJson = {
               sessionId: this.qcObj.session.id,
