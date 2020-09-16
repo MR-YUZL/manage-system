@@ -178,6 +178,7 @@ export default {
       },
       createdWorkOrderModal(){
         this.createdWorkOrder.visible = true
+        this.getFormFields()
         // this.getRelatedCustomerList()
         // this.$refs.createdModal
         // this.formObjectCreated.defaultValues = {}

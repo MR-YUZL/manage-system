@@ -28,6 +28,7 @@
 </template>
 <script>
 import api from "@/api/customerCenter";
+import qs from "qs";
 export default {
   data() {
     return {
@@ -62,9 +63,12 @@ export default {
       this.$emit("closeUpdate");
     },
     downFaild(fileId){
-      api.errorResult({fileId:this.fileId}).then(res=>{
-        console.log(res,'下载导入失败的数据')
-      })
+      console.log(fileId,'fileId')
+      let param = qs.stringify({
+        fileId:fileId
+      });
+      let url = `/imp/hfwImportResult/expErrorExcel?${param}`;
+      window.location.href = url;
     },
   }
 };

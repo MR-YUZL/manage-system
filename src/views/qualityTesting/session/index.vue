@@ -19,6 +19,12 @@
           <div slot="idSkip" slot-scope="record,row">
             <span class="blue" @click="qualityDetail(row.id)">{{row.id}}</span>
           </div>
+          <div slot="name" slot-scope="record,row">
+            <span class="name" :title="row.name">{{row.name}}</span>
+          </div>
+          <div slot="consultTypeName" slot-scope="record,row">
+            <span class="name" :title="row.consultTypeName">{{row.consultTypeName}}</span>
+          </div>
         </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
@@ -73,7 +79,7 @@ export default {
           name: "status",
           placeholder:'请选择',
           options: [
-            { key: "null", id: "全部" },
+            { key: "", id: "全部" },
             { key: 0, id: "未解决" },
             { key: 1, id: "已解决" }
           ],
@@ -109,7 +115,7 @@ export default {
         {
           type: "select",
           label: "客服组",
-          name: "serviceGroupId",
+          name: "serviceGroupIds",
           mode:"multiple",
           options: [],
           placeholder:'请选择',
@@ -120,7 +126,7 @@ export default {
           name: "qcStatus",
           placeholder:'请选择',
           options: [
-            { key: "null", id: "全部" },
+            { key: "", id: "全部" },
             { key: 0, id: "未质检" },
             { key: 1, id: "已质检" }
           ],
@@ -154,7 +160,8 @@ export default {
         {
           title: "姓名",
           dataIndex: "name",
-          key: "name"
+          key: "name",
+          scopedSlots: { customRender: "name" }
         },
         {
           title: "会话开始时间",
@@ -164,7 +171,8 @@ export default {
         {
           title: "咨询分类",
           dataIndex: "consultTypeName",
-          key: "consultTypeName"
+          key: "consultTypeName",
+          scopedSlots: { customRender: "consultTypeName" }
         },
         {
           title: "问题解决状态",
@@ -240,8 +248,17 @@ export default {
       });
     },
     prevHandleSubmit(val){
-      val.sessionTime = val.sessionTime.join();
-      console.log(val,'sessionTimeval')
+      console.log(val,'val222')
+      if(val.sessionTime && val.sessionTime[0]){
+        val.sessionTime = val.sessionTime.join();
+      }else{
+        val.sessionTime = ''
+      }
+      if(val.serviceGroupIds && val.serviceGroupIds[0]){
+        val.serviceGroupIds = val.serviceGroupIds.join();
+      }else{
+        val.serviceGroupIds = ''
+      }
       this.searchParams = Object.assign({},this.searchParams,this.sessionRefer,val)
       console.log(val,this.searchParams,'val45444444444444')
       this.getList();
@@ -310,15 +327,24 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.record-detail {
-  display: flex;
-  .message {
-    width: 380px;
-    border-right: 1px solid #e6e6e6;
-  }
-  .information {
-    margin-left: 48px;
-    width: 384px;
+.box{
+  .name{
+    display: inline-block;
+    width: 110px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 }
+// .record-detail {
+//   display: flex;
+//   .message {
+//     width: 380px;
+//     border-right: 1px solid #e6e6e6;
+//   }
+//   .information {
+//     margin-left: 48px;
+//     width: 384px;
+//   }
+// }
 </style>
