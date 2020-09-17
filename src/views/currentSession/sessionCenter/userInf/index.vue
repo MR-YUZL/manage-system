@@ -16,7 +16,7 @@
               ? require('./../../../../assets/imgs/current_session/app.png')
               : visitorInf.channelType == 5
               ? require('./../../../../assets/imgs/current_session/app.png')
-              :visitorInf.channelType == 6
+              : visitorInf.channelType == 6
               ? require('./../../../../assets/imgs/current_session/weixin.png')
               : ''
           "
@@ -215,7 +215,7 @@ export default {
           break;
         case "endServer":
           this["endServerObj"]["visible"] = data.visible;
-          let [firstConsuleId, secondConsuleId, threeConsuleId] = obj.consultId;
+          let [firstConsultId, secondConsultId, threeConsultId] = obj.consultId;
 
           delete obj.consuleId;
           obj = {
@@ -224,11 +224,24 @@ export default {
             advisoryRemark: obj.advisoryRemark,
             endWay: 0
           };
-          obj.firstConsuleId = firstConsuleId;
-          obj.secondConsuleId = secondConsuleId;
-          obj.threeConsuleId = threeConsuleId;
+          obj.firstConsultId = firstConsultId;
+          obj.secondConsultId = secondConsultId;
+          obj.threeConsultId = threeConsultId;
 
           url = "/session/end";
+          let obj1 = {
+            guestId: this_.visitorInf.guestId,
+            guestName: this_.visitorInf.guestName,
+            id: this_.visitorInf.id,
+            beginTime: this_.visitorInf.beginTime,
+            endTime: moment().format("X"),
+            status: false,
+            orgId: this_.visitorInf.orgId,
+            guestImAccount: this_.visitorInf.guestImAccount,
+            channelType: this_.visitorInf.channelType
+          };
+
+          this.$store.commit("getVisitorInf", obj1);
           break;
       }
 

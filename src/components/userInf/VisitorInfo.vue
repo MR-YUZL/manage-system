@@ -93,6 +93,7 @@
 import Modal from "../Modal/index";
 import BaseForm from "../BaseForm/index";
 import { areaDictionary } from "@/utils/areaDictionary";
+import validateRules from './../../utils/validateRules'
 export default {
   name: "visitorInfo",
   props: {
@@ -109,6 +110,15 @@ export default {
     BaseForm
   },
   data() {
+    let  linkName = (rule, value, callback) => {
+      console.log(rule, value, callback)
+      if (value.trim()) {
+        callback();
+      }else{
+        callback(new Error('请输入姓名'));
+      } 
+    };
+    
     return {
       relateRadio: [],
       vistorInfoObj: { existClue: "" },
@@ -142,6 +152,10 @@ export default {
                 required: true,
                 message: "请输入姓名",
                 trigger: "blur"
+              },
+              {
+                validator:linkName,
+                trigger: "blur"
               }
             ]
           },
@@ -149,7 +163,13 @@ export default {
             type: "input",
             label: "手机号",
             placeholder: "请输入",
-            ruleName: "telPhone"
+            ruleName: "telPhone",
+            rules:[
+              {
+                validator:validateRules.checkPhone,
+                trigger: "blur"
+              }
+            ]
           },
           {
             type: "input",
@@ -161,13 +181,25 @@ export default {
             type: "input",
             label: "邮箱",
             placeholder: "请输入",
-            ruleName: "email"
+            ruleName: "email",
+            rules:[
+              {
+                validator:validateRules.checkMail,
+                trigger: "blur"
+              }
+            ]
           },
           {
             type: "input",
             label: "QQ",
             placeholder: "请输入",
-            ruleName: "qq"
+            ruleName: "qq",
+            rules:[
+              {
+                validator:validateRules.checkQQ,
+                trigger: "blur"
+              }
+            ]
           },
           {
             type: "input",
@@ -268,6 +300,13 @@ export default {
       this.formObjectClue.defaultValues = {};
       this.formObjectClue.modelList[0].ruleName = "linkName";
       this.formObjectClue.modelList[1].ruleName = "phone";
+      let  remark = (rule, value, callback) => {
+      if (value.trim()) {
+        callback();
+      }else{
+        callback(new Error('请输入咨询备注'));
+      } 
+    };
       this.formObjectClue.modelList[7] = {
         type: "textarea",
         label: "咨询备注",
@@ -277,6 +316,10 @@ export default {
           {
             required: true,
             message: "请输入备注",
+            trigger: "blur"
+          },
+          {
+            validator:remark,
             trigger: "blur"
           }
         ]
@@ -295,7 +338,7 @@ export default {
       //   params.countyId = address[2]?address[2]:''
       // }
 
-      console.log("保存为线索的参数1", data,params, this.type);
+      console.log("保存为线索的参数1", data,params, this.type,validateRules);
       if (
         !data.telPhone &&
         !data.wechat &&
@@ -322,10 +365,10 @@ export default {
       // this.Request.post('/hfw/workbench/clueCensor',{checkKey:'22',type:'1'}).then(res => {
       //   console.log(res)
       // })
-      console.log(params.address);
+      console.log(params.address,params.address[0] == 'null');
       // let [provinceId, cityId, countyId] = params.address;
       // let [provinceId, cityId, countyId] = params.address;
-      if(params.address){
+      if(params.address && params.address[0] != 'null'){
         params.provinceId = params.address[0];
         params.cityId = params.address[1];
         params.countyId = params.address[2];
