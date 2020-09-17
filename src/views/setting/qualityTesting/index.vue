@@ -76,16 +76,16 @@ export default {
           range:'',
           rules:{
             gradeName: [
-              { required: true, message: '请输入  ', trigger: 'blur' },
+              { required: true, message: '请输入  ', trigger: 'blur',whitespace: true },
             ],
             // gradeExplain: [
             //   { required: true, message: '请输入  ', trigger: 'blur' },
             // ],
             gradeType: [
-              { required: true, message: '请选择  ', trigger: 'blur' },
+              { required: true, message: '请选择  ', trigger: 'blur',whitespace: true },
             ],
             gradeLimit: [
-              { required: true, message: '请输入  ', trigger: 'blur' },
+              { required: true, message: '请输入  ', trigger: 'blur',whitespace: true  },
             ],
           },
           dataSource:[{}],
