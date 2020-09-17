@@ -107,7 +107,13 @@ export default {
             isChecked: false,
           };
         });
-        console.log(this.tableHeadList, "this.tableHeadList");
+        this.removList = this.removList.map((v) => {
+          return {
+            ...v,
+            isChecked: false,
+          };
+        });
+        console.log(this.tableHeadList, "this.tableHeadList",this.removList);
         // this.targetKeys = newArr.filter(v => v.isShow == 1).map(item => item.key);
       });
     },

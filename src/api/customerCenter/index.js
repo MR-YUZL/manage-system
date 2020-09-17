@@ -94,7 +94,7 @@ export default {
   },
   //客户管理-客户标签  
   customerLabel(params) {
-    return axios.get('/customers/hfwCustomersInfo/searchListJson', {params})
+    return axios.get('/customers/hfwCustomersLabels/labelListJson', {params})
   },
   //客户管理-创建人/负责人   
   staffSkillGroups(params) {

@@ -35,7 +35,7 @@
           :pagination="false"
           :rowKey="record => record.custId"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-          :scroll="{ x: 1500}"
+          :scroll="scroll"
         >
           <div slot="mergeLinkman" slot-scope="record,row">
             <span><img v-if="row.custLinkPhone" src="../../../assets/imgs/phoneIcon.png" alt="">{{row.custLinkPhone}}</span>
@@ -173,6 +173,7 @@ export default {
   },
   data() {
     return {
+      scroll:{},
       relevObj:{},
       createdWorkOrderVisible:false,
       currentModal: {
@@ -442,6 +443,9 @@ export default {
         if (res.data.status) {
           this.tableList = res.data.list;
           this.pager = res.data.pager;
+          if(res.data.list.length > 0){
+            this.scroll = {x:1500}
+          }
         }
       });
     },
@@ -450,7 +454,7 @@ export default {
         console.log("客户标签", res);
         if (res.data.status) {
           let labels = JSON.parse(
-            JSON.stringify(res.data.labels).replace(/name/g, "label")
+            JSON.stringify(res.data.list).replace(/name/g, "label")
           );
           this.searchFormList[1].options = labels;
         }

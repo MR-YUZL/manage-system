@@ -20,6 +20,12 @@
           <div slot="idSkip" slot-scope="record,row">
             <span class="blue" @click="skipDetail(row.id)">{{row.id}}</span>
           </div>
+          <div slot="name" slot-scope="record,row">
+            <span class="name" :title="row.name">{{row.name}}</span>
+          </div>
+          <div slot="consultTypeName" slot-scope="record,row">
+            <span class="name" :title="row.consultTypeName">{{row.consultTypeName}}</span>
+          </div>
         </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
@@ -147,7 +153,8 @@ export default {
         {
           title: "姓名",
           dataIndex: "name",
-          key: "name"
+          key: "name",
+          scopedSlots: { customRender: "name" }
         },
         {
           title: "会话开始时间",
@@ -193,7 +200,8 @@ export default {
         {
           title: "咨询分类",
           dataIndex: "consultTypeName",
-          key: "consultTypeName"
+          key: "consultTypeName",
+          scopedSlots: { customRender: "consultTypeName" }
         },
         {
           title: "会话结束时间",
@@ -235,7 +243,7 @@ export default {
         id: "",
         queryTime: "",
         channelType: "",
-        serviceAccs: "",
+        serviceAccs: [],
         name: ""
       },
       defaultSearchFormValues:{},
@@ -330,6 +338,11 @@ export default {
     },
     prevHandleSubmit(val){
       console.log(val,'val')
+      if(val.serviceAccs && val.serviceAccs[0]){
+        val.serviceAccs = val.serviceAccs.join();
+      }else{
+        val.serviceAccs = ''
+      }
       this.searchParams = Object.assign({},this.searchParams,{consultType:this.consultType},val)
       this.getList();
     },
@@ -420,6 +433,15 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.box{
+  .name{
+    display: inline-block;
+    width: 110px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+}
 .record-detail {
   display: flex;
   .message {
