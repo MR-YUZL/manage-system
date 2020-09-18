@@ -56,7 +56,8 @@ export default {
                 rules: [{
                   required: true,
                   message: "请输入工单标题",
-                  trigger: "blur"
+                  trigger: "blur",
+                  whitespace: true 
                 }]
               },
               {
@@ -67,7 +68,8 @@ export default {
                 rules: [{
                   required: true,
                   message: "请输入工单内容",
-                  trigger: "blur"
+                  trigger: "blur",
+                  whitespace: true
                 }]
               },
               {
@@ -210,7 +212,7 @@ export default {
       },
       // 查询分类
       getClassification(){
-        this.Request.get('/config/system/findTypeListJson',{}).then(res=>{
+        this.Request.get('/config/system/findTypeListJson',{type:1}).then(res=>{
           console.log('分类列表',res.data)
           let list = res.data.list
           this.classifyList  = this.treeChangeData(list)
