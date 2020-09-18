@@ -3,12 +3,17 @@
     <a-modal v-model="visibles" title="跟进客户" :footer="null" @cancel="handleCancel">
       <div>
         <p>最近跟进记录</p>
-        <p class="info">
-          <span>{{lastInfo.followDate}}</span>
-          <span>{{lastInfo.followValid==0?'有效':'无效'}}联系</span>
-          <span>回访客服：{{lastInfo.followAcc}}</span>
-        </p>
-        <p>{{lastInfo.followRecord}}</p>
+        <div v-if="JSON.stringify(lastInfo)!='{}'">
+          <p class="info">
+            <span>{{lastInfo.followDate}}</span>
+            <span>{{lastInfo.followValid==0?'有效':'无效'}}联系</span>
+            <span>回访客服：{{lastInfo.followAcc}}</span>
+          </p>
+          <p>{{lastInfo.followRecord}}</p>
+        </div>
+        <div v-else>
+          该客户暂无跟进记录
+        </div>
       </div>
       <BaseForm :formObject="formObject" @toggleModal="toggleModal" @formSubmit="formSubmit" />
     </a-modal>
@@ -56,11 +61,6 @@ export default {
             ruleName: "followDate",
             format: "YYYY-MM-DD HH:mm:ss",
             options: [],
-            rules: {
-              required: true,
-              message: "请选择跟进时间",
-              trigger: "change"
-            }
           }
         ],
         defaultValues: {

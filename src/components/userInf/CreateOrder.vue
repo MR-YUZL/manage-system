@@ -57,7 +57,8 @@ export default {
                   required: true,
                   message: "请输入工单标题",
                   trigger: "blur"
-                }]
+                }],
+                maxLength: 40
               },
               {
                 type: "textarea",
@@ -68,7 +69,8 @@ export default {
                   required: true,
                   message: "请输入工单内容",
                   trigger: "blur"
-                }]
+                }],
+                maxLength: 256
               },
               {
                 type: "upload",

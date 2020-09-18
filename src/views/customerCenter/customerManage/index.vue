@@ -55,7 +55,7 @@
               style="margin-right:10px;"
               @click="followCustomer(row.custId)"
             >跟进客户</span>
-            <span class="blue" @click="createOrder(row.custId,row.custManager)">创建工单</span>
+            <span class="blue" @click="createOrder(row.custId,row.custName)">创建工单</span>
           </div>
         </a-table>
       </div>
@@ -352,6 +352,13 @@ export default {
         console.log("操作设置", res,this.columns);
         let list = res.data.list;
         this.columns = []
+        let width;
+        //width有2种情况 可能是一个按钮也可能是2个 需要判断
+        if(this.searchParams.dataSource=='2' || this.searchParams.dataSource=='3'){
+          width = 176
+        }else{
+          width = 88
+        }
         let columns = [
           {
             title: currentPageData => {
@@ -367,7 +374,9 @@ export default {
             dataIndex: "status",
             key: "3",
             fixed: 'right',
-            scopedSlots: { customRender: "action" }
+            scopedSlots: { customRender: "action" },
+            // width:88
+            width:width
           }
         ];
         res.data.list.map(item => {
@@ -377,7 +386,8 @@ export default {
                 title: item.fieldName,
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
-                scopedSlots: { customRender: "detailSkip" }
+                scopedSlots: { customRender: "detailSkip" },
+                width:160
               });
             } 
             else if(item.fieldCode == "custLinkPhone"){
@@ -385,14 +395,16 @@ export default {
                 title: item.fieldName,
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
-                scopedSlots: { customRender: "mergeLinkman" }
+                scopedSlots: { customRender: "mergeLinkman" },
+                width:160
               });
             }
             else {
               this.columns.push({
                 title: item.fieldName,
                 dataIndex: item.fieldCode,
-                key: item.fieldCode
+                key: item.fieldCode,
+                width:160
               });
             }
           }
@@ -444,7 +456,8 @@ export default {
           this.tableList = res.data.list;
           this.pager = res.data.pager;
           if(res.data.list.length > 0){
-            this.scroll = {x:1500}
+            // this.scroll = {x: res.data.list.length*160 - 40}
+            this.scroll = {x: 1500}
           }
         }
       });

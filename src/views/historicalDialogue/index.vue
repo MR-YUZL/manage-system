@@ -338,6 +338,11 @@ export default {
     },
     prevHandleSubmit(val){
       console.log(val,'val')
+      if(val.consultType && val.consultType[0]){
+        val.consultType = val.consultType.join();
+      }else{
+        val.serviceAccs = ''
+      }
       if(val.serviceAccs && val.serviceAccs[0]){
         val.serviceAccs = val.serviceAccs.join();
       }else{
