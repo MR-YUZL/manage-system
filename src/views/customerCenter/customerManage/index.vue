@@ -41,12 +41,7 @@
             <span><img v-if="row.custLinkPhone" src="../../../assets/imgs/phoneIcon.png" alt="">{{row.custLinkPhone}}</span>
           </div>
           <div slot="detailSkip" slot-scope="record,row">
-            <span class="blue" @click="customerDetail(row.custId)">
-              {{row.custName}}
-            </span>
-            <div v-for="(it,index) in row.custLabelList">
-              <span class="custLabelList">{{it}}</span>
-            </div>
+            <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
           </div>
           <div slot="action" slot-scope="record,row">
             <span
@@ -301,19 +296,19 @@ export default {
 
         {
           type: "rangepicker",
-          name: "inputDates",
+          name: "inputDateStart",
           label: "创建时间",
           placeholder: "请选择",
         },
         {
           type: "rangepicker",
-          name: "lastFollowDates",
+          name: "lastFollowDateStart",
           label: "最近跟进时间",
           placeholder: "请选择",
         },
         {
           type: "rangepicker",
-          name: "nextFollowDates",
+          name: "nextFollowDateStart",
           label: "下次跟进时间",
           placeholder: "请选择",
         },
@@ -341,7 +336,7 @@ export default {
     this.getStaffSkillGroups(1);
     this.getCustomerGroup();
     this.getColumns();
-    console.log(this.$store.state.basic.btnRealms,'角色权限')
+    
   },
   methods: {
     isShowBtn(str){
@@ -437,7 +432,7 @@ export default {
       }
     },
     getList() {
-      console.log(this.searchParams,'this.searchParams123')
+      
       let params = {};
       if (JSON.stringify(this.searchParams) == "{}") {
         params = {
@@ -448,6 +443,11 @@ export default {
           ...this.pager
         };
         params.item = this.searchParams
+        // let [followDateStart,followDateEnd] = this.searchParams.queryTimess
+        // delete this.searchParams.inputDateStart 
+        // delete this.searchParams.lastFollowDateStart 
+        // params.item.followDateStart = followDateStart
+        // params.item.followDateEnd = followDateEnd
       }
     
       api.custManageList(params).then(res => {
@@ -637,10 +637,5 @@ export default {
       margin-right: 10px;
     }
   }
-}
-.custLabelList{
-  border: 1px solid #3e7bf8;
-  color: #3e7bf8;
-  padding: 0 5px;
 }
 </style>

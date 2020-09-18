@@ -249,7 +249,7 @@ export default {
       this.handleRecordBtn = status ? false : true;
       this.detailsShow = true;
       this.Request.get("/hfw/hfwSessionInfo/infoJson?id=" + id).then(res => {
-        console.log(res.data,res.data.data, "记录详情");
+        console.log(res.data.data, "记录详情");
         let data = res.data.data;
         this.detailsId = data.id;
         this.guestId = data.guestId;

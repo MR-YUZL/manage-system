@@ -14,18 +14,31 @@ export default {
     locale: zhCN
   }),
   mounted() {
-    
+    external.call &&
+      external.call(
+        "CppLoadComplete",
+        { type: "2", calljs: "" },
+        (error, result) => {
+          console.log(result);
+        }
+      );
   },
-  created(){
+  created() {
     this.Request.get("/config/hfwConfigResource/getButtRealms").then(res => {
-     this.$store.commit('getBtnRealms',res.data.list)
+      this.$store.commit("getBtnRealms", res.data.list);
     });
+    // this.setStatus(1);
   },
-  destroyed(){
-    //status: 0离线，1在线，2忙碌
-    this.Request.get('/api/chat/customer/status/update',{status:0}).then(res => {
-
-    })
+  destroyed() {
+    this.setStatus(0);
+  },
+  methods: {
+    setStatus(status) {
+      //status: 0离线，1在线，2忙碌
+      this.Request.get("/api/chat/customer/status/update", {
+        status: status
+      }).then(res => {});
+    }
   }
 };
 </script>
