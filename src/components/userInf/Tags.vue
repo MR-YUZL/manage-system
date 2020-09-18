@@ -70,7 +70,7 @@ export default {
         this.allTags=[]
         this.Request.get('/hfw/workbench/getAllGuestLabel').then(res => {
           let data = res.data.list
-          if(data.length>0){
+          if(res.data.list && data.length>0){
             this.tagsModalShow = true
             this.allTags = data
            this.allTags.map(it=>{

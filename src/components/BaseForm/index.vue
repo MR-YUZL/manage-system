@@ -192,7 +192,7 @@
           v-if="item.type == 'areaCascader'"
           :options="areaDictionary"
           :field-names="item.fieldNames"
-          v-model="formObject.defaultValues[item.ruleName]"
+          v-model="formObject.defaultValues[item.ruleName]"  
           change-on-select
           @change="areaOnChange"
           :placeholder="item.placeholder"

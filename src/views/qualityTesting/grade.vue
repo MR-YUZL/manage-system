@@ -5,7 +5,7 @@
       <span>{{qcObj.totalScore}}</span>
     </div>
     <div class="materialFlex">
-      <li>上次检测人:{{qcObj.qcAcc}}</li>
+      <li>上次检测人:{{qcObj.qcAccName}}</li>
       <li>被检测人:{{qcObj.serviceAccName}}</li>
       <li>检测时间:{{qcObj.qcDate}}</li>
     </div>
