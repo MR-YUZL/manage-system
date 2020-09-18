@@ -58,7 +58,7 @@ export default {
             type: "date",
             label: "下次跟进时间",
             placeholder: "请选择",
-            ruleName: "followDate",
+            ruleName: "nextFollowDate",
             format: "YYYY-MM-DD HH:mm:ss",
             options: [],
           }
