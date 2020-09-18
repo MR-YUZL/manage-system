@@ -5,6 +5,7 @@
         <!-- <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" /> -->
         <!-- <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" /> -->
         <div class="btn-area">
+          <a-button type="primary" @click="tagsFn">设置标签</a-button>
           <a-button type="primary" @click="editCustomerModalShow">编辑</a-button>
           <a-button type="primary" @click="createContactModalShow($event,'contactModalInner')">新建联系人</a-button>
           <a-button v-if="dataSource=='2' || dataSource=='3' || dataSource=='4'" type="primary" @click="customerFollow">客户跟进</a-button>
@@ -12,7 +13,7 @@
         <ul class="lastFollowFlex">
           <li>
             <span>客服负责人</span>
-            <span>{{infos.principalAcc}}</span>
+            <span>{{infos.principalAcc}}</span> 
           </li>
           <li>
             <span>最近回访时间</span>
@@ -84,6 +85,24 @@
             />
           </template>
         </Modal>
+        <a-modal title="客户标签"  :visible="tagsModalShow.visible" @cancel="handleCancelTags" @ok="handleOkCancelTags">
+            <div class="flex" >
+              <div style="width:150px;">客户标签：</div>
+              <div v-if="allTags.length > 0 ">
+                <template v-for="(tag,index) in allTags" style="margin-bottom:10px;">
+                  <a-checkable-tag
+                    :key="tag.value"
+                    v-model="tag.checked"
+                    @change="checked => handleChange(tag, checked,index)"
+                  >
+                  {{ tag.name }}
+                  </a-checkable-tag>
+                </template>
+              </div>
+              <div v-else>请联系管理员前往系统属性维护客户标签数据</div>
+            </div>
+        </a-modal>
+
       </template>
     </Modal>
   </div>
@@ -100,6 +119,8 @@ import { areaDictionary } from "@/utils/areaDictionary";
 export default {
   data() {
     return {
+      allTags:[],
+      tagsList:[],
       infoContactsJson: [],
       infos: {},
       questionList: [], //服务小结
@@ -110,6 +131,7 @@ export default {
       },
       currentModal: this.visibleProps,
       contactModalInner: { title: "新建联系人", visible: false },
+      tagsModalShow: { visible: false },
       materialList: [],
       logList: [],
       contactLength: "",
@@ -127,6 +149,14 @@ export default {
     detailId: String,
     visibleProps: Object,
     dataSource:String
+  },
+  created(){
+    this.getTags()
+  },
+  watch:{
+    guestId(){
+      this.getTags()
+    }
   },
   mounted() {
     // this.getServiceList();
@@ -304,7 +334,68 @@ export default {
     handleCancel(e) {
       this.visibles = false;
       this.$emit("closeUpdate");
-    }
+    },
+    //客户标签
+    tagsFn(){
+      this.getAllTags()
+       this.tagsModalShow.visible = true
+    },
+    //客户设置标签时获取单位下所有维护的客户标签
+      getAllTags(){
+        this.allTags=[]
+        this.Request.get('/customers/hfwCustomersLabels/labelListJson').then(res => {
+          let data = res.data.list;
+          if(data.length>0){
+            this.allTags = data
+           this.allTags.map(it=>{
+             if(this.tagsList && this.tagsList.length>0){
+               this.tagsList.map(item=>{
+              if(it.name == item.name){
+                  it.checked = true
+                }
+              })
+             }
+           })
+          }
+        })
+      },
+      //获取tags  参数  guestId  客户id
+      getTags(){
+        this.Request.get('/customers/hfwCustomersInfo/searchListJson?custId='+this.detailId).then(res => {
+          console.log('标签tags',res.data)
+          this.tagsList = res.data.labels
+        })
+      },
+      handleCancelTags(){
+        this.tagsModalShow.visible = false
+      },
+      handleOkCancelTags(){
+       
+        let params = {
+          custId:this.detailId,
+          labels:[]
+        }
+         this.allTags.map(item=>{
+          if(item.checked){
+            params.labels.push(item.value)
+          }
+        })
+        console.log('选中的标签',params.labels)
+        if( !params.labels.length){
+          this.$message.warn('请选择要设置的标签');
+          return false
+        }
+        this.Request.post('/customers/hfwCustomersLabels/saveJson',params).then(res => {
+          console.log('标签selectTags',res.data)
+          this.$message.success('设置标签成功！')
+          this.tagsModalShow.visible = false
+          this.getTags()
+        })
+      },
+    handleChange(tag, checked,index) {
+      console.log(tag, checked,index,'dianji')
+      this.allTags[index].checked = checked
+    },
   }
 };
 </script>

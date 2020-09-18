@@ -3,7 +3,7 @@
     <a-page-header title="客户管理" style="padding:16px 0;" />
     <div class="box">
       <!-- 普通客服没有tab 记得判断 -->
-      <a-tabs :activeKey="searchParams.dataSource" @change="changeTabFn">
+      <a-tabs v-if="role" :activeKey="searchParams.dataSource" @change="changeTabFn">
         <a-tab-pane key="1" tab="未分配的客户"></a-tab-pane>
         <a-tab-pane key="2" tab="我负责的客户" force-render></a-tab-pane>
         <a-tab-pane key="3" tab="下属成员负责的客户"></a-tab-pane>
@@ -42,6 +42,9 @@
           </div>
           <div slot="detailSkip" slot-scope="record,row">
             <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
+            <div v-for="(it,index) in row.custLabelList">
+              <span class="custLabelList">{{it}}</span>
+            </div>
           </div>
           <div slot="action" slot-scope="record,row">
             <span
@@ -296,19 +299,19 @@ export default {
 
         {
           type: "rangepicker",
-          name: "inputDateStart",
+          name: "inputDates",
           label: "创建时间",
           placeholder: "请选择",
         },
         {
           type: "rangepicker",
-          name: "lastFollowDateStart",
+          name: "lastFollowDates",
           label: "最近跟进时间",
           placeholder: "请选择",
         },
         {
           type: "rangepicker",
-          name: "nextFollowDateStart",
+          name: "nextFollowDates",
           label: "下次跟进时间",
           placeholder: "请选择",
         },
@@ -323,7 +326,7 @@ export default {
       defaultSearchFormValues: {
         queryType: "1"
       },
-     
+      role:''
     };
   },
   computed:{
@@ -467,7 +470,7 @@ export default {
         console.log("客户标签", res);
         if (res.data.status) {
           let labels = JSON.parse(
-            JSON.stringify(res.data.list).replace(/name/g, "label")
+            JSON.stringify(res.data.labels).replace(/name/g, "label")
           );
           this.searchFormList[1].options = labels;
         }
@@ -477,11 +480,16 @@ export default {
       api.staffSkillGroups({ type: type }).then(res => {
         console.log("创建人", res);
         if (res.data.status) {
+          this.role = res.data.role;
           if (type == 0) {
             this.searchFormList[2].list = res.data.list;
           }
           if (type == 1) {
-            this.searchFormList[3].list = res.data.list;
+            if(res.data.role){
+              this.searchFormList[3].list = res.data.list;
+            }else{
+              this.searchFormList.splice(3,1)
+            }
           }
         }
       });
@@ -620,6 +628,11 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.custLabelList{
+  border: 1px solid #3e7bf8;
+  color: #3e7bf8;
+  padding: 0 5px;
+}
 .button-area {
   display: flex;
   justify-content: space-between;
