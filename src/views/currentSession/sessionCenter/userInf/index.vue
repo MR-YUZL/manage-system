@@ -230,15 +230,15 @@ export default {
 
           url = "/session/end";
           let obj1 = {
-            guestId: this_.visitorInf.guestId,
-            guestName: this_.visitorInf.guestName,
-            id: this_.visitorInf.id,
-            beginTime: this_.visitorInf.beginTime,
+            guestId: this.visitorInf.guestId,
+            guestName: this.visitorInf.guestName,
+            id: this.visitorInf.id,
+            beginTime: this.visitorInf.beginTime,
             endTime: moment().format("X"),
             status: false,
-            orgId: this_.visitorInf.orgId,
-            guestImAccount: this_.visitorInf.guestImAccount,
-            channelType: this_.visitorInf.channelType
+            orgId: this.visitorInf.orgId,
+            guestImAccount: this.visitorInf.guestImAccount,
+            channelType: this.visitorInf.channelType
           };
 
           this.$store.commit("getVisitorInf", obj1);

@@ -6,19 +6,20 @@ import "./assets/css/common.less";
 // 有关antdUi组件
 import "ant-design-vue/dist/antd.css";
 import Antd from "ant-design-vue";
-import Request from './api/api'
-import './api/index'
-import validateRules from './utils/validateRules'
-import tim from './utils/tim'
-import TIM from 'tim-js-sdk'
-import echarts from 'echarts'
-import showMsgCenterEx from "./utils/showMsgCenter";
+import Request from "./api/api";
+import "./api/index";
+import validateRules from "./utils/validateRules";
+import tim from "./utils/tim";
+import TIM from "tim-js-sdk";
+import echarts from "echarts";
+import { showMsgCenterEx, setLoginStatus } from "./utils/showMsgCenter";
 
-Vue.prototype.$echarts = echarts
-Vue.prototype.tim = tim
-Vue.prototype.TIM = TIM
-Vue.prototype.$bus = new Vue() // event Bus 用于无关系组件间的通信。
+Vue.prototype.$echarts = echarts;
+Vue.prototype.tim = tim;
+Vue.prototype.TIM = TIM;
+Vue.prototype.$bus = new Vue(); // event Bus 用于无关系组件间的通信。
 window.showMsgCenterEx = showMsgCenterEx;
+window.setLoginStatus = setLoginStatus;
 
 Vue.use(Antd);
 Vue.config.productionTip = false;
