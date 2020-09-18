@@ -420,7 +420,7 @@ export default {
           this.sessionInf = {
             orgId:data.orgId,
             sessionId:data.id,
-            msgTimeEnd:moment(data.endTime).format("YYYY-MM-DD HH:mm:ss.SSS"),
+            msgTimeBegin:moment(data.beginTime).format("YYYY-MM-DD HH:mm:ss.SSS"),
             type:1,
             serviceImAccount:data.serviceImAccount,
             visitorAccount:data.guestImAccount,

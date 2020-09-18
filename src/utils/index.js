@@ -60,8 +60,10 @@ export function titleNotify(count) {
 
 
 //剔除历史消息中无用消息
-export function deleteHistory(list,account){ 
+export function deleteHistory(list, account) {
+  console.log(account);
   list.map((item, index) => {
+    console.log(item.toAccount, item.subMsgType);
     if (
       (item.toAccount != account &&
         item.imMsgType == "TIMCustomElem" &&
@@ -72,7 +74,7 @@ export function deleteHistory(list,account){
       item.subMsgType == "stopsession" ||
       item.subMsgType == "createsession"
     ) {
-      list.splice(index,1,'')
+      list.splice(index, 1, "");
     }
     if (
       item.toAccount != account &&
@@ -82,13 +84,44 @@ export function deleteHistory(list,account){
       list.splice(index, 1, "");
     }
   });
-  let arr = []
+  let arr = [];
   list.forEach(item => {
     if (item) arr.push(item);
   });
   // console.log(list, arr, arr.length);
-  return arr
+  return arr;
 }
+// export function deleteHistory(list, account) { 
+//   console.log(account)
+//   list.map((item, index) => {
+//     console.log(item.toAccount, item.subMsgType);
+//     if (
+//       (item.toAccount != account &&
+//         item.imMsgType == "TIMCustomElem" &&
+//         item.subMsgType == "queuinglocation") ||
+//       item.subMsgType == "inviteevaluate" ||
+//       item.subMsgType == "transfer" ||
+//       item.subMsgType == "reception" ||
+//       item.subMsgType == "stopsession" ||
+//       item.subMsgType == "createsession"
+//     ) {
+//       list.splice(index,1,'')
+//     }
+//     if (
+//       item.toAccount != account &&
+//       item.imMsgType == "TIMCustomElem" &&
+//       item.subMsgType == "prompts"
+//     ) {
+//       list.splice(index, 1, "");
+//     }
+//   });
+//   let arr = []
+//   list.forEach(item => {
+//     if (item) arr.push(item);
+//   });
+//   // console.log(list, arr, arr.length);
+//   return arr
+// }
 
 //数组去空
 export function arrEmpty(list) {

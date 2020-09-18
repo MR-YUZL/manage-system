@@ -33,7 +33,8 @@ export default {
       timeout: "",
       status: false,
       historySessionList: [], //历史消息会话列表
-      infoObj:{}
+      infoObj:{},
+      isFinished : true
     };
   },
   computed: {
@@ -56,6 +57,7 @@ export default {
       serviceImAccount: this.sessionInf.serviceImAccount
     }
     this.searchChatRecords(this.sessionInf.type); //0获取更多，1：历史会话，2：工单管理
+    // this.searchChatRecords1(this.sessionInf.type); //0获取更多，1：历史会话，2：工单管理
   },
   updated() {},
   destroyed() {},
@@ -68,19 +70,6 @@ export default {
     },
     //获取历史消息
     searchChatRecords(val) {
-      // console.log(
-      //   this.historySessionList,
-      //   this.historySessionList[this.historySessionList.length - 1].msgTime,
-      //   this.historySessionList[0].msgTime
-      // );
-      //sessionInf传递的参数
-      // let params = {
-      //   orgId: this.guestInfo.orgId,
-      //   sessionId: this.sessionObj.guestImAccount,
-      //   // msgTimeEnd:
-      //   //   ,
-      //   pageSize: 20
-      // };
       let params = Object.assign({}, this.sessionInf);
       params.pageSize = 20;
       switch (val) {
@@ -101,7 +90,63 @@ export default {
         if (res.data.status) {
           let data = res.data;
           let list = deleteHistory([...data.list], this.sessionInf.serviceImAccount);
-          
+          this.isFinished = true
+          console.log(list.length);
+          this.historySessionList.map((item) => {
+            list.map((val, index) => {
+              if (val.id == item.id) {
+                list.splice(index, 1);
+              }
+            });
+          });
+          console.log(list, list.length,this.historySessionList.length);
+          if (list.length) {
+            if (this.historySessionList.length) {
+              list.forEach((item, index) => {
+                if (
+                  item.msgTime == this.historySessionList[0].msgTime &&
+                  item.id == this.historySessionList[0].id
+                ) {
+                  list.splice(index, 1);
+                }
+              });
+              console.log(list);
+              this.historySessionList = [...this.historySessionList, ...list];
+            }else{
+              this.historySessionList = [...list];
+            }
+
+            // this.$store.commit("getHistoryList", data.list);
+          } else {
+            this.status = true;
+          }
+        }
+      });
+    },
+     searchChatRecords1(val) {
+      let params = Object.assign({}, this.sessionInf);
+      console.log(params)
+      params.pageSize = 20;
+      switch (val) {
+        case 0:
+          params.msgTimeBegin = moment(
+            this.historySessionList[this.historySessionList.length - 1].msgTime
+          ).format("YYYY-MM-DD HH:mm:ss.SSS");
+          break;
+        case 1:
+          break;
+        case 2:
+          params.msgTimeBegin = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
+          break;
+        default:
+          break;
+      }
+      this.Request.get("/session/chat/record/search", params).then((res) => {
+        if (res.data.status) {
+          let data = res.data;
+          console.log(this.sessionInf.serviceImAccount)
+          let list = deleteHistory([...data.list], this.sessionInf.serviceImAccount);
+          this.isFinished = true
           console.log(list.length);
           this.historySessionList.map((item) => {
             list.map((val, index) => {
@@ -139,13 +184,22 @@ export default {
       if (!messageListNode) {
         return;
       }
-      console.log(this.preScrollHeight,messageListNode.clientHeight,messageListNode.scrollHeight,messageListNode.offsetHeight ,scrollTop)
+      
       if (
         this.preScrollHeight - messageListNode.clientHeight - scrollTop <
         20
       ) {
         this.isShowScrollButtomTips = false;
       }
+      let scrollBottom =
+        messageListNode.scrollHeight -
+        messageListNode.scrollTop -
+        messageListNode.clientHeight;
+        // console.log(scrollBottom)
+        if(this.isFinished && scrollBottom < 50){
+          // this.isFinished = false
+          // this.searchChatRecords1(0);
+        }
     },
   },
 };

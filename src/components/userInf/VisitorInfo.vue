@@ -364,8 +364,7 @@ export default {
       // 字段查重
       // this.Request.post('/hfw/workbench/clueCensor',{checkKey:'22',type:'1'}).then(res => {
       //   console.log(res)
-      // })
-      console.log(params.address,params.address[0] == 'null');
+      // }
       // let [provinceId, cityId, countyId] = params.address;
       // let [provinceId, cityId, countyId] = params.address;
       if(params.address && params.address[0] != 'null'){
