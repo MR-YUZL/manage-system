@@ -1,6 +1,6 @@
 <template>
   <div class="current-conversation-wrapper">
-    <div class="current-conversation" @scroll="onScroll">
+    <div class="current-conversation" >
       <div class="content">
         <div class="message-list scroll" ref="message-list" @scroll="this.onScroll">
           <div class="more" v-if="!this.status">
@@ -139,6 +139,7 @@ export default {
       if (!messageListNode) {
         return;
       }
+      console.log(this.preScrollHeight,messageListNode.clientHeight,messageListNode.scrollHeight,messageListNode.offsetHeight ,scrollTop)
       if (
         this.preScrollHeight - messageListNode.clientHeight - scrollTop <
         20
