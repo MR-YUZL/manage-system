@@ -12,20 +12,21 @@ import validateRules from './utils/validateRules'
 import tim from './utils/tim'
 import TIM from 'tim-js-sdk'
 import echarts from 'echarts'
-import showMsgCenterEx from "./utils/showMsgCenter";
+import { showMsgCenterEx, setLoginStatus } from "./utils/showMsgCenter";
 
 Vue.prototype.$echarts = echarts
 Vue.prototype.tim = tim
 Vue.prototype.TIM = TIM
 Vue.prototype.$bus = new Vue() // event Bus 用于无关系组件间的通信。
 window.showMsgCenterEx = showMsgCenterEx;
+window.setLoginStatus = setLoginStatus;
 
 Vue.use(Antd);
 Vue.config.productionTip = false;
 Vue.prototype.Request = Request;
 Vue.prototype.validateRules = validateRules;
 
-document.cookie = "JSESSIONID=9D9B755CD2F178102781F1F6E0B0C738";
+document.cookie = "JSESSIONID=927C4B08C5D1588DC55D0B327F163EAB";
 
 new Vue({
   router,

@@ -3,7 +3,6 @@ import TIM from 'tim-js-sdk';
 import COS from "cos-js-sdk-v5";
 
 function tim (SDKAppID){
-  console.log(SDKAppID)
   let options = {
     SDKAppID: SDKAppID // 接入时需要将0替换为您的即时通信 IM 应用的 SDKAppID
   };

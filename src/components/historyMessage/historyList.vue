@@ -139,10 +139,12 @@ export default {
       if (!messageListNode) {
         return;
       }
+      console.log(this.preScrollHeight - messageListNode.clientHeight - scrollTop)
       if (
         this.preScrollHeight - messageListNode.clientHeight - scrollTop <
-        20
+        0
       ) {
+        console.log('------------------------')
         this.isShowScrollButtomTips = false;
       }
     },
