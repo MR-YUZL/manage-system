@@ -51,7 +51,7 @@
             :formObject="formObject"
             @formSubmit="formSubmit"
           />
-          <div class="customerGrading">客户评级:{{appraiseValue}}</div>
+          <div class="customerGrading">客户评级：{{appraiseValue}}</div>
           <div style="width:355px" class="historyScroll">
             <HistoryList style="position:relative;background-color:#fff;" :sessionInf="sessionInf" />
           </div>
@@ -105,13 +105,14 @@ export default {
           name: "channelType",
           placeholder:'请选择',
           options: [
-            { key: "null", id: "全部" },
-            { key: 2, id: "网站咨询" },
-            { key: 0, id: "微信公众号" },
-            { key: 1, id: "微信小程序" },
-            { key: 3, id: "app" },
+            { key: "", id: "全部" },
+            { key: 0, id: "网站咨询" },
+            { key: 1, id: "微信公众号" },
+            { key: 2, id: "微信小程序" },
+            { key: 3, id: "IOS" },
+            { key: 4, id: "安卓" },
             { key: 5, id: "QQ" },
-            { key: 4, id: "微信" }
+            { key: 6, id: "微信" }
           ],
           optionValue: "key",
           optionLabel: "id"
@@ -296,18 +297,18 @@ export default {
       historicalRefer:{}
     };
   },
-  computed:{
-    appraiseValue(){
-      let obj = {
-        '0':'不太满意',
-        '1':'一般满意',
-        '2':'满意',
-        '3':'很满意',
-        '4':'非常满意',
-      }
-      return obj[this.formObject.appraiseValue]
-    }
-  },
+  // computed:{
+  //   appraiseValue(){
+  //     let obj = {
+  //       '0':'不太满意',
+  //       '1':'一般满意',
+  //       '2':'满意',
+  //       '3':'很满意',
+  //       '4':'非常满意',
+  //     }
+  //     return obj[this.formObject.appraiseValue]
+  //   }
+  // },
   components: {
     FormModelSearchForm,
     TablePagination,
@@ -412,6 +413,14 @@ export default {
           this.handleResultCon.name = data.followAccName;
           this.recordList = data.detailBeanList;
           this.guestId = data.guestId;
+          let obj = {
+            '0':'不太满意',
+            '1':'一般满意',
+            '2':'满意',
+            '3':'很满意',
+            '4':'非常满意',
+          }
+          this.appraiseValue = obj[data.appraiseValue];
           console.log(data,'123')
           let {advisoryRemark,status,firstConsultId,secondConsultId,threeConsultId} = data;
           this.formObject.defaultValues = {
