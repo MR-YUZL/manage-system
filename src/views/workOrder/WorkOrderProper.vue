@@ -149,6 +149,7 @@ export default {
             orgId:this.orderInfo.orgId,
             sessionId:this.orderInfo.sessionId,
             type:2,
+            msgTimeBegin:moment(this.orderInfo.beginTime).format("YYYY-MM-DD HH:mm:ss.SSS"),
           },
         console.log(this.orderInfo,'=======================this.orderInfo')
       }

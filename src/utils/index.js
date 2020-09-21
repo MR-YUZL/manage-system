@@ -68,11 +68,21 @@ export function deleteHistory(list, account) {
       (item.toAccount != account &&
         item.imMsgType == "TIMCustomElem" &&
         item.subMsgType == "queuinglocation") ||
-      item.subMsgType == "inviteevaluate" ||
-      item.subMsgType == "transfer" ||
-      item.subMsgType == "reception" ||
-      item.subMsgType == "stopsession" ||
-      item.subMsgType == "createsession"
+      (item.toAccount != account &&
+        item.imMsgType == "TIMCustomElem" &&
+        item.subMsgType == "inviteevaluate") ||
+      (item.toAccount != account &&
+        item.imMsgType == "TIMCustomElem" &&
+        item.subMsgType == "transfer") ||
+      (item.toAccount != account &&
+        item.imMsgType == "TIMCustomElem" &&
+        item.subMsgType == "reception") ||
+      (item.toAccount != account &&
+        item.imMsgType == "TIMCustomElem" &&
+        item.subMsgType == "stopsession") ||
+      (item.toAccount != account &&
+        item.imMsgType == "TIMCustomElem" &&
+        item.subMsgType == "createsession")
     ) {
       list.splice(index, 1, "");
     }

@@ -729,7 +729,19 @@ export default {
           let formFieldsObj = []
           this.formFields.map(item=>{
             if(item.isDefined == 1){
-              formFieldsObj.push({
+              // formFieldsObj.push({
+              //   type: obj[item.dataType],
+              //   label: item.fieldName,
+              //   placeholder: "请选择",
+              //   ruleName: item.fieldCode,
+              //   options: item.options,
+              //   rules: [{
+              //     required: item.isRequired==1?true:false,
+              //     message: "请输入",
+              //     trigger: objStatus[item.dataType]
+              //   }]
+              // })
+               let defHtml = {
                 type: obj[item.dataType],
                 label: item.fieldName,
                 placeholder: "请选择",
@@ -740,7 +752,9 @@ export default {
                   message: "请输入",
                   trigger: objStatus[item.dataType]
                 }]
-              })
+              }
+              this.formObjectCreated.modelList.splice(4,0,defHtml)
+              formFieldsObj.push(defHtml)
               if(item.dataType == 3){
                 formFieldsDefault[item.fieldCode] = []
               }
@@ -769,7 +783,7 @@ export default {
             }
           })
           this.formObjectCreated.defaultValues = formFieldsDefault
-          this.$set(this.formObjectCreated,'modelList',[...this.formObjectCreated.modelList,...formFieldsObj])
+          this.$set(this.formObjectCreated,'modelList',[...this.formObjectCreated.modelList])
           this.$forceUpdate()
         })
       }

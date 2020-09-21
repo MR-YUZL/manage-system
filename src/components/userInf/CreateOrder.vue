@@ -337,7 +337,7 @@ export default {
                   trigger: objStatus[item.dataType]
                 }]
               }
-              this.formObjectCreated.modelList.splice(4,1,defHtml)
+              this.formObjectCreated.modelList.splice(4,0,defHtml)
               formFieldsObj.push(defHtml)
               
               if(item.dataType == 3){

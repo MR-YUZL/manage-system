@@ -178,11 +178,11 @@ export default {
     //获取会话列表
     getSessionList() {
       this.Request.get("/session/guest/my/all/list").then(res => {
-        console.log(
-          "*******************",
-          res.data.list,
-          this.conversationList
-        );
+        // console.log(
+        //   "*******************",
+        //   res.data.list,
+        //   this.conversationList
+        // );
         if (res.data.status) {
           this.list = res.data.list;
           this.penddingList = [];
@@ -210,7 +210,7 @@ export default {
               }
             });
           });
-          console.log(this.penddingList, this.endList);
+          // console.log(this.penddingList, this.endList);
           if (this.penddingList.length + this.endList.length) {
             this.$emit("isStatus", true);
           } else {
@@ -226,6 +226,7 @@ export default {
       });
     },
     testList() {
+      // debugger;
       // console.log(this.penddingList, this.endList);
       this.chatList.forEach((item, i) => {
         var status;
@@ -382,13 +383,13 @@ export default {
                     };
 
                     this_.$store.commit("getVisitorInf", obj1);
-                    if (item.payload.data.subMsgType == "transfer") {
+                    // if (item.payload.data.subMsgType == "transfer") {
                       let obj2 = {
                         previous: "",
                         selectId: item.conversationID
                       };
                       this_.selectObj(obj2);
-                    }
+                    // }
                   }
                 })
                 .catch(function(imError) {
@@ -409,8 +410,10 @@ export default {
             this.penddingList.forEach((val, index) => {
               if (val.conversationID == item.conversationID) {
                 status = true;
-                this.penddingList.splice(index, 1);
                 let this_ = this;
+                let obj2 = Object.assign({},val,item)
+
+                this_.penddingList.splice(index, 1,obj2);
                 let promise = this.tim(
                   this_.imInfo.SDKAppID
                 ).getConversationProfile(item.conversationID);
@@ -419,11 +422,11 @@ export default {
                     // 获取成功
                     console.log(imResponse.data.conversation, val); // 会话资料
                     let obj = { ...val, ...imResponse.data.conversation };
-                    if (val.lastMessage.fromAccount != this_.imInfo.userID) {
+                    if (obj.lastMessage.fromAccount != this_.imInfo.userID) {
                       if (
-                        (val.lastMessage.type == "TIMCustomElem" &&
-                          val.payload.data.sendType == "manual") ||
-                        val.lastMessage.type != "TIMCustomElem"
+                        (obj.lastMessage.type == "TIMCustomElem" &&
+                          obj.lastMessage.payload.data.sendType == "manual") ||
+                        obj.lastMessage.type != "TIMCustomElem"
                       ) {
                         // console.log('访客进入')
                         //手动消息需重新计时最后一条消息时间
@@ -431,8 +434,13 @@ export default {
                       }
                     }
                     console.log(obj);
-
-                    this_.penddingList = [obj, ...this_.penddingList];
+                    this_.penddingList.map(value => {
+                      if(value.conversationID == item.conversationID){
+                        this_.penddingList.splice(index, 1);
+                        this_.penddingList = [obj, ...this_.penddingList];
+                      }
+                    })
+                    
                     if (this_.penddingList.length + this_.endList.length) {
                       this_.$emit("isStatus", true);
                     } else {
@@ -640,6 +648,7 @@ export default {
   },
   computed: {
     ...mapState({
+      
       conversationList: state => state.conversation.conversationList,
       currentConversation: state => state.conversation.currentConversation,
       isSDKReady: state => state.user.isSDKReady,

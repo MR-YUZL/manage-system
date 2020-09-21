@@ -9,7 +9,7 @@
         <!-- 消息主体 -->
         <message-footer v-if="showMessageHeader" :message="message" />
         <div class="content-wrapper">
-          <message-status-icon v-if="!isMine" :message="message" />
+          <message-status-icon v-if="isMine" :message="message" />
           <text-element
             v-if="message.imMsgType === TIM.TYPES.MSG_TEXT"
             :isMine="isMine"
@@ -197,7 +197,6 @@ export default {
     },
     avatar() {
       if (this.infoObj && this.infoObj.type == "history") {
-        console.log(this.isMine)
         if (this.isMine) {
           return this.message.serviceAccAvatar;
           
@@ -248,7 +247,7 @@ export default {
         // 撤回消息
         return "position-center";
       }
-      console.log(this.infoObj, this.message);
+
       if (this.infoObj && this.infoObj.type == "history") {
         if (this.isMine) {
           return "position-right";

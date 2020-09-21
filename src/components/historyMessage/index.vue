@@ -20,18 +20,16 @@ export default {
   },
   computed: {
     historyList(){
-      console.log('this.historySessionList',this.historySessionList)
+      // console.log('this.historySessionList',this.historySessionList)
       let arr = [...this.historySessionList]
        arr.forEach(item => {
       
          item.msgContent = typeof item.msgContent =="string" ? JSON.parse(item.msgContent)
                 : item.msgContent;
-              
         });
         
-        console.log(arr)
-        
-        return arr.reverse()
+        return this.infoObj ? arr : arr.reverse()
+        // return arr.reverse()
     },
   },
   watch: {},

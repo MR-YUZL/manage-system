@@ -3,14 +3,11 @@
     <div class="current-conversation" >
       <div class="content">
         <div class="message-list scroll" ref="message-list" @scroll="this.onScroll">
-          <div class="more" v-if="!this.status">
-            <a-button @click="getMOreFn">查看更多</a-button>
-          </div>
-          <div class="no-more" v-else>没有更多了</div>
           <history-message :historySessionList='historySessionList' :infoObj='infoObj' />
         </div>
       </div>
     </div>
+    <image-previewer />
   </div>
 </template>
 
@@ -20,10 +17,12 @@ import { mapGetters, mapState } from "vuex";
 import historyMessage from "./index";
 import moment from "moment";
 import {deleteHistory} from '@/utils/index'
+import imagePreviewer from '@/components/message/image-previewer'
 export default {
   name: "CurrentConversation",
   components: {
     historyMessage,
+    imagePreviewer
   },
   props: ["sessionInf"],
   data() {
@@ -57,86 +56,29 @@ export default {
       serviceImAccount: this.sessionInf.serviceImAccount
     }
     this.searchChatRecords(this.sessionInf.type); //0获取更多，1：历史会话，2：工单管理
-    // this.searchChatRecords1(this.sessionInf.type); //0获取更多，1：历史会话，2：工单管理
   },
   updated() {},
   destroyed() {},
   watch: {},
   methods: {
-    //获取更多
-    getMOreFn() {
-      //一旦历史消息时间与腾讯云消息时间有大于等于情况，均拉去历史消息
-      this.searchChatRecords(0);
-    },
+   
     //获取历史消息
-    searchChatRecords(val) {
+    
+     searchChatRecords(val) {
       let params = Object.assign({}, this.sessionInf);
+      // console.log(params)
       params.pageSize = 20;
       switch (val) {
         case 0:
-          params.msgTimeEnd = moment(
-            this.historySessionList[this.historySessionList.length - 1].msgTime
-          ).format("YYYY-MM-DD HH:mm:ss.SSS");
-          break;
-        case 1:
-          break;
-        case 2:
-          params.msgTimeEnd = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
-          break;
-        default:
-          break;
-      }
-      this.Request.get("/session/chat/record/search", params).then((res) => {
-        if (res.data.status) {
-          let data = res.data;
-          let list = deleteHistory([...data.list], this.sessionInf.serviceImAccount);
-          this.isFinished = true
-          console.log(list.length);
-          this.historySessionList.map((item) => {
-            list.map((val, index) => {
-              if (val.id == item.id) {
-                list.splice(index, 1);
-              }
-            });
-          });
-          console.log(list, list.length,this.historySessionList.length);
-          if (list.length) {
-            if (this.historySessionList.length) {
-              list.forEach((item, index) => {
-                if (
-                  item.msgTime == this.historySessionList[0].msgTime &&
-                  item.id == this.historySessionList[0].id
-                ) {
-                  list.splice(index, 1);
-                }
-              });
-              console.log(list);
-              this.historySessionList = [...this.historySessionList, ...list];
-            }else{
-              this.historySessionList = [...list];
-            }
-
-            // this.$store.commit("getHistoryList", data.list);
-          } else {
-            this.status = true;
-          }
-        }
-      });
-    },
-     searchChatRecords1(val) {
-      let params = Object.assign({}, this.sessionInf);
-      console.log(params)
-      params.pageSize = 20;
-      switch (val) {
-        case 0:
+          console.log(this.historySessionList[0].msgTime,this.historySessionList[this.historySessionList.length - 1].msgTime)
           params.msgTimeBegin = moment(
-            this.historySessionList[this.historySessionList.length - 1].msgTime
+            this.historySessionList[0].msgTime
           ).format("YYYY-MM-DD HH:mm:ss.SSS");
           break;
         case 1:
           break;
         case 2:
-          params.msgTimeBegin = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
+          // params.msgTimeBegin = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
           break;
         default:
           break;
@@ -144,10 +86,10 @@ export default {
       this.Request.get("/session/chat/record/search", params).then((res) => {
         if (res.data.status) {
           let data = res.data;
-          console.log(this.sessionInf.serviceImAccount)
+          // console.log(this.sessionInf.serviceImAccount)
           let list = deleteHistory([...data.list], this.sessionInf.serviceImAccount);
           this.isFinished = true
-          console.log(list.length);
+          // console.log(list.length);
           this.historySessionList.map((item) => {
             list.map((val, index) => {
               if (val.id == item.id) {
@@ -155,7 +97,7 @@ export default {
               }
             });
           });
-          console.log(list, list.length,this.historySessionList.length);
+          // console.log(list, list.length,this.historySessionList.length);
           if (list.length) {
             if (this.historySessionList.length) {
               list.forEach((item, index) => {
@@ -166,7 +108,7 @@ export default {
                   list.splice(index, 1);
                 }
               });
-              console.log(list);
+              // console.log(list);
               this.historySessionList = [...this.historySessionList, ...list];
             }else{
               this.historySessionList = [...list];
@@ -196,9 +138,9 @@ export default {
         messageListNode.scrollTop -
         messageListNode.clientHeight;
         // console.log(scrollBottom)
-        if(this.isFinished && scrollBottom < 50){
-          // this.isFinished = false
-          // this.searchChatRecords1(0);
+        if(this.isFinished && scrollBottom < 50 && !this.status){
+          this.isFinished = false
+          this.searchChatRecords(0);
         }
     },
   },
@@ -243,6 +185,7 @@ export default {
         height: 100%;
         -webkit-box-sizing: border-box;
         overflow-y: auto;
+        overflow-x: hidden;
         padding: 0 20px;
         .more {
           display: flex;

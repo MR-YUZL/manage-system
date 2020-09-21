@@ -261,6 +261,7 @@ export default {
           msgTimeEnd: moment(data.lastMsgTime).format(
             "YYYY-MM-DD HH:mm:ss.SSS"
           ),
+          msgTimeBegin:moment(data.beginTime).format("YYYY-MM-DD HH:mm:ss.SSS"),
           type: 2,
           serviceImAccount: data.serviceImAccount
         };

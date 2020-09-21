@@ -169,7 +169,9 @@ export default {
     // orderInf,
     // ServiceSummary
   },
-  mounted() {},
+  mounted() {
+    this.getSummarySort();
+  },
   methods: {
     moment,
     userInf() {
@@ -307,7 +309,7 @@ export default {
     },
     //结束服务
     endServer() {
-      this.getSummarySort();
+      
       this.endServerObj.visible = true;
       this.currentModal = this.endServerObj;
     },

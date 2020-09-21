@@ -57,7 +57,7 @@ export default {
       this.$bus.$emit('image-loaded', event)
     },
     handlePreview() {
-      // console.log(this.payload.imageInfoArray[0].url)
+      
       
       this.$bus.$emit('imagePreview', {
         // url: this.payload.imageInfoArray[0].url
