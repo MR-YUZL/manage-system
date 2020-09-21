@@ -65,6 +65,24 @@ export default {
               item.fieldValue = item.fieldValue.split(",");
           });
           this.cusFormObj.formList = res.data.list;
+          this.cusFormObj.formList.map((item, index) => {
+          if(item.dataType == 3) {
+            if(!!!item.fieldValue){
+              if(item.options && item.options.length){
+                let tempArr = []
+                item.options.forEach(element => {
+                  if(!!element.isDefault){
+                    tempArr.push(element.optionId)
+                  }
+                });
+                item.fieldValue = tempArr;
+              }
+              else {
+                item.fieldValue = []
+              }
+            }
+          }
+        });
         }
       });
     },
@@ -78,13 +96,13 @@ export default {
         });
         this.cusFormObj.formList = res.data.list;
         // let editArray = res.data.list;
-        // this.cusFormObj.formList.map((item, index) => {
-        //   this.cusFormObj.formList[index] = Object.assign(
-        //     {},
-        //     item,
-        //     editArray[index]
-        //   );
-        // });
+        this.cusFormObj.formList.map((item, index) => {
+          if(item.dataType == 3) {
+            if(!!!item.fieldValue){
+              item.fieldValue = []
+            }
+          }
+        });
         console.log(this.cusFormObj.formList, "aaaaaaaaaaaaaa==========");
       });
     },

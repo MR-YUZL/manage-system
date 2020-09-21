@@ -2,8 +2,8 @@
   <div>
     <a-modal v-model="visibles" title="跟进客户" :footer="null" @cancel="handleCancel">
       <div>
-        <p>最近跟进记录</p>
         <div v-if="JSON.stringify(lastInfo)!='{}'">
+          <p>最近跟进记录</p>
           <p class="info">
             <span>{{lastInfo.followDate}}</span>
             <span>{{lastInfo.followValid==0?'有效':'无效'}}联系</span>
@@ -11,7 +11,7 @@
           </p>
           <p>{{lastInfo.followRecord}}</p>
         </div>
-        <div v-else>
+        <div class="nodata" v-else>
           该客户暂无跟进记录
         </div>
       </div>
@@ -130,6 +130,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.nodata{
+  color: #999;
+  font-size: 12px;
+  text-align: center;
+  padding-bottom: 20px;
+}
 .info {
   span {
     padding-right: 15px;

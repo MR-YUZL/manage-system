@@ -227,6 +227,7 @@ export default {
         params = {
           ...this.pager
         };
+        params.item = {}
       } else {
         params = {
           ...this.pager

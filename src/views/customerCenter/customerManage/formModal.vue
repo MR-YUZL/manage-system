@@ -28,7 +28,7 @@
         </a-select>
 
         <a-cascader
-          v-if="item.dataType==3"
+          v-if="item.dataType==6"
           :options="areaDictionary"
           :field-names="fieldNames"
           placeholder="请选择省市"
@@ -43,6 +43,21 @@
           v-model="item.fieldValue"
           allowClear
         />
+
+        <a-select
+          v-if="item.dataType==3"
+          mode="multiple"
+          @change="onChange($event,item)"
+          v-model="item.fieldValue"
+          placeholder="请选择"
+        >
+          <a-select-option
+            v-for="(it,idx) in item.options"
+            :key="idx"
+            :value="it.optionId"
+          >{{it.optionName}}</a-select-option>
+        </a-select>
+
       </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
         <a-button type="primary" html-type="submit" @click="submitForm('dynamicValidateForm')">保存</a-button>
