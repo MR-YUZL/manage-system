@@ -37,14 +37,20 @@
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
           :scroll="scroll"
         >
+        <div slot="custLinkMan" slot-scope="record,row">
+            <span class="custAddress" :title="row.custLinkMan">{{row.custLinkMan}}</span>
+          </div>
+          <div slot="custAddress" slot-scope="record,row">
+            <span class="custAddress" :title="row.custAddress">{{row.custAddress}}</span>
+          </div>
           <div slot="mergeLinkman" slot-scope="record,row">
             <span><img v-if="row.custLinkPhone" src="../../../assets/imgs/phoneIcon.png" alt="">{{row.custLinkPhone}}</span>
           </div>
           <div slot="detailSkip" slot-scope="record,row">
             <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
-            <div v-for="(it,index) in row.custLabelList">
+            <!-- <div v-for="(it,index) in row.custLabelList">
               <span class="custLabelList">{{it}}</span>
-            </div>
+            </div> -->
           </div>
           <div slot="action" slot-scope="record,row">
             <span
@@ -333,7 +339,7 @@ export default {
     
   },
   mounted() {
-    this.getList();
+    
     this.getCustomerLabel();
     this.getStaffSkillGroups(0);
     this.getStaffSkillGroups(1);
@@ -394,6 +400,24 @@ export default {
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
                 scopedSlots: { customRender: "mergeLinkman" },
+                width:160
+              });
+            }
+            else if(item.fieldCode == "custAddress"){
+              this.columns.push({
+                title: item.fieldName,
+                dataIndex: item.fieldCode,
+                key: item.fieldCode,
+                scopedSlots: { customRender: "custAddress" },
+                width:160
+              });
+            }
+            else if(item.fieldCode == "custLinkMan"){
+              this.columns.push({
+                title: item.fieldName,
+                dataIndex: item.fieldCode,
+                key: item.fieldCode,
+                scopedSlots: { customRender: "custLinkMan" },
                 width:160
               });
             }
@@ -461,6 +485,9 @@ export default {
           if(res.data.list.length > 0){
             // this.scroll = {x: res.data.list.length*160 - 40}
             this.scroll = {x: 1500}
+          }else{
+            //没有滚动条会换行，暂不处理
+            // this.scroll = {}
           }
         }
       });
@@ -469,10 +496,13 @@ export default {
       api.customerLabel().then(res => {
         console.log("客户标签", res);
         if (res.data.status) {
-          let labels = JSON.parse(
-            JSON.stringify(res.data.labels).replace(/name/g, "label")
-          );
-          this.searchFormList[1].options = labels;
+          res.data.list = res.data.list.map(item=>{
+            return{
+              ...item,
+              label:item.name
+            }
+          })
+          this.searchFormList[1].options = res.data.list;
         }
       });
     },
@@ -481,16 +511,23 @@ export default {
         console.log("创建人", res);
         if (res.data.status) {
           this.role = res.data.role;
+          if(this.role){
+            this.searchParams.dataSource = "1"
+          }else{
+            this.searchParams.dataSource = "2"
+          }
           if (type == 0) {
             this.searchFormList[2].list = res.data.list;
           }
           if (type == 1) {
             if(res.data.role){
               this.searchFormList[3].list = res.data.list;
+
             }else{
               this.searchFormList.splice(3,1)
             }
           }
+          this.getList();
         }
       });
     },
@@ -559,6 +596,7 @@ export default {
     changeTabFn(key) {
       this.searchParams.dataSource = key;
       this.getList();
+      this.getColumns();
     },
     //按钮区start
     setManager() {
@@ -628,6 +666,13 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.custAddress{
+  display: block;
+  width: 126px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 .custLabelList{
   border: 1px solid #3e7bf8;
   color: #3e7bf8;
