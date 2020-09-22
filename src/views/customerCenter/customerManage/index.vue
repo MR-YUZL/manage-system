@@ -35,7 +35,7 @@
           :pagination="false"
           :rowKey="record => record.custId"
           :rowSelection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-          :scroll="scroll"
+          :scroll="{x:1500}"
         >
         <div slot="custLinkMan" slot-scope="record,row">
             <span class="custAddress" :title="row.custLinkMan">{{row.custLinkMan}}</span>
@@ -484,7 +484,7 @@ export default {
           this.pager = res.data.pager;
           if(res.data.list.length > 0){
             // this.scroll = {x: res.data.list.length*160 - 40}
-            this.scroll = {x: 1500}
+            
           }else{
             //没有滚动条会换行，暂不处理
             // this.scroll = {}

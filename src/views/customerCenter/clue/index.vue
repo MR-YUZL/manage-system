@@ -23,7 +23,16 @@
           :dataSource="dataSource"
           :pagination="false"
           :rowKey="record => record.clueId"
-        ></a-table>
+          :scroll="{x:1500}"
+        >
+          <div slot="clueName" slot-scope="record,row">
+            <span class="nowrap" :title="row.clueName">{{row.clueName}}</span>
+          </div>
+          <div slot="clueRemarks" slot-scope="record,row">
+            <span class="nowrap" :title="row.clueRemarks">{{row.clueRemarks}}</span>
+          </div>
+          
+        </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
       <ExportCustomerModal
@@ -109,10 +118,10 @@ export default {
           name: "clueSource",
           placeholder: "请选择",
           options: [
-            { key: "null", id: "全部" },
+            { key: "", id: "全部" },
             { key: 0, id: "微信公众号" },
             { key: 1, id: "微信小程序" },
-            { key: 2, id: "网址咨询" },
+            { key: 2, id: "网站咨询" },
             { key: 3, id: "电话咨询" },
             { key: 4, id: "微信" },
             { key: 5, id: "qq" }
@@ -125,7 +134,8 @@ export default {
         {
           title: "姓名",
           dataIndex: "clueName",
-          key: "clueName"
+          key: "clueName",
+          scopedSlots: { customRender: "clueName" }
         },
         {
           title: "手机号",
@@ -170,7 +180,8 @@ export default {
         {
           title: "咨询备注",
           dataIndex: "clueRemarks",
-          key: "clueRemarks"
+          key: "clueRemarks",
+          scopedSlots: { customRender: "clueRemarks" }
         },
         {
           title: "创建时间",
@@ -267,21 +278,30 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.button-area {
-  display: flex;
-  justify-content: space-between;
-  padding: 10px 0;
-  .left-side {
-    text-align: left;
-    button {
-      margin-left: 10px;
-    }
+.box{
+  .nowrap{
+    display: inline-block;
+    width: 110px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
-  .right-side {
-    flex-shrink: unset;
-    text-align: right;
-    button {
-      margin-right: 10px;
+  .button-area {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+    .left-side {
+      text-align: left;
+      button {
+        margin-left: 10px;
+      }
+    }
+    .right-side {
+      flex-shrink: unset;
+      text-align: right;
+      button {
+        margin-right: 10px;
+      }
     }
   }
 }
