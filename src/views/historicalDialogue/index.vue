@@ -16,15 +16,16 @@
           :dataSource="dataSource"
           :pagination="false"
           :rowKey="record => record.id"
+          :scroll="{x:1500}"
         >
           <div slot="idSkip" slot-scope="record,row">
             <span class="blue" @click="skipDetail(row.id)">{{row.id}}</span>
           </div>
           <div slot="name" slot-scope="record,row">
-            <span class="name" :title="row.name">{{row.name}}</span>
+            <span class="nowrap" :title="row.name">{{row.name}}</span>
           </div>
           <div slot="consultTypeName" slot-scope="record,row">
-            <span class="name" :title="row.consultTypeName">{{row.consultTypeName}}</span>
+            <span class="nowrap" :title="row.consultTypeName">{{row.consultTypeName}}</span>
           </div>
         </a-table>
       </div>
@@ -338,13 +339,13 @@ export default {
       })
     },
     prevHandleSubmit(val){
-      console.log(val,'val')
+      console.log(val,val.serviceAccs.length,'val')
       if(val.consultType && val.consultType[0]){
         val.consultType = val.consultType.join();
       }else{
-        val.serviceAccs = ''
+        val.consultType = ''
       }
-      if(val.serviceAccs && val.serviceAccs[0]){
+      if(val.serviceAccs && val.serviceAccs.length>0){
         val.serviceAccs = val.serviceAccs.join();
       }else{
         val.serviceAccs = ''
@@ -448,7 +449,7 @@ export default {
 
 <style lang="less" scoped>
 .box{
-  .name{
+  .nowrap{
     display: inline-block;
     width: 110px;
     white-space: nowrap;
