@@ -292,7 +292,8 @@ export default {
             type: "input",
             label: "标题",
             placeholder: "请输入",
-            name: "title"
+            name: "title",
+            ellipsis: true
           },
            {
             type: "input",

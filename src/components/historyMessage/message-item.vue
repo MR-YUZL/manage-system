@@ -44,10 +44,17 @@
               "
               >{{ message.msgContent.text }}</span
             >
-            <span
+            <!-- <span
               v-if="message.subMsgType === 'repository'"
               v-html="message.msgContent.text"
-            ></span>
+            ></span> -->
+            <custom-repository 
+              v-if="message.subMsgType === 'repository'"
+              :isMine="isMine"
+              :payload="message.msgContent"
+              :message="message"
+              :infoObj="infoObj"
+             />
             <custom-text
               v-else-if="message.subMsgType === 'text'"
               :isMine="isMine"
@@ -127,6 +134,7 @@ import customText from "./custom-message/custom-text";
 import customImage from "./custom-message/custom-image";
 import customFile from "./custom-message/custom-file";
 import customVideo from "./custom-message/custom-video";
+import customRepository from './custom-message/custom-repository';
 
 export default {
   name: "MessageItem",
@@ -150,7 +158,8 @@ export default {
     customText,
     customImage,
     customFile,
-    customVideo
+    customVideo,
+    customRepository
   },
   data() {
     return {

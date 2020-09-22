@@ -1,9 +1,13 @@
 <template>
-  <div class="image-previewer-wrapper" v-show="showPreviewer" @mousewheel="handleMouseWheel">
+  <div
+    class="image-previewer-wrapper"
+    v-show="showPreviewer"
+    @mousewheel="handleMouseWheel"
+  >
     <div class="image-wrapper">
       <img
         class="image-preview"
-        :style="{transform: `scale(${zoom}) rotate(${rotate}deg)`}"
+        :style="{ transform: `scale(${zoom}) rotate(${rotate}deg)` }"
         :src="previewUrl"
         @click="close"
       />
@@ -13,94 +17,104 @@
     <a-icon type="right" class="el-icon-right next-button" @click="goNext" /> -->
     <div class="actions-bar">
       <a-icon type="minus-circle" class="el-icon-zoom-out" @click="zoomOut" />
-      <a-icon type="plus-circle" class="el-icon-zoom-in" @click="zoomIn"></a-icon>
-      <a-icon type="undo" class="el-icon-refresh-left" @click="rotateLeft"></a-icon>
-      <a-icon type="redo" class="el-icon-refresh-right" @click="rotateRight"></a-icon>
+      <a-icon
+        type="plus-circle"
+        class="el-icon-zoom-in"
+        @click="zoomIn"
+      ></a-icon>
+      <a-icon
+        type="undo"
+        class="el-icon-refresh-left"
+        @click="rotateLeft"
+      ></a-icon>
+      <a-icon
+        type="redo"
+        class="el-icon-refresh-right"
+        @click="rotateRight"
+      ></a-icon>
       <!-- <span class="image-counter">{{index+1}} / {{imgUrlList.length}}</span> -->
     </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters } from "vuex";
 export default {
-  name: 'ImagePreviewer',
+  name: "ImagePreviewer",
   data() {
     return {
-      url: '',
+      url: "",
       index: 0,
       visible: false,
       zoom: 1,
       rotate: 0,
       minZoom: 0.1
-    }
+    };
   },
   computed: {
-    ...mapGetters(['imgUrlList']),
+    ...mapGetters(["imgUrlList"]),
     showPreviewer() {
-      return this.url.length > 0 && this.visible
+      return this.url.length > 0 && this.visible;
     },
     imageStyle() {
       return {
         transform: `scale(${this.zoom});`
-      }
+      };
     },
     previewUrl() {
-      return this.formatUrl(this.imgUrlList[this.index])
+      return this.formatUrl(this.imgUrlList[this.index]);
     }
   },
   mounted() {
-    this.$bus.$on('imagePreview', this.handlePreview)
-
+    this.$bus.$on("imagePreview", this.handlePreview);
   },
   methods: {
-   
     handlePreview({ url }) {
-      console.log("事件总线")
-      console.log(url)
-      this.url = url
-      this.index = this.imgUrlList.findIndex(item => item === url)
-      this.visible = true
+      console.log("事件总线");
+      console.log(url);
+      this.url = url;
+      this.index = this.imgUrlList.findIndex(item => item === url);
+      this.visible = true;
     },
     handleMouseWheel(event) {
       if (event.wheelDelta > 0) {
-        this.zoomIn()
+        this.zoomIn();
       } else {
-        this.zoomOut()
+        this.zoomOut();
       }
     },
     zoomIn() {
-      this.zoom += 0.1
+      this.zoom += 0.1;
     },
     zoomOut() {
       this.zoom =
-        this.zoom - 0.1 > this.minZoom ? this.zoom - 0.1 : this.minZoom
+        this.zoom - 0.1 > this.minZoom ? this.zoom - 0.1 : this.minZoom;
     },
     close() {
-      Object.assign(this, { zoom: 1 })
-      this.visible = false
+      Object.assign(this, { zoom: 1 });
+      this.visible = false;
     },
     rotateLeft() {
-      this.rotate -= 90
+      this.rotate -= 90;
     },
     rotateRight() {
-      this.rotate += 90
+      this.rotate += 90;
     },
     goNext() {
-      this.index = (this.index + 1) % this.imgUrlList.length
+      this.index = (this.index + 1) % this.imgUrlList.length;
     },
     goPrev() {
       this.index =
-        this.index - 1 >= 0 ? this.index - 1 : this.imgUrlList.length - 1
+        this.index - 1 >= 0 ? this.index - 1 : this.imgUrlList.length - 1;
     },
     formatUrl(url) {
       if (!url) {
-        return ''
+        return "";
       }
-      return url.slice(0, 2) === '//' ? `https:${url}` : url
+      return url.slice(0, 2) === "//" ? `https:${url}` : url;
     }
   }
-}
+};
 </script>
 
 <style style="less" scoped>

@@ -95,6 +95,10 @@ export default {
       saveData(params){
         this.Request.post('/data/dictionary/save',params).then(res => {
           console.log('保存',res)
+          if(res.data.status){
+            this.$message.success('保存成功！')
+          }
+          
         })
       },
       getCustomer(){

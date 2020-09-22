@@ -99,6 +99,7 @@
 
 <script>
 import HistoryList from '@/components/historyMessage/historyList'
+import moment from 'moment'
 export default {
     name: "wor",
     components: {
