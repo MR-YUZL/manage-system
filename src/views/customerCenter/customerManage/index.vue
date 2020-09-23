@@ -43,6 +43,9 @@
           <div slot="custAddress" slot-scope="record,row">
             <span class="custAddress" :title="row.custAddress">{{row.custAddress}}</span>
           </div>
+          <div slot="custLabelList" slot-scope="record,row">
+            <span :title="row.custLabelList">{{row.custLabelList.length?row.custLabelList.join():''}}</span>
+          </div>
           <div slot="mergeLinkman" slot-scope="record,row">
             <span><img v-if="row.custLinkPhone" src="../../../assets/imgs/phoneIcon.png" alt="">{{row.custLinkPhone}}</span>
           </div>
@@ -418,6 +421,15 @@ export default {
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
                 scopedSlots: { customRender: "custLinkMan" },
+                width:160
+              });
+            }
+            else if(item.fieldCode == "custLabelList"){
+              this.columns.push({
+                title: item.fieldName,
+                dataIndex: item.fieldCode,
+                key: item.fieldCode,
+                scopedSlots: { customRender: "custLabelList" },
                 width:160
               });
             }

@@ -119,12 +119,14 @@ export default {
           placeholder: "请选择",
           options: [
             { key: "", id: "全部" },
-            { key: 0, id: "微信公众号" },
-            { key: 1, id: "微信小程序" },
-            { key: 2, id: "网站咨询" },
-            { key: 3, id: "电话咨询" },
-            { key: 4, id: "微信" },
-            { key: 5, id: "qq" }
+            { key: 0, id: "网站咨询" },
+            { key: 1, id: "微信公众号" },
+            { key: 2, id: "微信小程序" },
+            { key: 3, id: "IOS" },
+            { key: 4, id: "安卓" },
+            { key: 5, id: "QQ" },
+            { key: 6, id: "微信" },
+            { key: 7,id:"电话咨询"}
           ],
           optionValue: "key",
           optionLabel: "id"
