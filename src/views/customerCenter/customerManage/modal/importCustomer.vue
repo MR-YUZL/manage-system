@@ -66,7 +66,7 @@
             <div>{{fileInfos.listData[index]}}</div>
           </div>
           <p>
-            <a-checkbox @change="checkBoxChange">是否忽略第一行</a-checkbox>
+            <a-checkbox :checked="firstCheckBool" @change="checkBoxChange">是否忽略第一行</a-checkbox>
           </p>
         </div>
         <div class="btnGroups">
@@ -107,7 +107,8 @@ export default {
       visibles: this.visible,
       selectArr: [],
       requiredArr: [],
-      firstCheck: 0,
+      firstCheck: 1,
+      firstCheckBool:true,
       fileId: "",
       fileInfos: {}
     };
@@ -123,6 +124,7 @@ export default {
   created() {},
   methods: {
     checkBoxChange(e) {
+      this.firstCheckBool = e.target.checked;
       if (e.target.checked) {
         this.firstCheck = 1;
       } else {
@@ -139,9 +141,9 @@ export default {
     handleChange(info) {
       // let fileList = [...info.fileList];
       // 控制大于2M的附件。不显示
-      // if(info.file.size > 2*1024*1024) {
-      //   return;
-      // }
+      if(info.file.size > 3*1024*1024) {
+        return;
+      }
       console.log("handleChange=====", info);
       // this.fileList = fileList;
       if (info.file.status === "done") {
@@ -206,6 +208,7 @@ export default {
     },
     handleCancel() {
       this.visibles = false;
+      this.fileInfos = {};
       this.step = "first";
       this.current = 0;
       this.$emit("closeUpdate");
