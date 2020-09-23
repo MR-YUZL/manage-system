@@ -47,7 +47,7 @@
             @setHandleResult="setHandleResult"
           />
         </div>
-        <div class="information" v-if="guestId">
+        <div class="information scroll" v-if="guestId">
           <UserInformation :guestId="guestId" />
         </div>
       </div>
@@ -320,12 +320,15 @@ export default {
 .record-detail {
   display: flex;
   .message {
-    width: 380px;
-    border-right: 1px solid #e6e6e6;
+    width: 404px;
+    // border-right: 1px solid #e6e6e6;
   }
   .information {
-    margin-left: 48px;
+    margin-left: 24px;
     width: 384px;
+    height: 740px;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 }
 .searchStyle {

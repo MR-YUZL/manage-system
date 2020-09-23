@@ -1,7 +1,7 @@
 <template>
     <div class="">
-        <a-tabs default-active-key="1" :animated="false">
-          <a-tab-pane key="1" tab="工单属性">
+        <a-tabs default-active-key="1">
+          <a-tab-pane key="1" tab="工单属性" class="tabchange scroll">
             <div class="workOrder">
               <div class="title"><p>工单信息</p><p><a-button type="primary" @click="modifyWorkOrder">提交</a-button></p></div>
               <ul>
@@ -87,8 +87,8 @@
                </ul>
             </div>
           </a-tab-pane>
-          <a-tab-pane key="2" tab="咨询记录" >
-            <div style="position:relative;height:1000px; ">
+          <a-tab-pane key="2" tab="咨询记录" class="tabchange scroll">
+            <div style="position:relative;">
                 <HistoryList  v-if="sessionInf.sessionId&&sessionInf.sessionId!=''" :sessionInf="sessionInf" />
                 <img v-else src="../../assets/imgs/noData.png" alt="" style="display:block;margin:0 auto;width:286px"> 
             </div>
@@ -251,4 +251,9 @@ export default {
     }
   }
 }
+.tabchange{
+  height: 696px;
+  overflow-y: auto;
+  overflow-x: hidden;
+    }
 </style>

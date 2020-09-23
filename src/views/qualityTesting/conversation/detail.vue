@@ -269,6 +269,10 @@ export default {
   .information {
     margin-left: 48px;
     width: 384px;
+    /deep/.ant-tabs .ant-tabs-top-content > .ant-tabs-tabpane, .ant-tabs .ant-tabs-bottom-content > .ant-tabs-tabpane{
+      height: 696px !important;
+      overflow-y: auto;
+    }
   }
 }
 .customerGrading {

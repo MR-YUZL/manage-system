@@ -13,7 +13,7 @@
             @formSubmit="sessionSubmit"
           />
           <div class="customerGrading">客户评级：{{appraiseValue}}</div>
-          <div style="width:355px">
+          <div style="width:385px;height:380px">
             <HistoryList style="position:relative;top:0;background-color:#fff" :sessionInf="sessionInf" v-if="JSON.stringify(sessionInf) != '{}'" />
           </div>
           <!-- <div class="sessionCard">
@@ -31,10 +31,10 @@
       </div>
       <div class="information">
         <a-tabs default-active-key="1" @change="tabChange">
-          <a-tab-pane key="1" tab="质检评分">
+          <a-tab-pane key="1" tab="质检评分" class="scroll tabchange">
             <Grade :qualityType="qualityType" :qcObj="qualityForm" v-if="JSON.stringify(qualityForm) != '{}'" @onSubmitGrade="onSubmitGrade" />
           </a-tab-pane>
-          <a-tab-pane key="2" tab="用户信息">
+          <a-tab-pane key="2" tab="用户信息" class="scroll tabchange">
             <UserInformation :guestId="guestId" />
           </a-tab-pane>
         </a-tabs>
@@ -217,7 +217,7 @@ export default {
 .record-detail {
   display: flex;
   .message {
-    width: 380px;
+    width: 404px;
     border-right: 1px solid #e6e6e6;
     .ant-form-item {
       margin-bottom: 0;
@@ -238,8 +238,13 @@ export default {
     }
   }
   .information {
-    margin-left: 48px;
+    margin-left: 24px;
     width: 384px;
+    .tabchange{
+      height: 696px;
+      overflow-y: auto;
+      overflow-x: hidden;
+    }
   }
 }
 .customerGrading {

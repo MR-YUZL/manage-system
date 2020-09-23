@@ -80,8 +80,8 @@ export default {
   display: flex;
   height: 100%;
   .recordDetail {
-    // border-right:1px solid #e6e6e6;
-    width: 400px;
+    border-right: 1px solid #e6e6e6;
+    width: 404px;
     // padding: 0 37px 0 23px;
     box-sizing: border-box;
   }
@@ -103,6 +103,7 @@ export default {
 .recordList {
   overflow: hidden;
   height: calc(100% - 200px);
+  width: 385px;
   .record-style1 li {
     display: flex;
     margin-top: 25px;

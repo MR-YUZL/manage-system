@@ -21,7 +21,7 @@
           v-model="formObject.defaultValues[item.ruleName]"
           :placeholder="item.placeholder"
           :maxLength="item.maxLength"
-          :auto-size="{ minRows: 6, maxRows: 6 }"
+          :auto-size="{ minRows: 5, maxRows: 5 }"
         />
       </a-form-model-item>
       <a-form-model-item

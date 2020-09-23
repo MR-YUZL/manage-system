@@ -53,11 +53,11 @@
             @formSubmit="formSubmit"
           />
           <div class="customerGrading">客户评级：{{appraiseValue}}</div>
-          <div style="width:355px" class="historyScroll">
+          <div style="width:385px;height:380px" class="historyScroll">
             <HistoryList style="position:relative;background-color:#fff;" :sessionInf="sessionInf" />
           </div>
         </div>
-        <div class="information">
+        <div class="information scroll">
           <!-- 8c730589aa1d41a19d2ce8ca23f9fb1e -->
           <UserInformation :guestId="guestId"  />
         </div>
@@ -460,7 +460,7 @@ export default {
 .record-detail {
   display: flex;
   .message {
-    width: 380px;
+    width: 404px;
     border-right: 1px solid #e6e6e6;
     .historyScroll{
       height: 270px;
@@ -479,8 +479,11 @@ export default {
       }
   }
   .information {
-    margin-left: 48px;
+    margin-left: 24px;
     width: 384px;
+    height: 740px;
+    overflow-x: hidden;
+    overflow-y: auto;
   }
 }
 </style>

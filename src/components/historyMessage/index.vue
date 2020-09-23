@@ -29,7 +29,7 @@ export default {
         sendType: "manual",
         msgContent: {
           text:
-            "<span><span>换个个该罚的</span><span><img class='image-look-monitor1' style='max-width:250px;cursor : zoom-in' src='https://img0.pconline.com.cn/pconline/product/1809/28/3.jpg'></span><span><img class='image-look-monitor1' style='max-width:250px;cursor : zoom-in' src='https://img0.pconline.com.cn/pconline/product/1809/28/3.jpg'></span><span>豆腐干计划调节</span></span>"
+            "<span><span>换个个该罚的</span><span><img class='image-look-monitor1' style='max-width:250px;cursor : zoom-in' src='https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1600833763821&di=32a45764970eb5f3a0388a1b9eba01bb&imgtype=0&src=http%3A%2F%2Fa0.att.hudong.com%2F70%2F91%2F01300000261284122542917592865.jpg'></span><span><img class='image-look-monitor1' style='max-width:250px;cursor : zoom-in' src='https://img0.pconline.com.cn/pconline/product/1809/28/3.jpg'></span><span>豆腐干计划调节</span></span>"
         },
         fromAccount: "13800571550",
         toAccount: "13800571501",

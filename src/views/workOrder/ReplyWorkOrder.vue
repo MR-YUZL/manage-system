@@ -39,7 +39,7 @@
        <a-textarea
         v-model="closeOrderRemark"
         placeholder="若有备注请填写，若无请直接完结"
-        :auto-size="{ minRows: 3, maxRows: 5 }"
+        :auto-size="{ minRows: 5, maxRows: 5 }"
         :maxLength="200"
         />
     </a-modal>

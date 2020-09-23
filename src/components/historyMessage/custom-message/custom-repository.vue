@@ -33,21 +33,23 @@ export default {
   methods: {
     handlePreview() {
       let this_ = this;
-      console.log(document
-        .getElementsByClassName("image-look-monitor1"))
-        let domArr = document
-        .getElementsByClassName("image-look-monitor1")
-        for (let i = 0; i < domArr.length; i++) {
-          console.log(domArr[i])
-          domArr[i].addEventListener('click',function(){
-            console.log(this)
-          })
-        }
-        // domArr.map(item => {
-        //   item.addEventListener('click',function(){
-        //     console.log(this)
-        //   })
-        // })
+      console.log(document.getElementsByClassName("image-look-monitor1"));
+      let domArr = document.getElementsByClassName("image-look-monitor1");
+      for (let i = 0; i < domArr.length; i++) {
+        console.log(domArr[i]);
+        domArr[i].addEventListener("click", function() {
+          console.log(this);
+          this_.$bus.$emit("imagePreview", {
+            // url: this.payload.imageInfoArray[0].url
+            url: this.src
+          });
+        });
+      }
+      // domArr.map(item => {
+      //   item.addEventListener('click',function(){
+      //     console.log(this)
+      //   })
+      // })
       // document
       //   .getElementById("image-look-monitor1")
       //   .addEventListener("click", function() {
@@ -56,10 +58,10 @@ export default {
       //       // url: this.payload.imageInfoArray[0].url
       //       url: this.src
       //     });
-          
+
       //   },false);
     },
-    aa(){
+    aa() {
       console.log("清除");
     }
   }

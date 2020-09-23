@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <a-tabs :animated="false">
+    <a-tabs>
       <a-tab-pane key="1" tab="工单日志">
         <ul class="recordList scroll" >
           <li v-for="(item,index) in workOrderList" :key="index">
@@ -95,8 +95,9 @@ export default {
 </script>
 <style lang="less" scoped>
 .recordList{
-  height:550px;
-  overflow-y:scroll;
+  height:420px;
+  overflow-y:auto;
+  overflow-x: hidden;
   p{
     color:#bbb;
     margin-bottom:10px;

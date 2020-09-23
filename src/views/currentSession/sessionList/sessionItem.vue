@@ -118,7 +118,7 @@ export default {
               status: this.conversation.endTime ? false : true,
               orgId: this.conversation.orgId,
               guestImAccount: this.conversation.guestImAccount,
-              channelType: this.conversation.guestImAccount
+              channelType: this.conversation.channelType
             };
             console.log(obj);
             this.$store.commit("getVisitorInf", obj);

@@ -92,7 +92,7 @@ export default {
       margin-bottom: 15px;
       span {
         display: block;
-        width: 90px;
+        width: 150px;
       }
       p {
         margin-bottom: 0;
