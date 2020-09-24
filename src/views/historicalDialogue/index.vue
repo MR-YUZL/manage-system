@@ -339,13 +339,12 @@ export default {
       })
     },
     prevHandleSubmit(val){
-      console.log(val,val.serviceAccs.length,'val')
-      if(val.consultType && val.consultType[0]){
+      if(val.consultType && val.consultType.length){
         val.consultType = val.consultType.join();
       }else{
         val.consultType = ''
       }
-      if(val.serviceAccs && val.serviceAccs.length>0){
+      if(val.serviceAccs && val.serviceAccs.length){
         val.serviceAccs = val.serviceAccs.join();
       }else{
         val.serviceAccs = ''

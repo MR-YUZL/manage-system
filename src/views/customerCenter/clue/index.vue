@@ -31,7 +31,9 @@
           <div slot="clueRemarks" slot-scope="record,row">
             <span class="nowrap" :title="row.clueRemarks">{{row.clueRemarks}}</span>
           </div>
-          
+          <div slot="clueEmail" slot-scope="record,row">
+            <span class="nowrapClueEmail" :title="row.clueEmail">{{row.clueEmail}}</span>
+          </div>
         </a-table>
       </div>
       <TablePagination :parentPager="pager" @paginationChange="paginationChange" />
@@ -152,7 +154,9 @@ export default {
         {
           title: "邮箱",
           dataIndex: "clueEmail",
-          key: "clueEmail"
+          key: "clueEmail",
+          width:190,
+          scopedSlots: { customRender: "clueEmail" }
         },
         {
           title: "qq",
@@ -284,6 +288,13 @@ export default {
   .nowrap{
     display: inline-block;
     width: 110px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+  .nowrapClueEmail{
+    display: inline-block;
+    width: 158px;
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
