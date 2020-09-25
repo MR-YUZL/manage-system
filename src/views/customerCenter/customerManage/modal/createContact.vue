@@ -46,7 +46,7 @@ export default {
   },
   props: {
     custIdParams: Object,
-    contactsId:String
+    contactsId:String,
   },
   components: {
     FormModal
@@ -58,7 +58,7 @@ export default {
   // },
 
   mounted() {
-    this.getForm();
+    // this.getForm();
     this.getEditContactsInfo();
   },
   methods: {
@@ -66,10 +66,10 @@ export default {
       api.editContactsInfo({ contactsId: this.contactsId }).then(res=>{
         console.log("编辑联系人回显", res);
         if(res.data.status){
-          res.data.list.map(item => {
-            if (item.fieldCode == "contactsArea")
-              item.fieldValue = item.fieldValue.split(",");
-          });
+          // res.data.list.map(item => {
+          //   if (item.fieldCode == "contactsArea")
+          //     item.fieldValue = item.fieldValue.split(",");
+          // });
           this.contactFormObj.formList = res.data.list;
           console.log( this.contactFormObj.formList)
 
