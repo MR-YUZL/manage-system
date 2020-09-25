@@ -8,6 +8,7 @@
         :prop="'formList.' + index + '.fieldValue'"
         :rules="[{ required: item.isRequired?true:false, message: '不能为空',trigger:'blur' },{validator:checkForm}]"
       >
+      <!-- {validator: (rule, value, callback) => {vv(rule, value, callback,item.fieldCode)} -->
         <a-input
           v-if="item.dataType==1"
           v-model="item.fieldValue"
@@ -69,6 +70,7 @@
 
 <script>
 import { areaDictionary } from "@/utils/areaDictionary";
+import api from "@/api/customerCenter";
 export default {
   data() {
     return {
@@ -88,7 +90,9 @@ export default {
   props: {
     formObj: {
       type: Object
-    }
+    },
+    repeatList:Array,
+    detailId: String
   },
   methods: {
     submitForm(formName) {
@@ -145,6 +149,35 @@ export default {
       
       callback();
     },
+    async vv(rule, value, callback,a) {
+      if(a === 'custPhone') {
+        let params1 = {
+        fields: [{
+            fieldCode: 'custPhone',
+            fieldValue: value
+          }],
+        id: this.detailId,
+        type:0
+      };
+      let flag=true
+      await api.detectRepeat(params1).then(response=>{
+          console.log(response,'去重数组')
+          if(response.data.status){
+          }else{
+            flag = false;
+          }
+        })
+        if(flag) {
+          callback()
+          } else {
+            callback('重复率')
+            
+        }
+      } else {
+         callback()
+      }
+      
+    }
   }
 };
 </script>

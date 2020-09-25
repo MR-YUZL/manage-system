@@ -107,6 +107,7 @@
       :detailId="detailId"
       @closeUpdate="closeUpdate"
       @successLoadList="successLoadList"
+      :bothTypeFlag ="bothTypeFlag"
     />
     <!-- <setLabelModal
       :visible="modals.setLabelVisible"
@@ -180,6 +181,7 @@ export default {
   },
   data() {
     return {
+      bothTypeFlag:0,
       scroll:{},
       relevObj:{},
       createdWorkOrderVisible:false,

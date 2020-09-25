@@ -56,6 +56,10 @@ export default {
   lastInfo(params) {
     return axios.get('/customers/hfwCustomersFollow/lastInfo', {params})
   },
+  //客户和联系人表单去重校验   
+  detectRepeat(params){
+    return axios.post('/customers/hfwCustomersContacts/detectRepeat', params)
+  },
   //客户管理-客户详情/tab资料/编辑客户
   customerDetail(params) {
     return axios.get('/customers/hfwCustomersInfo/editInfoJson', {params})
