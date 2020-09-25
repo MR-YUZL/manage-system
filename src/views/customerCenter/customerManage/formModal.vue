@@ -6,7 +6,7 @@
         :key="item.fieldId"
         :label="item.fieldName"
         :prop="'formList.' + index + '.fieldValue'"
-        :rules="[{ required: item.isRequired?true:false, message: '不能为空',trigger:'blur' },{validator:checkForm}}]"
+        :rules="[{ required: item.isRequired?true:false, message: '不能为空',trigger:'blur' },{validator:checkForm}]"
       >
       <!-- {validator: (rule, value, callback) => {vv(rule, value, callback,item.fieldCode)} -->
         <a-input
