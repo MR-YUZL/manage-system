@@ -295,7 +295,7 @@ export default {
       this.Request.post("/workflow/saveWorkflow", params).then(res => {
         console.log("工单创建成功", res);
         this.createdWorkOrder.visible = false;
-        //  this.$refs.baseForm.resetForm()
+         this.$refs.baseForm.resetForm()
         this.getWorkOrderList();
       });
     },

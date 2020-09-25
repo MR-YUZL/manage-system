@@ -22,6 +22,7 @@ export default {
           console.log(result);
         }
       );
+   
   },
   created() {
     this.Request.get("/config/hfwConfigResource/getButtRealms").then(res => {
@@ -30,13 +31,18 @@ export default {
     // this.setStatus(1);
   },
   destroyed() {
-    this.setStatus(0);
+    // this.setStatus(0);
+   
   },
+  // beforeDestroy(){
+  //   debugger;
+  //   this.setStatus(0);
+  // },
   methods: {
-    setStatus(status) {
+    setStatus() {
       //status: 0离线，1在线，2忙碌
       this.Request.get("/api/chat/customer/status/update", {
-        status: status
+        status: 0
       }).then(res => {});
     }
   }

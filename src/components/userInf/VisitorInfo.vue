@@ -147,6 +147,7 @@ export default {
             label: "姓名",
             placeholder: "请输入",
             ruleName: "linkName",
+            maxLength:20,
             rules: [
               {
                 required: true,

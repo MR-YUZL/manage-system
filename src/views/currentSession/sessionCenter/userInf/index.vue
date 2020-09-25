@@ -309,7 +309,6 @@ export default {
     },
     //结束服务
     endServer() {
-      
       this.endServerObj.visible = true;
       this.currentModal = this.endServerObj;
     },
@@ -317,9 +316,21 @@ export default {
       this.Request.get("/hfw/workbench/getSummarySort").then(res => {
         let re = res.data;
         if (re.status) {
-          this.endServerObj["modelList"][0]["options"] = re.list;
+          let treeChangeData = [...re.list]
+          this.endServerObj["modelList"][0]["options"] = treeChangeData;
         }
       });
+    },
+    treeChangeData(array) {
+      array.map(item => {
+        item["value"] = item.id;
+        item["label"] = item.name;
+        item["childrens"] = item.childrens;
+        if (item.childrens.length > 0) {
+          this.treeChangeData(item.childrens);
+        }
+      });
+      return array;
     },
     //将秒转化为时分秒
     formateSeconds(endTime) {

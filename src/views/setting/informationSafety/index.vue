@@ -21,12 +21,12 @@
         </a-radio-group>
         <div class="white-select">
           <div>
-            <a-select placeholder="请选择"  v-model="DATA_40037" style="width: 200px" :disabled="radioValue==1?false:true">
+            <a-select placeholder="请选择"  v-model="DATA_40037" style="width: 200px" mode="multiple"  :disabled="radioValue==1?false:true">
               <a-select-option v-for="(item) in customerList" :key="item.userAccount" :value="item.userAccount">{{item.userName}}</a-select-option>
             </a-select>
           </div>
           <div>
-            <a-select placeholder="请选择" style="width: 200px" v-model="DATA_70037" :disabled="radioValue==0?false:true">
+            <a-select placeholder="请选择" style="width: 200px" v-model="DATA_70037" mode="multiple"  :disabled="radioValue==0?false:true">
               <a-select-option v-for="(item,index) in customerGroupList" :key="index" :value="item.groupId">{{item.groupName}}</a-select-option>
             </a-select>
           </div>
@@ -52,8 +52,8 @@ export default {
         },
         radioValue:'',
         DATA_10024_value:'0',
-        DATA_40037:'',
-        DATA_70037:'',
+        DATA_40037:[],
+        DATA_70037:[],
         customerList:[],
         customerGroupList:[]
       }
@@ -80,11 +80,11 @@ export default {
               console.log('this.DATA_10024_value ',this.DATA_10024_value )
             }
              if(item.dictionaryCode == 'DATA_40037'){
-              this.DATA_40037 = item.dictionaryValue
+              this.DATA_40037 = item.dictionaryValue.split(',')
               console.log('this.DATA_10024_value ',this.DATA_10024_value )
             }
             if(item.dictionaryCode == 'DATA_70037'){
-              this.DATA_70037 = item.dictionaryValue
+              this.DATA_70037 = item.dictionaryValue.split(',')
             }
             if(item.dictionaryCode == 'DATA_30037'){
               this.radioValue = item.dictionaryValue
@@ -128,9 +128,12 @@ export default {
       },
       //客户信息加密白名单
       saveWhiteList(){
+        console.log('-=-=-=',this.DATA_40037,this.DATA_70037)
+        let DATA_40037 = [...this.DATA_40037]
+        let DATA_70037 = [...this.DATA_70037]
         let params = {
-          DATA_40037:this.DATA_40037,
-          DATA_70037:this.DATA_70037,
+          DATA_40037:DATA_40037.join(),
+          DATA_70037:DATA_70037.join(),
           DATA_30037:this.radioValue
         }
         this.saveData(params)

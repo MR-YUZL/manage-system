@@ -26,7 +26,7 @@
     </div>
     <div style="padding:10px 0 20px 0;"><TablePagination :parentPager="pager" @paginationChange="paginationChange" /></div>
     <a-modal title="完结工单" :visible="closeWorkOrderShow" v-if="closeWorkOrderShow" @cancel="handleCancelCloseOrder" @ok="handleBatch(3)">
-      <p>确认完结工单嘛？完结后，可重新开启工单</p>
+      <div class="creatOrder_text">确认完结工单嘛？完结后，可重新开启工单</div>
        <a-textarea
         v-model="closeOrderRemark"
         placeholder="若有备注请填写，若无请直接完结"
@@ -267,6 +267,7 @@ export default {
                 label: "关联客户",
                 placeholder: "请选择",
                 ruleName: "customerId",
+                showSearch:true,
                 options: [],
                 rules: [{
                   required: true,
@@ -366,6 +367,7 @@ export default {
             title: '客户名称',
             dataIndex: 'customerName',
             key: 'customerName',
+            ellipsis: true
           },
           {
             title: '优先级',
@@ -384,6 +386,7 @@ export default {
             title: '标题',
             dataIndex: 'title',
             key: 'title',
+            ellipsis: true
           },
           {
             title: '状态',
@@ -402,16 +405,19 @@ export default {
             title: '发起人',
             dataIndex: 'inputAccName',
             key: 'inputAccName',
+            ellipsis: true
           },
           {
             title: '受理组',
             dataIndex: 'receiverGroupName',
             key: 'receiverGroupName',
+            ellipsis: true
           },
           {
             title: '受理人',
             dataIndex: 'receiverAccName',
             key: 'receiverAccName',
+            ellipsis: true
           },
         ],
         dataSource:[],
@@ -554,8 +560,22 @@ export default {
       },
       // 完结工单
       closeWorkOrderModal(){
+      
         if(this.selectedRowKeys.length==0){
           this.$message.warn('请先选择工单！')
+          return false;
+        }
+        let status = false
+        for(let i = 0; i < this.selectedRowKeys.length; i++){
+          if(this.selectedRowKeys[i].status == 1){
+            status = true;
+            break
+          }
+        }
+        
+        
+        if(!status){
+          this.$message.warn('请选择受理中的工单在进行操作！')
           return false;
         }
         this.closeWorkOrderShow = true
@@ -591,6 +611,19 @@ export default {
       batchRestartModal(){
         if(this.selectedRowKeys.length==0){
           this.$message.warn('请先选择工单！')
+          return false;
+        }
+        let status = false
+        for(let i = 0; i < this.selectedRowKeys.length; i++){
+          if(this.selectedRowKeys[i].status == 2){
+            status = true;
+            break
+          }
+        }
+        
+        
+        if(!status){
+          this.$message.warn('请选择已完结的工单在进行操作！')
           return false;
         }
         this.batchRestartShow = true
@@ -679,8 +712,8 @@ export default {
         let {typeId,sessionDate,...others} = data
         this.searchField = {...others}
         if(sessionDate&&sessionDate.length>0){
-          this.searchField.startDate = sessionDate[0]
-          this.searchField.endDate = sessionDate[1]
+          this.searchField.startDate = sessionDate.split(',')[0]
+          this.searchField.endDate = sessionDate.split(',')[1]
         }
         if(typeId&&typeId.length>0){
           this.searchField.typeId=typeId[typeId.length-1]
@@ -802,7 +835,15 @@ export default {
         margin-right:10px;
       }
     }
+    
   }
+  .creatOrder_text{
+      margin-bottom: 15px;
+      padding: 8px;
+      text-align: center;
+      border: 1px solid #3e7bf8;
+      color: #3e7bf8;
+    }
   .workOrderDetail{
     display: flex;
     .left{

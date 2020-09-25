@@ -23,7 +23,7 @@ export default {
     return {
       defaultFileList: [],
       fileList: [],
-      accept: ".doc,.docx,.xls,.xlsx,.pdf,.png,.jpg",
+      accept: ".doc,.docx,.xls,.xlsx,.pdf,.png,.jpg,.txt",
       maxFiles: 5
     };
   },

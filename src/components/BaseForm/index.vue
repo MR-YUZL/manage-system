@@ -244,6 +244,11 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    filterOption(input, option) {
+      return (
+        option.componentOptions.children[0].text.toLowerCase().indexOf(input.toLowerCase()) >= 0
+      );
+    },
     onSubmit(e) {
       e.preventDefault();
       let _that = this;

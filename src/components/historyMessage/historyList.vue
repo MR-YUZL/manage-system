@@ -38,7 +38,6 @@ export default {
   },
   computed: {
     ...mapState({}),
-
     name() {
       if (this.currentConversation.type === "C2C") {
         return this.currentConversation.userProfile.nick || this.toAccount;
@@ -72,7 +71,7 @@ export default {
         case 0:
           console.log(this.historySessionList[0].msgTime,this.historySessionList[this.historySessionList.length - 1].msgTime)
           params.msgTimeBegin = moment(
-            this.historySessionList[0].msgTime
+            this.historySessionList[this.historySessionList.length - 1].msgTime
           ).format("YYYY-MM-DD HH:mm:ss.SSS");
           break;
         case 1:
@@ -137,7 +136,7 @@ export default {
         messageListNode.scrollHeight -
         messageListNode.scrollTop -
         messageListNode.clientHeight;
-        // console.log(scrollBottom)
+        console.log(this.isFinished,this.status)
         if(this.isFinished && scrollBottom < 50 && !this.status){
           this.isFinished = false
           this.searchChatRecords(0);

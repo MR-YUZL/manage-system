@@ -35,7 +35,7 @@
       </div>
     </Modal>
     <a-modal title="完结工单" :visible="closeWorkOrderShow" v-if="closeWorkOrderShow" @cancel="handleCancelCloseOrder" @ok="handleWorkOrder(3)">
-      <p>确认完结工单嘛？完结后，可重新开启工单</p>
+      <div class="creatOrder_text">确认完结工单嘛？完结后，可重新开启工单</div>
        <a-textarea
         v-model="closeOrderRemark"
         placeholder="若有备注请填写，若无请直接完结"
@@ -282,6 +282,10 @@ export default {
   .text{
     margin-top:10px;
     
+  }
+  .creatOrder_text{
+    padding: 10px;
+    text-align: center;
   }
 }
 
