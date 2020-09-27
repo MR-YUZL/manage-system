@@ -360,7 +360,7 @@ export default {
                 }
               ]
             };
-            console.log("*-*-*-*--*-*-");
+            
             this.formObjectCreated.modelList.splice(4, 0, defHtml);
             formFieldsObj.push(defHtml);
             if (item.dataType == 3) {

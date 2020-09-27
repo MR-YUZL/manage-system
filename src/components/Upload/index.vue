@@ -31,9 +31,9 @@ export default {
     list(val, oldVal) {
       console.log(val, oldVal, "watch======");
       // debugger;
-      // if(JSON.stringify(val) != JSON.stringify(oldVal)){
-      //   this.updateDefaultFileList(val);
-      // }
+      if(JSON.stringify(val) != JSON.stringify(oldVal)){
+        this.updateDefaultFileList(val);
+      }
     }
   },
   props: {
@@ -76,6 +76,7 @@ export default {
       return isLt2M && acceptFile;
     },
     updateDefaultFileList(list) {
+      console.log(list)
       let tempList = [];
       list && list.length && list.map((item, index) => {
         if(item) {

@@ -61,6 +61,10 @@ export default {
     },
     mounted(){},
     methods: {
+      getAllList(){
+        this.getList()
+        this.getHandleList()
+      },
       getList(){
         let params = {
           workflowId:this.workOrderId

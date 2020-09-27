@@ -70,7 +70,7 @@
         ></BaseForm>
       </div>
     </Modal>
-    <Modal :currentModal="workOrderDetail">
+    <Modal :currentModal="workOrderDetail" v-if="workOrderDetail.visible">
       <div slot="content">
         <div class="workOrderDetail">
           <div class="left">
@@ -549,6 +549,7 @@ export default {
       },
       // 获取工单信息
       getWorkOrderDetails(){
+        console.log('--------')
         let params = {
           id:this.workOrderId
         }
@@ -738,7 +739,7 @@ export default {
       },
       // 更新工单记录
       updataOrderRecord(){
-        this.$refs.RecordList.getList()
+        this.$refs.RecordList.getAllList()
       },
       // 获取工单的自定义字段
       getFormFields(){

@@ -127,7 +127,7 @@ export default {
         },
         {
           type: "textarea",
-          label: "文本框",
+          label: "咨询备注",
           model: "",
           ruleName: "advisoryRemark"
         }

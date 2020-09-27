@@ -43,7 +43,7 @@
         :wrapper-col="wrapperCol"
       >
         <a-form-model-item label="字段名称" prop="fieldName">
-          <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" placeholder="请输入字段名称"></a-input>
+          <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" :disabled="addType=='add' ? false : true" :maxLength='15' placeholder="请输入字段名称"></a-input>
         </a-form-model-item>
         <a-form-model-item label="状态">
           <a-radio-group v-model="addFormData.enable">
@@ -181,8 +181,9 @@ export default {
         fieldName: [
           {
             required: true,
-            message: "请输入姓名",
-            trigger: "blur"
+            message: "请输入字段名称",
+            trigger: "blur",
+            whitespace: true
           }
         ]
       },
@@ -307,7 +308,7 @@ export default {
         fieldName: "",
         isRequired: 0,
         dataType: 1,
-        enable: 0,
+        enable: 1,
         isDefined: 1,
         options:[]
       };

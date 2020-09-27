@@ -15,7 +15,7 @@
                 </li>
                 <li>
                   <span>发起人</span>
-                  <p>{{info.inputAcc}}</p>
+                  <p>{{info.inputAccName}}</p>
                 </li>
                 <li> 
                   <span>状态</span>
@@ -54,7 +54,7 @@
               <ul>
                 <li>
                   <span>客户名称</span>
-                  <p>{{customerInfo.customerName}}</p>
+                  <p>{{customerInfo.custName}}</p>
                 </li>
                 <li>
                   <span>客户级别</span>
@@ -136,7 +136,6 @@ export default {
       workOrderId(value){
         if(value){
           // this.getWorkOrderDetails()
-          this.getCustomerList()
         }
       },
       orderInfo(){
@@ -152,6 +151,7 @@ export default {
             type:2,
             msgTimeBegin:moment(this.orderInfo.beginTime).format("YYYY-MM-DD HH:mm:ss.SSS"),
           },
+        this.getCustomerList()
         console.log(this.orderInfo,'=======================this.orderInfo')
       }
     },
