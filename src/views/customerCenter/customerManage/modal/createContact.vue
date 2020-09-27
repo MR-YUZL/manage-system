@@ -24,24 +24,6 @@ export default {
       dynamicValidateForm: {
         formList: []
       },
-      options: [
-        {
-          value: "浙江",
-          label: "浙江",
-          children: [
-            {
-              value: "杭州",
-              label: "杭州",
-              children: [
-                {
-                  value: "西湖",
-                  label: "西湖"
-                }
-              ]
-            }
-          ]
-        }
-      ]
     };
   },
   props: {
@@ -68,7 +50,7 @@ export default {
         if(res.data.status){
           // res.data.list.map(item => {
           //   if (item.fieldCode == "contactsArea")
-          //     item.fieldValue = item.fieldValue.split(",");
+          //     item.fieldValue = item.fieldValue.length?item.fieldValue.split(","):[];
           // });
           this.contactFormObj.formList = res.data.list;
           console.log( this.contactFormObj.formList)
@@ -80,10 +62,10 @@ export default {
       api.formFieldsJson({ state: 1 }).then(res => {
         console.log(res, "创建联系人");
         if (res.data.status) {
-          res.data.list.map(item => {
-            if (item.fieldCode == "contactsArea")
-              item.fieldValue = item.fieldValue.split(",");
-          });
+          // res.data.list.map(item => {
+          //   if (item.fieldCode == "contactsArea")
+          //     item.fieldValue = item.fieldValue.split(",");
+          // });
           this.contactFormObj.formList = res.data.list;
         }
       });
