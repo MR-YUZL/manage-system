@@ -4,11 +4,23 @@
       <template v-slot:content>
         <!-- <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" /> -->
         <!-- <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" /> -->
-        <div class="btn-area">
-          <a-button type="primary" @click="tagsFn">设置标签</a-button>
-          <a-button type="primary" @click="editCustomerModalShow">编辑</a-button>
-          <a-button type="primary" @click="createContactModalShow($event,'contactModalInner')">新建联系人</a-button>
-          <a-button v-if="dataSource=='2' || dataSource=='3' || dataSource=='4'" type="primary" @click="customerFollow">客户跟进</a-button>
+        <div class="custDetailBtns">
+          <div>宁波企蜂通信有限公司
+            <div class="tag_item" v-bind:class="{ expansion : active }">
+              <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"  v-if="tagsList && tagsList.length" />
+              <div class="tag">
+                <a-tag v-for="(item,index) in tagsList" :key="index">
+                  {{item.name}}
+                </a-tag>
+              </div>
+            </div>
+          </div>
+          <div class="btn-area">
+            <a-button type="primary" @click="tagsFn">设置标签</a-button>
+            <a-button type="primary" @click="editCustomerModalShow">编辑</a-button>
+            <a-button type="primary" @click="createContactModalShow($event,'contactModalInner')">新建联系人</a-button>
+            <a-button v-if="dataSource=='2' || dataSource=='3' || dataSource=='4'" type="primary" @click="customerFollow">客户跟进</a-button>
+          </div>
         </div>
         <ul class="lastFollowFlex">
           <li>
@@ -119,6 +131,7 @@ import { areaDictionary } from "@/utils/areaDictionary";
 export default {
   data() {
     return {
+      active:true,
       allTags:[],
       tagsList:[],
       infoContactsJson: [],
@@ -168,6 +181,9 @@ export default {
     this.getLogJson(this.obj);
   },
   methods: {
+    showFn(){
+        this.active = !this.active
+      },
     successLoadList() {
       this.contactModalInner.visible = false;
       this.getContactJson(this.obj);
@@ -401,9 +417,13 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.btn-area {
-  button {
-    margin-left: 10px;
+.custDetailBtns{
+  display: flex;
+  justify-content: space-between;
+  .btn-area {
+    button {
+      margin-left: 10px;
+    }
   }
 }
 .lastFollowFlex {

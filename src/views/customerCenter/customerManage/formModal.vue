@@ -101,11 +101,11 @@ export default {
         if (valid) {
           console.log(this.formObj.formList,'this.formObj.formList==========')
           let arr = [...this.formObj.formList]
-          arr.map((item,index) => {
-            if(item.fieldCode == "contactsArea"){
-              item.fieldValue = item.fieldValue.join(',')
-            }
-          })
+          // arr.map((item,index) => {
+          //   if(item.fieldCode == "contactsArea"){
+          //     item.fieldValue = item.fieldValue.join(',')
+          //   }
+          // })
           this.$emit("cusSubmitForm", arr);
         }else {
           return false;
