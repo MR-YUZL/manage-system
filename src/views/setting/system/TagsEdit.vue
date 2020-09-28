@@ -111,7 +111,7 @@ export default {
   margin:0 15px;
   .addTagsbtn{
     margin:20px 0;
-    text-align: right;
+    text-align: left;
   }
   .tagsListArry{
     display:flex;

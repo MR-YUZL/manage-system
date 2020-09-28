@@ -7,7 +7,7 @@
       :beforeUpload="beforeUpload"
       @change="handleChange"
       :fileList="fileList"
-      :accept="accept"
+     
     >
       <a-button v-if="fileList.length < maxFiles">
         <a-icon type="upload" />上传文件
@@ -69,9 +69,11 @@ export default {
       const acceptFile = (this.accept.indexOf(fileType) > -1)
       if(!acceptFile) {
         this.$message.error("文件格式只支持"+this.accept);
+        return;
       }
       if (!isLt2M) {
         this.$message.error("文件大小不超过2MB！");
+        return;
       }
       return isLt2M && acceptFile;
     },
@@ -94,6 +96,11 @@ export default {
       let fileList = [...info.fileList];
       // 控制大于2M的附件。不显示
       if(info.file.size > 2*1024*1024) {
+        return;
+      }
+      let fileType = info.file.name.split(".").pop();
+      const acceptFile1 = (this.accept.indexOf(fileType) > -1)
+      if(!acceptFile1) {
         return;
       }
       this.fileList = fileList

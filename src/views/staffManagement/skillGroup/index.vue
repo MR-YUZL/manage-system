@@ -302,7 +302,7 @@ export default {
     .ulstyle{
       padding:20px;
       strong{
-        margin-bottom:40px;
+        margin-bottom:16px;
         display:block;
       }
     }

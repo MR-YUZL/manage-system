@@ -65,7 +65,7 @@
         </a-input-group>
       </div>
       <div v-else-if="item.type === 'search'">
-        <a-button @click="onSearch" :type="item.btnType || 'default'">筛选</a-button>
+        <a-button @click="onSearch" :type="item.btnType || 'default'">查询</a-button>
       </div>
     </div>
   </div>

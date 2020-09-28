@@ -43,7 +43,7 @@
         :wrapper-col="wrapperCol"
       >
         <a-form-model-item label="字段名称" prop="fieldName">
-          <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" :disabled="addType=='add' ? false : true" :maxLength='15' placeholder="请输入字段名称"></a-input>
+          <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" :disabled="addType=='add' ? false : true" :maxLength='8' placeholder="请输入字段名称"></a-input>
         </a-form-model-item>
         <a-form-model-item label="状态">
           <a-radio-group v-model="addFormData.enable">
@@ -72,9 +72,9 @@
               :wrapperCol="{ span: 20 }"
               :labelCol="{ span: 4 }"
               :prop="'options.'+idx+'.optionName'"
-              :rules="{required: true, message: '请输入添加的选项', trigger: 'blur' }">
+              :rules="{required: true, message: '请输入添加的选项', trigger: 'blur',  whitespace: true}">
               <div class="singleChoice">
-                <a-input v-model="addFormData.options[idx].optionName" placeholder="请输入要增加的字段" />
+                <a-input v-model="addFormData.options[idx].optionName" :maxLength='10' placeholder="请输入要增加的字段" />
                 <a-form-model-item>
                   <a-checkbox
                     @change="changeDefaultValue(idx)"
@@ -413,6 +413,7 @@ export default {
 }
 .addField {
   margin-bottom: 20px;
+  padding-right: 24px;
   text-align: right;
 }
 </style>

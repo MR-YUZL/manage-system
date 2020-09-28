@@ -112,20 +112,17 @@ export default {
           title: "跟进时间",
           dataIndex: "followDate",
           key: "followDate",
-          width:200
         },
         {
           title: "客户名称",
           dataIndex: "custName",
           key: "custName",
           scopedSlots: { customRender: "detailSkip" },
-           width:200
         },
         {
           title: "有效联系",
           dataIndex: "followValid",
           key: "followValid",
-           width:100,
           customRender: value => {
             let con = {
               children: (
@@ -142,7 +139,6 @@ export default {
           title: "客服名称",
           dataIndex: "followAcc",
           key: "followAcc",
-           width:100
         },
         {
           title: "跟进记录",
