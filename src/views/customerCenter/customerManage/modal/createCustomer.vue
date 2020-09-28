@@ -12,6 +12,7 @@
         @cusCloseForm="handleCancel"
         @cusSubmitForm="cusSubmitForm"
         :detailId="this.detailId"
+        :custype="0"
       />
     </a-modal>
   </div>

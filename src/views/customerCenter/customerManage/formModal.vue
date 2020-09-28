@@ -22,7 +22,7 @@
         <!-- {validator: (rule, value, callback) => {vv(rule, value, callback,item.fieldCode)} -->
         <div v-if="item.dataType == 1">
           <a-input v-model="item.fieldValue" placeholder="请输入" />
-          <span style="color:red" v-if="isRepeatFlag && repeatList.indexOf(item.fieldCode) > -1">{{item.fieldCode}}重复</span>
+          <span style="color:red" v-if="isRepeatFlag && repeatList.indexOf(item.fieldCode) > -1">{{item.fieldName}}重复</span>
         </div>
 
         <div v-if="item.dataType == 2">
@@ -115,6 +115,7 @@ export default {
       type: Object,
     },
     detailId: String,
+    custype:Number
   },
   methods: {
     submitForm(formName) {
@@ -137,23 +138,27 @@ export default {
               })
             }
           })
-          let params1 = {
-            fields: newArr,
-            id: this.detailId,
-            type: 0,
-          };
-          //先做去重判断
-          api.detectRepeat(params1).then((response) => {
-            console.log(response, "去重数组");
-            if (response.data.status) {
-              this.$emit("cusSubmitForm", arr,false);
-            } else {
-              //重复了
-              this.isRepeatFlag = true;
-              this.repeatList = response.data.list;
-              this.$emit("cusSubmitForm", arr,true);
-            }
-          });
+          if(newArr.length){
+            let params1 = {
+              fields: newArr,
+              id: this.detailId,
+              type: this.custype,
+            };
+            //先做去重判断
+            api.detectRepeat(params1).then((response) => {
+              console.log(response, "去重数组");
+              if (response.data.status) {
+                this.$emit("cusSubmitForm", arr,false);
+              } else {
+                //重复了
+                this.isRepeatFlag = true;
+                this.repeatList = response.data.list;
+                this.$emit("cusSubmitForm", arr,true);
+              }
+            });
+          }else{
+            this.$emit("cusSubmitForm", arr,false);
+          }
         } else {
           return false;
         }

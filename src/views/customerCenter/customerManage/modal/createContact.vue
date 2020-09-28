@@ -5,6 +5,8 @@
       :formObj="contactFormObj"
       @cusCloseForm="handleCancel"
       @cusSubmitForm="contactSubmitForm"
+      :detailId="this.contactsId"
+      :custype="1"
     />
     <!-- </a-modal> -->
   </div>
@@ -12,6 +14,7 @@
 <script>
 import api from "@/api/customerCenter";
 import FormModal from "@/views/customerCenter/customerManage/formModal";
+// import { delete } from 'vue/types/umd';
 export default {
   data() {
     return {
@@ -65,7 +68,6 @@ export default {
         ...this.custIdParams,
         contactsId:this.contactsId
       };
-
       if(!flag){
         api.createLinkMan(params2).then(res => {
           console.log("新建联系人保存", res);
