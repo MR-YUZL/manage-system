@@ -7,19 +7,6 @@
         <div class="custDetailBtns">
           <div class="tagHeader">
             <a-icon class="user" type="user" />{{infos.custName}}
-            <div class="tag_item" v-bind:class="{ expansion: active }">
-              <a-icon
-                :type="active ? 'down' : 'up'"
-                class="icon"
-                @click="showFn"
-                v-if="tagsList && tagsList.length"
-              />
-              <div class="tag">
-                <a-tag v-for="(item, index) in tagsList" :key="index">
-                  {{ item.name }}
-                </a-tag>
-              </div>
-            </div>
           </div>
           <div class="btn-area">
             <a-button type="primary" @click="tagsFn">设置标签</a-button>
@@ -38,6 +25,21 @@
               >客户跟进</a-button
             >
           </div>
+        </div>
+        <div class="tag_item_list">
+          <div class="tag_item" v-bind:class="{ expansion: active }">
+              <a-icon
+                :type="active ? 'down' : 'up'"
+                class="icon"
+                @click="showFn"
+                v-if="tagsList && tagsList.length"
+              />
+              <div class="tag">
+                <a-tag v-for="(item, index) in tagsList" :key="index">
+                  {{ item.name }}
+                </a-tag>
+              </div>
+            </div>
         </div>
         <ul class="lastFollowFlex">
           <li>
@@ -59,57 +61,59 @@
         </ul>
         <a-tabs default-active-key="1" @change="tabChange">
           <a-tab-pane key="1" tab="客户相关">
-            <div class="contactFlex">
-              <div class="contactHead">联系人({{ contactLength }})</div>
-              <!-- <div
-                style="cursor: pointer;"
-                @click="createContactModalShow($event,'contactModalInner')"
-              >
-                <a-icon type="plus" />添加联系人
-              </div> -->
+            <div class="commonTab scroll">
+              <div class="contactFlex">
+                <div class="contactHead">联系人({{ contactLength }})</div>
+                <!-- <div
+                  style="cursor: pointer;"
+                  @click="createContactModalShow($event,'contactModalInner')"
+                >
+                  <a-icon type="plus" />添加联系人
+                </div> -->
+              </div>
+              <ul class="contactUl">
+                <li
+                  v-for="(item, index) in infoContactsJson"
+                  :key="item.contactsId"
+                >
+                  <span>
+                    {{ item.contactsName }}
+                    <a-button
+                      icon="edit"
+                      type="link"
+                      @click="editContact(item.contactsId)"
+                    ></a-button>
+                    <a-button
+                      icon="delete"
+                      type="link"
+                      @click="deleteContact(item.contactsId)"
+                    ></a-button>
+                  </span>
+                  <span>
+                    <i>手机号：{{ item.phone }}</i>
+                    <i>职务：{{ item.duty }}</i>
+                    <i>电话来访：{{ item.phoneVisitCount }}</i>
+                    <i>会话来访：{{ item.sessionVisitCount }}</i>
+                  </span>
+                </li>
+              </ul>
+              <!-- 服务小结 -->
+              <ServiceSummary :guestId="detailId" :custId="detailId" />
+              <!-- 跟进记录 -->
+              <ServiceRecord :questionList="followList" />
+              <!-- 工单信息 -->
+              <OrderInf :guestId="detailId" />
             </div>
-            <ul class="contactUl">
-              <li
-                v-for="(item, index) in infoContactsJson"
-                :key="item.contactsId"
-              >
-                <span>
-                  {{ item.contactsName }}
-                  <a-button
-                    icon="edit"
-                    type="link"
-                    @click="editContact(item.contactsId)"
-                  ></a-button>
-                  <a-button
-                    icon="delete"
-                    type="link"
-                    @click="deleteContact(item.contactsId)"
-                  ></a-button>
-                </span>
-                <span>
-                  <i>手机号：{{ item.phone }}</i>
-                  <i>职务：{{ item.duty }}</i>
-                  <i>电话来访：{{ item.phoneVisitCount }}</i>
-                  <i>会话来访：{{ item.sessionVisitCount }}</i>
-                </span>
-              </li>
-            </ul>
-            <!-- 服务小结 -->
-            <ServiceSummary :guestId="detailId" :custId="detailId" />
-            <!-- 跟进记录 -->
-            <ServiceRecord :questionList="followList" />
-            <!-- 工单信息 -->
-            <OrderInf :guestId="detailId" />
           </a-tab-pane>
           <a-tab-pane key="2" tab="资料">
-            <div class="materialFlex">
+            <div class="materialFlex commonTab scroll">
               <li v-for="(item, index) in materialList" :key="index">
                 {{ item.fieldName }}：{{ item.fieldValue }}
               </li>
             </div>
           </a-tab-pane>
           <a-tab-pane key="3" tab="日志">
-            <div class="logFlex">
+            <div class="logFlex commonTab scroll">
               <li v-for="(item, index) in logList" :key="index">
                 <span>{{ item.logDate }}</span>
                 <span>{{ item.logContent }}</span>
@@ -250,9 +254,9 @@ export default {
       api.customerDetail(params).then((res) => {
         if (res.data.status) {
           res.data.list.map((item, index) => {
-            if (item.dataType == 2 || item.dataType == 3) {
+            if (item.dataType == 2 || item.dataType == 3 || item.dataType == 6) {
               if (item.fieldCode == "custArea") {
-                let arr = item.fieldValue.split(",");
+                let arr = item.fieldValue;
                 let list = [...areaDictionary];
                 let str;
                 arr.map((val, i) => {
@@ -478,41 +482,49 @@ export default {
     color: #fff;
   }
 }
+.tag_item_list{
+  margin-top: 16px;
+  .tag_item {
+    margin-top: 10px;
+    position: relative;
+    overflow: hidden;
+    min-height: 37px;
+    .icon {
+      position: absolute;
+      right: 0;
+      top: 0px;
+    }
+    .tag {
+      width: 93%;
+      display: flex;
+      flex-wrap: wrap;
+      span {
+        display: block;
+        margin-right: 10px;
+        background: #e5f2ff;
+        padding: 0 20px;
+        height: 26px;
+        line-height: 26px;
+        border-radius: 30px;
+        margin-bottom: 12px;
+        color: #3e7bf8;
+        border: none;
+      }
+    }
+  }
+}
 .custDetailBtns {
   display: flex;
   justify-content: space-between;
   .tagHeader {
     width: 338px;
+    margin-top: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     .user {
       font-size: 18px;
-    }
-    .tag_item {
-      margin-top: 10px;
-      position: relative;
-      overflow: hidden;
-      min-height: 37px;
-      .icon {
-        position: absolute;
-        right: 0;
-        top: 0px;
-      }
-      .tag {
-        width: 93%;
-        display: flex;
-        flex-wrap: wrap;
-        span {
-          display: block;
-          margin-right: 10px;
-          background: #e5f2ff;
-          padding: 0 20px;
-          height: 26px;
-          line-height: 26px;
-          border-radius: 30px;
-          margin-bottom: 20px;
-          color: #3e7bf8;
-          border: none;
-        }
-      }
+      margin-right: 2px;
     }
     .expansion {
       height: 37px;
@@ -587,5 +599,10 @@ export default {
       padding-left: 10px;
     }
   }
+}
+.commonTab{
+  height: 556px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 </style>

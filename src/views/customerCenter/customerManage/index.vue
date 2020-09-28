@@ -267,7 +267,7 @@ export default {
       detailObj: {
         title: "客户详情",
         visible: false,
-        width: "720px"
+        width: "880px"
       },
       searchFormList: [
         {
@@ -396,7 +396,8 @@ export default {
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
                 scopedSlots: { customRender: "detailSkip" },
-                width:160
+                // width:160,
+                ellipsis:true
               });
             } 
             else if(item.fieldCode == "custLinkPhone"){
@@ -432,7 +433,8 @@ export default {
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
                 scopedSlots: { customRender: "custLabelList" },
-                width:160
+                // width:160,
+                ellipsis:true
               });
             }
             else {
