@@ -5,45 +5,62 @@
         <!-- <BaseForm :formObject="formObject" :defaultValues="formAxiosReturnValues" @toggleModal="toggleModal" @formSubmit="formSubmit" /> -->
         <!-- <FormModelSearchForm :defaultFormValues="defaultSearchFormValues" :formList="searchFormList" /> -->
         <div class="custDetailBtns">
-          <div>宁波企蜂通信有限公司
-            <div class="tag_item" v-bind:class="{ expansion : active }">
-              <a-icon :type="active ? 'down' : 'up'" class="icon" @click="showFn"  v-if="tagsList && tagsList.length" />
+          <div class="tagHeader">
+            <a-icon class="user" type="user" />{{infos.custName}}
+            <div class="tag_item" v-bind:class="{ expansion: active }">
+              <a-icon
+                :type="active ? 'down' : 'up'"
+                class="icon"
+                @click="showFn"
+                v-if="tagsList && tagsList.length"
+              />
               <div class="tag">
-                <a-tag v-for="(item,index) in tagsList" :key="index">
-                  {{item.name}}
+                <a-tag v-for="(item, index) in tagsList" :key="index">
+                  {{ item.name }}
                 </a-tag>
               </div>
             </div>
           </div>
           <div class="btn-area">
             <a-button type="primary" @click="tagsFn">设置标签</a-button>
-            <a-button type="primary" @click="editCustomerModalShow">编辑</a-button>
-            <a-button type="primary" @click="createContactModalShow($event,'contactModalInner')">新建联系人</a-button>
-            <a-button v-if="dataSource=='2' || dataSource=='3' || dataSource=='4'" type="primary" @click="customerFollow">客户跟进</a-button>
+            <a-button type="primary" @click="editCustomerModalShow"
+              >编辑</a-button
+            >
+            <a-button
+              type="primary"
+              @click="createContactModalShow($event, 'contactModalInner')"
+              >新建联系人</a-button
+            >
+            <a-button
+              v-if="dataSource == '2' || dataSource == '3' || dataSource == '4'"
+              type="primary"
+              @click="customerFollow"
+              >客户跟进</a-button
+            >
           </div>
         </div>
         <ul class="lastFollowFlex">
           <li>
             <span>客服负责人</span>
-            <span>{{infos.principalAcc}}</span> 
+            <span>{{ infos.principalAcc }}</span>
           </li>
           <li>
-            <span>最近回访时间</span>
-            <span>{{infos.lastVisitDate}}</span>
+            <span>最近跟进时间</span>
+            <span>{{ infos.lastFollowDate }}</span>
           </li>
           <li>
             <span>客户来访次数</span>
-            <span>{{infos.visitCount}}</span>
+            <span>{{ infos.visitCount }}</span>
           </li>
           <li>
             <span>客户创建时间</span>
-            <span>{{infos.inputDate}}</span>
+            <span>{{ infos.inputDate }}</span>
           </li>
         </ul>
         <a-tabs default-active-key="1" @change="tabChange">
           <a-tab-pane key="1" tab="客户相关">
             <div class="contactFlex">
-              <div class="contactHead">联系人({{contactLength}})</div>
+              <div class="contactHead">联系人({{ contactLength }})</div>
               <!-- <div
                 style="cursor: pointer;"
                 @click="createContactModalShow($event,'contactModalInner')"
@@ -52,17 +69,28 @@
               </div> -->
             </div>
             <ul class="contactUl">
-              <li v-for="(item,index) in infoContactsJson" :key="item.contactsId">
+              <li
+                v-for="(item, index) in infoContactsJson"
+                :key="item.contactsId"
+              >
                 <span>
-                  {{item.contactsName}}
-                  <a-button icon="edit" type="link" @click="editContact(item.contactsId)"></a-button>
-                  <a-button icon="delete" type="link" @click="deleteContact(item.contactsId)"></a-button>
+                  {{ item.contactsName }}
+                  <a-button
+                    icon="edit"
+                    type="link"
+                    @click="editContact(item.contactsId)"
+                  ></a-button>
+                  <a-button
+                    icon="delete"
+                    type="link"
+                    @click="deleteContact(item.contactsId)"
+                  ></a-button>
                 </span>
                 <span>
-                  <i>手机号：{{item.phone}}</i>
-                  <i>职务：{{item.duty}}</i>
-                  <i>电话来访：{{item.phoneVisitCount}}</i>
-                  <i>会话来访：{{item.sessionVisitCount}}</i>
+                  <i>手机号：{{ item.phone }}</i>
+                  <i>职务：{{ item.duty }}</i>
+                  <i>电话来访：{{ item.phoneVisitCount }}</i>
+                  <i>会话来访：{{ item.sessionVisitCount }}</i>
                 </span>
               </li>
             </ul>
@@ -75,19 +103,24 @@
           </a-tab-pane>
           <a-tab-pane key="2" tab="资料">
             <div class="materialFlex">
-              <li v-for="(item,index) in materialList" :key="index">{{item.fieldName}}：{{item.fieldValue}}</li>
+              <li v-for="(item, index) in materialList" :key="index">
+                {{ item.fieldName }}：{{ item.fieldValue }}
+              </li>
             </div>
           </a-tab-pane>
           <a-tab-pane key="3" tab="日志">
             <div class="logFlex">
-              <li v-for="(item,index) in logList" :key="index">
-                <span>{{item.logDate}}</span>
-                <span>{{item.logContent}}</span>
+              <li v-for="(item, index) in logList" :key="index">
+                <span>{{ item.logDate }}</span>
+                <span>{{ item.logContent }}</span>
               </li>
             </div>
           </a-tab-pane>
         </a-tabs>
-        <Modal :currentModal="contactModalInner" v-if="contactModalInner.visible">
+        <Modal
+          :currentModal="contactModalInner"
+          v-if="contactModalInner.visible"
+        >
           <template v-slot:content>
             <CreateContact
               @closeCreateContact="closeCreateContact"
@@ -97,24 +130,31 @@
             />
           </template>
         </Modal>
-        <a-modal title="客户标签"  :visible="tagsModalShow.visible" @cancel="handleCancelTags" @ok="handleOkCancelTags">
-            <div class="flex" >
-              <div style="width:150px;">客户标签：</div>
-              <div v-if="allTags.length > 0 ">
-                <template v-for="(tag,index) in allTags" style="margin-bottom:10px;">
-                  <a-checkable-tag
-                    :key="tag.value"
-                    v-model="tag.checked"
-                    @change="checked => handleChange(tag, checked,index)"
-                  >
+        <a-modal
+          title="客户标签"
+          :visible="tagsModalShow.visible"
+          @cancel="handleCancelTags"
+          @ok="handleOkCancelTags"
+        >
+          <div class="tagflex">
+            <div style="width: 150px">客户标签：</div>
+            <div v-if="allTags.length > 0">
+              <template
+                v-for="(tag, index) in allTags"
+                style="margin-bottom: 10px"
+              >
+                <a-checkable-tag
+                  :key="tag.value"
+                  v-model="tag.checked"
+                  @change="(checked) => handleChange(tag, checked, index)"
+                >
                   {{ tag.name }}
-                  </a-checkable-tag>
-                </template>
-              </div>
-              <div v-else>请联系管理员前往系统属性维护客户标签数据</div>
+                </a-checkable-tag>
+              </template>
             </div>
+            <div v-else>请联系管理员前往系统属性维护客户标签数据</div>
+          </div>
         </a-modal>
-
       </template>
     </Modal>
   </div>
@@ -131,16 +171,16 @@ import { areaDictionary } from "@/utils/areaDictionary";
 export default {
   data() {
     return {
-      active:true,
-      allTags:[],
-      tagsList:[],
+      active: true,
+      allTags: [],
+      tagsList: [],
       infoContactsJson: [],
       infos: {},
       questionList: [], //服务小结
       followList: [],
       userInfList: [],
       obj: {
-        custId: this.detailId
+        custId: this.detailId,
       },
       currentModal: this.visibleProps,
       contactModalInner: { title: "新建联系人", visible: false },
@@ -148,7 +188,7 @@ export default {
       materialList: [],
       logList: [],
       contactLength: "",
-      contactsId: ""
+      contactsId: "",
     };
   },
   components: {
@@ -156,20 +196,20 @@ export default {
     ServiceRecord,
     OrderInf,
     Modal,
-    CreateContact
+    CreateContact,
   },
   props: {
     detailId: String,
     visibleProps: Object,
-    dataSource:String
+    dataSource: String,
   },
-  created(){
-    this.getTags()
+  created() {
+    this.getTags();
   },
-  watch:{
-    guestId(){
-      this.getTags()
-    }
+  watch: {
+    guestId() {
+      this.getTags();
+    },
   },
   mounted() {
     // this.getServiceList();
@@ -181,15 +221,15 @@ export default {
     this.getLogJson(this.obj);
   },
   methods: {
-    showFn(){
-        this.active = !this.active
-      },
+    showFn() {
+      this.active = !this.active;
+    },
     successLoadList() {
       this.contactModalInner.visible = false;
       this.getContactJson(this.obj);
     },
     getInfoTitle(params) {
-      api.infoTitle(params).then(res => {
+      api.infoTitle(params).then((res) => {
         console.log("头部", res);
         if (res.data.status) {
           this.infos = res.data.infos;
@@ -197,7 +237,7 @@ export default {
       });
     },
     getContactJson(params) {
-      api.contactInfo(params).then(res => {
+      api.contactInfo(params).then((res) => {
         console.log("联系人列表", res);
         if (res.data.status) {
           this.infoContactsJson = res.data.list;
@@ -207,58 +247,52 @@ export default {
       });
     },
     getMaterialInfo(params) {
-      api.customerDetail(params).then(res => {
-    
+      api.customerDetail(params).then((res) => {
         if (res.data.status) {
-        
-          res.data.list.map((item,index) => {
-            if(item.dataType == 2 || item.dataType == 3){
-           
-              if(item.fieldCode == "custArea"){
-                let arr = item.fieldValue.split(',')
-                let list = [...areaDictionary]
+          res.data.list.map((item, index) => {
+            if (item.dataType == 2 || item.dataType == 3) {
+              if (item.fieldCode == "custArea") {
+                let arr = item.fieldValue.split(",");
+                let list = [...areaDictionary];
                 let str;
-                arr.map((val,i) => {
-                  list.map((it,j) => {
-                    if(val == it.adcode){
-                      str = str ? str + ',' +it.name : it.name
-                      list = it.districts
+                arr.map((val, i) => {
+                  list.map((it, j) => {
+                    if (val == it.adcode) {
+                      str = str ? str + "," + it.name : it.name;
+                      list = it.districts;
                     }
-                  })
-             
-                })
-                item.fieldValue = str
-              }else{
-                item.options.map(val => {
-                  if(val.optionId == item.fieldValue){
-                    item.fieldValue = val.optionName
+                  });
+                });
+                item.fieldValue = str;
+              } else {
+                item.options.map((val) => {
+                  if (val.optionId == item.fieldValue) {
+                    item.fieldValue = val.optionName;
                   }
-                })
+                });
               }
             }
-          })
+          });
           this.materialList = res.data.list;
-
         }
       });
     },
-    findArea(list,id){
-      console.log(list,id)
-      let str
-      list.map(item => {
-        if(item.adcode == id){
-          if(item.districts){
-            str = str + ',' +item.name
-            return item.districts
-          }else{
-            return str
+    findArea(list, id) {
+      console.log(list, id);
+      let str;
+      list.map((item) => {
+        if (item.adcode == id) {
+          if (item.districts) {
+            str = str + "," + item.name;
+            return item.districts;
+          } else {
+            return str;
           }
-          
         }
-      })
+      });
     },
     getLogJson(params) {
-      api.logJson(params).then(res => {
+      api.logJson(params).then((res) => {
         console.log("日志", res);
         if (res.data.status) {
           this.logList = res.data.list;
@@ -282,20 +316,18 @@ export default {
       this.contactModalInner.visible = true;
     },
     deleteContact(contactId) {
-      let that = this
+      let that = this;
       this.$confirm({
         content: <div>删除联系人后将无法回复，是否确认删除该联系人</div>,
         onOk() {
-          api.deleteContacts({ contactId: contactId }).then(res => {
+          api.deleteContacts({ contactId: contactId }).then((res) => {
             if (res.data.status) {
               that.$message.success("删除成功");
               that.getContactJson(that.obj);
             }
           });
         },
-        onCancel() {
-
-        }
+        onCancel() {},
       });
     },
     editCustomer() {},
@@ -308,10 +340,9 @@ export default {
       this.contactModalInner.visible = false;
     },
     createContactModalShow(e, name) {
-      
       if (name) {
-        this.contactsId = ''
-        this[name]['title'] = "新建联系人";
+        this.contactsId = "";
+        this[name]["title"] = "新建联系人";
         this[name]["visible"] = true;
       } else {
         this["currentModal"]["visible"] = true;
@@ -320,7 +351,7 @@ export default {
     followCustomer() {},
     tabChange() {},
     getDetail(params) {
-      api.customerDetail(params).then(res => {
+      api.customerDetail(params).then((res) => {
         console.log("客户详情", res);
       });
     },
@@ -337,10 +368,10 @@ export default {
     // },
     //获取跟进记录
     getFollowRecord(params) {
-      api.detailFollowRecord(params).then(res => {
+      api.detailFollowRecord(params).then((res) => {
         console.log("跟进记录", res);
         if (res.data.status) {
-          if(res.data.list && res.data.list.length){
+          if (res.data.list && res.data.list.length) {
             this.followList = res.data.list;
           }
         }
@@ -352,74 +383,141 @@ export default {
       this.$emit("closeUpdate");
     },
     //客户标签
-    tagsFn(){
-      this.getAllTags()
-       this.tagsModalShow.visible = true
+    tagsFn() {
+      this.getAllTags();
+      this.tagsModalShow.visible = true;
     },
     //客户设置标签时获取单位下所有维护的客户标签
-      getAllTags(){
-        this.allTags=[]
-        this.Request.get('/customers/hfwCustomersLabels/labelListJson').then(res => {
+    getAllTags() {
+      this.allTags = [];
+      this.Request.get("/customers/hfwCustomersLabels/labelListJson").then(
+        (res) => {
           let data = res.data.list;
-          if(data.length>0){
-            this.allTags = data
-           this.allTags.map(it=>{
-             if(this.tagsList && this.tagsList.length>0){
-               this.tagsList.map(item=>{
-              if(it.name == item.name){
-                  it.checked = true
-                }
-              })
-             }
-           })
+          if (data && data.length > 0) {
+            // this.tagsModalShow.visible = true;
+            this.allTags = data;
+            this.allTags.map((it) => {
+              if (this.tagsList && this.tagsList.length > 0) {
+                this.tagsList.map((item) => {
+                  if (it.name == item.name) {
+                    it.checked = true;
+                  }
+                });
+              }
+            });
+            console.log(this.tagsList,'this.tagsList')
           }
-        })
-      },
-      //获取tags  参数  guestId  客户id
-      getTags(){
-        this.Request.get('/customers/hfwCustomersInfo/searchListJson?custId='+this.detailId).then(res => {
-          console.log('标签tags',res.data)
-          this.tagsList = res.data.labels
-        })
-      },
-      handleCancelTags(){
-        this.tagsModalShow.visible = false
-      },
-      handleOkCancelTags(){
-       
-        let params = {
-          custId:this.detailId,
-          labels:[]
         }
-         this.allTags.map(item=>{
-          if(item.checked){
-            params.labels.push(item.value)
-          }
-        })
-        console.log('选中的标签',params.labels)
-        if( !params.labels.length){
-          this.$message.warn('请选择要设置的标签');
-          return false
-        }
-        this.Request.post('/customers/hfwCustomersLabels/saveJson',params).then(res => {
-          console.log('标签selectTags',res.data)
-          this.$message.success('设置标签成功！')
-          this.tagsModalShow.visible = false
-          this.getTags()
-        })
-      },
-    handleChange(tag, checked,index) {
-      console.log(tag, checked,index,'dianji')
-      this.allTags[index].checked = checked
+      );
     },
-  }
+    //获取tags  参数  guestId  客户id
+    getTags() {
+      this.Request.get(
+        "/customers/hfwCustomersInfo/searchListJson?custId=" + this.detailId
+      ).then((res) => {
+        console.log("标签tags", res.data);
+        this.tagsList = res.data.labels;
+      });
+    },
+    handleCancelTags() {
+      this.tagsModalShow.visible = false;
+    },
+    handleOkCancelTags() {
+      let params = {
+        custId: this.detailId,
+        labels: [],
+      };
+      this.allTags.map((item) => {
+        if (item.checked) {
+          params.labels.push(item.value);
+        }
+      });
+      console.log("选中的标签", params.labels);
+      if (!params.labels.length) {
+        this.$message.warn("请选择要设置的标签");
+        return false;
+      }
+      this.Request.post("/customers/hfwCustomersLabels/saveJson", params).then(
+        (res) => {
+          console.log("标签selectTags", res.data);
+          this.$message.success("设置标签成功！");
+          this.tagsModalShow.visible = false;
+          this.getTags();
+        }
+      );
+    },
+    handleChange(tag, checked, index) {
+      console.log(tag, checked, index, "dianji");
+      this.allTags[index].checked = checked;
+      this.allTags = [...this.allTags];
+      this.$forceUpdate()
+    },
+  },
 };
 </script>
 
 <style lang="less" scoped>
-.custDetailBtns{
+.tagflex {
+  display: flex;
+  .ant-tag,
+  .ant-tag a,
+  .ant-tag a:hover {
+    margin-right: 10px;
+    background: #e5f2ff;
+    padding: 0 20px;
+    height: 26px;
+    line-height: 26px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    color: #3e7bf8;
+    border: none;
+    margin-bottom: 10px;
+  }
+  .ant-tag-checkable-checked {
+    background: #3e7bf8;
+    color: #fff;
+  }
+}
+.custDetailBtns {
   display: flex;
   justify-content: space-between;
+  .tagHeader {
+    width: 338px;
+    .user {
+      font-size: 18px;
+    }
+    .tag_item {
+      margin-top: 10px;
+      position: relative;
+      overflow: hidden;
+      min-height: 37px;
+      .icon {
+        position: absolute;
+        right: 0;
+        top: 0px;
+      }
+      .tag {
+        width: 93%;
+        display: flex;
+        flex-wrap: wrap;
+        span {
+          display: block;
+          margin-right: 10px;
+          background: #e5f2ff;
+          padding: 0 20px;
+          height: 26px;
+          line-height: 26px;
+          border-radius: 30px;
+          margin-bottom: 20px;
+          color: #3e7bf8;
+          border: none;
+        }
+      }
+    }
+    .expansion {
+      height: 37px;
+    }
+  }
   .btn-area {
     button {
       margin-left: 10px;
@@ -461,10 +559,10 @@ export default {
       display: block;
       i {
         font-style: normal;
-        width:21%;
+        width: 21%;
       }
-      & i:first-child{
-        width:35%;
+      & i:first-child {
+        width: 35%;
       }
     }
     span:last-child {

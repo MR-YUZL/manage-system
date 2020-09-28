@@ -40,7 +40,6 @@ export default {
   // },
 
   mounted() {
-    // this.getForm();
     this.getEditContactsInfo();
   },
   methods: {
@@ -58,40 +57,24 @@ export default {
         }
       })
     },
-    getForm() {
-      api.formFieldsJson({ state: 1 }).then(res => {
-        console.log(res, "创建联系人");
-        if (res.data.status) {
-          // res.data.list.map(item => {
-          //   if (item.fieldCode == "contactsArea")
-          //     item.fieldValue = item.fieldValue.split(",");
-          // });
-          this.contactFormObj.formList = res.data.list;
-        }
-      });
-    },
     cityChange(value) {},
-    contactSubmitForm(arr) {
-      let fields = [];
-      // this.contactFormObj.formList.map(v=>{
-      //   fields.push({
-      //     fieldCode:v.fieldCode,
-      //     isDefined:v.isDefined,
-      //     fieldValue:v.fieldValue
-      //   })
-      // })
-      let params = {
+    contactSubmitForm(arr,flag) {
+
+      let params2 = {
         fields: arr,
         ...this.custIdParams,
         contactsId:this.contactsId
       };
-      api.createLinkMan(params).then(res => {
-        console.log("新建联系人保存", res);
-        if (res.data.status) {
-          this.$message.success("保存成功");
-          this.$emit("successLoadList");
-        }
-      });
+
+      if(!flag){
+        api.createLinkMan(params2).then(res => {
+          console.log("新建联系人保存", res);
+          if (res.data.status) {
+            this.$message.success("保存成功");
+            this.$emit("successLoadList");
+          }
+        });
+      }
     },
     resetForm(formName) {
       this.$refs[formName].resetFields();

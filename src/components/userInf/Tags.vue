@@ -21,7 +21,7 @@
                     <a-checkable-tag
                       :key="tag.id"
                       v-model="tag.checked"
-                      @change="checked => handleChange(tag, checked,index)"
+                      @change="(checked) => handleChange(tag, checked,index)"
                     >
                     {{ tag.name }}
                     </a-checkable-tag>
@@ -130,7 +130,9 @@ export default {
         this.active = !this.active
       },
       handleChange(tag, checked,index) {
+        console.log(tag, checked, index, "dianji");
         this.allTags[index].checked = checked
+        console.log(this.allTags)
         this.$forceUpdate()
       },
     }

@@ -16,7 +16,7 @@
             <span>{{item.inputTime}}</span>
             <span v-if="item.consuleType == 1" class="iconBg iconBg1">来访联系人:{{item.contactName}}</span>
             <span v-if="item.consuleType == 0" class="iconBg iconBg2">来访联系人:{{item.contactName}}</span>
-            <span>{{item.inputAcc}}</span>
+            <span>{{item.serviceName}}</span>
           </div>
           <div>{{item.title}}</div>
           <div>{{item.remark}}</div>

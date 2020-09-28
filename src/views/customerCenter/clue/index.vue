@@ -192,7 +192,8 @@ export default {
         {
           title: "创建时间",
           dataIndex: "inputDate",
-          key: "inputDate"
+          key: "inputDate",
+          width:160,
         }
       ], // 表头
       dataSource: [], // 表格数据

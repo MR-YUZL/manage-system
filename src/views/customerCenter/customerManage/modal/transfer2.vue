@@ -26,16 +26,12 @@
         </div>
 
         <div class="center_btn">
-          <div>
-            <a-button type="primary" @click="rightToLeft">
-              <a-icon type="left" />
-            </a-button>
-          </div>
-          <div>
-            <a-button type="primary" @click="leftToRight">
-              <a-icon type="right" />
-            </a-button>
-          </div>
+          <a-button type="primary" @click="rightToLeft">
+            <a-icon type="left" />
+          </a-button>
+          <a-button type="primary" @click="leftToRight">
+            <a-icon type="right" />
+          </a-button>
         </div>
 
         <div class="right_box">
@@ -44,20 +40,21 @@
           </div>
           <p v-if="tableHeadList.length === 0">无数据</p>
           <!-- <a-checkbox-group v-model="checkList"> -->
-            <ul>
-              <draggable v-model="tableHeadList" @start="drag=true" @end="drag=false">
-                <li
-                  v-for="(item,index) in tableHeadList"
-                  :key="item.fieldId"
-                >
-                  <a-checkbox
-                    :disabled="item.fieldCode=='custName'"
-                    :checked="item.isChecked"
-                    @change="showOnChange(index,$event)"
-                  >{{item.fieldName}}</a-checkbox>
-                </li>
-              </draggable>
-            </ul>
+          <ul>
+            <li
+              v-for="(item,index) in tableHeadList"
+              :key="item.fieldId"
+              draggable="true"
+              @dragstart="dragstart(item)"
+              @dragenter="dragenter(item)"
+              @dragend="dragend(item)"
+            >
+              <a-checkbox
+                :checked="item.isChecked"
+                @change="showOnChange(index,$event)"
+              >{{item.fieldName}}</a-checkbox>
+            </li>
+          </ul>
           <!-- </a-checkbox-group> -->
         </div>
       </div>
@@ -67,7 +64,6 @@
 
 <script>
 import api from "@/api/customerCenter";
-import draggable from 'vuedraggable'
 export default {
   data() {
     return {
@@ -95,9 +91,6 @@ export default {
     visible(val) {
       this.visibles = val;
     },
-  },
-  components:{
-    draggable
   },
   mounted() {
     this.getList();
@@ -129,16 +122,12 @@ export default {
       this.showCheckAll = e.target.checked;
       if (e.target.checked) {
         this.tableHeadList.map((item) => {
-          if(item.fieldCode!='custName'){
-            item.isChecked = true;
-          }
+          item.isChecked = true;
         });
          this.checkList = [...this.tableHeadList];
       } else {
         this.tableHeadList.map((item) => {
-          if(item.fieldCode!='custName'){
-            item.isChecked = false;
-          }
+          item.isChecked = false;
         });
         this.checkList = [];
       }
@@ -351,13 +340,10 @@ export default {
   }
   .center_btn {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
     align-items: center;
     margin-right: 10px;
     button {
       margin-left: 10px;
-      margin-bottom: 10px;
     }
   }
 }

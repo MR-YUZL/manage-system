@@ -479,6 +479,7 @@ export default {
         params = {
           ...this.pager
         };
+        params.item = {}
       } else {
         params = {
           ...this.pager
@@ -628,13 +629,18 @@ export default {
       this.modals.delCustomerVisible = true;
     },
     exportUrl() {
+      let Base64 = require('js-base64').Base64;
       this.modals.exportCustomerVisible = false;
-      let param = qs.stringify({
-        ...this.searchParams,
-        totalRecord:this.pager.totalRecord
-      });
-      console.log(param,'exportUrl111')
-      let url = `/customers/hfwCustomersInfo/exportJson?${param}`;
+      console.log(this.searchParams,'this.searchParams导出')
+      let newJson = {
+        item:{},
+        ...this.pager
+      }
+      newJson.item = this.searchParams;
+      let param = Base64.encode(JSON.stringify(newJson));
+      console.log(param,newJson,'exportUrl111',Base64.decode('eyJpdGVtIjp7ImRhdGFTb3VyY2UiOiIxIiwicXVlcnlUeXBlIjoiMSIsInF1ZXJ5VGV4dCI6IumCkyJ9LCJwYWdlU2l6ZSI6MTAsImN1cnJlbnRQYWdlIjoxLCJpbnRQb3NpdGlvbiI6MCwidG90YWxSZWNvcmQiOjEsInRvdGFsUGFnZSI6MX0'))
+      // return;
+      let url = `/customers/hfwCustomersInfo/exportJson?data=${param}`;
       window.location.href = url;
       // document.location = url;
     },
