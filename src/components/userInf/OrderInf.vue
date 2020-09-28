@@ -215,7 +215,6 @@ export default {
       this.active = !this.active;
     },
     viewDetails(item) {
-      console.log(item, "viewDetails(item)");
       this.detailId = item.id
     },
     // 获取工单信息

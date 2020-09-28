@@ -108,18 +108,20 @@ export default {
   computed: {},
   created() {},
   mounted() {
-    console.log("--------");
     this.workOrderDetailModal(this.detailId);
+  },
+  watch:{
+    detailId(newVal){
+      this.workOrderDetailModal(newVal);
+    }
   },
   methods: {
     // 获取工单信息
     getWorkOrderDetails() {
-      console.log("--------");
       let params = {
         id: this.workOrderId
       };
       this.Request.get("/workflow/infoJson", params).then(res => {
-        console.log("工单信息", res.data, "=====================");
         this.info = res.data.data;
       });
       this.$forceUpdate();

@@ -316,7 +316,7 @@ export default {
       this.Request.get("/hfw/workbench/getSummarySort").then(res => {
         let re = res.data;
         if (re.status) {
-          let treeChangeData = [...re.list]
+          let treeChangeData = this.treeChangeData(re.list)
           this.endServerObj["modelList"][0]["options"] = treeChangeData;
         }
       });

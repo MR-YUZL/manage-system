@@ -607,9 +607,9 @@ export default {
           this.closeWorkOrderShow = false
           this.closeOrderRemark = ''
           this.batchTransmit.visible = false
-          this.$set(this.batchTransmit,this.batchTransmit)
           this.batchRestartShow = false
           this.batchRestartValue = ''
+          this.batchTaransParams = {}
           this.getList()
           this.$message.success('操作成功')
         })
@@ -641,6 +641,7 @@ export default {
       },
       //批量转交
       batchTransmitModal(){ 
+        this.formObject.defaultValues = {}
         if(this.selectedRowKeys.length==0){
           this.$message.warn('请先选择工单！')
           return false;

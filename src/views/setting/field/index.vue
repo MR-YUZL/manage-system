@@ -43,7 +43,7 @@
         :wrapper-col="wrapperCol"
       >
         <a-form-model-item label="字段名称" prop="fieldName">
-          <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" :disabled="addType=='add' ? false : true" :maxLength='8' placeholder="请输入字段名称"></a-input>
+          <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" :disabled="addFormData.isDefined==0 ? true : false" :maxLength='8' placeholder="请输入字段名称"></a-input>
         </a-form-model-item>
         <a-form-model-item label="状态">
           <a-radio-group v-model="addFormData.enable">
@@ -61,7 +61,8 @@
           <a-radio-group v-model="addFormData.dataType" @change="changeDataType">
             <div class="radioStyle">
               <div v-for="(item,index) in dataTypeList" :key="index">
-                <a-radio v-if="item.show" :disabled="item.disabled" :value="item.value">{{item.name}}</a-radio>
+                <!-- <a-radio v-if="item.show" :disabled="item.disabled" :value="item.value">{{item.name}}</a-radio> -->
+                <a-radio v-if="item.show" :disabled="addType=='add' ? false : true" :value="item.value">{{item.name}}</a-radio>
               </div>
             </div>
           </a-radio-group>
@@ -268,6 +269,7 @@ export default {
           item.disabled = false
         })
       }
+      
       this.addFormData = {
         fieldName,
         isRequired, //是否必填：0-否；1-是
