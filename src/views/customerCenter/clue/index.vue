@@ -23,7 +23,7 @@
           :dataSource="dataSource"
           :pagination="false"
           :rowKey="record => record.clueId"
-          :scroll="{x:1500}"
+          :scroll="{x:1800}"
         >
           <div slot="clueName" slot-scope="record,row">
             <span class="nowrap" :title="row.clueName">{{row.clueName}}</span>
@@ -194,6 +194,7 @@ export default {
           dataIndex: "inputDate",
           key: "inputDate",
           width:160,
+          ellipsis:true
         }
       ], // 表头
       dataSource: [], // 表格数据

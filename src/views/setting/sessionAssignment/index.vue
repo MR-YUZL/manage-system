@@ -440,6 +440,7 @@ export default {
     line-height:53px;
     border-bottom:1px solid #dedede;
     padding-left:20px;
+    margin-bottom: 16px;
   }
   .conversationCon{
     padding-left:20px;

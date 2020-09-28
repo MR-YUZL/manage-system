@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-page-header title="在线质检" style="padding:16px 0;" />
+    <a-page-header title="会话质检" style="padding:16px 0;" />
     <div class="box">
       <!-- <Search :tools="searchList" @onSearch="searchFun" /> -->
       <FormModelSearchForm
