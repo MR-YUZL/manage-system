@@ -22,7 +22,7 @@
           >
             <div class="list">
               <div class="item_left">
-                <router-link to="/">{{ item.title }}</router-link>
+                <span>{{ item.title }}</span>
               </div>
               <div class="item_right item_1" v-if="item.status == 0">
                 未受理
@@ -52,11 +52,13 @@
         ></BaseForm>
       </div>
     </Modal>
+    <OrderDetail :detailId="detailId" v-if="detailId" />
   </div>
 </template>
 <script>
 import Modal from "./../Modal/index";
 import BaseForm from "../BaseForm/index";
+import OrderDetail from './OrderDetail'
 export default {
   props: {
     guestId: {
@@ -67,7 +69,8 @@ export default {
   },
   components: {
     Modal,
-    BaseForm
+    BaseForm,
+    OrderDetail
   },
   data() {
     return {
@@ -188,7 +191,8 @@ export default {
       },
       userInfList: [],
       formFields: [],
-      customerId: ""
+      customerId: "",
+      detailId:''
       // customFieldsDefault:{}//自定义字段默认值
     };
   },
@@ -212,6 +216,7 @@ export default {
     },
     viewDetails(item) {
       console.log(item, "viewDetails(item)");
+      this.detailId = item.id
     },
     // 获取工单信息
     getWorkOrderList() {
