@@ -54,6 +54,11 @@ export default {
           //   if (item.fieldCode == "contactsArea")
           //     item.fieldValue = item.fieldValue.length?item.fieldValue.split(","):[];
           // });
+          res.data.list.map(item=>{
+            if(item.fieldCode == 'contactsArea'){
+              item.fieldValue = item.fieldValue?item.fieldValue:[]
+            }
+          });
           this.contactFormObj.formList = res.data.list;
           console.log( this.contactFormObj.formList)
 

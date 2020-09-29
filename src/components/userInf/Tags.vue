@@ -130,9 +130,7 @@ export default {
         this.active = !this.active
       },
       handleChange(tag, checked,index) {
-        console.log(tag, checked, index, "dianji");
         this.allTags[index].checked = checked
-        console.log(this.allTags)
         this.$forceUpdate()
       },
     }

@@ -44,13 +44,13 @@
             <span class="custAddress" :title="row.custAddress">{{row.custAddress}}</span>
           </div>
           <div slot="custLabelList" slot-scope="record,row">
-            <span :title="row.custLabelList">{{row.custLabelList.length?row.custLabelList.join():''}}</span>
+            <span class="nowrap" :title="row.custLabelList">{{row.custLabelList.length?row.custLabelList.join():''}}</span>
           </div>
           <div slot="mergeLinkman" slot-scope="record,row">
             <span><img v-if="row.custLinkPhone" src="../../../assets/imgs/phoneIcon.png" alt="">{{row.custLinkPhone}}</span>
           </div>
           <div slot="detailSkip" slot-scope="record,row">
-            <span class="blue" @click="customerDetail(row.custId)">{{row.custName}}</span>
+            <span class="blue nowrap" @click="customerDetail(row.custId)">{{row.custName}}</span>
             <!-- <div v-for="(it,index) in row.custLabelList">
               <span class="custLabelList">{{it}}</span>
             </div> -->
@@ -396,8 +396,7 @@ export default {
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
                 scopedSlots: { customRender: "detailSkip" },
-                // width:160,
-                ellipsis:true
+                width:160,
               });
             } 
             else if(item.fieldCode == "custLinkPhone"){
@@ -433,8 +432,7 @@ export default {
                 dataIndex: item.fieldCode,
                 key: item.fieldCode,
                 scopedSlots: { customRender: "custLabelList" },
-                // width:160,
-                ellipsis:true
+                width:160,
               });
             }
             else {
@@ -703,7 +701,7 @@ export default {
 .button-area {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 12px 0;
   .left-side {
     text-align: left;
     button {
@@ -717,5 +715,12 @@ export default {
       margin-right: 10px;
     }
   }
+}
+.nowrap{
+  display: inline-block;
+  width: 110px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 </style>

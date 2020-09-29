@@ -2,7 +2,7 @@
   <div>
     <div class="totalScore">
       当前总分
-      <span>{{qcObj.totalScore}}</span>
+      <span>{{qcObj.totalScore?qcObj.totalScore:'0'}}</span>
     </div>
     <div class="materialFlex">
       <li>上次检测人:{{qcObj.qcAccName}}</li>
@@ -19,10 +19,10 @@
       >
         <a-input-number style="width:220px" v-model.trim="item.gradeValue" placeholder="请输入" :max="item.gradeLimit" :precision="0" />
       </a-form-model-item>
-      <a-form-model-item label="评语">
+      <a-form-model-item label="评语" class="qcDesc">
         <a-input v-model="qcObj.qcDesc" type="textarea" placeholder="最多可输入200个汉字" :maxLength="200" />
       </a-form-model-item>
-      <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
+      <a-form-model-item :wrapper-col="{ span: 14, offset: 14 }">
         <a-button type="primary" html-type="submit" @click="submitGrade('gradeForm')">提交</a-button>
       </a-form-model-item>
     </a-form-model>
@@ -40,7 +40,7 @@ export default {
         reniews: ""
       },
       formItemLayout: {
-        labelCol: { span: 8 },
+        labelCol: { span: 4 },
         wrapperCol: { span: 14 }
       }
     };
@@ -112,6 +112,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
+.qcDesc{
+  /deep/.ant-form-item-label{
+    text-align: left;
+  }
+}
 .totalScore {
   text-align: center;
   span {

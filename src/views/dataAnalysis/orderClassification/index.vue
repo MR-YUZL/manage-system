@@ -18,7 +18,7 @@
         >
           <a-select-option v-for="(it,ind) in item.childList" :key="ind" :value="it.id">{{it.name}}</a-select-option>
         </a-select>
-        <div v-if="JSON.stringify(item.echartObj)!='{}'">
+        <div v-if="item.echartObj.legend.length">
 
           <CircleChart
             :id="item.id"
@@ -27,7 +27,7 @@
             styles="width:100%;height:300px;margin:auto"
           />
         </div>
-        <div v-else class="noData"></div>
+        <div v-else class="noDataChart"></div>
       </div>
     </div>
   </div>
@@ -50,7 +50,7 @@ export default {
       searchFormList: [
         {
           type: "rangepicker",
-          name: "inputDateStart",
+          name: "searchDate",
           label: "查询时间"
         },
         {
@@ -65,7 +65,7 @@ export default {
         }
       ],
       defaultSearchFormValues: {
-        inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
+        searchDate:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
         // inputDateStart: ["2020-06-03", "2020-06-11"]
       },
 
@@ -221,17 +221,16 @@ export default {
     //图表
     getOrderTypeChartJson(typeId,chartIndex,str) {
       let {
-        inputDateStart,
+        searchDate,
         inputAcc,
         ...others
-      } = this.defaultSearchFormValues;
+      } = this.searchParams;
       let inputAccs = "";
       if (inputAccs && inputAccs.length > 0) {
         inputAccs = inputAcc.join();
       }
       let params = {
-        startDate: inputDateStart[0],
-        endDate: inputDateStart[1],
+        searchDate:searchDate,
         inputAcc: inputAccs,
         typeId,
         ...others
@@ -275,10 +274,8 @@ export default {
       this.getOrderTypeChartJson(eve,chartIndex,name)
     },
 
-    prevHandleSubmit(val) {
-      this.defaultSearchFormValues = {
-        ...val
-      };
+    prevHandleSubmit(data) {
+      this.searchParams = { ...data }
       this.getOrderTypeChartJson();
     },
   }
@@ -298,11 +295,6 @@ export default {
       right: 20px;
       top: 20px;
       z-index: 10;
-    }
-    .noData{
-      background: url(../../../assets/imgs/noData.png) no-repeat;
-      width: 286px;height: 248px;
-      text-align: center;
     }
   }
 }

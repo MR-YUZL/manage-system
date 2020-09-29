@@ -73,7 +73,7 @@ import api from "@/api/customerCenter";
 import TablePagination from "@/components/Table/TablePagination";
 import UserInformation from "@/components/userInf";
 // import MessageDetail from "@/views/messageRecord/messageDetail";
-import BaseForm from "@/components/BaseForm";
+import BaseForm from "@/components/BaseForm/index2";
 import FormModelSearchForm from "@/components/Search/FormModelSearchForm";
 import HistoryList from '@/components/historyMessage/historyList'
 export default {
@@ -156,7 +156,8 @@ export default {
           title: "姓名",
           dataIndex: "name",
           key: "name",
-          scopedSlots: { customRender: "name" }
+          // scopedSlots: { customRender: "name" }
+          ellipsis:true
         },
         {
           title: "会话开始时间",
@@ -203,7 +204,8 @@ export default {
           title: "咨询分类",
           dataIndex: "consultTypeName",
           key: "consultTypeName",
-          scopedSlots: { customRender: "consultTypeName" }
+          // scopedSlots: { customRender: "consultTypeName" },
+          ellipsis:true
         },
         {
           title: "会话结束时间",
@@ -252,6 +254,10 @@ export default {
       formObject: {
         ref: "testModal",
         sureBtn:'保存并更新',
+        formItemLayout: {
+          labelCol: { span: 5 },
+          wrapperCol: { span: 17 }
+        },
         modelList: [
           {
             type: "cascader",
@@ -474,7 +480,7 @@ export default {
       margin: 0 20px 20px 0;
     }
     /deep/button{
-        margin-right: 20px;
+        margin-right: 31px;
       }
   }
   .information {

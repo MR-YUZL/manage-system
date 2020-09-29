@@ -44,7 +44,9 @@
       <LineChart id="receptionChart" :echartObj="echartObj2" />
     </div>
     <a-page-header title="接待来源" style="padding:16px 0;" />
-    <CircleChart id="circleChart" :echartObj="circleObj" styles="width:600px;height:300px;margin:auto" />
+    <CircleChart v-if="circleObj && circleObj.legend &&circleObj.legend.length" id="circleChart" :echartObj="circleObj" styles="width:600px;height:300px;margin:auto" />
+    <div v-else class="noDataChart"></div>
+
     <a-page-header title="咨询分类" style="padding:16px 0;" />
     <!-- 咨询分类 -->
     <div class="circleFlex">
@@ -58,11 +60,13 @@
           <a-select-option v-for="(it,ind) in item.childList" :key="ind" :value="it.id">{{it.name}}</a-select-option>
         </a-select>
         <CircleChart
+          v-if="item.echartObj && item.echartObj.legend && item.echartObj.legend.length"
           :id="item.id"
           :key="item.id"
           :echartObj="item.echartObj"
           styles="width:100%;height:300px;margin:auto"
         />
+        <div v-else class="noDataChart"></div>
       </div>
     </div>
   </div>
@@ -82,7 +86,7 @@ export default {
       searchFormList: [
         {
           type: "rangepicker",
-          name: "inputDateStart",
+          name: "searchDate",
           label: "统计周期"
         },
 
@@ -98,7 +102,7 @@ export default {
         }
       ],
       defaultSearchFormValues: {
-        inputDateStart:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")],
+        searchDate:[moment().subtract(1, "days").format("YYYY-MM-DD"),moment().subtract(1, "days").format("YYYY-MM-DD")],
         // inputDateStart:['2020-06-01','2020-06-10']
       },
       searchParams:{},
@@ -236,7 +240,7 @@ export default {
     //咨询分类图表
     getChartData(typeId,chartIndex,str){
       let {
-        inputDateStart,
+        searchDate,
         serviceAcc,
         ...others
       } = this.searchParams;
@@ -245,13 +249,13 @@ export default {
         inputAccs = serviceAcc.join();
       }
       let params = {
-        startDate: inputDateStart[0],
-        endDate: inputDateStart[1],
+        searchDate:searchDate,
         serviceAcc: inputAccs,
         typeId,
         ...others
       };
       api.consultTypeChartJson(params).then(res=>{
+        console.log(res,'咨询分类图表')
         this.chartList[chartIndex].echartObj = res.data.data;
         let counts = res.data.data.series;
         var sum = counts.reduce(function(a, b) {
@@ -268,14 +272,13 @@ export default {
       })
     },
     getOverviewInfo(){
-      let{inputDateStart,serviceAcc} = this.searchParams
+      let{searchDate,serviceAcc} = this.searchParams
       let inputAccs = ''
       if(serviceAcc&&serviceAcc.length){
         inputAccs = serviceAcc.join()
       }
       let params = {
-        startDate:inputDateStart[0],
-        endDate:inputDateStart[1],
+        searchDate:searchDate,
         serviceAcc:inputAccs
       }
       api.overviewInfo(params).then(res=>{
@@ -285,6 +288,7 @@ export default {
         this.echartObj2 = this.info.msgChar;
 
         this.circleObj = this.info.channelChar;
+        // console.log(this.circleObj.series.length,'123')
         var counts = this.info.channelChar.series;
         var sum = counts.reduce(function(a, b) {
           return a + b.value;

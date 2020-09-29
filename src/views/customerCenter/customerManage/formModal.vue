@@ -53,7 +53,7 @@
 
         <div v-if="item.dataType == 4">
           <a-date-picker
-            format="YYYY-MM-DD"
+            valueFormat="YYYY-MM-DD"
             v-model="item.fieldValue"
             allowClear
           />
@@ -74,6 +74,10 @@
             >
           </a-select>
         </div>
+
+        <div v-if="item.dataType == 5 ">
+          <a-input-number class="numberFiled" v-model="item.fieldValue" :min="0" placeholder="请输入" />
+        </div>
       </a-form-model-item>
       <a-form-model-item :wrapper-col="{ span: 14, offset: 10 }">
         <a-button
@@ -93,6 +97,7 @@
 <script>
 import { areaDictionary } from "@/utils/areaDictionary";
 import api from "@/api/customerCenter";
+import moment from "moment";
 export default {
   data() {
     return {
@@ -118,6 +123,7 @@ export default {
     custype:Number
   },
   methods: {
+    moment,
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
@@ -234,5 +240,11 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.numberFiled{
+  width: 100% !important;
+  .ant-input-number{
+    display: block;
+  }
+}
 </style>
