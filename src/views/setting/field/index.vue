@@ -46,13 +46,13 @@
           <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" :disabled="addFormData.isDefined==0 ? true : false" :maxLength='8' placeholder="请输入字段名称"></a-input>
         </a-form-model-item>
         <a-form-model-item label="状态">
-          <a-radio-group v-model="addFormData.enable">
+          <a-radio-group v-model="addFormData.enable" :disabled="addFormData.dataType== 1 ? true : false">
             <a-radio-button :value="0">禁用</a-radio-button>
             <a-radio-button :value="1">启用</a-radio-button>
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="必填属性">
-          <a-radio-group v-model="addFormData.isRequired">
+          <a-radio-group v-model="addFormData.isRequired" :disabled="addFormData.dataType== 1 ? true : false">
             <a-radio-button :value="0">否</a-radio-button>
             <a-radio-button :value="1">是</a-radio-button>
           </a-radio-group>
