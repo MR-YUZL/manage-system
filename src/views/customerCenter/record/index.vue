@@ -16,7 +16,7 @@
           :rowKey="record => record.followId"
         >
           <div slot="detailSkip" slot-scope="record, row">
-            <span class="blue" @click="customerDetail(row.custId)">{{
+            <span class="blue nowrap" :title="row.custName" @click="customerDetail(row.custId)">{{
               row.custName
             }}</span>
           </div>
@@ -247,4 +247,12 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="less" scoped>
+.nowrap{
+  display: inline-block;
+  width: 110px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+</style>

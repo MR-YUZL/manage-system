@@ -48,7 +48,7 @@ import moment from "moment";
 import api from "@/api/customerCenter";
 import UserInformation from "@/components/userInf";
 import Grade from "@/views/qualityTesting/grade";
-import BaseForm from "@/components/BaseForm";
+import BaseForm from "@/components/BaseForm/index2";
 import HistoryList from '@/components/historyMessage/historyList'
 export default {
   data() {
@@ -72,6 +72,10 @@ export default {
       sessionObject: {
         ref: "testModal",
         sureBtn: "保存",
+        formItemLayout: {
+          labelCol: { span: 5 },
+          wrapperCol: { span: 17 }
+        },
         modelList: [
           {
             type: "cascader",
@@ -233,7 +237,7 @@ export default {
     }
     .calledLeft {
       /deep/button {
-        margin-right: 20px;
+        margin-right: 31px;
       }
     }
   }

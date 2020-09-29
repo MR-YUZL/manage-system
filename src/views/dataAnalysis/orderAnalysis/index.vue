@@ -36,7 +36,7 @@ export default {
       searchFormList: [
         {
           type: "rangepicker",
-          name: "inputDateStart",
+          name: "searchDate",
           label: "查询时间",
         },
         {
@@ -51,7 +51,7 @@ export default {
         }
       ],
       defaultSearchFormValues: {
-        inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
+        searchDate:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
       },
       columns: [
         {
@@ -173,15 +173,14 @@ export default {
       }
     },
     getOrderAccList() {
-      let{inputDateStart,inputAcc} = this.searchParams
-      console.log(inputDateStart,'inputDateStart')
+      let{searchDate,inputAcc} = this.searchParams
+      console.log(searchDate,'searchDate')
       let inputAccs = ''
       if(inputAcc&&inputAcc.length){
         inputAccs = inputAcc.join()
       }
       let params = {
-        startDate:inputDateStart[0],
-        endDate:inputDateStart[1],
+        searchDate:searchDate,
         inputAcc:inputAccs
       }
       api.orderAccList(params).then(res => {

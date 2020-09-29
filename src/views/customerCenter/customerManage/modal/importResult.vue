@@ -8,7 +8,7 @@
       :footer="null"
       width="600px"
     >
-      <ul class="resultUl">
+      <ul v-if="resultList.length" class="resultUl">
         <li v-for="(item,index) in resultList" :key="index">
           <span class="p1">
             {{item.impTime}}
@@ -23,6 +23,7 @@
           <a-button v-if="item.failNum" type="dashed" icon="download" @click="downFaild(item.fileId)">下载导入失败的数据</a-button>
         </li>
       </ul>
+      <div v-else class="noDataImg"></div>
     </a-modal>
   </div>
 </template>
@@ -95,5 +96,9 @@ export default {
       top:0
     }
   }
+}
+.noDataImg{
+  position: relative;
+  top: -26px;
 }
 </style>

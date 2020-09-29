@@ -18,7 +18,7 @@
           <FormModelSearchForm
           :defaultFormValues="defaultSearchFormValues"
           :formList="searchFormList"
-          @prevHandleSubmit="prevHandleSubmit"
+          @prevHandleSubmit="prevHandleSubmit2"
         />
         <div class="groupAnalyze">
           <span></span>
@@ -30,7 +30,7 @@
         <FormModelSearchForm
           :defaultFormValues="defaultSearchFormValues"
           :formList="searchFormList"
-          @prevHandleSubmit="prevHandleSubmit"
+          @prevHandleSubmit="prevHandleSubmit3"
         />
         <div class="groupAnalyze">
           <span></span>
@@ -90,13 +90,14 @@ export default {
         
         {
           title: "日期",
-          dataIndex: "date",
-          key: "date"
+          dataIndex: "examDate",
+          key: "examDate"
         },
         {
           title: "客服姓名",
           dataIndex: "serviceAccName",
-          key: "serviceAccName"
+          key: "serviceAccName",
+          ellipsis:true
         },
         {
           title: "首次登录时间",
@@ -161,6 +162,7 @@ export default {
           title: "客服姓名",
           dataIndex: "serviceAccName",
           key: "serviceAccName",
+          ellipsis:true
         },
         {
           title: "会话接待总量",
@@ -220,6 +222,7 @@ export default {
           title: "客服姓名",
           dataIndex: "serviceAccName",
           key: "serviceAccName",
+          ellipsis:true
         },
         {
           title: "电话接待量",
@@ -311,6 +314,14 @@ export default {
       this.searchParams = { ...data }
       this.getSeatControlList()
     },
+    prevHandleSubmit2(data) {
+      this.searchParams = { ...data }
+      this.getSessionStatsList()
+    },
+    prevHandleSubmit3(data) {
+      this.searchParams = { ...data }
+      this.getQcStatsList()
+    },
     handleOkExportSeat(){
       let { loginDate,serviceAccs} = this.searchParams;
       let date = loginDate.join();
@@ -383,6 +394,6 @@ export default {
 .groupAnalyze {
   display: flex;
   justify-content: space-between;
-  padding: 0 20px;
+  padding: 12px 20px;
 }
 </style>

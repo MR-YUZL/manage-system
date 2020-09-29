@@ -9,18 +9,18 @@
             <a-icon class="user" type="user" />{{infos.custName}}
           </div>
           <div class="btn-area">
-            <a-button type="primary" @click="tagsFn">设置标签</a-button>
-            <a-button type="primary" @click="editCustomerModalShow"
+            <a-button  @click="tagsFn">设置标签</a-button>
+            <a-button  @click="editCustomerModalShow"
               >编辑</a-button
             >
             <a-button
-              type="primary"
+              
               @click="createContactModalShow($event, 'contactModalInner')"
               >新建联系人</a-button
             >
             <a-button
               v-if="dataSource == '2' || dataSource == '3' || dataSource == '4'"
-              type="primary"
+              
               @click="customerFollow"
               >客户跟进</a-button
             >
@@ -91,7 +91,7 @@
                   </span>
                   <span>
                     <i>手机号：{{ item.phone }}</i>
-                    <i>职务：{{ item.duty }}</i>
+                    <i class="duty" :title="item.duty">职务：{{ item.duty }}</i>
                     <i>电话来访：{{ item.phoneVisitCount }}</i>
                     <i>会话来访：{{ item.sessionVisitCount }}</i>
                   </span>
@@ -548,6 +548,7 @@ export default {
     }
     span:first-child {
       color: #808080;
+      margin-bottom: 5px;
     }
     span:last-child {
       color: #333;
@@ -569,6 +570,12 @@ export default {
     padding: 10px 0;
     span {
       display: block;
+      .duty{
+        width: 166px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
       i {
         font-style: normal;
         width: 21%;

@@ -13,8 +13,14 @@
         <li>
           <span class="rece1"><span class="overviewIcon overviewIcon1"></span>话务总量</span>
           <span class="rece2 style1">{{info.callTotalNum}}</span>
-          <span class="rece3">呼入量/已接:{{info.inCallAllNum}}/{{info.inCallAnswerNum}}</span>
-          <span class="rece3">呼出量/已接:{{info.callOutAllNum}}/{{info.callOutAnswerNum}}</span>
+          <span class="rece3">呼入量/已接:
+            <i v-if="info.inCallAllNum">{{info.inCallAllNum}}/{{info.inCallAnswerNum}}</i>
+            <i v-else>0</i>
+          </span>
+          <span class="rece3">呼出量/已接:
+            <i v-if="info.callOutAllNum">{{info.callOutAllNum}}/{{info.callOutAnswerNum}}</i>
+            <i v-else>0</i>
+          </span>
         </li>
         <li>
           <span class="rece1"><span class="overviewIcon overviewIcon2"></span>通话时长</span>
@@ -140,12 +146,12 @@ export default {
       searchFormList: [
         {
           type: "rangepicker",
-          name: "inputDateStart",
+          name: "searchDate",
           label: "统计周期"
         }
       ],
       defaultSearchFormValues: {
-        inputDateStart:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
+        searchDate:[moment().format("YYYY-MM-DD"),moment().format("YYYY-MM-DD")]
         // inputDateStart:['2020-06-03','2020-06-06']
       },
       searchParams:{},
@@ -160,18 +166,14 @@ export default {
   },
   methods: {
     getPhonePersonInfo(){
-      let dateObj = {
-        ...this.searchParams
-      };
-      let dateArr = dateObj.inputDateStart
+      let{searchDate} = this.searchParams
       let params = {
-        beginDate:dateArr[0],
-        endDate:dateArr[1],
+        searchDate:searchDate,
       }
       api.phonePersonInfo(params).then(res=>{
         console.log('电话客服-个人统计',res)
         this.dataSource = res.data.dayList;
-        this.info = res.data.totalDto;
+        this.info = res.data.totalDto?res.data.totalDto:{};
       })
     },
     prevHandleSubmit(data) {
@@ -243,6 +245,9 @@ export default {
       .rece3 {
         font-size: 12px;
         color: #333;
+        i{
+          font-style: normal;
+        }
       }
     }
   }

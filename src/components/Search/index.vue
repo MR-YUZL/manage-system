@@ -209,7 +209,7 @@ export default {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  border-bottom: 8px solid #e8e8e8;
+  border-bottom: 1px solid #e8e8e8;
   .item {
     margin: 10px 20px 0 0;
     display: flex;

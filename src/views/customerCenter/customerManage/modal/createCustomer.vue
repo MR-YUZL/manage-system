@@ -1,7 +1,7 @@
 <template>
   <div>
     <a-modal
-      v-model="paramsObj.visible"
+      v-model="paramsObj1.visible"
       :title="paramsObj.title"
       :footer="null"
       @cancel="handleCancel"
@@ -27,7 +27,7 @@ export default {
       cusFormObj: {
         formList: []
       },
-      
+      paramsObj1: {},
       paramsObj: this.createCusObj,
       custId: this.detailId,
       valueObj: {},
@@ -68,6 +68,13 @@ export default {
         //   if (item.fieldCode == "custArea")
         //     item.fieldValue = item.fieldValue.split(",");
         // });
+        res.data.list.map(item=>{
+          if(item.fieldCode == 'custArea'){
+            item.fieldValue = item.fieldValue?item.fieldValue:[]
+          }
+        });
+        this.paramsObj1 = Object.assign({},this.paramsObj)
+
         this.cusFormObj.formList = res.data.list;
         // let editArray = res.data.list;
         // this.cusFormObj.formList.map((item, index) => {

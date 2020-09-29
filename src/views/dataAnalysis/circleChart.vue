@@ -40,7 +40,7 @@ export default {
         },
         legend: {
           orient: "vertical",
-          right: 10,
+          x:'55%',
           top: "25%",
           data: this.echartObj.legend,
           icon: "roundRect",
