@@ -254,7 +254,7 @@ export default {
         line-height: 21px;
         .name {
           min-width: 0px;
-          font-size: 18px;
+          font-size: 14px;
           color: #000000;
           min-width: 0px;
           overflow: hidden;

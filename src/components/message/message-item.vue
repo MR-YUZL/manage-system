@@ -350,6 +350,7 @@ export default {
 
   .col-3 {
     width: 30px;
+    display: none;
   }
 
   &.position-left {

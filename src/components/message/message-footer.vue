@@ -82,6 +82,7 @@ export default {
 .base {
   color: #BABABA;
   font-size: 12px;
+  margin-bottom: 5px;
 }
 .name {
   padding: 0 4px;

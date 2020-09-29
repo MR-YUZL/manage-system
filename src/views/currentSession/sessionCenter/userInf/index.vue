@@ -317,6 +317,7 @@ export default {
         let re = res.data;
         if (re.status) {
           let treeChangeData = this.treeChangeData(re.list)
+          console.log(re.list,treeChangeData,'treeChangeDatatreeChangeDatatreeChangeData')
           this.endServerObj["modelList"][0]["options"] = treeChangeData;
         }
       });
@@ -328,6 +329,8 @@ export default {
         item["childrens"] = item.childrens;
         if (item.childrens.length > 0) {
           this.treeChangeData(item.childrens);
+        }else{
+          delete item.childrens
         }
       });
       return array;
@@ -389,7 +392,7 @@ export default {
 <style lang="less" scoped>
 .userInf {
   .content {
-    line-height: 45px;
+    line-height: 46px;
     display: flex;
     justify-content: space-between;
     border: 1px solid #e7e7e8;
@@ -408,7 +411,7 @@ export default {
         align-items: center;
         width: calc(100% - 450px);
         max-width: 120px;
-        min-width: 30px;
+        min-width: 40px;
         position: relative;
         cursor: pointer;
         .name {
@@ -419,6 +422,7 @@ export default {
           flex: 1;
           text-overflow: ellipsis;
           white-space: nowrap;
+          padding-left: 8px;
           // position: absolute;
           .icon {
             position: absolute;

@@ -213,10 +213,16 @@ export default {
           return this.message.guestAvatar;
         }
       } else {
+        // if (this.isMine) {
+        //   return this.message.guestAvatar;
+        // } else {
+        //   return this.message.serviceAccAvatar;
+        // }
         if (this.isMine) {
-          return this.message.guestAvatar;
-        } else {
           return this.message.serviceAccAvatar;
+          
+        } else {
+          return this.message.guestAvatar;
         }
       }
     },
@@ -230,7 +236,7 @@ export default {
       }
       // return this.message.fromAccount === this.imInfo.userID;
       
-      return this.message.fromAccount === this.visitorInf.guestImAccount;
+      return this.message.fromAccount === this.visitorInf.serviceImAccount;
     },
     messagePosition() {
       if (
@@ -265,11 +271,11 @@ export default {
         }
       } else {
         if (this.isMine) {
-          // return "position-right";
-          return "position-left";
-        } else {
-          // return "position-left";
           return "position-right";
+          // return "position-left";
+        } else {
+          return "position-left";
+          // return "position-right";
         }
       }
     },
@@ -348,6 +354,7 @@ export default {
 
   .col-3 {
     width: 30px;
+    display: none;
   }
 
   &.position-left {

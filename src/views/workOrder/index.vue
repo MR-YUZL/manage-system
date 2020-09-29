@@ -74,7 +74,7 @@
     <Modal :currentModal="workOrderDetail" v-if="workOrderDetail.visible">
       <div slot="content">
         <div class="workOrderDetail">
-          <div class="left">
+          <div class="left scroll">
             <ReplyWorkOrder 
             :workOrderId="workOrderId" 
             :orderInfo="info" 
@@ -858,10 +858,16 @@ export default {
     .left{
       width:50%;
       box-sizing:border-box;
-      border-right:1px solid #ddd;
+      
       padding-right:10px;
+      height:755px;
+      overflow-y:auto;
+      overflow-x: hidden;
     }
     .right{
+      border-left:1px solid #ddd;
+      padding-left: 10px;
+      margin-left: 5px;
       width:50%;
     }
   }

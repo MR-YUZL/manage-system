@@ -285,10 +285,12 @@ export default {
               "getMessageList",
               this.currentConversation.conversationID
             ).then(() => {
-                if(!this.isCompleted){
+                if(!this.isCompleted && !this.isSave){
                   this.isSave = true;
+                }else if(!this.isCompleted && this.isSave){
+                  this.searchChatRecords();
+                  //this.isSave = false
                 }
-                //this.isSave = false
               })
             
           } else {
@@ -465,7 +467,7 @@ export default {
           justify-content: center;
           font-size: 12px;
           .ant-btn {
-            color: #409eff;
+            color: #3e7bf8;
             background: #f5f5f5;
             border-color: transparent;
             -webkit-box-shadow: none;
