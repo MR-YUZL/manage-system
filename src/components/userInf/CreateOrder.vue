@@ -16,7 +16,7 @@
 <script>
 import Modal from "@/components/Modal/index";
 import BaseForm from "@/components/BaseForm/index";
-
+import validateRules from '@/utils/validateRules'
 export default {
     name: "worlOrder",
     components: {
@@ -338,6 +338,13 @@ export default {
                   message: "请输入",
                   trigger: objStatus[item.dataType]
                 }]
+              }
+              let obj1 = {
+                 validator: validateRules.checkNumber
+              }
+             
+              if(item.dataType == 5){
+                defHtml.rules = [...defHtml.rules,obj1]
               }
               this.formObjectCreated.modelList.splice(4,0,defHtml)
               formFieldsObj.push(defHtml)

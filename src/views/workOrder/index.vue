@@ -103,6 +103,7 @@ import ReplyWorkOrder from "./ReplyWorkOrder"
 import RecordList from "./RecordList"
 import WorkOrderProper from "./WorkOrderProper"
 import { mapState } from "vuex";
+import validateRules from '@/utils/validateRules'
 export default {
     name: "worlOrder",
     components: {
@@ -771,6 +772,7 @@ export default {
           let formFieldsDefault = {}
           let formFieldsObj = []
           this.formFields.map(item=>{
+            console.log(item.dataType,obj[item.dataType])
             if(item.isDefined == 1){
               // formFieldsObj.push({
               //   type: obj[item.dataType],
@@ -784,8 +786,9 @@ export default {
               //     trigger: objStatus[item.dataType]
               //   }]
               // })
+              let type = obj[item.dataType]
                let defHtml = {
-                type: obj[item.dataType],
+                type: type,
                 label: item.fieldName,
                 placeholder: "请选择",
                 ruleName: item.fieldCode,
@@ -795,6 +798,14 @@ export default {
                   message: "请输入",
                   trigger: objStatus[item.dataType]
                 }]
+              }
+            
+              let obj1 = {
+                 validator: validateRules.checkNumber
+              }
+              console.log(item)
+              if(item.dataType == 5){
+                defHtml.rules = [...defHtml.rules,obj1]
               }
               this.formObjectCreated.modelList.splice(4,0,defHtml)
               formFieldsObj.push(defHtml)

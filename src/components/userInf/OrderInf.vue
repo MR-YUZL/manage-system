@@ -59,6 +59,7 @@
 import Modal from "./../Modal/index";
 import BaseForm from "../BaseForm/index";
 import OrderDetail from './OrderDetail'
+import validateRules from '@/utils/validateRules'
 export default {
   props: {
     guestId: {
@@ -364,7 +365,13 @@ export default {
                 }
               ]
             };
-            
+            let obj1 = {
+                 validator: validateRules.checkNumber
+              }
+             
+              if(item.dataType == 5){
+                defHtml.rules = [...defHtml.rules,obj1]
+              }
             this.formObjectCreated.modelList.splice(4, 0, defHtml);
             formFieldsObj.push(defHtml);
             if (item.dataType == 3) {

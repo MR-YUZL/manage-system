@@ -66,6 +66,14 @@ export function checkAddress(rule, value, callback) {
   }
   callback();
 }
+//验证数字
+export function checkNumber(rule, value, callback) {
+  let reg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
+  if (value && !reg.test(value)) {
+    callback("格式错误");
+  }
+  callback();
+}
 
 let validateFuns = {
   checkPhone,
@@ -76,7 +84,8 @@ let validateFuns = {
   checkCardId,
   checkAddress,
   checkMail,
-  checkQQ
+  checkQQ,
+  checkNumber
 };
 
 export default validateFuns;

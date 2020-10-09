@@ -43,7 +43,7 @@
                 </a-radio-group>
               </a-form-model-item>
               <a-form-model-item label="得分分值" prop="gradeLimit">
-                <a-input-number :min="0" :max="100000" v-model="addScoreFormData.gradeLimit" />
+                <a-input-number :min="0" :max="99999" v-model="addScoreFormData.gradeLimit" />
               </a-form-model-item>
             </a-form-model>
         </a-modal>
@@ -82,10 +82,10 @@ export default {
             //   { required: true, message: '请输入  ', trigger: 'blur' },
             // ],
             gradeType: [
-              { required: true, message: '请选择  ', trigger: 'blur',whitespace: true },
+              { required: true, message: '请选择  ', trigger: 'blur' },
             ],
             gradeLimit: [
-              { required: true, message: '请输入  ', trigger: 'blur',whitespace: true  },
+              { required: true, message: '请输入  ', trigger: 'blur'},
             ],
           },
           dataSource:[{}],

@@ -41,18 +41,74 @@
         :rules="rules"
         :label-col="labelCol"
         :wrapper-col="wrapperCol"
+        v-if="activeKey == 0 || activeKey == 1"
       >
         <a-form-model-item label="字段名称" prop="fieldName">
-          <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" :disabled="addFormData.isDefined==0 ? true : false" :maxLength='8' placeholder="请输入字段名称"></a-input>
+          <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" :disabled="(addType == 'edit' && addFormData.isDefined == 0) ? true : false" :maxLength='8' placeholder="请输入字段名称"></a-input>
         </a-form-model-item>
         <a-form-model-item label="状态">
-          <a-radio-group v-model="addFormData.enable" :disabled="addFormData.dataType== 1 ? true : false">
+          <a-radio-group v-model="addFormData.enable" :disabled="(addType == 'edit' && (addFormData.fieldName== '客户名称' || addFormData.fieldName== '姓名')) ? true : false">
             <a-radio-button :value="0">禁用</a-radio-button>
             <a-radio-button :value="1">启用</a-radio-button>
           </a-radio-group>
         </a-form-model-item>
         <a-form-model-item label="必填属性">
-          <a-radio-group v-model="addFormData.isRequired" :disabled="addFormData.dataType== 1 ? true : false">
+          <a-radio-group v-model="addFormData.isRequired" :disabled="(addType == 'edit' && (addFormData.fieldName== '客户名称' || addFormData.fieldName== '姓名')) ? true : false">
+            <a-radio-button :value="0">否</a-radio-button>
+            <a-radio-button :value="1">是</a-radio-button>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item label="字段类型" prop="dataType">
+          <a-radio-group v-model="addFormData.dataType" @change="changeDataType">
+            <div class="radioStyle">
+              <div v-for="(item,index) in dataTypeList" :key="index">
+                <!-- <a-radio v-if="item.show" :disabled="item.disabled" :value="item.value">{{item.name}}</a-radio> -->
+                <a-radio v-if="item.show" :disabled="addType=='add' ? false : true" :value="item.value">{{item.name}}</a-radio>
+              </div>
+            </div>
+          </a-radio-group>
+        </a-form-model-item>
+        <div class="addChoice" v-show="addFormData.dataType==2||addFormData.dataType==3">
+          <div v-for="(it,idx) in addFormData.options" :key="idx">
+            <a-form-model-item
+              :wrapperCol="{ span: 20 }"
+              :labelCol="{ span: 4 }"
+              :prop="'options.'+idx+'.optionName'"
+              :rules="{required: true, message: '请输入添加的选项', trigger: 'blur',  whitespace: true}">
+              <div class="singleChoice">
+                <a-input v-model="addFormData.options[idx].optionName" :maxLength='10' placeholder="请输入要增加的字段" />
+                <a-form-model-item>
+                  <a-checkbox
+                    @change="changeDefaultValue(idx)"
+                    v-model="addFormData.options[idx].isDefault"
+                  >默认</a-checkbox>
+                </a-form-model-item>
+                <a-icon type="minus-circle-o" @click="removeDomain(idx)" />
+              </div>
+            </a-form-model-item>
+          </div>
+          <a-button v-if="addFormData.options.length>0" class="addBtn" type="primary" @click="addDomain">添加选项</a-button>
+        </div>
+      </a-form-model>
+      <a-form-model
+        ref="addForm"
+        :model="addFormData"
+        :rules="rules"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+        v-if="activeKey == 2"
+      >
+        <a-form-model-item label="字段名称" prop="fieldName">
+          <a-input @blur="fieldNameBlur" v-model="addFormData.fieldName" :disabled="(addType == 'edit' && addFormData.isDefined == 0) ? true : false" :maxLength='8' placeholder="请输入字段名称"></a-input>
+        </a-form-model-item>
+        <a-form-model-item label="状态">
+          <a-radio-group v-model="addFormData.enable" :disabled="(addType == 'edit' && addFormData.isDefined == 0) ? true : false">
+            <a-radio-button :value="0">禁用</a-radio-button>
+            <a-radio-button :value="1">启用</a-radio-button>
+          </a-radio-group>
+        </a-form-model-item>
+        <a-form-model-item label="必填属性">
+          <a-radio-group v-model="addFormData.isRequired" :disabled="(addType == 'edit' && addFormData.isDefined == 0) ? true : false">
             <a-radio-button :value="0">否</a-radio-button>
             <a-radio-button :value="1">是</a-radio-button>
           </a-radio-group>
