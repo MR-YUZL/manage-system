@@ -234,9 +234,9 @@ export default {
       if (this.infoObj && this.infoObj.type == "history") {
         return this.message.fromAccount === this.infoObj.serviceImAccount;
       }
-      // return this.message.fromAccount === this.imInfo.userID;
-      
-      return this.message.fromAccount === this.visitorInf.serviceImAccount;
+      return this.message.fromAccount === this.imInfo.userID;
+      // console.log(this.message,this.message.fromAccount === this.visitorInf.serviceImAccount)
+      // return this.message.toAccount === this.visitorInf.serviceImAccount;
     },
     messagePosition() {
       if (

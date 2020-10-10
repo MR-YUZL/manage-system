@@ -12,9 +12,9 @@
           </div>
           <div class="addSortStyle" @click="addSort('first')"  v-if="!firstAddShow"><a-icon type="plus" />添加分类</div>
         </li>
-        <li v-for="(item,index) in firstLevel " :key="index" :class="{active:item.active}" @click.self="handleFirstLevel(index)">
+        <li v-for="(item,index) in firstLevel " :key="index" :class="{active:item.active}" @click="handleFirstLevel(index)">
           <span  v-if="!item.edit">{{item.name}}</span>
-          <a-input v-if="item.edit"  v-model="editName"/> 
+          <a-input @click.stop v-if="item.edit"  v-model="editName"/> 
           <div class="sort-icon">
             <a-icon type="check" v-if="item.edit" @click="saveTags('first',item.id,index)"/>
             <a-icon type="edit" @click="editTags('first',index,item.name)" v-if="!item.edit"/>
@@ -36,9 +36,9 @@
           </div>
           <div class="addSortStyle" @click="addSort('second')"  v-if="!secondAddShow"><a-icon type="plus" />添加分类</div>
         </li>
-        <li v-for="(item,index) in secondLevel " :key="index" :class="{active:item.active}" @click.self="handleSecondLevel(index)">
+        <li v-for="(item,index) in secondLevel " :key="index" :class="{active:item.active}" @click="handleSecondLevel(index)">
           <span v-if="!item.edit" >{{item.name}}</span>
-          <a-input v-if="item.edit" v-model="editName"/> 
+          <a-input  @click.stop v-if="item.edit" v-model="editName"/> 
           <div class="sort-icon">
             <a-icon type="check" v-if="item.edit" @click="saveTags('second',item.id,index)"/>
             <a-icon type="edit" @click="editTags('second',index,item.name)" v-if="!item.edit"/>
@@ -60,9 +60,9 @@
           </div>
           <div class="addSortStyle" @click="addSort('three')"  v-if="!threeAddShow"><a-icon type="plus" />添加分类</div>
         </li>
-        <li v-for="(item,index) in threeLevel " :key="index" :class="{active:item.active}"  @click.self="handlethreeLevel(index)">
+        <li v-for="(item,index) in threeLevel " :key="index" :class="{active:item.active}"  @click="handlethreeLevel(index)">
           <span  v-if="!item.edit">{{item.name}}</span>
-          <a-input v-if="item.edit" v-model="editName"/> 
+          <a-input @click.stop v-if="item.edit" v-model="editName"/> 
           <div class="sort-icon">
             <a-icon type="check" v-if="item.edit" @click="saveTags('three',item.id,index)"/>
             <a-icon type="edit" @click="editTags('three',index,item.name)" v-if="!item.edit"/>
