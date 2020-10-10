@@ -103,7 +103,7 @@ export default {
           if (res.data.status) {
             this.paramsObj.visible = false;
             this.$message.success("保存成功");
-            this.$emit("successLoadList");
+            this.$emit("successLoadList","createCustomer");
           }
         });
       }

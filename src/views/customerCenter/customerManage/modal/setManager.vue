@@ -1,29 +1,32 @@
 <template>
   <div>
     <a-modal v-model="visibles" title="设置负责人" @ok="handleSubmit" @cancel="handleCancel">
-      <a-form
-        :form="form"
-        :label-col="{ span: 5 }"
+      <a-form-model
+        ref="ruleForm"
+        :mode="formObj"
+        :label-col="{ span: 6 }"
         :wrapper-col="{ span: 12 }"
         @submit="handleSubmit"
       >
-        <a-form-item label="指定客服人员">
+        <a-form-model-item label="指定客服人员" prop="principals">
           <a-select
             style="width: 200px"
             @change="handleChange"
-            v-decorator="['principals', { rules: [{ required: true, message: '请选择客服人员或请选择客服组' }] }]"
+            @popupScroll="popupScroll"
+            :getPopupContainer="getPopupContainer"
+            v-model="formObj.principals"
           >
-            <a-select-opt-group v-for="(item,index) in optList" :key="index">
-              <span slot="label">{{item.groupName}}</span>
+            <a-select-opt-group v-for="(item,index) in optList" :key="item.groupId">
+              <span slot="label" class="groupName">{{item.groupName}}</span>
               <a-select-option
-                :value="it.value"
+                :value="it.value + '&&&' + item.groupId"
                 v-for="(it,idx) in item.staffs"
-                :key="idx"
+                :key="it.value + '&&&' + item.groupId"
               >{{it.name}}</a-select-option>
             </a-select-opt-group>
           </a-select>
-        </a-form-item>
-      </a-form>
+        </a-form-model-item>
+      </a-form-model>
     </a-modal>
   </div>
 </template>
@@ -32,9 +35,16 @@ import api from "@/api/customerCenter";
 export default {
   data() {
     return {
-      form: this.$form.createForm(this, { name: "setManager" }),
+      formObj: {
+        principals:''
+      },
       visibles: this.visible,
-      optList: []
+      optList: [],
+      rules:{
+        principals:[
+          { required: true, message: '不能为空',trigger:'blur'}
+        ],
+      },
     };
   },
   props: {
@@ -50,6 +60,13 @@ export default {
     this.getStaffSkillGroups();
   },
   methods: {
+    
+    getPopupContainer (triggerNode) {
+      // return triggerNode.parentNode || document.body
+      return triggerNode.parentNode
+    },
+    popupScroll(e){
+    },
     getStaffSkillGroups() {
       api.staffSkillGroups().then(res => {
         console.log("设置负责人", res);
@@ -59,12 +76,19 @@ export default {
       });
     },
     handleSubmit() {
-      this.form.validateFields((err, values) => {
-        let params = {
-          ...values,
-          custIds: this.custIds
-        };
-        if (!err) {
+      let principals = this.formObj.principals;
+      let arr = principals.split('&&&');
+      let params = {
+        principals:arr[0],
+        custIds: this.custIds
+      };
+      if(!params.principals){
+        this.$message.error('请选择客服人员');
+        return;
+      }
+      console.log(params,'params')
+      this.$refs.ruleForm.validate(valid => {
+        if(valid){
           api.setPrincipalJson(params).then(res => {
             console.log(res);
             if(res.data.status){
@@ -80,7 +104,19 @@ export default {
       this.visibles = false;
       this.$emit("closeUpdate");
     },
-    handleChange() {}
+    handleChange(value) {
+      console.log(value,'value2')
+      // this.formObj.principals = value
+    }
   }
 };
 </script>
+<style lang="less" scoped>
+.groupName{
+  display: block;
+  width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+</style>

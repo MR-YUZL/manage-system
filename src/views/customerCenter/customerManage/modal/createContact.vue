@@ -79,6 +79,8 @@ export default {
           if (res.data.status) {
             this.$message.success("保存成功");
             this.$emit("successLoadList");
+          }else{
+            this.$message.error(res.data.msg);
           }
         });
       }

@@ -131,6 +131,7 @@
       @successLoadList="successLoadList"
     />
     <DetailModal
+      ref="detail"
       :visibleProps="detailObj"
       :detailId="detailId"
       v-if="detailObj.visible"
@@ -470,6 +471,12 @@ export default {
       this.getList();
       if (val == "setLable") {
         this.getColumns();
+      }
+      if(val== "createCustomer"){
+        this.$refs.detail.getInfoTitle({custId:this.detailId})
+      }
+      if(val=="followCustomer"){
+        this.$refs.detail.getFollowRecord({custId:this.detailId})
       }
     },
     getList() {

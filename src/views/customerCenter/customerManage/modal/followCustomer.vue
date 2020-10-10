@@ -61,6 +61,8 @@ export default {
             ruleName: "nextFollowDate",
             format: "YYYY-MM-DD HH:mm:ss",
             options: [],
+            disabledDate:this.getDisabledDate,
+            disabledTime:this.disabledTime
           }
         ],
         defaultValues: {
@@ -87,6 +89,38 @@ export default {
     this.getlastInfo({ custId: this.followId });
   },
   methods: {
+    disabledTime(current){
+      current = current?current:moment(new Date());
+      console.log(current,'1')
+      if (current && moment(current).format("l") == moment().format("l")) {
+        let timeArr = moment().format("LTS").split(":");
+        if(Number(timeArr[1])<5){
+          timeArr[0]-=1;
+          return {
+            disabledMinutes: () =>
+            [...this.range(0, 60).filter(item => item < timeArr[1]),...this.range(0, 60).filter(item => item > Number(timeArr[1]) + 60-5)]
+          };
+        }
+        if(Number(timeArr[1])>5){
+          return {
+            disabledMinutes: () =>
+              this.range(0, 60).filter(item => item < timeArr[1]-5)
+          };
+        }
+        
+      }
+    },
+    range(start, end) {
+      const result = [];
+      for (let i = start; i < end; i++) {
+        result.push(i);
+      }
+      return result;
+    },
+    getDisabledDate(current){
+      return current < moment().subtract(1, 'day')//今天之前的年月日不可选，不包括今天
+      // return current && current < moment().endOf('day');
+    },
     formSubmit(values) {
       let params = {
         custId: this.followId,
@@ -97,7 +131,7 @@ export default {
         if (res.data.status) {
           this.$message.success("保存成功");
           this.visibles = false;
-          this.$emit("successLoadList");
+          this.$emit("successLoadList","followCustomer");
         } else {
           this.$message.error(res.data.msg);
         }

@@ -52,7 +52,7 @@
         ></BaseForm>
       </div>
     </Modal>
-    <OrderDetail :detailId="detailId" v-if="detailId" />
+    <OrderDetail @clearIdFn="clearIdFn" :detailId="detailId" v-if="detailId" />
   </div>
 </template>
 <script>
@@ -276,6 +276,9 @@ export default {
       this.createdWorkOrder.visible = false;
       // this.formObjectCreated.defaultValues = this.customFieldsDefault
       this.$refs.baseForm.resetForm();
+    },
+    clearIdFn(){
+      this.detailId = ''
     },
     formSubmitWorkOrder(data) {
       let { fileList, typeId, ...others } = data;
