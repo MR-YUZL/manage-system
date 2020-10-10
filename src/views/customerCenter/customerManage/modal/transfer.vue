@@ -45,7 +45,7 @@
           <p v-if="tableHeadList.length === 0">无数据</p>
           <!-- <a-checkbox-group v-model="checkList"> -->
             <ul>
-              <draggable v-model="tableHeadList" @start="drag=true" @end="drag=false">
+              <draggable :list="tableHeadList" @change="dragChange">
                 <li
                   v-for="(item,index) in tableHeadList"
                   :key="item.fieldId"
@@ -103,6 +103,10 @@ export default {
     this.getList();
   },
   methods: {
+    dragChange(evt) {
+      console.log(evt);
+      console.log(this.tableHeadList);
+    },
     getList() {
       api.setFieldsJson().then((res) => {
         console.log("操作设置", res);

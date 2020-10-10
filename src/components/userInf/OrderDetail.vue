@@ -1,6 +1,6 @@
 <template>
   <div class="">
-    <Modal :currentModal="workOrderDetail" v-if="workOrderDetail.visible">
+    <Modal :currentModal="workOrderDetail" v-if="workOrderDetail.visible" @toggleModal="detailToggleModal">
       <div slot="content">
         <div class="workOrderDetail">
           <div class="left">
@@ -116,6 +116,10 @@ export default {
     }
   },
   methods: {
+    detailToggleModal(){
+      this.workOrderDetail.visible = false;
+      this.$emit('clearIdFn')
+    },
     // 获取工单信息
     getWorkOrderDetails() {
       let params = {

@@ -135,6 +135,8 @@
           v-model="formObject.defaultValues[item.ruleName]"
           :valueFormat="item.format?item.format:'YYYY-MM-DD'"
           :placeholder="item.placeholder"
+          :disabledDate="item.disabledDate"
+          :disabledTime="item.disabledTime"
         />
       </a-form-model-item>
       <a-form-model-item
@@ -216,6 +218,7 @@
 <script>
 import Upload from "@/components/Upload";
 import { areaDictionary } from "@/utils/areaDictionary";
+import moment from "moment";
 export default {
   props: {
     formObject: {
