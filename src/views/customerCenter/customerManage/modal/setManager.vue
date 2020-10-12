@@ -87,18 +87,18 @@ export default {
         return;
       }
       console.log(params,'params')
-      this.$refs.ruleForm.validate(valid => {
-        if(valid){
-          api.setPrincipalJson(params).then(res => {
-            console.log(res);
-            if(res.data.status){
-              this.$message.success('设置成功');
-              this.visibles = false
-              this.$emit('successLoadList');
-            }
-          });
+      api.setPrincipalJson(params).then(res => {
+        console.log(res);
+        if(res.data.status){
+          this.$message.success('设置成功');
+          this.visibles = false
+          this.$emit('successLoadList');
         }
       });
+      // this.$refs.ruleForm.validate(valid => {
+      //   if(valid){
+      //   }
+      // });
     },
     handleCancel() {
       this.visibles = false;

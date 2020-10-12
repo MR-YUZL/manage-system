@@ -44,8 +44,8 @@
           </div>
           <p v-if="tableHeadList.length === 0">无数据</p>
           <!-- <a-checkbox-group v-model="checkList"> -->
-            <ul>
-              <draggable :list="tableHeadList" @change="dragChange">
+            <!-- <ul> -->
+              <draggable element="ul" :list="tableHeadList" @change="dragChange" :options="{animation:500}">
                 <li
                   v-for="(item,index) in tableHeadList"
                   :key="item.fieldId"
@@ -57,7 +57,7 @@
                   >{{item.fieldName}}</a-checkbox>
                 </li>
               </draggable>
-            </ul>
+            <!-- </ul> -->
           <!-- </a-checkbox-group> -->
         </div>
       </div>

@@ -2,6 +2,7 @@
   <div>
     <!-- <a-modal v-model="visibles" title="创建联系人" @ok="handleSubmit" @cancel="handleCancel"> -->
     <FormModal
+      class="scroll scrollHeight"
       :formObj="contactFormObj"
       @cusCloseForm="handleCancel"
       @cusSubmitForm="contactSubmitForm"

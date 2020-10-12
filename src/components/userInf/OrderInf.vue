@@ -43,7 +43,7 @@
       @toggleModal="createdToggleModal"
       v-if="createdWorkOrder.visible"
     >
-      <div slot="content">
+      <div slot="content" class="scroll scrollHeight">
         <BaseForm
           ref="baseForm"
           :formObject="formObjectCreated"

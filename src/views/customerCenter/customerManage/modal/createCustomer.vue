@@ -7,7 +7,7 @@
       @cancel="handleCancel"
     >
       <FormModal
-        style="height:500px;overflow-x:hidden;overflow-y:auto"
+        class="scroll scrollHeight"
         :formObj="cusFormObj"
         @cusCloseForm="handleCancel"
         @cusSubmitForm="cusSubmitForm"

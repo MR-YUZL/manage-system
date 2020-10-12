@@ -62,7 +62,7 @@
          </form> -->
     </a-modal>
     <Modal :currentModal="createdWorkOrder" v-if="createdWorkOrder.visible"  @toggleModal="createdToggleModal">
-      <div slot='content'>
+      <div class="scroll scrollHeight" slot='content'>
         <BaseForm 
           ref="formObjectCreated"
           :formObject="formObjectCreated"

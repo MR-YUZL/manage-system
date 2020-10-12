@@ -1,5 +1,13 @@
 <template>
   <div>
+    <!-- <draggable element="ul" :list="ll" @change="() =>{}" :options="{animation:500}">
+      <li
+        v-for="(item,index) in ll"
+        :key="index"
+      >
+        {{item.name}}
+      </li>
+    </draggable> -->
     <a-page-header title="客户管理" style="padding:16px 0;" />
     <div class="box">
       <!-- 普通客服没有tab 记得判断 -->
@@ -143,6 +151,7 @@
   </div>
 </template>
 <script>
+import draggable from 'vuedraggable'
 import moment from "moment";
 // import Search from "@/components/Search/index2";
 import TablePagination from "@/components/Table/TablePagination";
@@ -178,10 +187,12 @@ export default {
     DetailModal,
     Modal,
     BaseForm,
-    createOrder
+    createOrder,
+    draggable
   },
   data() {
     return {
+      ll: [{name: 1}, {name:2}],
       bothTypeFlag:0,
       scroll:{},
       relevObj:{},
