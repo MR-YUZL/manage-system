@@ -1,11 +1,9 @@
 import request from '@/utils/request'
 
-export function recruitTable() {
+export function recruitTable(params) {
   return request({
     url: '/meun',
     method: 'post',
-    data: {
-       query:'1'
-    }
+    data: params
   })
 }

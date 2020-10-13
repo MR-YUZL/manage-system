@@ -112,7 +112,8 @@ export default {
       if (!value) {
         callback(new Error("请输入职位名称!"));
       } else {
-        let name = this.list.map((v) => v.name);
+        let arr = this.list.filter((v) => this.form.id !== v.id);
+        let name = arr.map((v) => v.name);
         if (name.indexOf(value) !== -1) {
           callback(new Error("职位名称已存在!"));
         } else {
@@ -122,7 +123,7 @@ export default {
     };
     this.rules.name = [
       {
-        required:true,
+        required: true,
         validator: validatorName,
         trigger: "blur",
       },
@@ -133,7 +134,9 @@ export default {
     onSubmit() {
       this.$refs.form.validate((valid, object) => {
         if (valid) {
-          this.form.id = parseInt(Math.random() * 100);
+          if (this.title === "新建招聘") {
+            this.form.id = parseInt(Math.random() * 100);
+          }
           this.$emit("onSubmit", this.form, this.title);
           this.$emit("update:visible", false);
         } else {

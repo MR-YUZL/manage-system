@@ -38,10 +38,12 @@ const responseBody = {
   message: '',
   timestamp: 0,
   result: null,
-  code: 0
+  code: 0,
+  total: 0
 }
 
-const builder = (data, message, code = 0, headers = {}) => {
+const builder = (data, total = 5, message, code = 0, headers = {}) => {
+  responseBody.total = total
   responseBody.result = data
   if (message !== undefined && message !== null) {
     responseBody.message = message
@@ -58,7 +60,11 @@ const builder = (data, message, code = 0, headers = {}) => {
 }
 
 const list = (params) => {
-  console.log('params',params)
+  console.log('params', params)
+  let {
+    current,
+    pageSize
+  } = JSON.parse(params.body)
   let data = []
   for (let i = 0; i < 15; i++) {
     data.push({
@@ -83,8 +89,9 @@ const list = (params) => {
       }).number
     })
   }
-  console.log('data', data)
-  return builder(data)
+  let pageNum = current - 1
+  let arr = data.slice(pageNum * pageSize, current * pageSize)
+  return builder(arr, 15)
 }
 
 

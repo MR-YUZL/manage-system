@@ -59,6 +59,7 @@ export const menu = [{
 
 export const columns = [{
     title: "职位名称",
+    align:'center',
     dataIndex: "name",
     width: "15%",
     scopedSlots: {
@@ -67,6 +68,7 @@ export const columns = [{
   },
   {
     title: "对应岗位",
+    align:'center',
     dataIndex: "post",
     width: "15%",
     scopedSlots: {
@@ -75,6 +77,7 @@ export const columns = [{
   },
   {
     title: "职位级别",
+    align:'center',
     dataIndex: "level",
     width: "15%",
     scopedSlots: {
@@ -83,6 +86,7 @@ export const columns = [{
   },
   {
     title: "招聘部门",
+    align:'center',
     dataIndex: "recruit",
     width: "15%",
     scopedSlots: {
@@ -91,6 +95,7 @@ export const columns = [{
   },
   {
     title: "最低学历要求",
+    align:'center',
     dataIndex: "education",
     width: "15%",
     scopedSlots: {
@@ -99,6 +104,7 @@ export const columns = [{
   },
   {
     title: "报名数",
+    align:'center',
     dataIndex: "num",
     width: "15%",
     scopedSlots: {
@@ -107,6 +113,7 @@ export const columns = [{
   },
   {
     title: "操作",
+    align:'center',
     dataIndex: "operation",
     width: "15%",
     scopedSlots: {
