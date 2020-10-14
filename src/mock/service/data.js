@@ -1,6 +1,6 @@
 import Mock from 'mockjs'
 
-const name = [
+const name_mock = [
   '视觉设计师',
   '前端工程师',
   '后端工程师',
@@ -11,24 +11,24 @@ const name = [
   '产品经理'
 ]
 
-const post = [
+const post_mock = [
   '设计岗',
   '开发岗',
 ]
 
-const level = [
+const level_mock = [
   '低级',
   '中级',
   '高级',
 ]
 
-const recruit = [
+const recruit_mock = [
   '人事部',
   '销售部',
   '开发部',
 ]
 
-const education = [
+const education_mock = [
   '本科',
   '大专',
   '硕士',
@@ -59,29 +59,40 @@ const builder = (data, total = 5, message, code = 0, headers = {}) => {
   return responseBody
 }
 
+
+
 const list = (params) => {
-  console.log('params', params)
   let {
     current,
-    pageSize
+    pageSize,
+    condition
   } = JSON.parse(params.body)
   let data = []
+  const {
+    name,
+    post,
+    level,
+    education,
+    recruit,
+    num
+  } = condition;
+
   for (let i = 0; i < 15; i++) {
     data.push({
       id: i + 1,
-      name: name[Mock.mock({
+      name: name_mock[Mock.mock({
         "number|0-7": 7
       }).number],
-      post: post[Mock.mock({
+      post: post_mock[Mock.mock({
         "number|0-1": 1
       }).number],
-      level: level[Mock.mock({
+      level: level_mock[Mock.mock({
         "number|0-2": 2
       }).number],
-      recruit: recruit[Mock.mock({
+      recruit: recruit_mock[Mock.mock({
         "number|0-2": 2
       }).number],
-      education: education[Mock.mock({
+      education: education_mock[Mock.mock({
         "number|0-2": 2
       }).number],
       num: Mock.mock({
@@ -89,14 +100,38 @@ const list = (params) => {
       }).number
     })
   }
+  let dataClone = JSON.parse(JSON.stringify(data))
+  for (let i in condition) {
+    if (condition[i]) {
+      dataClone = dataClone.filter(
+        (item) => {
+          if (i === 'num') {
+            let min = condition[i][0] || 0
+            let max = condition[i][1] || 50
+            return item[i] > min && item[i] < max
+          } else {
+            return item[i].indexOf(condition[i]) !== -1
+          }
+        });
+    }
+  }
+  if (!(name || post || level || education || recruit || num)) {
+    dataClone = data;
+  }
+
   let pageNum = current - 1
-  let arr = data.slice(pageNum * pageSize, current * pageSize)
-  return builder(arr, 15)
+  let arr = dataClone.slice(pageNum * pageSize, current * pageSize)
+  return builder(arr, dataClone.length)
 }
 
+const options = (options) => {
+    
+ 
+}
 
 Mock.mock('/meun', 'post', list)
 
+Mock.mock('/options', 'post', options)
 // Mock.mock('/meun', /post|get/i, {
 //   // /post|get/i 匹配post和get模式 也可以用'post'或'get'
 //   // 属性 list 的值是一个数组，其中含有 1 到 10 个元素

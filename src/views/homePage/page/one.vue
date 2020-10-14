@@ -10,7 +10,12 @@
             @back="() => null"
           />
           <div class="card_top_form">
-            <a-form layout="inline" :form="form" @submit="handleSubmit">
+            <a-form
+              layout="inline"
+              :form="form"
+              @submit="handleSubmit"
+              :selfUpdate="true"
+            >
               <a-row :gutter="28">
                 <a-col :md="6" :sm="24">
                   <a-form-item label="职位名称">
@@ -31,11 +36,12 @@
                 </a-col>
                 <a-col :md="6" :sm="24">
                   <a-form-item label="职位级别">
-                    <a-select v-decorator="['level']" placeholder="请输入">
+                    <!-- <a-select v-decorator="['level']" placeholder="请输入">
                       <a-select-option value="低级"> 低级 </a-select-option>
                       <a-select-option value="中级"> 中级 </a-select-option>
                       <a-select-option value="高级"> 高级 </a-select-option>
-                    </a-select>
+                    </a-select> -->
+                    <Cascader v-decorator="['level']" v-model="cascaderData" />
                   </a-form-item>
                 </a-col>
                 <a-col :md="6" :sm="24">
@@ -49,43 +55,76 @@
                 </a-col>
               </a-row>
 
-              <a-row style="margin-top: 20px" :gutter="28">
+              <a-row style="margin-top: 20px" :gutter="20">
                 <a-col :md="6" :sm="24">
                   <a-form-item label="招聘部门">
-                    <a-select v-decorator="['recruit']" placeholder="请输入">
-                      <a-select-option value="销售部"> 销售部 </a-select-option>
-                      <a-select-option value="开发部"> 开发部 </a-select-option>
-                      <a-select-option value="人事部"> 人事部 </a-select-option>
-                    </a-select>
+                    <a-tree-select
+                      v-decorator="['recruit']"
+                      style="width: 100%"
+                      placeholder="请选择"
+                      :tree-data="treeList"
+                      allow-clear
+                      showSearch
+                      treeNodeFilterProp="title"
+                      :replaceFields="replaceFields"
+                      @change="handleChangeTree"
+                      @search="handleSearch"
+                      tree-default-expand-all
+                    >
+                      <template slot="custom" slot-scope="item">
+                        <p>
+                          <span>{{ item.title }}</span>
+                          <span>{{ item.value }}</span>
+                        </p>
+                      </template>
+                    </a-tree-select>
                   </a-form-item>
                 </a-col>
-                <a-col :md="6" :sm="24">
+                <a-col :md="7" :sm="24">
                   <a-form-item label="时间区间">
                     <a-range-picker
                       v-decorator="['time']"
+                      :format="dateFormat"
+                      :valueFormat="dateFormat"
                     />
                   </a-form-item>
                 </a-col>
-                <a-col :md="6" :sm="24">
-                  <span class="table-page-search-submitButtons">
+                <a-col :md="7" :sm="24">
+                  <a-form-item label="报名数区间">
+                    <InputNum
+                      v-model="array"
+                      v-decorator="[
+                        'num',
+                        {
+                          rules: [
+                            { required: true },
+                            { validator: validatorNum },
+                          ],
+                        },
+                      ]"
+                      name="num"
+                    />
+                  </a-form-item>
+                </a-col>
+                <a-col :md="4" :sm="24">
+                  <span
+                    class="table-page-search-submitButtons"
+                    style="float: right"
+                  >
                     <a-button type="primary" html-type="submit">查询</a-button>
                     <a-button
                       style="margin-left: 8px"
-                      @click="() => form.resetFields()"
+                      @click="() => handleReset()"
                       >重置</a-button
                     >
                   </span>
                 </a-col>
-                <a-col :md="2" :sm="24" :offset="3">
-                  <a-button
-                    style="margin-left: 8px"
-                    type="primary"
-                    @click="showModal"
-                    >新建招聘</a-button
-                  >
-                </a-col>
               </a-row>
             </a-form>
+
+            <a-button class="card_top_add" type="primary" @click="showModal"
+              >新建招聘</a-button
+            >
           </div>
         </section>
         <section class="card_bottom">
@@ -122,7 +161,7 @@
 </template>
 
 <script>
-import { columns } from "@/utils/name.js";
+import { columns, treeList, condition } from "@/utils/name.js";
 import { recruitTable } from "@/api/one";
 export default {
   name: "one",
@@ -134,10 +173,18 @@ export default {
       title: "新建招聘",
       dataSource: [],
       dataSource2: [],
+      cascaderData: [],
       columns,
+      treeList,
+      array: [0, 50],
       cloneForm: {},
+      condition,
       current: 1,
       pageSize: 5,
+      dateFormat: "YYYY/MM/DD",
+      replaceFields: {
+        children: "test",
+      },
       pagination: {
         total: 5,
         defaultPageSize: 5,
@@ -161,6 +208,7 @@ export default {
       recruitTable({
         current: this.current,
         pageSize: this.pageSize,
+        condition: this.condition,
       }).then((res) => {
         if (res.status === 200) {
           let arr = res.data.result;
@@ -169,6 +217,26 @@ export default {
           this.dataSource2 = arr;
         }
       });
+    },
+    validatorNum(rule, value, callback) {
+      if (value[1] > 50) {
+        callback(new Error("最大不能超过50!"));
+      } else {
+        callback();
+      }
+    },
+    handleSearch(value) {
+      console.log("value", value);
+    },
+    handleChangeTree(value, label, extra) {
+      console.log("value, label, extra", value, label, extra);
+    },
+    handleReset() {
+      this.array = [0, 50];
+      // this.form.setFieldsValue({num:[0,1]})
+      // console.log(this.form.getFieldsValue())
+      // this.$forceUpdate()
+      this.form.resetFields();
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
@@ -183,17 +251,9 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          const { name, post, level, education, recruit, num } = values;
-          for (let i in values) {
-            if (values[i]) {
-              this.dataSource2 = this.dataSource.filter(
-                (item) => item[i].indexOf(values[i]) !== -1
-              );
-            }
-          }
-          if (!(name || post || level || education || recruit || num)) {
-            this.dataSource2 = this.dataSource;
-          }
+          console.log("values", values);
+          this.condition = values;
+          this.requestTable();
         } else {
         }
       });
@@ -244,9 +304,15 @@ export default {
     flex-direction: column;
     justify-content: space-between;
     padding: 24px;
+    position: relative;
     .card_top_form {
       height: 100%;
       width: 100%;
+    }
+    .card_top_add {
+      position: absolute;
+      right: 24px;
+      bottom: 10px;
     }
   }
   .card_bottom {
@@ -278,10 +344,5 @@ export default {
 /deep/ .card-container .ant-tabs-card .ant-tabs-bar .ant-tabs-tab {
   border-color: transparent;
   background: transparent;
-}
-
-.card-container > .ant-tabs-card > .ant-tabs-bar .ant-tabs-tab-active {
-  border-color: #fff;
-  background: #fff;
 }
 </style>

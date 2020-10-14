@@ -29,11 +29,14 @@
         prop="recruit"
         has-feedback
       >
-        <a-select v-model="form.recruit" placeholder="请选择">
-          <a-select-option value="销售部"> 销售部 </a-select-option>
-          <a-select-option value="开发部"> 开发部 </a-select-option>
-          <a-select-option value="人事部"> 人事部 </a-select-option>
-        </a-select>
+        <a-tree-select
+          v-model="form.recruit"
+          style="width: 100%"
+          placeholder="请选择"
+          :tree-data="treeList"
+          allow-clear
+          tree-default-expand-all
+        />
       </a-form-model-item>
       <a-form-model-item
         label="最低学历要求"
@@ -60,6 +63,7 @@
 
 <script>
 import { rules } from "@/utils/rules.js";
+import { treeList } from "@/utils/name.js";
 export default {
   name: "Modal",
   components: {},
@@ -88,6 +92,7 @@ export default {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
       rules,
+      treeList,
       form: {
         id: "",
         name: "",
@@ -103,6 +108,12 @@ export default {
     cloneForm: {
       handler: function (val) {
         this.form = val;
+      },
+      deep: true,
+    },
+    form: {
+      handler: function (val) {
+        console.log("val", val);
       },
       deep: true,
     },
@@ -132,13 +143,18 @@ export default {
   mounted() {},
   methods: {
     onSubmit() {
-      this.$refs.form.validate((valid, object) => {
+      console.log("form", this.form);
+      this.$refs["form"].validate((valid) => {
         if (valid) {
-          if (this.title === "新建招聘") {
-            this.form.id = parseInt(Math.random() * 100);
-          }
-          this.$emit("onSubmit", this.form, this.title);
-          this.$emit("update:visible", false);
+          console.log("form", this.form);
+
+            if (this.title === "新建招聘") {
+              this.form.id = parseInt(Math.random() * 100);
+            }
+
+            this.$emit("onSubmit", this.form, this.title);
+            this.$refs['form'].clearValidate()
+            this.$emit("update:visible", false);
         } else {
           return false;
         }
