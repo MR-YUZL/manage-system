@@ -1,17 +1,17 @@
 <template>
   <div class="num">
     <a-input-number
-      id="inputNumberMin"
-      v-model="array[0]"
+      :id="`min_${name}`"
+      v-model="value[0]"
       :min="0"
-      :max="Number(array[1])"
+      :max="Number(value[1])"
       @change="onChange"
     />
     <div>~</div>
     <a-input-number
-      id="inputNumberMax"
-      v-model="array[1]"
-      :min="Number(array[0])"
+      :id="`max_${name}`"
+      v-model="value[1]"
+      :min="Number(value[0])"
       @change="onChange"
     />
   </div>
@@ -22,13 +22,17 @@ export default {
   name: "InputNum",
   components: {},
   model: {
-    prop: "array",
+    prop: "value",
     event: "change",
   },
   props: {
-    array: {
+    value: {
       type: Array,
-      default:()=> [0,50]
+      default: () => [0, 50],
+    },
+    name: {
+      type: String,
+      default: "",
     },
   },
   created() {},
@@ -37,7 +41,7 @@ export default {
     onChange() {
       // let { min, max } = this.$data;
       // let numArr = [min, max];
-      this.$emit("change", this.array);
+      this.$emit("change", this.value);
     },
   },
 };

@@ -143,18 +143,18 @@ export default {
   mounted() {},
   methods: {
     onSubmit() {
-      console.log("form", this.form);
       this.$refs["form"].validate((valid) => {
         if (valid) {
           console.log("form", this.form);
 
-            if (this.title === "新建招聘") {
-              this.form.id = parseInt(Math.random() * 100);
-            }
-
-            this.$emit("onSubmit", this.form, this.title);
-            this.$refs['form'].clearValidate()
-            this.$emit("update:visible", false);
+          if (this.title === "新建招聘") {
+            this.form.id = parseInt(Math.random() * 100);
+          }
+      
+          this.$emit("onSubmit", this.form, this.title);
+          this.$refs["form"].clearValidate();
+          // this.$refs["form"].resetFields();
+          this.$emit("update:visible", false);
         } else {
           return false;
         }

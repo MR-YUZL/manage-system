@@ -5,6 +5,7 @@ import "./assets/css/common.less";
 // 有关antdUi组件
 import "ant-design-vue/dist/antd.css";
 import "./components";
+import "./layouts";
 import Antd from "ant-design-vue";
 import './mock'
 

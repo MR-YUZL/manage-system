@@ -1,7 +1,7 @@
 <template>
   <main class="card-container">
-    <a-tabs type="card">
-      <a-tab-pane key="1" tab="职位招聘">
+    <a-tabs type="card" :activeKey="defaultActiveKey" @change="tabsChange">
+      <a-tab-pane :key="1" tab="职位招聘" :tabBarGutter="0">
         <section class="card_top">
           <a-page-header
             style="padding: 0px"
@@ -14,70 +14,53 @@
               layout="inline"
               :form="form"
               @submit="handleSubmit"
-              :selfUpdate="true"
+              :key="defaultActiveKey - 1"
             >
-              <a-row :gutter="28">
+              <a-row :gutter="[20, 20]">
                 <a-col :md="6" :sm="24">
                   <a-form-item label="职位名称">
-                    <a-input v-decorator="['name']" placeholder="请输入" />
+                    <Input
+                      v-decorator="['name', { initialValue: '' }]"
+                      placeholder="请输入"
+                    />
                   </a-form-item>
                 </a-col>
                 <a-col :md="6" :sm="24">
                   <a-form-item label="对应岗位">
-                    <a-select
-                      v-decorator="['post']"
-                      placeholder="请输入"
-                      style="width: 100%"
-                    >
-                      <a-select-option value="设计岗"> 设计岗 </a-select-option>
-                      <a-select-option value="开发岗"> 开发岗 </a-select-option>
-                    </a-select>
+                    <Select v-decorator="['post']" :options="postOptions" />
                   </a-form-item>
                 </a-col>
                 <a-col :md="6" :sm="24">
                   <a-form-item label="职位级别">
-                    <!-- <a-select v-decorator="['level']" placeholder="请输入">
-                      <a-select-option value="低级"> 低级 </a-select-option>
-                      <a-select-option value="中级"> 中级 </a-select-option>
-                      <a-select-option value="高级"> 高级 </a-select-option>
-                    </a-select> -->
-                    <Cascader v-decorator="['level']" v-model="cascaderData" />
+                    <Cascader
+                      v-decorator="['level', { initialValue: [] }]"
+                      :options="levelOptions"
+                    />
                   </a-form-item>
                 </a-col>
                 <a-col :md="6" :sm="24">
                   <a-form-item label="最低学历要求">
-                    <a-select v-decorator="['education']" placeholder="请输入">
-                      <a-select-option value="本科"> 本科 </a-select-option>
-                      <a-select-option value="大专"> 大专 </a-select-option>
-                      <a-select-option value="硕士"> 硕士 </a-select-option>
-                    </a-select>
+                    <Select
+                      v-decorator="['education']"
+                      :options="educationOptions"
+                    />
                   </a-form-item>
                 </a-col>
               </a-row>
 
-              <a-row style="margin-top: 20px" :gutter="20">
+              <a-row :gutter="[20, 20]">
                 <a-col :md="6" :sm="24">
                   <a-form-item label="招聘部门">
-                    <a-tree-select
-                      v-decorator="['recruit']"
-                      style="width: 100%"
+                    <TreeSelect
                       placeholder="请选择"
                       :tree-data="treeList"
                       allow-clear
                       showSearch
                       treeNodeFilterProp="title"
                       :replaceFields="replaceFields"
-                      @change="handleChangeTree"
-                      @search="handleSearch"
                       tree-default-expand-all
-                    >
-                      <template slot="custom" slot-scope="item">
-                        <p>
-                          <span>{{ item.title }}</span>
-                          <span>{{ item.value }}</span>
-                        </p>
-                      </template>
-                    </a-tree-select>
+                      v-decorator="['recruit']"
+                    />
                   </a-form-item>
                 </a-col>
                 <a-col :md="7" :sm="24">
@@ -92,10 +75,10 @@
                 <a-col :md="7" :sm="24">
                   <a-form-item label="报名数区间">
                     <InputNum
-                      v-model="array"
                       v-decorator="[
                         'num',
                         {
+                          initialValue: [0, 50],
                           rules: [
                             { required: true },
                             { validator: validatorNum },
@@ -148,7 +131,37 @@
           </a-table>
         </section>
       </a-tab-pane>
-      <a-tab-pane key="2" tab="宣讲会"> </a-tab-pane>
+      <a-tab-pane :key="2" tab="宣讲会">
+        <FormLayout
+          :formList="formList"
+          @submit="formSubmit"
+          :total="dataSource3Length"
+          :key="defaultActiveKey"
+        >
+          <template #body>
+            <a-table
+              :data-source="dataSource3"
+              :columns="columns"
+              :rowKey="(row) => row.id"
+              :pagination="false"
+            >
+              <template slot="operation" slot-scope="text, record">
+                <a href="javascript:;" @click="() => handleEdit(record)"
+                  >编辑</a
+                >
+                <a-divider type="vertical" />
+                <a-popconfirm
+                  v-if="dataSource3.length"
+                  title="确定要删除?"
+                  @confirm="() => onDelete(record.id)"
+                >
+                  <a href="javascript:;">删除</a>
+                </a-popconfirm>
+              </template>
+            </a-table>
+          </template>
+        </FormLayout>
+      </a-tab-pane>
     </a-tabs>
     <Modal
       :title="title"
@@ -161,7 +174,15 @@
 </template>
 
 <script>
-import { columns, treeList, condition } from "@/utils/name.js";
+import {
+  columns,
+  treeList,
+  condition,
+  educationOptions,
+  postOptions,
+  formList,
+  levelOptions,
+} from "@/utils/name.js";
 import { recruitTable } from "@/api/one";
 export default {
   name: "one",
@@ -173,10 +194,9 @@ export default {
       title: "新建招聘",
       dataSource: [],
       dataSource2: [],
-      cascaderData: [],
+      dataSource3: [],
       columns,
       treeList,
-      array: [0, 50],
       cloneForm: {},
       condition,
       current: 1,
@@ -185,6 +205,12 @@ export default {
       replaceFields: {
         children: "test",
       },
+      defaultActiveKey: 1,
+      levelOptions,
+      educationOptions,
+      postOptions,
+      formList,
+      dataSource3Length: 0,
       pagination: {
         total: 5,
         defaultPageSize: 5,
@@ -202,8 +228,31 @@ export default {
   created() {},
   mounted() {
     this.requestTable();
+    this.init();
+  },
+  watch: {
+    levelOptions: {
+      deep: true,
+      handler(val, olVal) {
+        console.log("val,olVal", val, olVal);
+      },
+    },
   },
   methods: {
+    init() {
+      this.formList[1].props.options = this.postOptions;
+      this.formList[2].props.options = this.levelOptions;
+      this.formList[3].props.options = this.educationOptions;
+      this.formList[4].props.treeData = this.treeList;
+      this.formList[5].rules = [
+        { required: true },
+        { validator: this.validatorNum2 },
+      ];
+    },
+    tabsChange(Key) {
+      this.form.resetFields();
+      this.defaultActiveKey = Key;
+    },
     requestTable() {
       recruitTable({
         current: this.current,
@@ -218,6 +267,17 @@ export default {
         }
       });
     },
+    requestTable2(data) {
+      recruitTable({
+        ...data,
+      }).then((res) => {
+        if (res.status === 200) {
+          let arr = res.data.result;
+          this.dataSource3 = arr;
+          this.dataSource3Length = res.data.total;
+        }
+      });
+    },
     validatorNum(rule, value, callback) {
       if (value[1] > 50) {
         callback(new Error("最大不能超过50!"));
@@ -225,18 +285,21 @@ export default {
         callback();
       }
     },
-    handleSearch(value) {
-      console.log("value", value);
-    },
-    handleChangeTree(value, label, extra) {
-      console.log("value, label, extra", value, label, extra);
+    validatorNum2(rule, value, callback) {
+      if (value[1] > 50) {
+        callback(new Error("最大不能超过50!"));
+      } else {
+        callback();
+      }
     },
     handleReset() {
-      this.array = [0, 50];
-      // this.form.setFieldsValue({num:[0,1]})
-      // console.log(this.form.getFieldsValue())
-      // this.$forceUpdate()
+      // this.form.setFieldsValue({ num: [0, 50] });
+      console.log(this.form.getFieldsValue());
       this.form.resetFields();
+    },
+    formSubmit(data) {
+      console.log("data", data);
+      this.requestTable2(data);
     },
     handleSizeChange(pageSize) {
       this.pageSize = pageSize;
@@ -251,7 +314,7 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log("values", values);
+          console.log("values", values, this.levelOptions);
           this.condition = values;
           this.requestTable();
         } else {

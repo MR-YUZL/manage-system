@@ -1,43 +1,50 @@
 <template>
   <a-cascader
-    :options="options"
+    :options="option"
     placeholder="请选择"
     @change="onChange"
     :load-data="loadData"
     change-on-select
+    :value="value"
   />
 </template>
 
 <script>
-import { options } from "@/utils/name";
 export default {
   name: "Cascader",
   model: {
-    prop: "cascaderData",
+    prop: "value",
     event: "change",
   },
   props: {
-    cascaderData: {
+    value: {
+      type: Array,
+      default: () => [],
+    },
+    options: {
       type: Array,
       default: () => [],
     },
   },
   data() {
     return {
-      options,
+      option: this.options,
     };
   },
-  created() {},
+  created() {
+    // this.option = this.options;
+    console.log("created=============",this.option)
+  },
   mounted() {},
   methods: {
     onChange(value) {
       this.$emit("change", value);
     },
     loadData(selectedOptions) {
-      console.log('selectedOptions',selectedOptions)
-      const targetOption = selectedOptions[selectedOptions.length - 1];
+      let targetOption = selectedOptions[selectedOptions.length - 1];
       targetOption.loading = true;
       setTimeout(() => {
+        console.log("loadData======",this.option)
         targetOption.loading = false;
         targetOption.children = [
           {
@@ -49,7 +56,7 @@ export default {
             value: "dynamic2",
           },
         ];
-        this.options = [...this.options];
+        this.option = [...this.option];
       }, 1000);
     },
   },
