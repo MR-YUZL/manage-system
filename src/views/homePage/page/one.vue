@@ -34,7 +34,7 @@
                   <a-form-item label="职位级别">
                     <Cascader
                       v-decorator="['level', { initialValue: [] }]"
-                      :options="levelOptions"
+                      :options.sync="levelOptions"
                     />
                   </a-form-item>
                 </a-col>

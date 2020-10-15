@@ -28,12 +28,12 @@ export default {
   },
   data() {
     return {
-      option: this.options,
+      option: JSON.parse(JSON.stringify(this.options)),
     };
   },
   created() {
     // this.option = this.options;
-    console.log("created=============",this.option)
+    console.log("created=============", this.option);
   },
   mounted() {},
   methods: {
@@ -44,7 +44,7 @@ export default {
       let targetOption = selectedOptions[selectedOptions.length - 1];
       targetOption.loading = true;
       setTimeout(() => {
-        console.log("loadData======",this.option)
+        console.log("loadData======", this.option);
         targetOption.loading = false;
         targetOption.children = [
           {
@@ -57,6 +57,7 @@ export default {
           },
         ];
         this.option = [...this.option];
+        this.$emit("update:options", this.option);
       }, 1000);
     },
   },
