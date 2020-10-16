@@ -10,7 +10,7 @@
         <a-row :gutter="[20, 20]">
           <a-col
             v-for="(v, index) in formList"
-            style="height:60px"
+            style="height: 60px"
             :md="v.span || 6"
             :key="index"
             :sm="12"
@@ -40,7 +40,7 @@
         </a-row>
       </a-form>
     </header>
-    <main>
+    <main class="main">
       <slot name="body"></slot>
     </main>
     <footer v-if="footer" class="footer">
@@ -112,6 +112,9 @@ export default {
   .header {
     width: 100%;
     padding: 20px;
+  }
+  .main {
+    width: 100%;
   }
   .footer {
     position: relative;

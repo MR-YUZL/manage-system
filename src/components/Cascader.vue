@@ -31,9 +31,12 @@ export default {
       option: JSON.parse(JSON.stringify(this.options)),
     };
   },
-  created() {
-    // this.option = this.options;
-    console.log("created=============", this.option);
+  watch: {
+    options: {
+      handler: function (val, olVal) {
+        this.option = val;
+      },
+    },
   },
   mounted() {},
   methods: {

@@ -34,6 +34,7 @@
           style="width: 100%"
           placeholder="请选择"
           :tree-data="treeList"
+          :replaceFields="replaceFields"
           allow-clear
           tree-default-expand-all
         />
@@ -102,6 +103,10 @@ export default {
         education: "",
         num: "",
       },
+      replaceFields: {
+        children: "test",
+        value: "title",
+      },
     };
   },
   watch: {
@@ -132,10 +137,26 @@ export default {
         }
       }
     };
+    let validatorRecruit = (rule, value, callback) => {
+      console.log("value", value);
+
+      if (value) {
+        callback();
+      } else {
+        callback(new Error("!!!"));
+      }
+    };
     this.rules.name = [
       {
         required: true,
         validator: validatorName,
+        trigger: "blur",
+      },
+    ];
+    this.rules.recruit = [
+      {
+        required: true,
+        validator: validatorRecruit,
         trigger: "blur",
       },
     ];
@@ -150,7 +171,7 @@ export default {
           if (this.title === "新建招聘") {
             this.form.id = parseInt(Math.random() * 100);
           }
-      
+
           this.$emit("onSubmit", this.form, this.title);
           this.$refs["form"].clearValidate();
           // this.$refs["form"].resetFields();

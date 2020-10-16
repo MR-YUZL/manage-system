@@ -21,11 +21,11 @@ export const rules = {
     message: "请输入职位级别",
     trigger: "blur",
   }, ],
-  recruit: [{
-    required: true,
-    message: "请输入招聘部门",
-    trigger: "blur",
-  }, ],
+  // recruit: [{
+  //   required: true,
+  //   message: "请输入招聘部门",
+  //   trigger: "blur",
+  // }, ],
   num: [{
     validator: validatorNum,
     trigger: "blur",

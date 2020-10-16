@@ -337,6 +337,7 @@ export const formList = [{
       showSearch: true,
       replaceFields: {
         children: "test",
+        value: "title"
       },
       treeNodeFilterProp: "title",
       treeDefaultExpandAll: true

@@ -1,18 +1,16 @@
 <template>
   <div class="num">
     <a-input-number
-      :id="`min_${name}`"
       v-model="value[0]"
       :min="0"
       :max="Number(value[1])"
-      @change="onChange"
+      @change="onChangeMin"
     />
     <div>~</div>
     <a-input-number
-      :id="`max_${name}`"
       v-model="value[1]"
       :min="Number(value[0])"
-      @change="onChange"
+      @change="onChangeMax"
     />
   </div>
 </template>
@@ -30,18 +28,25 @@ export default {
       type: Array,
       default: () => [0, 50],
     },
-    name: {
-      type: String,
-      default: "",
-    },
+  },
+  data() {
+    return {
+      max: 50,
+      min: 0,
+    };
   },
   created() {},
   mounted() {},
   methods: {
-    onChange() {
-      // let { min, max } = this.$data;
-      // let numArr = [min, max];
-      this.$emit("change", this.value);
+    onChangeMin(value) {
+      this.min = value;
+      let arr = [value, this.max];
+      this.$emit("change", arr);
+    },
+    onChangeMax(value) {
+      this.max = value;
+      let arr = [this.min, value];
+      this.$emit("change", arr);
     },
   },
 };

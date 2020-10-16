@@ -5,12 +5,12 @@
     :value="value"
     @change="handleChange"
   >
-    <template slot="custom" slot-scope="item">
+    <span slot="custom" slot-scope="{ title, value }">
       <p>
-        <span>{{ item.title }}</span>
-        <span>{{ item.value }}</span>
+        <span>{{ title }}</span>
+        <span>{{ value }}</span>
       </p>
-    </template>
+    </span>
   </a-tree-select>
 </template>
 
