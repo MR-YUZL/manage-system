@@ -14,7 +14,7 @@
           @submit="formSubmit"
           @change="formChange"
           :total="dataSource2Length"
-          :key="defaultActiveKey"
+          v-if="defaultActiveKey === 1"
         >
           <template #body>
             <a-button class="add_button" type="primary" @click="showModal"
@@ -49,7 +49,7 @@
           @submit="formSubmit2"
           @change="formChange2"
           :total="dataSource3Length"
-          :key="defaultActiveKey"
+          v-if="defaultActiveKey === 2"
         >
           <template #body>
             <a-table
@@ -76,13 +76,21 @@
         </FormLayout2>
       </a-tab-pane>
     </a-tabs>
-    <Modal
+    <a-modal
+      v-model="visible"
       :title="title"
-      :visible.sync="visible"
-      @onSubmit="onSubmit"
-      :cloneForm="cloneForm"
-      :list="dataSource2"
-    ></Modal>
+      @ok="modalSubmit"
+      @cancel="handleCanel"
+      :closable="false"
+    >
+      <FormModal
+        ref="formModal"
+        :rules="rules"
+        :list="formModal"
+        :cloneForm="cloneForm"
+        :formData.sync="formData"
+      ></FormModal>
+    </a-modal>
   </main>
 </template>
 
@@ -94,9 +102,11 @@ import {
   educationOptions,
   postOptions,
   formList,
+  formModal,
   levelOptions,
 } from "@/utils/name.js";
 import { recruitTable } from "@/api/one";
+import { rules } from "@/utils/rules.js";
 export default {
   name: "two",
   components: {},
@@ -110,6 +120,8 @@ export default {
       dataSource3: [],
       columns,
       treeList,
+      formModal,
+      rules,
       cloneForm: {},
       condition,
       current: 1,
@@ -120,6 +132,7 @@ export default {
       replaceFields: {
         children: "test",
       },
+      formData: {},
       defaultActiveKey: 1,
       levelOptions,
       educationOptions,
@@ -149,14 +162,29 @@ export default {
       this.$set(this.formList[2].props, "options", this.levelOptions);
       this.$set(this.formList[3].props, "options", this.educationOptions);
       this.$set(this.formList[4].props, "treeData", this.treeList);
-      this.formList[5].rules = [
+      this.$set(this.formList[5], "rules", [
         { required: true },
         { validator: this.validatorNum2 },
-      ];
+      ]);
+
+      this.$set(this.formModal[1], "options", this.postOptions);
+      this.$set(this.formModal[2], "options", this.levelOptions);
+      this.$set(this.formModal[3], "options", this.educationOptions);
+      this.$set(this.formModal[4].props, "treeData", this.treeList);
+
+      this.$set(this.rules, "name", [
+        {
+          required: true,
+          validator: this.validatorName,
+          trigger: "blur",
+        },
+      ]);
     },
+
     tabsChange(Key) {
       this.defaultActiveKey = Key;
     },
+
     requestTable() {
       recruitTable({
         condition: this.condition,
@@ -171,6 +199,7 @@ export default {
         }
       });
     },
+
     requestTable2() {
       recruitTable({
         condition: this.condition,
@@ -184,6 +213,7 @@ export default {
         }
       });
     },
+
     validatorNum2(rule, value, callback) {
       if (value[1] > 50) {
         callback(new Error("最大不能超过50!"));
@@ -191,53 +221,89 @@ export default {
         callback();
       }
     },
+
+    validatorName(rule, value, callback) {
+      if (!value) {
+        callback(new Error("请输入职位名称!"));
+      } else {
+        let arr = this.dataSource2.filter((v) => this.formData.id !== v.id);
+        let name = arr.map((v) => v.name);
+
+        if (name.indexOf(value) !== -1) {
+          callback(new Error("职位名称已存在!"));
+        } else {
+          callback();
+        }
+      }
+    },
+
     formSubmit(data) {
       this.condition = data;
       this.requestTable();
     },
+
     formChange({ current, pageSize }) {
       this.current = current;
       this.pageSize = pageSize;
       this.requestTable();
     },
+
     formSubmit2(data) {
       this.condition = data;
       this.requestTable2();
     },
+
     formChange2({ current, pageSize }) {
       this.current2 = page;
       this.pageSize2 = size;
       this.requestTable2();
     },
-    onSubmit(data, title) {
-      if (title === "新建招聘") {
-        this.dataSource2.unshift(data);
-        this.$message.success({ content: "新建成功" });
-      } else {
-        this.dataSource2 = this.dataSource2.map((v) => {
-          if (v.id === data.id) {
-            return data;
+
+    modalSubmit() {
+      this.$refs["formModal"].$refs["form"].validate((valid) => {
+        if (valid) {
+          if (this.title === "新建招聘") {
+            this.dataSource2.unshift(this.formData);
+            this.$message.success({ content: "新建成功" });
+            this.visible = false;
+            this.$refs["formModal"].$refs["form"].clearValidate();
           } else {
-            return v;
+            this.dataSource2 = this.dataSource2.map((v) => {
+              if (v.id === this.formData.id) {
+                return this.formData;
+              } else {
+                return v;
+              }
+            });
+            this.visible = false;
+            this.$refs["formModal"].$refs["form"].clearValidate();
+            this.$message.success({ content: "编辑成功" });
           }
-        });
-        this.$message.success({ content: "编辑成功" });
-      }
+        }
+      });
     },
+
     handleEdit(record) {
       let obj = JSON.parse(JSON.stringify(record));
       this.title = "编辑";
       this.visible = true;
       this.cloneForm = obj;
     },
+
     showModal() {
       this.title = "新建招聘";
       this.visible = true;
       this.cloneForm = {};
     },
+
     onDelete(id) {
       this.dataSource2 = this.dataSource2.filter((item) => item.id !== id);
       this.$message.success({ content: "删除成功" });
+    },
+
+    handleCanel() {
+      this.$refs["formModal"].$refs["form"].clearValidate();
+      this.visible = false;
     },
   },
 };
@@ -279,5 +345,9 @@ export default {
 /deep/ .card-container .ant-tabs-card .ant-tabs-bar .ant-tabs-tab {
   border-color: transparent;
   background: transparent;
+}
+
+/deep/ .ant-modal-root .ant-modal-footer {
+  text-align: right;
 }
 </style>

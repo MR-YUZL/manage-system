@@ -60,6 +60,7 @@
           <InputNum
             v-if="v.component === 'InputNum'"
             v-bind="v.props"
+            ref="InputNum"
             v-decorator="[
               v.field,
               { initialValue: v.initialValue, rules: v.rules },
@@ -71,7 +72,8 @@
         <span class="table-page-search-submitButtons" style="float: right">
           <a-button type="primary" html-type="submit">查询</a-button>
           <a-button style="margin-left: 8px" @click="() => handleReset()"
-            >重置</a-button>
+            >重置</a-button
+          >
         </span>
       </a-col>
     </a-row>
@@ -89,7 +91,7 @@ export default {
   },
   data() {
     return {
-      form: this.$form.createForm(this, { name: "formLayout" }),
+      form: this.$form.createForm(this, { name: `formLayout` }),
     };
   },
   created() {},

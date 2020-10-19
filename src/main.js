@@ -1,6 +1,8 @@
 import Vue from "vue";
 import App from "./App.vue";
-import { router } from "./routes/routes";
+import {
+  router
+} from "./routes/routes";
 import "./assets/css/common.less";
 // 有关antdUi组件
 import "ant-design-vue/dist/antd.css";

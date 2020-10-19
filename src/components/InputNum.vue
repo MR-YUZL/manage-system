@@ -1,14 +1,14 @@
 <template>
   <div class="num">
     <a-input-number
-      v-model="value[0]"
+      v-model="min"
       :min="0"
       :max="Number(value[1])"
       @change="onChangeMin"
     />
     <div>~</div>
     <a-input-number
-      v-model="value[1]"
+      v-model="max"
       :min="Number(value[0])"
       @change="onChangeMax"
     />
@@ -37,6 +37,14 @@ export default {
   },
   created() {},
   mounted() {},
+  watch: {
+    value: {
+      handler(val, olVal) {
+        this.min = val[0];
+        this.max = val[1];
+      },
+    },
+  },
   methods: {
     onChangeMin(value) {
       this.min = value;

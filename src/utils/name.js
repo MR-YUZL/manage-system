@@ -158,6 +158,7 @@ export const postOptions = [{
 export const levelOptions = [{
     value: '高级',
     label: '高级',
+    title: '高级',
     children: [{
         value: '中高',
         label: '中高',
@@ -175,11 +176,13 @@ export const levelOptions = [{
   {
     value: '中级',
     label: '中级',
+    title: '中级',
     isLeaf: false,
   },
   {
     value: '低级',
     label: '低级',
+    title: '低级',
     isLeaf: false,
   },
 ]
@@ -350,6 +353,67 @@ export const formList = [{
     name: "num",
     component: "InputNum",
     initialValue: [0, 50],
+    props: {}
+  }
+]
+
+export const formModal = [{
+
+    label: "职位名称",
+    ref: "name",
+    component: "Input",
+    props: {
+      placeholder: "请输入职位名称"
+    }
+  },
+  {
+
+    label: "对应岗位",
+    ref: "post",
+    component: "Select",
+    props: {
+      placeholder: "请选择岗位"
+    }
+  },
+  {
+
+    label: "职位级别",
+    ref: "level",
+    component: "Select",
+    props: {
+      placeholder:"请选择级别"
+    }
+  },
+  {
+
+    label: "最低学历要求",
+    ref: "education",
+    component: "Select",
+    props: {
+      placeholder: "请选择学历"
+    }
+  },
+  {
+
+    label: "招聘部门",
+    ref: "recruit",
+    component: "TreeSelect",
+    props: {
+      placeholder: "请输入职位名称",
+      allowClear: true,
+      showSearch: true,
+      replaceFields: {
+        children: "test",
+        value: "title"
+      },
+      treeNodeFilterProp: "title",
+      treeDefaultExpandAll: true
+    }
+  },
+  {
+    label: "报名数区间",
+    ref: "num",
+    component: "Input",
     props: {}
   }
 ]

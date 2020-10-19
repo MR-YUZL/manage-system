@@ -1,7 +1,7 @@
 <template>
   <main class="card-container">
     <a-tabs type="card" :activeKey="defaultActiveKey" @change="tabsChange">
-      <a-tab-pane :key="1" tab="职位招聘" :tabBarGutter="0">
+      <a-tab-pane :key="1" tab="职位招聘">
         <section class="card_top">
           <a-page-header
             style="padding: 0px"
@@ -14,7 +14,7 @@
               layout="inline"
               :form="form"
               @submit="handleSubmit"
-              :key="defaultActiveKey - 1"
+              
             >
               <a-row :gutter="[20, 20]">
                 <a-col :md="6" :sm="24">

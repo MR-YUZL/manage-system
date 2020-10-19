@@ -1,5 +1,4 @@
 import Mock from 'mockjs'
-
 const name_mock = [
   '视觉设计师',
   '前端工程师',
@@ -129,9 +128,28 @@ const options = (options) => {
 
 }
 
+const username = ['admin']
+const password = ['admin']
+
+const login = (options) => {
+  const body = JSON.parse(options.body)
+  console.log('body',body)
+  if (!username.includes(body.username) || !password.includes(body.password)) {
+    return builder({
+    }, 0, '账户或密码错误', 401)
+  }
+
+  return builder({
+    'username': 'admin',
+    'password': '',
+  }, 0, '', 200)
+}
+
 Mock.mock('/meun', 'post', list)
 
 Mock.mock('/options', 'post', options)
+
+Mock.mock('/login', 'post', login)
 // Mock.mock('/meun', /post|get/i, {
 //   // /post|get/i 匹配post和get模式 也可以用'post'或'get'
 //   // 属性 list 的值是一个数组，其中含有 1 到 10 个元素

@@ -1,7 +1,10 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import homePageChild from '@/views/homePage/route.js'
+import loginChild from '@/views/login/route.js'
 
+
+import LoginLayout from '@/layouts/LoginLayout'
 const originalPush = VueRouter.prototype.push
 VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
@@ -10,10 +13,17 @@ VueRouter.prototype.push = function push(location) {
 Vue.use(VueRouter);
 // router
 const router = new VueRouter({
-  routes: [
-    {
+  routes: [{
       path: '/',
-      redirect: '/homePage'
+      redirect: '/login'
+    },
+    {
+      path: '/login',
+      name: 'login',
+      component: LoginLayout,
+      children: [
+        ...loginChild
+      ]
     },
     {
       path: '/homePage',
@@ -27,4 +37,6 @@ const router = new VueRouter({
 });
 
 
-export { router };
+export {
+  router
+};
