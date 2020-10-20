@@ -10,10 +10,11 @@
         <div class="header_right_user">
           <a-dropdown>
             <a class="ant-dropdown-link" @click="(e) => e.preventDefault()">
-              超级管理员<a-icon type="down" />
+              {{ userInfo.name }}
+              <a-icon type="down" />
             </a>
             <a-menu slot="overlay">
-              <a-menu-item>
+              <a-menu-item @click="loginOut">
                 <a href="javascript:;">退出登录</a>
               </a-menu-item>
             </a-menu>
@@ -25,19 +26,23 @@
       <nav class="nav">
         <a-menu
           mode="inline"
-          :default-open-keys="['/market']"
+          :defaultSelectedKeys="['/homePage/one']"
           style="width: 100%"
           theme="dark"
           @click="handleClick"
         >
           <template v-for="v in menu">
-            <a-sub-menu :key="v.key" v-if="v.children" @titleClick="titleClick">
-              <span slot="title">{{ v.title }}</span>
-              <a-menu-item v-for="value in v.children" :key="value.key">{{
-                value.title
+            <a-sub-menu
+              :key="v.path"
+              v-if="v.children"
+              @titleClick="titleClick"
+            >
+              <span slot="title">{{ v.meta.title }}</span>
+              <a-menu-item v-for="value in v.children" :key="value.path">{{
+                value.meta.title
               }}</a-menu-item>
             </a-sub-menu>
-            <a-menu-item :key="v.key" v-else>{{ v.title }}</a-menu-item>
+            <a-menu-item :key="v.path" v-else>{{ v.meta.title }}</a-menu-item>
           </template>
         </a-menu>
       </nav>
@@ -49,24 +54,41 @@
 </template>
 
 <script>
-import { menu } from "@/utils/name.js";
+import { mapActions, mapState } from "vuex";
 export default {
-  name: "homePage",
+  name: "BasicLayout",
   props: {},
   data() {
     return {
-      menu,
+      roles: "",
+      menu: [],
     };
   },
+  computed: {
+    ...mapState({
+      mainRoute: (state) => state.user.mainRoute,
+      userInfo: (state) => state.user.userInfo,
+    }),
+  },
+
   created() {},
-  mounted() {},
+  mounted() {
+    this.init();
+  },
   methods: {
+    ...mapActions(["LoginOut"]),
+    init() {
+      this.menu = this.mainRoute;
+    },
     handleClick(e) {
       console.log("click", e);
-      this.$router.push(e.key)
+      this.$router.push(e.key);
     },
-    titleClick(e) {
-      console.log("titleClick", e);
+    titleClick(e) {},
+    loginOut() {
+      this.LoginOut();
+
+      this.$router.push("/login");
     },
   },
 };

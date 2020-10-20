@@ -91,7 +91,7 @@
           </a-form-item>
 
           <a-row :gutter="16">
-            <a-col  :span="16">
+            <a-col :span="16">
               <a-form-item>
                 <a-input
                   size="large"
@@ -114,10 +114,7 @@
               </a-form-item>
             </a-col>
             <a-col :span="8">
-              <a-button
-                class="getCaptcha"
-                v-text="'获取验证码'"
-              ></a-button>
+              <a-button class="getCaptcha" v-text="'获取验证码'"></a-button>
             </a-col>
           </a-row>
         </a-tab-pane>
@@ -148,7 +145,7 @@
 </template>
 
 <script>
-import { login } from "@/api/login";
+import { mapActions } from 'vuex'
 export default {
   name: "login",
   components: {},
@@ -164,29 +161,35 @@ export default {
   created() {},
   mounted() {},
   methods: {
+    ...mapActions(['Login']),
     handleSubmit(e) {
       e.preventDefault();
       const {
         form: { validateFields },
         activeKey,
+        Login
       } = this;
 
       this.loginBtn = true;
 
       const validateFieldsKey =
         activeKey === "tab1" ? ["username", "password"] : ["mobile", "capcha"];
-
       validateFields(validateFieldsKey, { force: false }, (err, values) => {
         if (!err) {
           const loginParams = { ...values };
 
-          login(loginParams)
-            .then((res) => this.loginSuccess(res))
+          Login(loginParams)
+            .then((res) => {
+              if (res.code === 200) {
+                this.loginSuccess(res);
+              } else if (res.code === 401) {
+                this.loginFailed(res);
+              }
+            })
             .catch((err) => this.loginFailed(err))
             .finally(() => {
               this.loginBtn = false;
             });
-
         } else {
           this.loginBtn = false;
         }
@@ -195,25 +198,23 @@ export default {
     handleTabClick(key) {
       this.activeKey = key;
     },
-    loginSuccess(res) {
-      console.log("res", res);
-      // this.$router.push({ path: "/homePage" });
+    loginSuccess() {
+      this.$router.push({ path: "/homePage" });
 
       setTimeout(() => {
         this.$notification.success({
           message: "登录成功",
-          description: `企蜂云欢迎您`,
+          description: `${this.$store.state.user.userInfo.name},企蜂云欢迎您`,
         });
       }, 1000);
 
       this.isLoginError = false;
     },
     loginFailed(err) {
-      console.log("err", err);
       this.isLoginError = true;
       this.$notification.error({
         message: "错误",
-        description: `账户或密码错误`,
+        description: `${err.message}`,
       });
     },
   },
@@ -230,7 +231,7 @@ export default {
     height: 40px;
     width: 100%;
   }
-  .getCaptcha{
+  .getCaptcha {
     display: block;
     width: 100%;
     height: 40px;

@@ -27,7 +27,7 @@ module.exports = {
       }
     }
   },
-  publicPath: "./",
+  publicPath: "/",
   outputDir: "cloud-qf-service",
   assetsDir: "static"
 };

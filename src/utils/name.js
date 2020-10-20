@@ -1,4 +1,4 @@
-export const menu = [{
+export const rootMenu = [{
     key: '/homePage/one',
     title: '主页',
     path: ""
@@ -55,6 +55,31 @@ export const menu = [{
       title: '订单管理',
     }]
   }
+]
+
+export const userMenu = [{
+  key: '/homePage/one',
+  title: '主页',
+  path: ""
+}, {
+  key: '/homePage/two',
+  title: '基础应用管理',
+  path: ""
+}, {
+  key: '/market',
+  title: '应用市场',
+  path: "",
+  children: [{
+    key: '/market/purchase',
+    title: '应用购买',
+  }, {
+    key: '/home/manage',
+    title: '应用管理',
+  }, {
+    key: '/home/DDManage',
+    title: '订单管理',
+  }]
+},
 ]
 
 export const columns = [{

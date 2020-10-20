@@ -38,10 +38,9 @@ const responseBody = {
   timestamp: 0,
   result: null,
   code: 0,
-  total: 0
 }
 
-const builder = (data, total = 5, message, code = 0, headers = {}) => {
+const builder = (data, total = 0, message, code = 0, headers = {}) => {
   responseBody.total = total
   responseBody.result = data
   if (message !== undefined && message !== null) {
@@ -120,7 +119,7 @@ const list = (params) => {
 
   let pageNum = current - 1
   let arr = dataClone.slice(pageNum * pageSize, current * pageSize)
-  return builder(arr, dataClone.length)
+  return builder(arr, dataClone.length, '', 200)
 }
 
 const options = (options) => {
@@ -128,20 +127,28 @@ const options = (options) => {
 
 }
 
-const username = ['admin']
-const password = ['admin']
+const username = ['admin', 'root']
+const password = ['admin', 'root']
 
 const login = (options) => {
+  let roles = '';
   const body = JSON.parse(options.body)
-  console.log('body',body)
   if (!username.includes(body.username) || !password.includes(body.password)) {
-    return builder({
-    }, 0, '账户或密码错误', 401)
+    return builder({}, 0, '账户或密码错误', 401)
+  }
+
+  if (body.username === 'root') {
+    roles = 'root'
+  } else {
+    roles = 'user'
   }
 
   return builder({
-    'username': 'admin',
+    'username': body.username,
     'password': '',
+    'name': body.username === 'root' ? '超级管理员' : Mock.mock('@cname'),
+    'token': '123456asdzxc',
+    'roles': roles
   }, 0, '', 200)
 }
 

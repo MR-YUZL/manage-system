@@ -191,9 +191,9 @@ export default {
         pageSize: this.pageSize,
         current: this.current,
       }).then((res) => {
-        if (res.status === 200) {
-          let arr = res.data.result;
-          this.dataSource2Length = res.data.total;
+        if (res.code === 200) {
+          let arr = res.result;
+          this.dataSource2Length = res.total;
           this.dataSource = arr;
           this.dataSource2 = arr;
         }
@@ -206,10 +206,10 @@ export default {
         pageSize: this.pageSize2,
         current: this.current2,
       }).then((res) => {
-        if (res.status === 200) {
-          let arr = res.data.result;
+        if (res.code === 200) {
+          let arr = res.result;
           this.dataSource3 = arr;
-          this.dataSource3Length = res.data.total;
+          this.dataSource3Length = res.total;
         }
       });
     },

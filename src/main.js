@@ -4,6 +4,7 @@ import {
   router
 } from "./routes/routes";
 import "./assets/css/common.less";
+import store from './store/'
 // 有关antdUi组件
 import "ant-design-vue/dist/antd.css";
 import "./components";
@@ -18,5 +19,6 @@ Vue.prototype.$axios = axios
 Vue.use(Antd);
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount("#app");
