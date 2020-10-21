@@ -29,10 +29,13 @@
           </a-col>
           <a-col :md="4" :sm="12">
             <span class="table-page-search-submitButtons" style="float: right">
-              <a-button type="primary" html-type="submit">查询</a-button>
+              <a-button type="primary" html-type="submit" v-permission:query
+                >查询</a-button
+              >
               <a-button
                 style="margin-left: 8px"
                 @click="() => form.resetFields()"
+                v-permission:query
                 >重置</a-button
               >
             </span>

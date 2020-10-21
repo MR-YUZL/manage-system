@@ -124,7 +124,7 @@
         <a-checkbox v-decorator="['rememberMe', { valuePropName: 'checked' }]"
           >自动登录</a-checkbox
         >
-        <router-link :to="{ name: '', params: {} }" style="float: right"
+        <router-link :to="{ name: 'login' }" style="float: right"
           >忘记密码</router-link
         >
       </a-form-item>
@@ -145,7 +145,7 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import { mapActions } from "vuex";
 export default {
   name: "login",
   components: {},
@@ -161,13 +161,13 @@ export default {
   created() {},
   mounted() {},
   methods: {
-    ...mapActions(['Login']),
+    ...mapActions(["Login"]),
     handleSubmit(e) {
       e.preventDefault();
       const {
         form: { validateFields },
         activeKey,
-        Login
+        Login,
       } = this;
 
       this.loginBtn = true;

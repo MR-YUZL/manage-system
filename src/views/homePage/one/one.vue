@@ -10,12 +10,7 @@
             @back="() => null"
           />
           <div class="card_top_form">
-            <a-form
-              layout="inline"
-              :form="form"
-              @submit="handleSubmit"
-              
-            >
+            <a-form layout="inline" :form="form" @submit="handleSubmit">
               <a-row :gutter="[20, 20]">
                 <a-col :md="6" :sm="24">
                   <a-form-item label="职位名称">
@@ -94,10 +89,16 @@
                     class="table-page-search-submitButtons"
                     style="float: right"
                   >
-                    <a-button type="primary" html-type="submit">查询</a-button>
+                    <a-button
+                      type="primary"
+                      html-type="submit"
+                      v-permission:query
+                      >查询</a-button
+                    >
                     <a-button
                       style="margin-left: 8px"
                       @click="() => handleReset()"
+                      v-permission:query
                       >重置</a-button
                     >
                   </span>
@@ -105,7 +106,11 @@
               </a-row>
             </a-form>
 
-            <a-button class="card_top_add" type="primary" @click="showModal"
+            <a-button
+              class="card_top_add"
+              type="primary"
+              @click="showModal"
+              v-permission:add
               >新建招聘</a-button
             >
           </div>
@@ -118,9 +123,15 @@
             :pagination="pagination"
           >
             <template slot="operation" slot-scope="text, record">
-              <a href="javascript:;" @click="() => handleEdit(record)">编辑</a>
+              <a
+                href="javascript:;"
+                @click="() => handleEdit(record)"
+                v-permission:edit
+                >编辑</a
+              >
               <a-divider type="vertical" />
               <a-popconfirm
+                v-permission:delete
                 v-if="dataSource.length"
                 title="确定要删除?"
                 @confirm="() => onDelete(record.id)"
@@ -298,7 +309,6 @@ export default {
       this.form.resetFields();
     },
     formSubmit(data) {
-      console.log("data", data);
       this.requestTable2(data);
     },
     handleSizeChange(pageSize) {
@@ -314,7 +324,6 @@ export default {
       e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
-          console.log("values", values, this.levelOptions);
           this.condition = values;
           this.requestTable();
         } else {

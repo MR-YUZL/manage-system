@@ -67,12 +67,12 @@ const list = (params) => {
   } = JSON.parse(params.body)
   let data = []
   const {
-    name,
-    post,
-    level,
-    education,
-    recruit,
-    num
+    name,  //职位名称
+    post,  //对应岗位
+    level, //职位级别
+    education,  //最低学历
+    recruit,  //招聘部门
+    num       //报名数
   } = condition;
 
   for (let i = 0; i < 15; i++) {
@@ -122,9 +122,44 @@ const list = (params) => {
   return builder(arr, dataClone.length, '', 200)
 }
 
-const options = (options) => {
+const info = (options) => {
+  const adminInfo = {
+    'username': 'admin',
+    'password': '',
+    'name': Mock.mock('@cname'),
+    'token': '123456asdzxc',
+    'roles': 'user',
+    'permission': [{
+      page: 'one',
+      actions: ['add', 'delete', 'edit']
+    }, {
+      page: 'two',
+      actions: ['query']
+    }, ]
+  }
 
+  const rootInfo = {
+    'username': 'root',
+    'password': '',
+    'name': '超级管理员',
+    'token': '123456asdzxc',
+    'roles': 'root',
+    'permission': [{
+      page: 'one',
+      actions: ['query', 'add', 'delete', 'edit']
+    }, {
+      page: 'two',
+      actions: ['query', 'add', 'delete', 'edit']
+    }, ]
+  }
 
+  const body = JSON.parse(options.body)
+
+  if (body.username === 'root') {
+    return builder(rootInfo, 0, '', 200)
+  } else {
+    return builder(adminInfo, 0, '', 200)
+  }
 }
 
 const username = ['admin', 'root']
@@ -152,9 +187,11 @@ const login = (options) => {
   }, 0, '', 200)
 }
 
+
+
 Mock.mock('/meun', 'post', list)
 
-Mock.mock('/options', 'post', options)
+Mock.mock('/info', 'post', info)
 
 Mock.mock('/login', 'post', login)
 // Mock.mock('/meun', /post|get/i, {

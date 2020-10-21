@@ -5,6 +5,7 @@ import {
 } from "./routes/routes";
 import "./assets/css/common.less";
 import store from './store/'
+import "./utils/directives"
 // 有关antdUi组件
 import "ant-design-vue/dist/antd.css";
 import "./components";

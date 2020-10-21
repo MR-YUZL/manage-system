@@ -26,7 +26,7 @@
       <nav class="nav">
         <a-menu
           mode="inline"
-          :defaultSelectedKeys="['/homePage/one']"
+          :defaultSelectedKeys="[defaultKey]"
           style="width: 100%"
           theme="dark"
           @click="handleClick"
@@ -34,7 +34,7 @@
           <template v-for="v in menu">
             <a-sub-menu
               :key="v.path"
-              v-if="v.children"
+              v-if="v.children && !v.isChildMenu"
               @titleClick="titleClick"
             >
               <span slot="title">{{ v.meta.title }}</span>
@@ -69,8 +69,10 @@ export default {
       mainRoute: (state) => state.user.mainRoute,
       userInfo: (state) => state.user.userInfo,
     }),
+    defaultKey(){
+      return this.$route.path.split('/').slice(0,3).join('/')
+    }
   },
-
   created() {},
   mounted() {
     this.init();
@@ -80,15 +82,22 @@ export default {
     init() {
       this.menu = this.mainRoute;
     },
+
     handleClick(e) {
-      console.log("click", e);
       this.$router.push(e.key);
     },
+
     titleClick(e) {},
     loginOut() {
-      this.LoginOut();
+      let that = this;
 
-      this.$router.push("/login");
+      this.$confirm({
+        title: "您确定要退出吗?",
+        onOk() {
+          return that.LoginOut().then(() => that.$router.push("/login"));
+        },
+        onCancel() {},
+      });
     },
   },
 };

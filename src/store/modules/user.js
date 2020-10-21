@@ -1,5 +1,6 @@
 import {
-  login
+  login,
+  GetUserInfo
 } from "@/api/login";
 import {
   rootRoute,
@@ -9,8 +10,6 @@ import {
 
 const user = {
   state: {
-    token: '',
-    roles: '',
     userInfo: {},
     mainRoute: rootRoute
   },
@@ -32,22 +31,33 @@ const user = {
 
   actions: {
     Login({
-      commit,dispatch
+      commit
     }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(res => {
           const result = res.result
-          
-          window.sessionStorage.TOKEN = result.token
-          window.sessionStorage.UESRINFO = result
-          window.sessionStorage.ROLES = roles
+
+          window.sessionStorage.UESRINFO = JSON.stringify(result)
+
+          resolve(res)
+
+        }).catch(error => reject(error))
+      })
+    },
+
+    GetUserInfo({
+      commit,
+      dispatch
+    }, username) {
+      return new Promise((resolve, reject) => {
+        GetUserInfo(username).then(res => {
+          const result = res.result
 
           commit('SET_UESRINFO', result)
-          commit('SET_TOKEN', result.token)
-          commit('SET_ROLES', result.roles)
 
-          dispatch('AssignRoute',result.roles)
-          resolve(res)
+          dispatch('AssignRoute', result.roles)
+
+          resolve()
 
         }).catch(error => reject(error))
       })
@@ -56,10 +66,14 @@ const user = {
     LoginOut({
       commit
     }) {
-      commit('SET_TOKEN', '')
-      commit('SET_UESRINFO', {})
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          commit('SET_UESRINFO', {})
 
-      delete window.sessionStorage.TOKEN
+          delete window.sessionStorage.UESRINFO
+          resolve()
+        }, 1000)
+      })
     },
 
     AssignRoute({

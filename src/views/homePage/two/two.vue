@@ -17,7 +17,11 @@
           v-if="defaultActiveKey === 1"
         >
           <template #body>
-            <a-button class="add_button" type="primary" @click="showModal"
+            <a-button
+              class="add_button"
+              type="primary"
+              @click="showModal"
+              v-permission:add
               >新建招聘</a-button
             >
             <a-table
@@ -27,7 +31,10 @@
               :pagination="false"
             >
               <template slot="operation" slot-scope="text, record">
-                <a href="javascript:;" @click="() => handleEdit(record)"
+                <a
+                  href="javascript:;"
+                  @click="() => handleEdit(record)"
+                  v-permission:edit
                   >编辑</a
                 >
                 <a-divider type="vertical" />
@@ -35,6 +42,7 @@
                   v-if="dataSource.length"
                   title="确定要删除?"
                   @confirm="() => onDelete(record.id)"
+                  v-permission:delete
                 >
                   <a href="javascript:;">删除</a>
                 </a-popconfirm>
@@ -59,7 +67,10 @@
               :pagination="false"
             >
               <template slot="operation" slot-scope="text, record">
-                <a href="javascript:;" @click="() => handleEdit(record)"
+                <a
+                  href="javascript:;"
+                  @click="() => handleEdit(record)"
+                  v-permission:edit
                   >编辑</a
                 >
                 <a-divider type="vertical" />
@@ -67,6 +78,7 @@
                   v-if="dataSource3.length"
                   title="确定要删除?"
                   @confirm="() => onDelete(record.id)"
+                  v-permission:delete
                 >
                   <a href="javascript:;">删除</a>
                 </a-popconfirm>
@@ -107,6 +119,7 @@ import {
 } from "@/utils/name.js";
 import { recruitTable } from "@/api/one";
 import { rules } from "@/utils/rules.js";
+
 export default {
   name: "two",
   components: {},
@@ -179,6 +192,11 @@ export default {
           trigger: "blur",
         },
       ]);
+
+      let arr = this.$store.state.user.userInfo.permission[1].actions;
+      if (!arr.includes("edit") && !arr.includes("delete")) {
+        this.columns = this.columns.slice(0, -1);
+      }
     },
 
     tabsChange(Key) {
