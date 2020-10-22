@@ -77,7 +77,7 @@ const rootInfo = {
       actions: [],
       children: [{
         page: 'three',
-        actions: []
+        actions: ['add']
       }]
     },
     {

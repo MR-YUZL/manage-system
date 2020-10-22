@@ -1,6 +1,6 @@
 <template>
   <main class="card-container">
-    <a-tabs type="card" :activeKey="defaultActiveKey" @change="tabsChange">
+    <a-tabs type="card" :activeKey="activeName" @change="tabsChange">
       <a-tab-pane :key="1" tab="职位招聘">
         <section class="card_top">
           <a-page-header

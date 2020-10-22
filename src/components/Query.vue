@@ -61,7 +61,6 @@
           <InputNum
             v-if="v.component === 'InputNum'"
             v-bind="v.props"
-            ref="InputNum"
             v-decorator="[
               v.field,
               { initialValue: v.initialValue, rules: v.rules },
@@ -106,7 +105,6 @@ export default {
   },
   created() {},
   mounted() {
-    console.log("InputNum", this.$ref['InputNum']);
   },
   methods: {
     handleSubmit() {

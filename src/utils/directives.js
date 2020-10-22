@@ -8,12 +8,23 @@ Vue.directive('permission', {
     const pagePermission = vnode.context.$route.meta.permission //当前页权限id
 
     permissions.forEach(v => {
-      if (!(v.page === pagePermission)) return
+      if (v.children) {
+        let arr = v.children
+        let index = arr.findIndex(value => value.page === pagePermission)
+        if (index === -1) return
 
-      if (!v.actions.includes(actionName)) {
+        if (!v.children[index].actions.includes(actionName)) {   //查看当前页有无权限
+          el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
+        }
+      } else {
+        if (!(v.page === pagePermission)) return   //找寻当前页
 
-        el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
+        if (!v.actions.includes(actionName)) {   //查看当前页有无权限
+          el.parentNode && el.parentNode.removeChild(el) || (el.style.display = 'none')
+        }
       }
+
+
     });
   }
 })

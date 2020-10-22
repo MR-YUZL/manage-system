@@ -83,21 +83,21 @@ const user = {
 
         let routeFilter = (route, permission = []) => {
           return route.reduce((per, cur) => {
-            console.log('per',per)
-            console.log('cur',cur)
             if (permission.some(value => value.page === cur.name)) {
               if (!cur.children || cur.isChildMenu) {
                 return [...per, cur]
               } else {
-                console.log('',routeFilter(cur.children, permission.find(value => value.page === cur.name).children))
-                return [...per]
+                cur.children = routeFilter(cur.children, permission.find(value => value.page === cur.name).children)
+                return [...per, cur]
               }
+            } else {
+              return [...per]
             }
           }, [])
         }
 
         let routeArr = routeFilter(rootRoute, permission)
-        console.log('routeArr', routeArr)
+
         commit('SET_ROUTERS', routeArr)
         // if (roles === 'root') {
         //   commit('SET_ROUTERS', rootRoute)
