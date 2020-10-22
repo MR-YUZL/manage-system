@@ -138,7 +138,6 @@ export default {
       }
     };
     let validatorRecruit = (rule, value, callback) => {
-      console.log("value", value);
 
       if (value) {
         callback();
@@ -166,7 +165,6 @@ export default {
     onSubmit() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-          console.log("form", this.form);
 
           if (this.title === "新建招聘") {
             this.form.id = parseInt(Math.random() * 100);

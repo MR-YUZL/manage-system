@@ -1,4 +1,4 @@
-export const menu = [{
+export const rootMenu = [{
     key: '/homePage/one',
     title: '主页',
     path: ""
@@ -55,6 +55,31 @@ export const menu = [{
       title: '订单管理',
     }]
   }
+]
+
+export const userMenu = [{
+  key: '/homePage/one',
+  title: '主页',
+  path: ""
+}, {
+  key: '/homePage/two',
+  title: '基础应用管理',
+  path: ""
+}, {
+  key: '/market',
+  title: '应用市场',
+  path: "",
+  children: [{
+    key: '/market/purchase',
+    title: '应用购买',
+  }, {
+    key: '/home/manage',
+    title: '应用管理',
+  }, {
+    key: '/home/DDManage',
+    title: '订单管理',
+  }]
+},
 ]
 
 export const columns = [{
@@ -122,6 +147,72 @@ export const columns = [{
   },
 ]
 
+export const data = [
+  {
+    title: 'Ant Design Title 1',
+  },
+  {
+    title: 'Ant Design Title 2',
+  },
+  {
+    title: 'Ant Design Title 3',
+  },
+  {
+    title: 'Ant Design Title 4',
+  },
+];
+
+export const treeData = [{
+  title: '第一张',
+  key: 'one',
+  children: [{
+      title: '添加',
+      key: 'one--add',
+    },
+    {
+      title: '删除',
+      key: 'one--delete',
+    },
+    {
+      title: '修改',
+      key: 'one--edit',
+    },
+    {
+      title: '查询',
+      key: 'one--query',
+    },
+  ],
+},
+{
+  title: '第二张',
+  key: 'two',
+  children: [{
+      title: '添加',
+      key: 'two--add',
+    },
+    {
+      title: '删除',
+      key: 'two--delete',
+    },
+    {
+      title: '修改',
+      key: 'two--edit',
+    },
+    {
+      title: '查询',
+      key: 'two--query',
+    },
+  ],
+}, {
+  title: '第三张',
+  key: 'three',
+},
+{
+  title: '第四张',
+  key: 'four',
+},
+];
+
 export const condition = {
   name: "",
   post: "",
@@ -158,6 +249,7 @@ export const postOptions = [{
 export const levelOptions = [{
     value: '高级',
     label: '高级',
+    title: '高级',
     children: [{
         value: '中高',
         label: '中高',
@@ -175,11 +267,13 @@ export const levelOptions = [{
   {
     value: '中级',
     label: '中级',
+    title: '中级',
     isLeaf: false,
   },
   {
     value: '低级',
     label: '低级',
+    title: '低级',
     isLeaf: false,
   },
 ]
@@ -350,6 +444,67 @@ export const formList = [{
     name: "num",
     component: "InputNum",
     initialValue: [0, 50],
+    props: {}
+  }
+]
+
+export const formModal = [{
+
+    label: "职位名称",
+    ref: "name",
+    component: "Input",
+    props: {
+      placeholder: "请输入职位名称"
+    }
+  },
+  {
+
+    label: "对应岗位",
+    ref: "post",
+    component: "Select",
+    props: {
+      placeholder: "请选择岗位"
+    }
+  },
+  {
+
+    label: "职位级别",
+    ref: "level",
+    component: "Select",
+    props: {
+      placeholder:"请选择级别"
+    }
+  },
+  {
+
+    label: "最低学历要求",
+    ref: "education",
+    component: "Select",
+    props: {
+      placeholder: "请选择学历"
+    }
+  },
+  {
+
+    label: "招聘部门",
+    ref: "recruit",
+    component: "TreeSelect",
+    props: {
+      placeholder: "请输入职位名称",
+      allowClear: true,
+      showSearch: true,
+      replaceFields: {
+        children: "test",
+        value: "title"
+      },
+      treeNodeFilterProp: "title",
+      treeDefaultExpandAll: true
+    }
+  },
+  {
+    label: "报名数区间",
+    ref: "num",
+    component: "Input",
     props: {}
   }
 ]
