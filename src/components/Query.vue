@@ -2,7 +2,7 @@
   <a-form
     layout="inline"
     :form="form"
-    :selfUpdate="true"
+    :key="id"
     style="width: 100%; height: 100%"
     @submit.prevent="() => handleSubmit()"
   >
@@ -27,6 +27,7 @@
           <Input
             v-if="v.component === 'Input'"
             v-bind="v.props"
+            :key="v.field"
             v-decorator="[
               v.field,
               { initialValue: v.initialValue, rules: v.rules },
@@ -60,6 +61,9 @@
           <InputNum
             v-if="v.component === 'InputNum'"
             v-bind="v.props"
+            ref="InputNum"
+            :key="`${v.field}_${id}`"
+            :id="`${v.field}_${id}`"
             v-decorator="[
               v.field,
               { initialValue: v.initialValue, rules: v.rules },
@@ -71,7 +75,8 @@
         <span class="table-page-search-submitButtons" style="float: right">
           <a-button type="primary" html-type="submit">查询</a-button>
           <a-button style="margin-left: 8px" @click="() => handleReset()"
-            >重置</a-button>
+            >重置</a-button
+          >
         </span>
       </a-col>
     </a-row>
@@ -86,6 +91,10 @@ export default {
     formList: {
       type: Array,
     },
+    id: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -93,7 +102,9 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    console.log("InputNum", this.$ref['InputNum']);
+  },
   methods: {
     handleSubmit() {
       let condition;

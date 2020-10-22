@@ -1,7 +1,7 @@
 <template>
   <main class="card-container">
-    <a-tabs type="card" :activeKey="defaultActiveKey" @change="tabsChange">
-      <a-tab-pane :key="1" tab="职位招聘" :tabBarGutter="0">
+    <a-tabs type="card" :activeKey="defaultActiveKey" @change="tabsChange" :tabBarGutter="0">
+      <a-tab-pane :key="1" tab="职位招聘" >
         <a-page-header
           style="padding: 10px 20px"
           title="返回"
@@ -14,7 +14,7 @@
           @submit="formSubmit"
           @change="formChange"
           :total="dataSource2Length"
-          :key="defaultActiveKey"
+          :id="1"
         >
           <template #body>
             <a-button class="add_button" type="primary" @click="showModal"
@@ -49,7 +49,7 @@
           @submit="formSubmit2"
           @change="formChange2"
           :total="dataSource3Length"
-          :key="defaultActiveKey"
+          :id="2"
         >
           <template #body>
             <a-table

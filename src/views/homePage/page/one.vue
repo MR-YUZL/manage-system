@@ -1,8 +1,8 @@
 <template>
   <main class="card-container">
-    <a-tabs type="card" :activeKey="defaultActiveKey" @change="tabsChange">
-      <a-tab-pane :key="1" tab="职位招聘" :tabBarGutter="0">
-        <section class="card_top">
+    <a-tabs type="card" :activeKey="activeName" @change="tabsChange">
+      <a-tab-pane key="ZW" tab="职位招聘">
+        <section class="card_top" :key="activeName">
           <a-page-header
             style="padding: 0px"
             title="返回"
@@ -14,7 +14,6 @@
               layout="inline"
               :form="form"
               @submit="handleSubmit"
-              :key="defaultActiveKey - 1"
             >
               <a-row :gutter="[20, 20]">
                 <a-col :md="6" :sm="24">
@@ -131,12 +130,12 @@
           </a-table>
         </section>
       </a-tab-pane>
-      <a-tab-pane :key="2" tab="宣讲会">
+      <a-tab-pane key="XJ" tab="宣讲会">
         <FormLayout
           :formList="formList"
           @submit="formSubmit"
           :total="dataSource3Length"
-          :key="defaultActiveKey"
+          :key="activeName"
         >
           <template #body>
             <a-table
@@ -205,7 +204,7 @@ export default {
       replaceFields: {
         children: "test",
       },
-      defaultActiveKey: 1,
+      activeName: 1,
       levelOptions,
       educationOptions,
       postOptions,
@@ -251,7 +250,7 @@ export default {
     },
     tabsChange(Key) {
       this.form.resetFields();
-      this.defaultActiveKey = Key;
+      this.activeName = Key;
     },
     requestTable() {
       recruitTable({

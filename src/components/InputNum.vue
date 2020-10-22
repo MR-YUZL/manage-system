@@ -10,6 +10,7 @@
     <a-input-number
       v-model="value[1]"
       :min="Number(value[0])"
+      :max="50"
       @change="onChangeMax"
     />
   </div>

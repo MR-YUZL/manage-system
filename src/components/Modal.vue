@@ -157,7 +157,7 @@ export default {
       {
         required: true,
         validator: validatorRecruit,
-        trigger: "blur",
+        trigger: "change",
       },
     ];
   },
