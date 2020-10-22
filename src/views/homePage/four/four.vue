@@ -23,6 +23,7 @@
 </template>
 
 <script>
+
 export default {
   name: "four",
   components: {},
@@ -35,6 +36,7 @@ export default {
   created() {},
   mounted() {},
   methods: {
+
     onClick(e){
        this.selectedKeys = [e.key]
     }
@@ -53,6 +55,7 @@ export default {
     width: 15%;
   }
   .container__main {
+    padding: 12px 16px;
     height: 100%;
     width: 85%;
   }

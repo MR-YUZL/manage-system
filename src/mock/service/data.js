@@ -1,4 +1,8 @@
 import Mock from 'mockjs'
+
+const username = ['admin', 'root']
+const password = ['admin', 'root']
+
 const name_mock = [
   '视觉设计师',
   '前端工程师',
@@ -40,6 +44,100 @@ const responseBody = {
   code: 0,
 }
 
+
+const adminInfo = {
+  'username': 'admin',
+  'password': '',
+  'name': '用户',
+  'token': '123456asdzxc',
+  'roles': 'user',
+  'permission': [{
+    page: 'one',
+    actions: ['add', 'delete', 'edit']
+  }, {
+    page: 'two',
+    actions: ['query']
+  }, ]
+}
+
+const rootInfo = {
+  'username': 'root',
+  'password': '',
+  'name': '超级管理员',
+  'token': '123456asdzxc',
+  'roles': 'root',
+  'permission': [{
+      page: 'one',
+      actions: ['query', 'add', 'delete', 'edit']
+    }, {
+      page: 'two',
+      actions: ['query', 'add', 'delete', 'edit']
+    }, {
+      page: 'marget',
+      actions: [],
+      children: [{
+        page: 'three',
+        actions: []
+      }]
+    },
+    {
+      page: 'four',
+      actions: []
+    },
+  ]
+}
+
+const treeData = [{
+    title: '第一张',
+    key: 'one',
+    children: [{
+        title: '添加',
+        key: 'add',
+      },
+      {
+        title: '删除',
+        key: 'delete',
+      },
+      {
+        title: '修改',
+        key: 'edit',
+      },
+      {
+        title: '查询',
+        key: 'query',
+      },
+    ],
+  },
+  {
+    title: '第二张',
+    key: 'two',
+    children: [{
+        title: '添加',
+        key: 'add',
+      },
+      {
+        title: '删除',
+        key: 'delete',
+      },
+      {
+        title: '修改',
+        key: 'edit',
+      },
+      {
+        title: '查询',
+        key: 'query',
+      },
+    ],
+  }, {
+    title: '第三张',
+    key: '0-2',
+  },
+  {
+    title: '第四张',
+    key: '0-3',
+  },
+];
+
 const builder = (data, total = 0, message, code = 0, headers = {}) => {
   responseBody.total = total
   responseBody.result = data
@@ -67,12 +165,12 @@ const list = (params) => {
   } = JSON.parse(params.body)
   let data = []
   const {
-    name,  //职位名称
-    post,  //对应岗位
+    name, //职位名称
+    post, //对应岗位
     level, //职位级别
-    education,  //最低学历
-    recruit,  //招聘部门
-    num       //报名数
+    education, //最低学历
+    recruit, //招聘部门
+    num //报名数
   } = condition;
 
   for (let i = 0; i < 15; i++) {
@@ -123,36 +221,6 @@ const list = (params) => {
 }
 
 const info = (options) => {
-  const adminInfo = {
-    'username': 'admin',
-    'password': '',
-    'name': Mock.mock('@cname'),
-    'token': '123456asdzxc',
-    'roles': 'user',
-    'permission': [{
-      page: 'one',
-      actions: ['add', 'delete', 'edit']
-    }, {
-      page: 'two',
-      actions: ['query']
-    }, ]
-  }
-
-  const rootInfo = {
-    'username': 'root',
-    'password': '',
-    'name': '超级管理员',
-    'token': '123456asdzxc',
-    'roles': 'root',
-    'permission': [{
-      page: 'one',
-      actions: ['query', 'add', 'delete', 'edit']
-    }, {
-      page: 'two',
-      actions: ['query', 'add', 'delete', 'edit']
-    }, ]
-  }
-
   const body = JSON.parse(options.body)
 
   if (body.username === 'root') {
@@ -162,8 +230,29 @@ const info = (options) => {
   }
 }
 
-const username = ['admin', 'root']
-const password = ['admin', 'root']
+
+const powerList = (options) => {
+  const body = JSON.parse(options.body)
+
+  return builder(treeData, 0, '', 200)
+}
+
+const userList = (options) => {
+  const body = JSON.parse(options.body)
+  const {
+    name
+  } = body
+
+  let userArr = [rootInfo, adminInfo]
+  let arr = []
+  if (name) {
+    arr = userArr.filter(v => v.name.indexOf(name) !== -1)
+  } else {
+    arr = userArr
+  }
+
+  return builder(arr, 0, '', 200)
+}
 
 const login = (options) => {
   let roles = '';
@@ -181,7 +270,7 @@ const login = (options) => {
   return builder({
     'username': body.username,
     'password': '',
-    'name': body.username === 'root' ? '超级管理员' : Mock.mock('@cname'),
+    'name': body.username === 'root' ? '超级管理员' : '小呆',
     'token': '123456asdzxc',
     'roles': roles
   }, 0, '', 200)
@@ -194,6 +283,10 @@ Mock.mock('/meun', 'post', list)
 Mock.mock('/info', 'post', info)
 
 Mock.mock('/login', 'post', login)
+
+Mock.mock('/userList', 'post', userList)
+
+Mock.mock('/powerList', 'post', powerList)
 // Mock.mock('/meun', /post|get/i, {
 //   // /post|get/i 匹配post和get模式 也可以用'post'或'get'
 //   // 属性 list 的值是一个数组，其中含有 1 到 10 个元素

@@ -147,6 +147,72 @@ export const columns = [{
   },
 ]
 
+export const data = [
+  {
+    title: 'Ant Design Title 1',
+  },
+  {
+    title: 'Ant Design Title 2',
+  },
+  {
+    title: 'Ant Design Title 3',
+  },
+  {
+    title: 'Ant Design Title 4',
+  },
+];
+
+export const treeData = [{
+  title: '第一张',
+  key: 'one',
+  children: [{
+      title: '添加',
+      key: 'one--add',
+    },
+    {
+      title: '删除',
+      key: 'one--delete',
+    },
+    {
+      title: '修改',
+      key: 'one--edit',
+    },
+    {
+      title: '查询',
+      key: 'one--query',
+    },
+  ],
+},
+{
+  title: '第二张',
+  key: 'two',
+  children: [{
+      title: '添加',
+      key: 'two--add',
+    },
+    {
+      title: '删除',
+      key: 'two--delete',
+    },
+    {
+      title: '修改',
+      key: 'two--edit',
+    },
+    {
+      title: '查询',
+      key: 'two--query',
+    },
+  ],
+}, {
+  title: '第三张',
+  key: 'three',
+},
+{
+  title: '第四张',
+  key: 'four',
+},
+];
+
 export const condition = {
   name: "",
   post: "",

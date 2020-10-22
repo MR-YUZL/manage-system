@@ -55,7 +55,7 @@ const user = {
 
           commit('SET_UESRINFO', result)
 
-          dispatch('AssignRoute', result.roles)
+          dispatch('AssignRoute', result.permission)
 
           resolve()
 
@@ -78,13 +78,32 @@ const user = {
 
     AssignRoute({
       commit
-    }, roles) {
+    }, permission) {
       return new Promise((resolve, reject) => {
-        if (roles === 'root') {
-          commit('SET_ROUTERS', rootRoute)
-        } else if (roles === 'user') {
-          commit('SET_ROUTERS', userRoute)
+
+        let routeFilter = (route, permission = []) => {
+          return route.reduce((per, cur) => {
+            console.log('per',per)
+            console.log('cur',cur)
+            if (permission.some(value => value.page === cur.name)) {
+              if (!cur.children || cur.isChildMenu) {
+                return [...per, cur]
+              } else {
+                console.log('',routeFilter(cur.children, permission.find(value => value.page === cur.name).children))
+                return [...per]
+              }
+            }
+          }, [])
         }
+
+        let routeArr = routeFilter(rootRoute, permission)
+        console.log('routeArr', routeArr)
+        commit('SET_ROUTERS', routeArr)
+        // if (roles === 'root') {
+        //   commit('SET_ROUTERS', rootRoute)
+        // } else if (roles === 'user') {
+        //   commit('SET_ROUTERS', userRoute)
+        // }
       })
     }
 

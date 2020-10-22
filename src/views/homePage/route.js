@@ -30,13 +30,24 @@ export const rootRoute = [{
     },
     component: RouteView,
     children: [{
-      path: '/homePage/three',
-      name: 'three',
-      meta: {
-        title: '第三张'
+        path: '/homePage/three',
+        name: 'three',
+        meta: {
+          title: '第三张',
+          permission: 'three'
+        },
+        component: () => import('./three/three.vue')
       },
-      component: () => import('./three/three.vue')
-    }]
+      {
+        path: '/homePage/test',
+        name: 'test',
+        meta: {
+          title: '测试',
+          permission: 'test'
+        },
+        component: () => import('./three/three.vue')
+      }
+    ]
   },
   {
     path: '/homePage/four',
