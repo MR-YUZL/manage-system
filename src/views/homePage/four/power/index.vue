@@ -45,6 +45,7 @@
             checkable
             :tree-data="treeData"
             defaultExpandAll
+            checkStrictly
             :selectable="false"
             :checkedKeys="checkedKeys"
             @check="onCheck"
@@ -72,7 +73,6 @@ export default {
       checkedKeys: [],
       userList: [],
       powerList: [],
-      userParentPower: [],
     };
   },
   created() {},
@@ -81,7 +81,14 @@ export default {
   },
   methods: {
     onSubmit() {
-      let permissions = this.checkedKeys.concat(this.userParentPower);
+      let permissions = this.checkedKeys;
+      let arr = [];
+      permissions.forEach((ele) => {
+        let item = ele.split("--");
+        if (item.length === 1) {
+            
+        }
+      });
       console.log("permissions", permissions);
     },
 
@@ -139,26 +146,38 @@ export default {
       GetUserInfo({ username: id }).then((res) => {
         if (res.code === 200) {
           let arr = res.result.permission;
-          let array = [];
 
-          for (let value of arr) {
-            array.push(
-              value.actions.length !== 0
-                ? value.actions.map((v) => `${value.page}--${v}`)
-                : value.page
-            );
-          }
+          let func = (arr) => {
+            let array = [];
+            for (let value of arr) {
+              if (value.children) {
+                let child = value.children.map((v) => {
+                  return {
+                    page: `${value.page}--${v.page}`,
+                    actions: v.actions,
+                  };
+                });
+                array.push(func(child), value.page);
+              } else {
+                value.actions.length !== 0
+                  ? array.push(
+                      value.actions.map((v) => `${value.page}--${v}`),
+                      value.page
+                    )
+                  : array.push(value.page);
+              }
+            }
+            return array;
+          };
 
-          this.checkedKeys = array.flat();
+          this.checkedKeys = this.$utils.flatten(func(arr));
           this.powerLoading = false;
         }
       });
     },
     onCheck(checkedKeys, info) {
-      this.checkedKeys = checkedKeys;
-      this.userParentPower = info.halfCheckedKeys;
-
-      console.log("onCheck", checkedKeys, info);
+      this.checkedKeys = checkedKeys.checked;
+      console.log('checkedKeys, info',checkedKeys, info)
     },
   },
 };

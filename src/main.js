@@ -5,6 +5,7 @@ import {
 } from "./routes/routes";
 import "./assets/css/common.less";
 import store from './store/'
+import utils from "@/utils/index";
 import "./utils/directives"
 // 有关antdUi组件
 import "ant-design-vue/dist/antd.css";
@@ -16,6 +17,7 @@ import './mock'
 Vue.config.devtools = true
 import axios from 'axios'
 Vue.prototype.$axios = axios
+Vue.prototype.$utils = utils;
 
 Vue.use(Antd);
 new Vue({
