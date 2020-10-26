@@ -1,18 +1,18 @@
 import Vue from "vue";
 import App from "./App.vue";
-import {
-  router
-} from "./routes/routes";
-import "./assets/css/common.less";
+import router from "./routes/routes";
 import store from './store/'
 import utils from "@/utils/index";
+import Antd from "ant-design-vue";
+
 import "./utils/directives"
-// 有关antdUi组件
 import "ant-design-vue/dist/antd.css";
 import "./components";
 import "./layouts";
-import Antd from "ant-design-vue";
+import "./assets/css/common.less";
 import './mock'
+import './asyncRoute'
+import '@/style/transition.less' 
 
 Vue.config.devtools = true
 import axios from 'axios'

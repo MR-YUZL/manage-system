@@ -97,14 +97,9 @@ const user = {
         }
 
         let routeArr = routeFilter(rootRoute, permission)
-
+        
         commit('SET_ROUTERS', routeArr)
         resolve()
-        // if (roles === 'root') {
-        //   commit('SET_ROUTERS', rootRoute)
-        // } else if (roles === 'user') {
-        //   commit('SET_ROUTERS', userRoute)
-        // }
       })
     }
 

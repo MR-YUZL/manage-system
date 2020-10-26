@@ -1,10 +1,10 @@
 export default [{
-    path: '/homePage/four/power',
+    path: '/four/power',
     name: 'power',
     component: () => import('./power')
   },
   {
-    path: '/homePage/four/account',
+    path: '/four/account',
     name: 'account',
     component: () => import('./account')
   },

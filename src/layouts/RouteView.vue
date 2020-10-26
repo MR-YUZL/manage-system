@@ -1,18 +1,21 @@
+<template>
+  <router-view :key="key"></router-view>
+</template>
+
 <script>
 export default {
   name: "RouteView",
-  props: {},
   data() {
-    return {};
+    return {
+      key: this.$route.name,
+    };
   },
-  render() {
-    const notKeep = <router-view />;
-    const inKeep = (
-      <keep-alive>
-        <router-view />
-      </keep-alive>
-    );
-    return notKeep;
+  beforeRouteUpdate(to, from, next) {
+    this.key = to.name;
+    next();
   },
 };
 </script>
+
+<style>
+</style>

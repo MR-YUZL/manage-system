@@ -121,6 +121,7 @@
             :columns="columns"
             :rowKey="(row) => row.id"
             :pagination="pagination"
+            :loading="tableLoading"
           >
             <template slot="operation" slot-scope="text, record">
               <a
@@ -202,6 +203,7 @@ export default {
   data() {
     return {
       visible: false,
+      tableLoading: false,
       title: "新建招聘",
       dataSource: [],
       dataSource2: [],
@@ -265,6 +267,8 @@ export default {
       this.activeName = Key;
     },
     requestTable() {
+      this.tableLoading = true;
+
       recruitTable({
         current: this.current,
         pageSize: this.pageSize,
@@ -275,6 +279,8 @@ export default {
           this.pagination.total = res.total;
           this.dataSource = arr;
           this.dataSource2 = arr;
+
+          this.tableLoading = false;
         }
       });
     },

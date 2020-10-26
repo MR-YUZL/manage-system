@@ -8,10 +8,10 @@
         type="inner"
         @click="onClick"
       >
-        <a-menu-item key="/homePage/four/power">
+        <a-menu-item key="/four/power">
           <router-link :to="{ name: 'power' }"> 权限分配 </router-link>
         </a-menu-item>
-        <a-menu-item key="/homePage/four/account">
+        <a-menu-item key="/four/account">
           <router-link :to="{ name: 'account' }"> 账号管理 </router-link>
         </a-menu-item>
       </a-menu>
@@ -23,23 +23,32 @@
 </template>
 
 <script>
-
 export default {
   name: "four",
   components: {},
   props: {},
   data() {
     return {
-      selectedKeys:['/homePage/four/power']
+      selectedKeys: [],
     };
   },
+  watch: {
+    $route() {
+      this.updateMenu();
+    },
+  },
   created() {},
-  mounted() {},
+  mounted() {
+    this.updateMenu();
+  },
   methods: {
-
-    onClick(e){
-       this.selectedKeys = [e.key]
-    }
+    updateMenu() {
+      const routes = this.$route.matched.concat();
+      this.selectedKeys = [routes.pop().path];
+    },
+    onClick(e) {
+      this.selectedKeys = [e.key];
+    },
   },
 };
 </script>

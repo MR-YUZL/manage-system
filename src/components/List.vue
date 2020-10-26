@@ -1,35 +1,38 @@
 <template>
   <div class="list">
-    <div
-      :class="[
-        'list--item',
-        isClick === v.username && !isEdit ? 'list--click' : 'list--unClick',
-        isHover === v.username && !isEdit ? 'list--hover' : 'list--unHover',
-      ]"
-      v-for="v in list"
-      :key="v.username"
-      @mouseenter="isHover = v.username"
-      @mouseout="isHover = ''"
-      @click="() => handleClick(v.username)"
-    >
-      <template v-if="isEdit !== v.username">
-        {{ v.name }}
-      </template>
+    <a-spin :spinning="spinning" class="dataLoading"  tip="加载中..." />
+    <template v-if="list.length > 0">
+      <div
+        :class="[
+          'list--item',
+          isClick === v.username && !isEdit ? 'list--click' : 'list--unClick',
+          isHover === v.username && !isEdit ? 'list--hover' : 'list--unHover',
+        ]"
+        v-for="v in list"
+        :key="v.username"
+        @mouseenter="isHover = v.username"
+        @mouseout="isHover = ''"
+        @click="() => handleClick(v.username)"
+      >
+        <template v-if="isEdit !== v.username">
+          {{ v.name }}
+        </template>
 
-      <a-input v-model="newUser" v-else style="width: 100px" />
+        <a-input v-model="newUser" v-else style="width: 100px" />
 
-      <span class="action"
-        ><a-icon
-          :type="isEdit === v.username ? 'check' : 'edit'"
-          v-show="v.name !== '超级管理员'"
-          style="margin-right: 10px"
-          @click.stop="() => edit(v.name, v.username)" />
-        <a-icon
-          type="delete"
-          v-show="v.name !== '超级管理员'"
-          @click.stop="() => handleDelete(v.username)"
-      /></span>
-    </div>
+        <span class="action"
+          ><a-icon
+            :type="isEdit === v.username ? 'check' : 'edit'"
+            v-show="v.name !== '超级管理员'"
+            style="margin-right: 10px"
+            @click.stop="() => edit(v.name, v.username)" />
+          <a-icon
+            type="delete"
+            v-show="v.name !== '超级管理员'"
+            @click.stop="() => handleDelete(v.username)"
+        /></span>
+      </div>
+    </template>
   </div>
 </template>
 
@@ -41,6 +44,10 @@ export default {
     list: {
       type: Array,
       default: () => [],
+    },
+    spinning: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -81,7 +88,15 @@ export default {
 .list {
   width: 100%;
   height: 100%;
-
+  min-height: 120px;
+  position: relative;
+  .dataNull,
+  .dataLoading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
   .list--item {
     height: 40px;
     line-height: 40px;

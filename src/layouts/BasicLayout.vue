@@ -30,11 +30,13 @@
       <nav class="nav" :style="[{ width: collapsed ? '6%' : '15%' }]">
         <a-menu
           mode="inline"
-          :defaultSelectedKeys="[defaultKey]"
+          :openKeys="openKeys"
+          :selectedKeys="selectedKeys"
           :inline-collapsed="collapsed"
           style="width: 100%"
           theme="dark"
           @click="handleClick"
+          @openChange="handleOpen"
         >
           <template v-for="v in menu">
             <a-sub-menu :key="v.path" v-if="v.children && !v.isChildMenu">
@@ -54,7 +56,9 @@
         </a-menu>
       </nav>
       <main class="body_right">
-        <router-view></router-view>
+        <transition name="fade-page" mode="out-in">
+          <router-view></router-view>
+        </transition>
       </main>
     </main>
   </main>
@@ -70,6 +74,8 @@ export default {
       roles: "",
       menu: [],
       collapsed: false,
+      selectedKeys: [],
+      openKeys: [],
     };
   },
   computed: {
@@ -77,13 +83,11 @@ export default {
       mainRoute: (state) => state.user.mainRoute,
       userInfo: (state) => state.user.userInfo,
     }),
-    defaultKey() {
-      return this.$route.path.split("/").slice(0, 3).join("/");
-    },
   },
   created() {},
   mounted() {
     this.init();
+    this.updatedMenu();
   },
   methods: {
     ...mapActions(["LoginOut"]),
@@ -91,8 +95,24 @@ export default {
       this.menu = this.mainRoute;
     },
 
+    updatedMenu() {
+      const routes = this.$route.matched.concat();
+      const lg = routes.length;
+      if (routes[lg - 2].path === "/four") {
+        this.selectedKeys = ["/four"];
+      } else {
+        this.openKeys = [routes[lg - 2].path];
+        this.selectedKeys = [routes[lg - 1].path];
+      }
+    },
+
+    handleOpen(e) {
+      this.openKeys = e;
+    },
+
     handleClick(e) {
       this.$router.push(e.key);
+      this.selectedKeys = [e.key];
     },
 
     toggleCollapsed() {
@@ -168,4 +188,6 @@ export default {
     }
   }
 }
+
+
 </style>

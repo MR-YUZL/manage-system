@@ -3,7 +3,7 @@
     <h1 class="">
       {{ msg }}
     </h1>
-    <a-button type="primary" v-permission:add="componentName"> 提交 </a-button>
+    <a-button type="primary" v-permission:add> 提交 </a-button>
   </div>
 </template>
 
@@ -16,19 +16,13 @@ export default {
   data() {
     return {
       msg: "Hello World!",
-      componentName: "three",
     };
   },
-  watch: {
-    $route(to, from) {
-      this.componentName = to.name;
-    },
+  created() {
+    console.log(this.$route,this.$router)
   },
-  created() {},
-  mounted() {
-  },
-  methods: {
-  },
+  mounted() {},
+  methods: {},
 };
 </script>
 

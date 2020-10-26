@@ -22,6 +22,7 @@
         <h1 class="userList">角色列表</h1>
         <List
           :list="userList"
+          :spinning="listLoading"
           @getUserId="getUserId"
           @editUser="editUser"
           @deleteUser="deleteUser"
@@ -69,6 +70,7 @@ export default {
     return {
       treeData,
       data,
+      listLoading: false,
       powerLoading: false,
       checkedKeys: [],
       userList: [],
@@ -82,14 +84,17 @@ export default {
   methods: {
     onSubmit() {
       let permissions = this.checkedKeys;
-      let arr = [];
-      permissions.forEach((ele) => {
-        let item = ele.split("--");
-        if (item.length === 1) {
-            
-        }
+      let page = [];
+      let actions = [];
+
+      permissions.forEach((e) => {
+        let item = e.split("--");
+
+        item.length > 1 ? actions.push(e) : page.push(e);
       });
-      console.log("permissions", permissions);
+
+      console.log("page", page);
+      console.log("actions", actions);
     },
 
     onSearch(value) {
@@ -102,10 +107,12 @@ export default {
     },
 
     requestUserList() {
+      this.listLoading = true;
       GetUserList().then((res) => {
         if (res.code === 200) {
           let arr = res.result;
           this.userList = arr;
+          this.listLoading = false;
         }
       });
     },
@@ -151,19 +158,10 @@ export default {
             let array = [];
             for (let value of arr) {
               if (value.children) {
-                let child = value.children.map((v) => {
-                  return {
-                    page: `${value.page}--${v.page}`,
-                    actions: v.actions,
-                  };
-                });
-                array.push(func(child), value.page);
+                array.push(func(value.children), value.page);
               } else {
                 value.actions.length !== 0
-                  ? array.push(
-                      value.actions.map((v) => `${value.page}--${v}`),
-                      value.page
-                    )
+                  ? array.push(value.actions, value.page)
                   : array.push(value.page);
               }
             }
@@ -177,7 +175,7 @@ export default {
     },
     onCheck(checkedKeys, info) {
       this.checkedKeys = checkedKeys.checked;
-      console.log('checkedKeys, info',checkedKeys, info)
+      console.log("checkedKeys, info", checkedKeys, info);
     },
   },
 };

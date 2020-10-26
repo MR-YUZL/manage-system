@@ -206,7 +206,7 @@ export const treeData = [{
     key: 'marget',
     children: [{
         title: '第三张',
-        key: 'marget--three',
+        key: 'three',
         children: [{
           title: '添加',
           key: 'marget--three--add',
@@ -214,7 +214,7 @@ export const treeData = [{
       },
       {
         title: '测试',
-        key: 'marget--test',
+        key: 'test',
         children: [{
           title: '添加',
           key: 'marget--test--add',

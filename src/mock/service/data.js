@@ -53,10 +53,10 @@ const adminInfo = {
   'roles': 'user',
   'permission': [{
     page: 'one',
-    actions: ['add', 'delete', 'edit']
+    actions: ['one--add', 'one--delete', 'one--edit']
   }, {
     page: 'two',
-    actions: ['query']
+    actions: ['two--query']
   }, ]
 }
 
@@ -68,16 +68,16 @@ const rootInfo = {
   'roles': 'root',
   'permission': [{
       page: 'one',
-      actions: ['query', 'add', 'delete', 'edit']
+      actions: ['one--query', 'one--add', 'one--delete', 'one--edit']
     }, {
       page: 'two',
-      actions: ['query', 'add', 'delete', 'edit']
+      actions: ['two--query', 'two--add', 'two--delete', 'two--edit']
     }, {
       page: 'marget',
       actions: [],
       children: [{
         page: 'three',
-        actions: ['add']
+        actions: ['marget--three--add']
       }, {
         page: 'test',
         actions: []

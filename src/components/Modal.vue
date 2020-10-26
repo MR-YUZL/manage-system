@@ -118,7 +118,6 @@ export default {
     },
     form: {
       handler: function (val) {
-        console.log("val", val);
       },
       deep: true,
     },

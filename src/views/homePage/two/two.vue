@@ -1,7 +1,12 @@
 <template>
   <main class="card-container">
-    <a-tabs type="card" :activeKey="defaultActiveKey" @change="tabsChange" :tabBarGutter="0">
-      <a-tab-pane :key="1" tab="职位招聘" >
+    <a-tabs
+      type="card"
+      :activeKey="defaultActiveKey"
+      @change="tabsChange"
+      :tabBarGutter="0"
+    >
+      <a-tab-pane :key="1" tab="职位招聘">
         <a-page-header
           style="padding: 10px 20px"
           title="返回"
@@ -29,6 +34,7 @@
               :columns="columns"
               :rowKey="(row) => row.id"
               :pagination="false"
+              :loading="tableLoading"
             >
               <template slot="operation" slot-scope="text, record">
                 <a
@@ -127,6 +133,7 @@ export default {
   data() {
     return {
       visible: false,
+      tableLoading: false,
       title: "新建招聘",
       dataSource: [],
       dataSource2: [],
@@ -157,11 +164,7 @@ export default {
   },
   created() {},
   mounted() {
-    this.requestTable({
-      condition: this.condition,
-      current: this.current,
-      pageSize: this.pageSize,
-    });
+    this.requestTable();
     this.init();
   },
   watch: {
@@ -194,7 +197,7 @@ export default {
       ]);
 
       let arr = this.$store.state.user.userInfo.permission[1].actions;
-      if (!arr.includes("edit") && !arr.includes("delete")) {
+      if (!arr.includes("two--edit") && !arr.includes("two--delete")) {
         this.columns = this.columns.slice(0, -1);
       }
     },
@@ -204,6 +207,8 @@ export default {
     },
 
     requestTable() {
+      this.tableLoading = true;
+
       recruitTable({
         condition: this.condition,
         pageSize: this.pageSize,
@@ -214,6 +219,7 @@ export default {
           this.dataSource2Length = res.total;
           this.dataSource = arr;
           this.dataSource2 = arr;
+          this.tableLoading = false;
         }
       });
     },
