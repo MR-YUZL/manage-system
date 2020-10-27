@@ -4,7 +4,6 @@ import {
 } from "@/api/login";
 import {
   rootRoute,
-  userRoute
 } from '@/views/homePage/route'
 
 
@@ -17,6 +16,7 @@ const user = {
   mutations: {
     SET_TOKEN: (state, token) => {
       state.token = token
+      sessionStorage.setItem('TOKEN', token)
     },
     SET_ROLES: (state, roles) => {
       state.roles = roles
@@ -35,29 +35,30 @@ const user = {
     }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(res => {
-          const result = res.result
+          if (res.code === 200) {
+            const result = res.result
 
-          window.sessionStorage.UESRINFO = JSON.stringify(result)
+            commit('SET_TOKEN', result.token)
 
-          resolve(res)
+            resolve(res)
+          }
 
         }).catch(error => reject(error))
       })
     },
 
     GetUserInfo({
-      commit,
-      dispatch
-    }, username) {
+      commit
+    }, token) {
       return new Promise((resolve, reject) => {
-        GetUserInfo(username).then(res => {
-          const result = res.result
+        GetUserInfo({ token }).then(res => {
+          if (res.code === 200) {
+            const result = res.result
 
-          commit('SET_UESRINFO', result)
+            commit('SET_UESRINFO', result)
 
-          dispatch('AssignRoute', result.permission)
-
-          resolve()
+            resolve(result.permission)
+          }
 
         }).catch(error => reject(error))
       })
@@ -69,8 +70,7 @@ const user = {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           commit('SET_UESRINFO', {})
-
-          delete window.sessionStorage.UESRINFO
+          sessionStorage.removeItem('TOKEN')
           resolve()
         }, 1000)
       })
@@ -97,9 +97,10 @@ const user = {
         }
 
         let routeArr = routeFilter(rootRoute, permission)
-        
+
         commit('SET_ROUTERS', routeArr)
-        resolve()
+        
+        resolve(routeArr)
       })
     }
 

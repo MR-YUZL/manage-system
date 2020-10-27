@@ -9,7 +9,7 @@
             sub-title="招聘管理"
             @back="() => null"
           />
-          <div class="card_top_form">
+          <div class="card_top_form" v-if="activeName === 1">
             <a-form layout="inline" :form="form" @submit="handleSubmit">
               <a-row :gutter="[20, 20]">
                 <a-col :md="6" :sm="24">
@@ -263,7 +263,6 @@ export default {
       ];
     },
     tabsChange(Key) {
-      this.form.resetFields();
       this.activeName = Key;
     },
     requestTable() {

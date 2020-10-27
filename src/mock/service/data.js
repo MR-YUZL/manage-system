@@ -49,7 +49,6 @@ const adminInfo = {
   'username': 'admin',
   'password': '',
   'name': '用户',
-  'token': '123456asdzxc',
   'roles': 'user',
   'permission': [{
     page: 'one',
@@ -57,88 +56,87 @@ const adminInfo = {
   }, {
     page: 'two',
     actions: ['two--query']
-  }, ]
+  },]
 }
 
 const rootInfo = {
   'username': 'root',
   'password': '',
   'name': '超级管理员',
-  'token': '123456asdzxc',
   'roles': 'root',
   'permission': [{
-      page: 'one',
-      actions: ['one--query', 'one--add', 'one--delete', 'one--edit']
+    page: 'one',
+    actions: ['one--query', 'one--add', 'one--delete', 'one--edit']
+  }, {
+    page: 'two',
+    actions: ['two--query', 'two--add', 'two--delete', 'two--edit']
+  }, {
+    page: 'marget',
+    actions: [],
+    children: [{
+      page: 'three',
+      actions: ['marget--three--add']
     }, {
-      page: 'two',
-      actions: ['two--query', 'two--add', 'two--delete', 'two--edit']
-    }, {
-      page: 'marget',
-      actions: [],
-      children: [{
-        page: 'three',
-        actions: ['marget--three--add']
-      }, {
-        page: 'test',
-        actions: []
-      }]
-    },
-    {
-      page: 'four',
+      page: 'test',
       actions: []
-    },
+    }]
+  },
+  {
+    page: 'four',
+    actions: []
+  },
   ]
 }
 
 const treeData = [{
-    title: '第一张',
-    key: 'one',
-    children: [{
-        title: '添加',
-        key: 'add',
-      },
-      {
-        title: '删除',
-        key: 'delete',
-      },
-      {
-        title: '修改',
-        key: 'edit',
-      },
-      {
-        title: '查询',
-        key: 'query',
-      },
-    ],
+  title: '第一张',
+  key: 'one',
+  children: [{
+    title: '添加',
+    key: 'add',
   },
   {
-    title: '第二张',
-    key: 'two',
-    children: [{
-        title: '添加',
-        key: 'add',
-      },
-      {
-        title: '删除',
-        key: 'delete',
-      },
-      {
-        title: '修改',
-        key: 'edit',
-      },
-      {
-        title: '查询',
-        key: 'query',
-      },
-    ],
-  }, {
-    title: '第三张',
-    key: '0-2',
+    title: '删除',
+    key: 'delete',
   },
   {
-    title: '第四张',
-    key: '0-3',
+    title: '修改',
+    key: 'edit',
   },
+  {
+    title: '查询',
+    key: 'query',
+  },
+  ],
+},
+{
+  title: '第二张',
+  key: 'two',
+  children: [{
+    title: '添加',
+    key: 'add',
+  },
+  {
+    title: '删除',
+    key: 'delete',
+  },
+  {
+    title: '修改',
+    key: 'edit',
+  },
+  {
+    title: '查询',
+    key: 'query',
+  },
+  ],
+}, {
+  title: '第三张',
+  key: '0-2',
+},
+{
+  title: '第四张',
+  key: '0-3',
+},
 ];
 
 const builder = (data, total = 0, message, code = 0, headers = {}) => {
@@ -220,13 +218,14 @@ const list = (params) => {
 
   let pageNum = current - 1
   let arr = dataClone.slice(pageNum * pageSize, current * pageSize)
+
   return builder(arr, dataClone.length, '', 200)
 }
 
 const info = (options) => {
   const body = JSON.parse(options.body)
 
-  if (body.username === 'root') {
+  if (body.token === 'token-root') {
     return builder(rootInfo, 0, '', 200)
   } else {
     return builder(adminInfo, 0, '', 200)
@@ -235,8 +234,6 @@ const info = (options) => {
 
 
 const powerList = (options) => {
-  const body = JSON.parse(options.body)
-
   return builder(treeData, 0, '', 200)
 }
 
@@ -246,8 +243,9 @@ const userList = (options) => {
     name
   } = body
 
-  let userArr = [rootInfo, adminInfo]
   let arr = []
+  let userArr = [rootInfo, adminInfo]
+
   if (name) {
     arr = userArr.filter(v => v.name.indexOf(name) !== -1)
   } else {
@@ -258,24 +256,20 @@ const userList = (options) => {
 }
 
 const login = (options) => {
-  let roles = '';
+  let token = ''
   const body = JSON.parse(options.body)
   if (!username.includes(body.username) || !password.includes(body.password)) {
     return builder({}, 0, '账户或密码错误', 401)
   }
 
   if (body.username === 'root') {
-    roles = 'root'
+    token = 'token-root'
   } else {
-    roles = 'user'
+    token = 'token-user'
   }
 
   return builder({
-    'username': body.username,
-    'password': '',
-    'name': body.username === 'root' ? '超级管理员' : '小呆',
-    'token': '123456asdzxc',
-    'roles': roles
+    'token': token,
   }, 0, '', 200)
 }
 
@@ -283,25 +277,10 @@ const login = (options) => {
 
 Mock.mock('/meun', 'post', list)
 
-Mock.mock('/info', 'post', info)
+Mock.mock('/info', 'get', info)
 
 Mock.mock('/login', 'post', login)
 
 Mock.mock('/userList', 'post', userList)
 
 Mock.mock('/powerList', 'post', powerList)
-// Mock.mock('/meun', /post|get/i, {
-//   // /post|get/i 匹配post和get模式 也可以用'post'或'get'
-//   // 属性 list 的值是一个数组，其中含有 1 到 10 个元素
-//   'list|15': [{
-//     // 属性 id 是一个自增数，起始值为 1，每次增 1
-//     'id|+1': 1,
-//     // 随机数字1-100
-//     'name': '@csentence(5)',
-//     'post': '@ctitle(5)',
-//     'level': '@ctitle(2)',
-//     'recruit': '@csentence(5)',
-//     'education': '@csentence(5)',
-//     'num': '@csentence(5)',
-//   }]
-// })

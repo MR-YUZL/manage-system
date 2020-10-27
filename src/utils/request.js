@@ -9,19 +9,34 @@ const request = axios.create({
 const errorHandler = (error) => {
   console.log('error', error)
   if (error.response) {
-    const data = error.response.data
-
-    if (error.response.status === 403) {
-      notification.error({
-        message: 'Forbidden',
-        description: data.message
-      })
+    const message = error.response.data.message
+    switch (error.response.status) {
+      case 401:
+        notification.error({
+          message: 'Forbidden',
+          description: message
+        })
+        break;
+      case 404:
+        message.error('网络请求不存在')
+        break
+      default:
+        notification.error({
+          message: 'Forbidden',
+          description: message
+        })
+        break;
     }
-
-    if (error.response.status === 401) {
+  } else {
+    if (error.message.includes('timeout')) {
       notification.error({
         message: 'Forbidden',
-        description: data.message
+        description: '请求超时！请检查网络是否正常'
+      })
+    } else {
+      notification.error({
+        message: 'Forbidden',
+        description: '请求失败!请检查网络是否已连接'
       })
     }
   }
@@ -29,6 +44,10 @@ const errorHandler = (error) => {
 }
 
 request.interceptors.request.use(config => {
+  const token = sessionStorage.getItem('TOKEN')
+  if (token) {
+    config.headers.Authorization = token // 请求头部添加token
+  }
   return config
 }, errorHandler)
 

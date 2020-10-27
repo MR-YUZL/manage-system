@@ -98,12 +98,23 @@ export default {
     updatedMenu() {
       const routes = this.$route.matched.concat();
       const lg = routes.length;
-      if (routes[lg - 2].path === "/four") {
-        this.selectedKeys = ["/four"];
-      } else {
-        this.openKeys = [routes[lg - 2].path];
-        this.selectedKeys = [routes[lg - 1].path];
-      }
+
+      routes.some((item, index) => {
+        const isParent = item.meta.isParent;
+        const hasChild = item.meta.hasChild;
+        if (isParent) {
+          this.selectedKeys = [item.path];
+          return true;
+        } else {
+          let idx = lg - 1;
+          if (hasChild) {
+            this.openKeys = [item.path];
+          }
+          if (index === idx) {
+            this.selectedKeys = [item.path];
+          }
+        }
+      });
     },
 
     handleOpen(e) {
@@ -188,6 +199,4 @@ export default {
     }
   }
 }
-
-
 </style>

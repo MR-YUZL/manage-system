@@ -6,82 +6,66 @@ import three from "./three/three"
 //   render: (h) => h('router-view')
 // }
 
-export const rootRoute = [{
-  path: '/one',
-  name: 'one',
-  meta: {
-    title: '第一张',
-    permission: 'one'
-  },
-  component: () => import('./one/one.vue')
-},
-{
-  path: '/two',
-  name: 'two',
-  meta: {
-    title: '第二张',
-    permission: 'two'
-  },
-  component: () => import('./two/two.vue')
-},
-{
-  path: '/three',
-  name: 'marget',
-  meta: {
-    title: '应用市场'
-  },
-  component: RouteView,
-  children: [{
-    path: '/three/three',
-    name: 'three',
+export const rootRoute = [
+  {
+    path: '/one',
+    name: 'one',
     meta: {
-      title: '第三张',
-      permission: 'three'
+      title: '第一张',
+      permission: 'one'
     },
-    component: three
+    component: () => import('./one/one.vue')
   },
   {
-    path: '/three/test',
-    name: 'test',
+    path: '/two',
+    name: 'two',
     meta: {
-      title: '测试',
-      permission: 'test'
+      title: '第二张',
+      permission: 'two'
     },
-    component: three
-  }
-  ]
-},
-{
-  path: '/four',
-  name: 'four',
-  meta: {
-    title: '第四张',
-    permission: 'four'
+    component: () => import('./two/two.vue')
   },
-  isChildMenu: true,
-  redirect: "/four/power",
-  component: () => import('./four/four.vue'),
-  children: [
-    ...fourChild
-  ]
-},
-]
-
-export const userRoute = [{
-  path: '/one',
-  name: 'one',
-  meta: {
-    title: '第一张'
+  {
+    path: '/three',
+    name: 'marget',
+    meta: {
+      title: '应用市场',
+      hasChild: true
+    },
+    component: RouteView,
+    children: [{
+      path: '/three/three',
+      name: 'three',
+      meta: {
+        title: '第三张',
+        permission: 'three'
+      },
+      component: three
+    },
+    {
+      path: '/three/test',
+      name: 'test',
+      meta: {
+        title: '测试',
+        permission: 'test'
+      },
+      component: three
+    }
+    ]
   },
-  component: () => import('./one/one.vue')
-},
-{
-  path: '/two',
-  name: 'two',
-  meta: {
-    title: '第二张',
-    permission: 'two'
+  {
+    path: '/four',
+    name: 'four',
+    meta: {
+      title: '第四张',
+      permission: 'four',
+      isParent: true
+    },
+    isChildMenu: true,
+    redirect: "/four/power",
+    component: () => import('./four/four.vue'),
+    children: [
+      ...fourChild
+    ]
   },
-  component: () => import('./two/two.vue')
-},
 ]

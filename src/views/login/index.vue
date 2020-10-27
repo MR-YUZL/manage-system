@@ -199,7 +199,7 @@ export default {
       this.activeKey = key;
     },
     loginSuccess() {
-      this.$router.push({ path: "/homePage" });
+      this.$router.push({ path: "/one" });
 
       setTimeout(() => {
         this.$notification.success({

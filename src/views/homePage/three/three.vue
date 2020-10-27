@@ -18,8 +18,10 @@ export default {
       msg: "Hello World!",
     };
   },
+  beforeRouteEnter(to,from,next){
+    next()
+  },
   created() {
-    console.log(this.$route,this.$router)
   },
   mounted() {},
   methods: {},

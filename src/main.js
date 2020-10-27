@@ -9,10 +9,9 @@ import "./utils/directives"
 import "ant-design-vue/dist/antd.css";
 import "./components";
 import "./layouts";
-import "./assets/css/common.less";
 import './mock'
 import './asyncRoute'
-import '@/style/transition.less' 
+import '@/style/index.less' 
 
 Vue.config.devtools = true
 import axios from 'axios'

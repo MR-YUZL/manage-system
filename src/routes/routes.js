@@ -18,7 +18,7 @@ Vue.use(VueRouter);
 const router = new VueRouter({
   routes: [
     {
-      path: '/',
+      path: '/login',
       redirect: '/login',
       name: 'LoginLayout',
       component: LoginLayout,
@@ -27,7 +27,7 @@ const router = new VueRouter({
       ]
     },
     {
-      path: '/homePage',
+      path: '/',
       name: 'homePage',
       redirect: '/one',
       component: BasicLayout,

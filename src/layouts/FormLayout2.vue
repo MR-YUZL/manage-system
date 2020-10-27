@@ -7,7 +7,7 @@
       <slot name="body"></slot>
     </main>
     <footer v-if="footer" class="footer">
-      <Pagination v-bind="$attrs" v-on="$listeners"  />
+      <Pagination v-bind="$attrs" v-on="$listeners" />
     </footer>
   </main>
 </template>
@@ -23,8 +23,7 @@ export default {
   },
   created() {},
   mounted() {},
-  methods: {
-  },
+  methods: {},
 };
 </script>
 
