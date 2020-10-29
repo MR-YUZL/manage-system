@@ -192,7 +192,7 @@ export default {
       // box-shadow: 4px 0px 10px rgba(65, 106, 115, 1);
     }
     .body_right {
-      overflow: hidden;
+      overflow: auto;
       height: 100%;
       background: rgba(65, 106, 115, 0.1);
       padding: 24px;

@@ -35,13 +35,12 @@ const user = {
     }, userInfo) {
       return new Promise((resolve, reject) => {
         login(userInfo).then(res => {
-          if (res.code === 200) {
-            const result = res.result
 
-            commit('SET_TOKEN', result.token)
+          const result = res.result
 
-            resolve(res)
-          }
+          commit('SET_TOKEN', result.token)
+
+          resolve(res)
 
         }).catch(error => reject(error))
       })
@@ -99,7 +98,7 @@ const user = {
         let routeArr = routeFilter(rootRoute, permission)
 
         commit('SET_ROUTERS', routeArr)
-        
+
         resolve(routeArr)
       })
     }

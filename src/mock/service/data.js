@@ -56,7 +56,7 @@ const adminInfo = {
   }, {
     page: 'two',
     actions: ['two--query']
-  },]
+  }, ]
 }
 
 const rootInfo = {
@@ -65,79 +65,114 @@ const rootInfo = {
   'name': '超级管理员',
   'roles': 'root',
   'permission': [{
-    page: 'one',
-    actions: ['one--query', 'one--add', 'one--delete', 'one--edit']
-  }, {
-    page: 'two',
-    actions: ['two--query', 'two--add', 'two--delete', 'two--edit']
-  }, {
-    page: 'marget',
-    actions: [],
-    children: [{
-      page: 'three',
-      actions: ['marget--three--add']
+      page: 'one',
+      actions: ['one--query', 'one--add', 'one--delete', 'one--edit']
     }, {
-      page: 'test',
+      page: 'two',
+      actions: ['two--query', 'two--add', 'two--delete', 'two--edit']
+    }, {
+      page: 'marget',
+      actions: [],
+      children: [{
+        page: 'three',
+        actions: ['marget--three--add']
+      }, {
+        page: 'test',
+        actions: []
+      }]
+    },
+    {
+      page: 'four',
       actions: []
-    }]
-  },
-  {
-    page: 'four',
-    actions: []
-  },
+    },
+    {
+      page: 'five',
+      actions: []
+    },
   ]
 }
 
-const treeData = [{
-  title: '第一张',
-  key: 'one',
-  children: [{
-    title: '添加',
-    key: 'add',
+const line = [{
+  name: "消费金额",
+  data: [120, 250, 450, 360, 140, 320],
+  //  data: [-180, -50, 150, 60, -160, 20],
+  areaStyle: true,
+  label: "消费金额/元",
+  unit: "元",
+}, 
+// {
+//   name: "平均金额",
+//   data: [300, 300, 300, 300, 300, 300],
+//   // data: [0, 0, 0, 0, 0, 0],
+//   label: "平均金额/元",
+//   unit: "元",
+// }, 
+]
+
+const lineX = ["1月", "2月", "3月", "4月", "5月", "6月"]
+
+const line2 = [{
+    name: "需求量",
+    data: [230, 410, 150, 460, 240, 320],
+    label: "需求量/人",
+    unit: "人",
+    areaStyle: true,
   },
   {
-    title: '删除',
-    key: 'delete',
+    name: "报名量",
+    data: [520, 630, 650, 690, 560, 490],
+    label: "报名量/人",
+    unit: "人",
   },
   {
-    title: '修改',
-    key: 'edit',
+    name: "平均值",
+    data: [300, 300, 300, 300, 300, 300],
+    label: "平均值/人",
+    unit: "人",
+  },
+]
+
+const lineX2 = ["前端", "应用", "设计", "产品", "框架", "运维"]
+
+const barX = [
+  "1月",
+  "2月",
+  "3月",
+  "4月",
+  "5月",
+  "6月",
+  "7月",
+  "8月",
+  "9月",
+  "10月",
+  "11月",
+  "12月",
+]
+
+const bar = [{
+  data: [40, 79, 50, 40, 79, 50, 40, 79, 50, 40, 79, 50],
+}, ]
+
+const pie = [{
+    value: 1,
+    name: '甲'
+  }, {
+    value: 2,
+    name: '乙'
   },
   {
-    title: '查询',
-    key: 'query',
-  },
-  ],
-},
-{
-  title: '第二张',
-  key: 'two',
-  children: [{
-    title: '添加',
-    key: 'add',
+    value: 3,
+    name: '丙'
   },
   {
-    title: '删除',
-    key: 'delete',
+    value: 4,
+    name: '丁'
   },
   {
-    title: '修改',
-    key: 'edit',
+    value: 5,
+    name: '戊'
   },
-  {
-    title: '查询',
-    key: 'query',
-  },
-  ],
-}, {
-  title: '第三张',
-  key: '0-2',
-},
-{
-  title: '第四张',
-  key: '0-3',
-},
-];
+]
 
 const builder = (data, total = 0, message, code = 0, headers = {}) => {
   responseBody.total = total
@@ -258,6 +293,7 @@ const userList = (options) => {
 const login = (options) => {
   let token = ''
   const body = JSON.parse(options.body)
+
   if (!username.includes(body.username) || !password.includes(body.password)) {
     return builder({}, 0, '账户或密码错误', 401)
   }
@@ -273,7 +309,48 @@ const login = (options) => {
   }, 0, '', 200)
 }
 
+const lineData = (options) => {
+  const body = JSON.parse(options.body)
+  const {
+    charts
+  } = body
+  let obj = {}
+  if (charts === '消费趋势') {
+    obj = {
+      line,
+      lineX
+    }
+  } else {
+    obj = {
+      line: line2,
+      lineX: lineX2
+    }
+  }
+  return builder(obj, 0, '', 200)
+}
 
+const barData = (options) => {
+  const body = JSON.parse(options.body)
+  const {
+    charts
+  } = body
+  let obj = {
+    bar,
+    barX
+  }
+  return builder(obj, 0, '', 200)
+}
+
+const pieData = (options) => {
+  const body = JSON.parse(options.body)
+  const {
+    charts
+  } = body
+  let obj = {
+    pie,
+  }
+  return builder(obj, 0, '', 200)
+}
 
 Mock.mock('/meun', 'post', list)
 
@@ -284,3 +361,9 @@ Mock.mock('/login', 'post', login)
 Mock.mock('/userList', 'post', userList)
 
 Mock.mock('/powerList', 'post', powerList)
+
+Mock.mock('/lineData', 'post', lineData)
+
+Mock.mock('/barData', 'post', barData)
+
+Mock.mock('/pieData', 'post', pieData)

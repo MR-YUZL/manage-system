@@ -61,15 +61,13 @@
 <script>
 import { GetUserList, GetPowerList } from "@/api/four";
 import { GetUserInfo } from "@/api/login";
-import { treeData, data } from "@/utils/name";
 export default {
   name: "power",
   components: {},
   props: {},
   data() {
     return {
-      treeData,
-      data,
+      treeData: [],
       listLoading: false,
       powerLoading: false,
       checkedKeys: [],
@@ -80,6 +78,7 @@ export default {
   created() {},
   mounted() {
     this.requestUserList();
+    this.treeData = this.createdTree(this.$store.state.user.mainRoute);
   },
   methods: {
     onSubmit() {
@@ -95,6 +94,31 @@ export default {
 
       console.log("page", page);
       console.log("actions", actions);
+    },
+
+    createdTree(route) {
+      let tree = [];
+
+      route.forEach((item) => {
+        let data = {
+          title: item.meta.title,
+          key: item.name,
+        };
+        if (item.meta.permission) {
+          let arr = [];
+          let permission = item.meta.permission;
+          for (const key in permission) {
+            arr.push({ title: key, key: permission[key] });
+          }
+          data.children = arr;
+        } else {
+          if (item.children && !item.isChildMenu) {
+            data.children = this.createdTree(item.children);
+          }
+        }
+        tree.push(data);
+      });
+      return tree;
     },
 
     onSearch(value) {
@@ -150,7 +174,7 @@ export default {
     getUserId(id) {
       this.powerLoading = true;
 
-      GetUserInfo({ username: id }).then((res) => {
+      GetUserInfo({ token: `token-${id}` }).then((res) => {
         if (res.code === 200) {
           let arr = res.result.permission;
 

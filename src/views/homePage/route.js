@@ -12,7 +12,7 @@ export const rootRoute = [
     name: 'one',
     meta: {
       title: '第一张',
-      permission: 'one'
+      permission: { '添加': 'one--add', '查询': 'one--query', '删除': 'one--delete', '编辑': 'one--edit' }
     },
     component: () => import('./one/one.vue')
   },
@@ -21,7 +21,7 @@ export const rootRoute = [
     name: 'two',
     meta: {
       title: '第二张',
-      permission: 'two'
+      permission: { '添加': 'two--add', '查询': 'two--query', '删除': 'two--delete', '编辑': 'two--edit' }
     },
     component: () => import('./two/two.vue')
   },
@@ -38,7 +38,7 @@ export const rootRoute = [
       name: 'three',
       meta: {
         title: '第三张',
-        permission: 'three'
+        permission: { '添加': 'marget--three--add',  }
       },
       component: three
     },
@@ -47,7 +47,7 @@ export const rootRoute = [
       name: 'test',
       meta: {
         title: '测试',
-        permission: 'test'
+        permission: { '添加': 'marget--test--add' }
       },
       component: three
     }
@@ -58,7 +58,6 @@ export const rootRoute = [
     name: 'four',
     meta: {
       title: '第四张',
-      permission: 'four',
       isParent: true
     },
     isChildMenu: true,
@@ -67,5 +66,13 @@ export const rootRoute = [
     children: [
       ...fourChild
     ]
+  },
+  {
+    path: '/five',
+    name: 'five',
+    meta: {
+      title: '第五张',
+    },
+    component: () => import('./five/five.vue')
   },
 ]
