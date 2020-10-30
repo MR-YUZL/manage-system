@@ -89,24 +89,32 @@ const rootInfo = {
       page: 'five',
       actions: []
     },
+    {
+      page: 'map',
+      actions: []
+    },
+    {
+      page: 'hover',
+      actions: []
+    },
   ]
 }
 
 const line = [{
-  name: "消费金额",
-  data: [120, 250, 450, 360, 140, 320],
-  //  data: [-180, -50, 150, 60, -160, 20],
-  areaStyle: true,
-  label: "消费金额/元",
-  unit: "元",
-}, 
-// {
-//   name: "平均金额",
-//   data: [300, 300, 300, 300, 300, 300],
-//   // data: [0, 0, 0, 0, 0, 0],
-//   label: "平均金额/元",
-//   unit: "元",
-// }, 
+    name: "消费金额",
+    data: [120, 250, 450, 360, 140, 320],
+    //  data: [-180, -50, 150, 60, -160, 20],
+    areaStyle: true,
+    label: "消费金额/元",
+    unit: "元",
+  },
+  // {
+  //   name: "平均金额",
+  //   data: [300, 300, 300, 300, 300, 300],
+  //   // data: [0, 0, 0, 0, 0, 0],
+  //   label: "平均金额/元",
+  //   unit: "元",
+  // }, 
 ]
 
 const lineX = ["1月", "2月", "3月", "4月", "5月", "6月"]
@@ -173,6 +181,36 @@ const pie = [{
     name: '戊'
   },
 ]
+
+const BJData = [
+  {from:'北京', to:'上海',value:95,province:'上海'},
+  {from:'北京', to:'大连',value:80,province:'辽宁'},
+  {from:'北京', to:'南宁',value:70,province:'广西'},
+  {from:'北京', to:'南昌',value:60,province:'江西'},
+  {from:'北京', to:'拉萨',value:50,province:'西藏'},
+  {from:'北京', to:'长春',value:40,province:'吉林'},
+  {from:'北京', to:'包头',value:30,province:'内蒙古'},
+  {from:'北京', to:'重庆',value:20,province:'重庆'},
+];
+
+const SHData = [
+  {from:'上海',to:'包头',value:95,province:'内蒙古'},
+  {from:'上海',to:'昆明',value:90,province:'云南'},
+  {from:'上海',to:'广州',value:80,province:'广东'},
+  {from:'上海',to:'郑州',value:70,province:'河南'},
+  {from:'上海',to:'长春',value:60,province:'吉林'},
+  {from:'上海',to:'重庆',value:50,province:'重庆'},
+  {from:'上海',to:'长沙',value:40,province:'湖南'},
+];
+
+const GZData = [
+  {from:'广州',to:'太原',value:90,province:'山西'},
+  {from:'广州',to:'长春',value:80,province:'吉林'},
+  {from:'广州',to:'重庆',value:70,province:'重庆'},
+  {from:'广州',to:'西安',value:60,province:'陕西'},
+  {from:'广州',to:'成都',value:50,province:'四川'},
+  {from:'广州',to:'海口',value:10,province:'海南'}
+];
 
 const builder = (data, total = 0, message, code = 0, headers = {}) => {
   responseBody.total = total
@@ -352,6 +390,22 @@ const pieData = (options) => {
   return builder(obj, 0, '', 200)
 }
 
+const mapData = (options) => {
+  const body = JSON.parse(options.body)
+  const {
+    data
+  } = body
+
+  if(data === '北京'){
+    return builder(BJData, 0, '', 200)
+  }else if(data === '上海'){
+    return builder(SHData, 0, '', 200)
+  }else{
+    return builder(GZData, 0, '', 200)
+  }
+ 
+}
+
 Mock.mock('/meun', 'post', list)
 
 Mock.mock('/info', 'get', info)
@@ -367,3 +421,5 @@ Mock.mock('/lineData', 'post', lineData)
 Mock.mock('/barData', 'post', barData)
 
 Mock.mock('/pieData', 'post', pieData)
+
+Mock.mock('/mapData', 'post', mapData)

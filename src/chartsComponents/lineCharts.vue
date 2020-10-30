@@ -80,10 +80,13 @@ export default {
                 },
                 label: {
                   position: "middle",
+                  formatter: function (params) {
+                    return params.name;
+                  },
                 },
-                name: "average",
+                name: "警戒线",
                 type: "average",
-                yAxis: 300,
+                yAxis: 0,
               },
             ],
           },
@@ -177,9 +180,13 @@ export default {
               );
               item.push(`              
                   <div style="display:flex;align-items:center">
-                    <div style="width:8px;height:8px;border-radius:50%;background-color:${color[index].itemStyle}"></div>
+                    <div style="width:8px;height:8px;border-radius:50%;background-color:${
+                      color[index].itemStyle
+                    }"></div>
                     <div style="width:70px;margin-left:10px">${name}</div> 
-                    <div style="font-size:16px;height:18px;line-height:18px;color:#fff;font-weight:500;">${v.value} ${unit}</div>
+                    <div style="font-size:16px;height:18px;line-height:18px;color:#fff;font-weight:500;">${
+                      v.value + 300
+                    } ${unit}</div>
                   </div>
                  `);
             });

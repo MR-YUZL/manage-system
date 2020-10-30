@@ -144,12 +144,15 @@ export default {
 };
 </script>
 <style lang="less" scoped>
+.shadow-mixin() {
+    box-shadow: 0 0 10px #a2a2a2;
+}
 .lCharts,
 .bCharts {
   background: #fff;
   margin-top: 30px;
   padding: 30px 0;
-  box-shadow: 0 0 10px #a0a0a0;
+  .shadow-mixin;
 }
 .count_to {
   font-size: 20px;
@@ -164,12 +167,12 @@ export default {
   .pCharts {
     background: #fff;
     padding: 30px 0;
-    box-shadow: 0 0 10px #a0a0a0;
+    .shadow-mixin;
   }
   .wCharts {
     background: #fff;
     padding: 30px 0;
-    box-shadow: 0 0 10px #a0a0a0;
+    .shadow-mixin;
   }
 }
 .action {
@@ -182,6 +185,6 @@ export default {
   background: #fff;
   margin-top: 30px;
   padding: 0 10px;
-  box-shadow: 0 0 10px #a0a0a0;
+  .shadow-mixin;
 }
 </style>

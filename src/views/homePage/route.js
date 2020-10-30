@@ -71,8 +71,24 @@ export const rootRoute = [
     path: '/five',
     name: 'five',
     meta: {
-      title: '第五张',
+      title: 'eCharts组件',
     },
     component: () => import('./five/five.vue')
+  },
+  {
+    path: '/map',
+    name: 'map',
+    meta: {
+      title: 'eCharts地图',
+    },
+    component: () => import('./echartsMap')
+  },
+  {
+    path: '/hover',
+    name: 'hover',
+    meta: {
+      title: 'hover',
+    },
+    component: () => import('./hover')
   },
 ]

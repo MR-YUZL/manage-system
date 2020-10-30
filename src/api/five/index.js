@@ -24,3 +24,10 @@ export function GetPieData(params = {}) {
   })
 }
 
+export function GetMapData(params = {}) {
+  return request({
+    url: '/mapData',
+    method: 'post',
+    data: params
+  })
+}
