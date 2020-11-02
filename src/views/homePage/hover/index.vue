@@ -21,7 +21,7 @@
         <p>vue的名字</p>
       </div>
     </section> -->
-    <canvas id="myCanvas" :width="800 | numFormat" height="500" class="blur">
+    <canvas id="myCanvas" :width="300" :height="150" class="blur">
       您的浏览器不支持 HTML5 canvas 标签。
     </canvas>
     <a-button-group>
@@ -36,6 +36,7 @@ export default {
   data() {
     return {
       height: 50,
+      width: 50,
     };
   },
   filters: {
@@ -47,6 +48,9 @@ export default {
     height(val) {
       this.drow();
     },
+    width() {
+      this.drow();
+    },
   },
   created() {},
   mounted() {
@@ -54,55 +58,216 @@ export default {
   },
   methods: {
     increase() {
-      let height = this.height + 10;
-      if (height > 100) {
-        height = 100;
-      }
+      let height = this.height + 5;
+      // if (height > 100) {
+      //   height = 100;
+      // }
       this.height = height;
     },
     decline() {
-      let height = this.height - 10;
-      if (height < 0) {
-        height = 0;
-      }
+      let height = this.height - 5;
+      // if (height < 0) {
+      //   height = 0;
+      // }
       this.height = height;
     },
     drow() {
       let c = document.getElementById("myCanvas");
-      let ctx = c.getContext("2d"); //创建一个2d的画笔
-      // ctx.beginPath();     //清除路径
-      // ctx.clearRect(0, 0, 200, 100);  //清空指定矩形区域
-      // ctx.lineWidth = 2;  //线段宽度
-      // ctx.moveTo(0, 1);   //开始位置
-      // ctx.lineTo(50, 1);  //第二个点的位置
-      // ctx.lineTo(50, this.height);
-      // ctx.lineTo(100, this.height);
-      // ctx.stroke();  //画折线
+      if (c.getContext) {
+        let ctx = c.getContext("2d"); //创建一个2d的画笔
+        ctx.beginPath(); //清除路径
+        ctx.clearRect(0, 0, this.width, this.height); //清空指定矩形区域
+        ctx.lineWidth = 2; //线段宽度
+        ctx.moveTo(0, 0); //开始位置
+        ctx.lineTo(25, 0); //第二个点的位置
+        ctx.lineTo(25, this.height);
+        ctx.lineTo(50, this.height);
+        ctx.stroke(); //画折线
 
-      // ctx.fillStyle = 'rgb(200,0,0)'  //颜色需要在绘制之前
-      // ctx.fillRect(10,10,350,300)  //画一个矩形（x，y，width，height）  填充矩形
+        // ctx.fillStyle = 'rgb(200,0,0)'  //颜色需要在绘制之前
+        // ctx.fillRect(10,10,350,300)  //画一个矩形（x，y，width，height）  填充矩形
 
-      // ctx.fillStyle = 'rgba(0,0,200,0.5)'
-      // ctx.fillRect(30,30,350,300)
+        // ctx.fillStyle = 'rgba(0,0,200,0.5)'
+        // ctx.fillRect(30,30,350,300)
 
-      // ctx.strokeStyle ='rgb(200,0,0)'
-      // ctx.strokeRect(10,10,350,300)
+        // ctx.strokeStyle ='rgb(200,0,0)'
+        // ctx.strokeRect(10,10,350,300)
 
-      // ctx.strokeStyle ='rgba(0,0,200,0.5)'
-      // ctx.strokeRect(30,30,350,300)   //描边矩形
+        // ctx.strokeStyle ='rgba(0,0,200,0.5)'
+        // ctx.strokeRect(30,30,350,300)   //描边矩形
 
-      // ctx.fillRect(30,30,100,100)
-      // ctx.clearRect(50,50,60,60)
-      // ctx.strokeRect(60,60,40,40)
-      ctx.beginPath();
-      ctx.moveTo(75, 50);
-      ctx.lineTo(100, 75);
-      ctx.lineTo(100, 25);
-      // ctx.lineTo(75, 50);
-      // ctx.fill()
-        ctx.closePath()  //闭合要写在绘制前面
-      ctx.stroke();
-    
+        // ctx.fillRect(30,30,100,100)
+        // ctx.clearRect(50,50,60,60)
+        // ctx.strokeRect(60,60,40,40)
+        // ctx.beginPath();
+        // ctx.moveTo(75, 50);
+        // ctx.lineTo(100, 75);
+        // ctx.lineTo(100, 25);
+        // // ctx.lineTo(75, 50);
+        // // ctx.fill()
+        // ctx.closePath(); //闭合要写在绘制前面
+        // ctx.stroke();
+
+        // ctx.beginPath();
+        // ctx.arc(50, 50, 40, 0, Math.PI, false); //弧度计算公式，（PI / 180） * deg（角度）
+        // ctx.closePath();
+        // ctx.stroke();
+
+        // ctx.beginPath();
+        // ctx.arc(150, 150, 20, 0, -0, false); //弧度计算公式，（PI / 180） * deg（角度）
+        // ctx.fill();
+
+        // ctx.beginPath();
+        // ctx.moveTo(50, 50);
+        // ctx.arcTo(200, 50, 200, 200, 100);    //控制点1与起点的切线  控制点1和控制点2的切线
+        // ctx.lineTo(200, 200);
+        // ctx.stroke();
+
+        // ctx.beginPath();
+        // ctx.rect(50, 50, 10, 10);
+        // ctx.rect(200, 50, 10, 10);
+        // ctx.rect(200, 200, 10, 10);
+        // // ctx.fill();
+        // ctx.beginPath();
+        // // ctx.clearRect(0, 0, 200, 200);
+        // ctx.moveTo(10, 200);
+        // ctx.quadraticCurveTo(40, 100, 200, 200);  //二次贝塞尔曲线   moveTo为起点，参数1,2为控制点1  参数3,4为控制点2
+        // ctx.stroke();
+        // ctx.beginPath();
+        // ctx.moveTo(40, 200);
+        // ctx.bezierCurveTo(20, 100, 100, 120, 200, 200); //三次贝塞尔曲线
+        // ctx.stroke();
+
+        // for (let i = 0; i < 5; i++) {
+        //   for (let j = 0; j < 5; j++) {
+        //     ctx.fillStyle = `rgb(${Math.floor(255 - 42.5 * i)},${Math.floor(
+        //       255 - 30 * j
+        //     )},0)`; //floor数字向下取数
+        //     ctx.fillRect(j * 50, i * 50, 50, 50);
+        //   }
+        // }
+        // function randomInt(from, to) {
+        //   return parseInt(Math.random() * (to - from + 1) + from);
+        // }
+        // for (let i = 0; i < 5; i++) {
+        //   for (let j = 0; j < 5; j++) {
+        //     ctx.strokeStyle = `rgb(${randomInt(0, 255)},${Math.floor(
+        //       randomInt(0, 255)
+        //     )},0)`; //floor数字向下取数
+        //     ctx.strokeRect(j * 50, i * 50, 40, 40);
+        //   }
+        // }
+
+        // ctx.beginPath();
+        // ctx.moveTo(110, 20);
+        // ctx.lineTo(160, 20);
+        // ctx.lineWidth = 40;   //起始点和终点的连线为中心，上下各占线宽一半
+        // ctx.stroke();
+
+        // let lineCaps = ["butt", "round", "square"]; //方形  圆形  方形（多增加一段宽度相同，高度为宽度一半的矩形）
+        // lineCaps.forEach((v, index) => {
+        //   ctx.beginPath();
+        //   ctx.moveTo(20 + 30 * index, 30);
+        //   ctx.lineTo(20 + 30 * index, 100);
+        //   ctx.lineWidth = 20;
+        //   ctx.lineCap = v; //线条末端样式
+        //   ctx.stroke();
+        // });
+
+        // let lineJoin = ["round", "bevel", "miter"]; //圆角  矩形   菱形
+        // ctx.lineWidth = 20;
+
+        // lineJoin.forEach((v, index) => {
+        //   ctx.beginPath();
+        //   ctx.lineJoin = v; //连接拐角处样式
+        //   ctx.moveTo(50, 50 + index * 50);
+        //   ctx.lineTo(100, 100 + index * 50);
+        //   ctx.lineTo(150, 50 + index * 50);
+        //   ctx.lineTo(200, 100 + index * 50);
+        //   ctx.lineTo(250, 50 + index * 50);
+        //   ctx.stroke();
+        // });
+
+        // ctx.setLineDash([10, 5]); //参数如果为空，绘制实线，参数为偶数个，[线段长度，间隔长度],多数个亦然，如为基数个，[线段长度],则数组元素复制，变为[线段长度，线段长度(间隔长度)]
+        // ctx.lineDashOffset = 10;
+        // ctx.beginPath();
+        // ctx.moveTo(50, 50);
+        // ctx.lineTo(50, 100);
+        // ctx.stroke();
+        // console.log("setLineDash", ctx.getLineDash());
+        // ctx.setLineDash([]);
+        // ctx.beginPath();
+        // ctx.moveTo(50, 50);
+        // ctx.lineTo(150, 50);
+        // ctx.stroke();
+
+        // ctx.setLineDash([5]);
+        // ctx.strokeRect(200, 200, 100, 100);
+        // console.log("setLineDash", ctx.getLineDash());
+        // ctx.font = "30px sans-serif"  //文本样式   textAlien文本对齐   textBaseline  基线对齐
+        // ctx.fillText("人间正道是沧桑",10,100)
+        // ctx.strokeText("人间正道是沧桑",10,200)
+        // ctx.fillRect(0, 0, 150, 150); // 使用默认设置绘制一个矩形
+        // ctx.save(); // 保存默认状态  类似于push()
+
+        // ctx.fillStyle = "red"; // 在原有配置基础上对颜色做改变
+        // ctx.fillRect(15, 15, 120, 120); // 使用新的设置绘制一个矩形
+
+        // ctx.save(); // 保存当前状态
+        // ctx.fillStyle = "#FFF"; // 再次改变颜色配置
+        // ctx.fillRect(30, 30, 90, 90); // 使用新的配置绘制一个矩形
+
+        // ctx.restore(); // 重新加载之前的颜色状态  类似于pop()
+        // ctx.fillRect(45, 45, 60, 60); // 使用上一次的配置绘制一个矩形
+
+        // ctx.restore(); // 加载默认颜色配置
+        // ctx.fillRect(60, 60, 30, 30); // 使用加载的配置绘制一个矩形
+        // ctx.save()
+        // ctx.translate(100,100)   //移动的是原点位置 所以要在绘制之前 并不是移动图形
+        // ctx.strokeRect(0,0,100,100)
+
+        // ctx.restore()
+        // ctx.translate(20,20)
+        // ctx.fillRect(0,0,10,10)
+
+        // ctx.fillStyle = "red";
+        // ctx.save();
+
+        // ctx.translate(100, 100);
+        // ctx.rotate((Math.PI / 180) * 45); //以原点来旋转
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(0, 0, 100, 100);
+
+        // ctx.restore();
+        // ctx.translate(0, 0);
+        // ctx.scale(2,2)
+        // ctx.fillRect(0, 0, 50, 50);
+
+        // ctx.transform(1, 0, 1, 1, 10, 10);  // 水平缩放 水平倾斜 竖直倾斜 竖直缩放 水平位移 竖直位移
+        // ctx.fillRect(0, 0, 100, 100);
+
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(0, 0, 200, 200);
+        // ctx.globalCompositeOperation = "xor"; //全局合成操作 source-over新图像会进行覆盖 -in仅显示重叠部分（新图）  -out仅显示新老未重叠部分（老图不显示）
+        // // -atop显示重叠部分与老图  destination-over老图在上    destination-in 显示重叠部分（老图） destination-out无重叠，显示老图
+        // //destination-atop显示老图的重叠部分与新图  lighter重叠部分做处理  darken取重叠部分最黑像素 xor重叠部分透明 copy只保留新图
+        // ctx.fillStyle = "red";
+        // ctx.fillRect(100, 100, 200, 200);
+
+        // ctx.beginPath();
+        // ctx.arc(20, 20, 100, 0, (Math.PI / 180) * 2);
+        // ctx.clip();
+        // ctx.fillStyle = "pink";
+        // ctx.fillRect(20, 20, 100, 100);
+        // ctx.beginPath();
+        // ctx.moveTo(20,50)
+        // ctx.lineTo(50,50)
+        // ctx.lineTo(20,20)
+        // ctx.clip();   //只显示裁剪内的内容 效果类似于closePath
+
+        // ctx.fillStyle = "pink";
+        // ctx.fillRect(20, 20, 100, 100);
+      }
     },
   },
 };

@@ -104,7 +104,7 @@ const line = [{
     name: "消费金额",
     data: [120, 250, 450, 360, 140, 320],
     //  data: [-180, -50, 150, 60, -160, 20],
-    areaStyle: true,
+    areaStyle: false,
     label: "消费金额/元",
     unit: "元",
   },
