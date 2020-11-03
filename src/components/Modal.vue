@@ -94,15 +94,7 @@ export default {
       wrapperCol: { span: 14 },
       rules,
       treeList,
-      form: {
-        id: "",
-        name: "",
-        post: "",
-        level: "",
-        recruit: "",
-        education: "",
-        num: "",
-      },
+      form: {},
       replaceFields: {
         children: "test",
         value: "title",
@@ -113,11 +105,6 @@ export default {
     cloneForm: {
       handler: function (val) {
         this.form = val;
-      },
-      deep: true,
-    },
-    form: {
-      handler: function (val) {
       },
       deep: true,
     },
@@ -137,7 +124,6 @@ export default {
       }
     };
     let validatorRecruit = (rule, value, callback) => {
-
       if (value) {
         callback();
       } else {
@@ -164,7 +150,6 @@ export default {
     onSubmit() {
       this.$refs["form"].validate((valid) => {
         if (valid) {
-
           if (this.title === "新建招聘") {
             this.form.id = parseInt(Math.random() * 100);
           }

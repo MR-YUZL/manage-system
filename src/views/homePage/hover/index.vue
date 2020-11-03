@@ -28,6 +28,7 @@
       <a-button icon="minus" @click="decline" />
       <a-button icon="plus" @click="increase" />
     </a-button-group>
+    <a-button @click="toOne">跳转</a-button>
   </div>
 </template>
 <script>
@@ -57,6 +58,9 @@ export default {
     this.drow();
   },
   methods: {
+    toOne() {
+      this.$router.replace({ path: "/one/123" });
+    },
     increase() {
       let height = this.height + 5;
       // if (height > 100) {
@@ -76,7 +80,7 @@ export default {
       if (c.getContext) {
         let ctx = c.getContext("2d"); //创建一个2d的画笔
         ctx.beginPath(); //清除路径
-        ctx.clearRect(0, 0, this.width, this.height); //清空指定矩形区域
+        ctx.clearRect(0, 0, 300, 150); //清空指定矩形区域
         ctx.lineWidth = 2; //线段宽度
         ctx.moveTo(0, 0); //开始位置
         ctx.lineTo(25, 0); //第二个点的位置

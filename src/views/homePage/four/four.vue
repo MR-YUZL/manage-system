@@ -1,6 +1,6 @@
 <template>
-  <div class="container">
-    <nav class="container__nav">
+  <div class="four">
+    <nav class="four__nav">
       <a-menu
         :mode="'inline'"
         :style="{ border: '0' }"
@@ -16,7 +16,7 @@
         </a-menu-item>
       </a-menu>
     </nav>
-    <main class="container__main">
+    <main class="four__main">
       <router-view></router-view>
     </main>
   </div>
@@ -54,18 +54,15 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.container {
+.four {
   width: 100%;
-  height: 100%;
   background: #ffffff;
   display: flex;
-  .container__nav {
-    height: 100%;
+  .four__nav {
     width: 15%;
   }
-  .container__main {
+  .four__main {
     padding: 12px 16px;
-    height: 100%;
     width: 85%;
   }
 }

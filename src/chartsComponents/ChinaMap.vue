@@ -29,7 +29,8 @@ export default {
     return {
       map: null,
       mapType: china,
-      geoCoordMap,
+      geoCoordMap: Object.freeze(Object.assign({}, geoCoordMap)),
+      // geoCoordMap,
     };
   },
   watch: {

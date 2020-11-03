@@ -55,6 +55,13 @@
 </template>
 <script>
 import { GetLineData, GetBarData, GetPieData } from "@/api/five";
+import {
+  LineCharts,
+  PieCharts,
+  ProCharts,
+  WaveCharts,
+  BarCharts,
+} from "@/chartsComponents";
 import CountTo from "vue-count-to";
 export default {
   name: "five",
@@ -140,12 +147,17 @@ export default {
   },
   components: {
     CountTo,
+    LineCharts,
+    PieCharts,
+    ProCharts,
+    WaveCharts,
+    BarCharts,
   },
 };
 </script>
 <style lang="less" scoped>
 .shadow-mixin() {
-    box-shadow: 0 0 10px #a2a2a2;
+  box-shadow: 0 0 10px #a2a2a2;
 }
 .lCharts,
 .bCharts {

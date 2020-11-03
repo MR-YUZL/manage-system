@@ -6,13 +6,17 @@ import three from "./three/three"
 //   render: (h) => h('router-view')
 // }
 
-export const rootRoute = [
-  {
+export const rootRoute = [{
     path: '/one',
     name: 'one',
     meta: {
       title: '第一张',
-      permission: { '添加': 'one--add', '查询': 'one--query', '删除': 'one--delete', '编辑': 'one--edit' }
+      permission: {
+        '添加': 'one--add',
+        '查询': 'one--query',
+        '删除': 'one--delete',
+        '编辑': 'one--edit'
+      }
     },
     component: () => import('./one/one.vue')
   },
@@ -21,7 +25,12 @@ export const rootRoute = [
     name: 'two',
     meta: {
       title: '第二张',
-      permission: { '添加': 'two--add', '查询': 'two--query', '删除': 'two--delete', '编辑': 'two--edit' }
+      permission: {
+        '添加': 'two--add',
+        '查询': 'two--query',
+        '删除': 'two--delete',
+        '编辑': 'two--edit'
+      }
     },
     component: () => import('./two/two.vue')
   },
@@ -34,23 +43,39 @@ export const rootRoute = [
     },
     component: RouteView,
     children: [{
-      path: '/three/three',
-      name: 'three',
-      meta: {
-        title: '第三张',
-        permission: { '添加': 'marget--three--add',  }
+        path: '/three/three',
+        name: 'three',
+        meta: {
+          title: '第三张',
+          hasChild: true,
+          permission: {
+            '添加': 'marget--three--add',
+          }
+        },
+        component: three,
+        children: [{
+          path: '/three/three/child',
+          name: 'child',
+          component: () => import('./three/children/threeChild.vue'),
+          meta: {
+            title: '第三张孩子',
+            permission: {
+              '添加': 'marget--three--child--add',
+            }
+          },
+        }]
       },
-      component: three
-    },
-    {
-      path: '/three/test',
-      name: 'test',
-      meta: {
-        title: '测试',
-        permission: { '添加': 'marget--test--add' }
-      },
-      component: three
-    }
+      {
+        path: '/three/test',
+        name: 'test',
+        meta: {
+          title: '测试',
+          permission: {
+            '添加': 'marget--test--add'
+          }
+        },
+        component: three
+      }
     ]
   },
   {

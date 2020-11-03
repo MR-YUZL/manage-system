@@ -19,6 +19,9 @@
   </div>
 </template>
 <script>
+import {
+ ChinaMap
+} from "@/chartsComponents";
 import { GetMapData } from "@/api/five";
 export default {
   name: "echartsMap",
@@ -53,6 +56,9 @@ export default {
       });
     },
   },
+  components:{
+    ChinaMap
+  }
 };
 </script>
 <style lang="less" scoped>

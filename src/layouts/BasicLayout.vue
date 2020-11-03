@@ -39,19 +39,15 @@
           @openChange="handleOpen"
         >
           <template v-for="v in menu">
-            <a-sub-menu :key="v.path" v-if="v.children && !v.isChildMenu">
-              <span slot="title"
-                ><a-icon type="appstore" /><span>{{ v.meta.title }}</span></span
-              >
-              <a-menu-item v-for="value in v.children" :key="value.path">
-                <a-icon type="pie-chart" />
-                <span>{{ value.meta.title }}</span>
-              </a-menu-item>
-            </a-sub-menu>
+            <SubMenu
+              :key="v.path"
+              :subMenu="v"
+              v-if="v.children && !v.isChildMenu"
+            ></SubMenu>
             <a-menu-item :key="v.path" v-else>
               <a-icon type="desktop" />
-              <span>{{ v.meta.title }}</span></a-menu-item
-            >
+              <span>{{ v.meta.title }}</span>
+            </a-menu-item>
           </template>
         </a-menu>
       </nav>
@@ -66,8 +62,10 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+// import SubMenu from "./SubMenu";
 export default {
   name: "BasicLayout",
+  // components: { SubMenu },
   props: {},
   data() {
     return {
@@ -96,6 +94,7 @@ export default {
     },
 
     updatedMenu() {
+      let arr = [];
       const routes = this.$route.matched.concat();
       const lg = routes.length;
 
@@ -108,7 +107,8 @@ export default {
         } else {
           let idx = lg - 1;
           if (hasChild) {
-            this.openKeys = [item.path];
+            arr.push(item.path);
+            this.openKeys = arr;
           }
           if (index === idx) {
             this.selectedKeys = [item.path];

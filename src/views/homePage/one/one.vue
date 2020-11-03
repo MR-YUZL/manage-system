@@ -9,111 +9,113 @@
             sub-title="招聘管理"
             @back="() => null"
           />
-          <div class="card_top_form" v-if="activeName === 1">
-            <a-form layout="inline" :form="form" @submit="handleSubmit">
-              <a-row :gutter="[20, 20]">
-                <a-col :md="6" :sm="24">
-                  <a-form-item label="职位名称">
-                    <Input
-                      v-decorator="['name', { initialValue: '' }]"
-                      placeholder="请输入"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col :md="6" :sm="24">
-                  <a-form-item label="对应岗位">
-                    <Select v-decorator="['post']" :options="postOptions" />
-                  </a-form-item>
-                </a-col>
-                <a-col :md="6" :sm="24">
-                  <a-form-item label="职位级别">
-                    <Cascader
-                      v-decorator="['level', { initialValue: [] }]"
-                      :options.sync="levelOptions"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col :md="6" :sm="24">
-                  <a-form-item label="最低学历要求">
-                    <Select
-                      v-decorator="['education']"
-                      :options="educationOptions"
-                    />
-                  </a-form-item>
-                </a-col>
-              </a-row>
+          <keep-alive>
+            <div class="card_top_form" v-if="activeName === 1">
+              <a-form layout="inline" :form="form" @submit="handleSubmit">
+                <a-row :gutter="[20, 20]">
+                  <a-col :md="6" :sm="24">
+                    <a-form-item label="职位名称">
+                      <Input
+                        v-decorator="['name', { initialValue: '' }]"
+                        placeholder="请输入"
+                      />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="6" :sm="24">
+                    <a-form-item label="对应岗位">
+                      <Select v-decorator="['post']" :options="postOptions" />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="6" :sm="24">
+                    <a-form-item label="职位级别">
+                      <Cascader
+                        v-decorator="['level', { initialValue: [] }]"
+                        :options.sync="levelOptions"
+                      />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="6" :sm="24">
+                    <a-form-item label="最低学历要求">
+                      <Select
+                        v-decorator="['education']"
+                        :options="educationOptions"
+                      />
+                    </a-form-item>
+                  </a-col>
+                </a-row>
 
-              <a-row :gutter="[20, 20]">
-                <a-col :md="6" :sm="24">
-                  <a-form-item label="招聘部门">
-                    <TreeSelect
-                      placeholder="请选择"
-                      :tree-data="treeList"
-                      allow-clear
-                      showSearch
-                      treeNodeFilterProp="title"
-                      :replaceFields="replaceFields"
-                      tree-default-expand-all
-                      v-decorator="['recruit']"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col :md="7" :sm="24">
-                  <a-form-item label="时间区间">
-                    <a-range-picker
-                      v-decorator="['time']"
-                      :format="dateFormat"
-                      :valueFormat="dateFormat"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col :md="7" :sm="24">
-                  <a-form-item label="报名数区间">
-                    <InputNum
-                      v-decorator="[
-                        'num',
-                        {
-                          initialValue: [0, 50],
-                          rules: [
-                            { required: true },
-                            { validator: validatorNum },
-                          ],
-                        },
-                      ]"
-                      name="num"
-                    />
-                  </a-form-item>
-                </a-col>
-                <a-col :md="4" :sm="24">
-                  <span
-                    class="table-page-search-submitButtons"
-                    style="float: right"
-                  >
-                    <a-button
-                      type="primary"
-                      html-type="submit"
-                      v-permission:query
-                      >查询</a-button
+                <a-row :gutter="[20, 20]">
+                  <a-col :md="6" :sm="24">
+                    <a-form-item label="招聘部门">
+                      <TreeSelect
+                        placeholder="请选择"
+                        :tree-data="treeList"
+                        allow-clear
+                        showSearch
+                        treeNodeFilterProp="title"
+                        :replaceFields="replaceFields"
+                        tree-default-expand-all
+                        v-decorator="['recruit']"
+                      />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="7" :sm="24">
+                    <a-form-item label="时间区间">
+                      <a-range-picker
+                        v-decorator="['time']"
+                        :format="dateFormat"
+                        :valueFormat="dateFormat"
+                      />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="7" :sm="24">
+                    <a-form-item label="报名数区间">
+                      <InputNum
+                        v-decorator="[
+                          'num',
+                          {
+                            initialValue: [0, 50],
+                            rules: [
+                              { required: true },
+                              { validator: validatorNum },
+                            ],
+                          },
+                        ]"
+                        name="num"
+                      />
+                    </a-form-item>
+                  </a-col>
+                  <a-col :md="4" :sm="24">
+                    <span
+                      class="table-page-search-submitButtons"
+                      style="float: right"
                     >
-                    <a-button
-                      style="margin-left: 8px"
-                      @click="() => handleReset()"
-                      v-permission:query
-                      >重置</a-button
-                    >
-                  </span>
-                </a-col>
-              </a-row>
-            </a-form>
+                      <a-button
+                        type="primary"
+                        html-type="submit"
+                        v-permission:query
+                        >查询</a-button
+                      >
+                      <a-button
+                        style="margin-left: 8px"
+                        @click="() => handleReset()"
+                        v-permission:query
+                        >重置</a-button
+                      >
+                    </span>
+                  </a-col>
+                </a-row>
+              </a-form>
 
-            <a-button
-              class="card_top_add"
-              type="primary"
-              @click="showModal"
-              v-permission:add
-              >新建招聘</a-button
-            >
-          </div>
+              <a-button
+                class="card_top_add"
+                type="primary"
+                @click="showModal"
+                v-permission:add
+                >新建招聘</a-button
+              >
+            </div>
+          </keep-alive>
         </section>
         <section class="card_bottom">
           <a-table
@@ -148,7 +150,7 @@
           :formList="formList"
           @submit="formSubmit"
           :total="dataSource3Length"
-          :key="activeName"
+          v-if="activeName === 'XJ'"
         >
           <template #body>
             <a-table
@@ -240,6 +242,7 @@ export default {
   },
   created() {},
   mounted() {
+    console.log("route", this.$route);
     this.requestTable();
     this.init();
   },
@@ -347,11 +350,12 @@ export default {
             return v;
           }
         });
+        //findIndexof 找到id 之后用splice替换
         this.$message.success({ content: "编辑成功" });
       }
     },
     handleEdit(record) {
-      let obj = JSON.parse(JSON.stringify(record));
+      let obj = JSON.parse(JSON.stringify(record)); //需进行深拷贝，否则会在编辑时实时改变列表数据
       this.title = "编辑";
       this.visible = true;
       this.cloneForm = obj;

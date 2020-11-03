@@ -75,7 +75,11 @@ const rootInfo = {
       actions: [],
       children: [{
         page: 'three',
-        actions: ['marget--three--add']
+        actions: ['marget--three--add'],
+        children:[{
+          page:'child',
+          actions:['marget--three--child--add']
+        }]
       }, {
         page: 'test',
         actions: []

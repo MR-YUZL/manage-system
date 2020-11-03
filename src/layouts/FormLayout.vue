@@ -86,7 +86,9 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    console.log('ok')
+  },
   methods: {
     handleSubmit(page, size) {
       let pageSize, current, condition;
