@@ -359,6 +359,86 @@ export const formModal = [{
   }
 ]
 
+export const ListForm = [{
+  key: Date.now(),
+  first: "cityName",
+  firstOption: [{
+      value: "zhejiang",
+      label: "浙江",
+      children: [{
+        value: "hangzhou",
+        label: "浙江",
+        children: [{
+          value: "xihu",
+          label: "西湖",
+        }, ],
+      }, ],
+    },
+    {
+      value: "jiangsu",
+      label: "江苏",
+      children: [{
+        value: "nanjing",
+        label: "南京",
+        children: [{
+          value: "zhonghuamen",
+          label: "中华门",
+        }, ],
+      }, ],
+    },
+  ],
+  second: "rule",
+  secondOption: ["销售手动自取", "2", "3"],
+  third: "name",
+  thirdOption: [{
+    value: '1',
+    title: '测试'
+  }, {
+    value: '2',
+    title: '测试2'
+  }]
+}]
+
+export const ListForm2 = {
+  key:  Date.now(),
+  first: "cityName",
+  firstOption: [{
+      value: "zhejiang",
+      label: "浙江",
+      children: [{
+        value: "hangzhou",
+        label: "浙江",
+        children: [{
+          value: "xihu",
+          label: "西湖",
+        }, ],
+      }, ],
+    },
+    {
+      value: "jiangsu",
+      label: "江苏",
+      children: [{
+        value: "nanjing",
+        label: "南京",
+        children: [{
+          value: "zhonghuamen",
+          label: "中华门",
+        }, ],
+      }, ],
+    },
+  ],
+  second: "rule",
+  secondOption: ["销售手动自取", "2", "3"],
+  third: "name",
+  thirdOption: [{
+    value: '1',
+    title: '测试'
+  }, {
+    value: '2',
+    title: '测试2'
+  }]
+}
+
 export const geoCoordMap = {
   '上海': [121.4648, 31.2891],
   '东莞': [113.8953, 22.901],

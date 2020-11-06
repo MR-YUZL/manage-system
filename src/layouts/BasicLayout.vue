@@ -96,6 +96,7 @@ export default {
     updatedMenu() {
       let arr = [];
       const routes = this.$route.matched.concat();
+
       const lg = routes.length;
 
       routes.some((item, index) => {

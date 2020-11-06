@@ -5,7 +5,7 @@ import {
 import {
   rootRoute,
 } from '@/views/homePage/route'
-
+import router from "@/routes/routes";
 
 const user = {
   state: {
@@ -96,8 +96,8 @@ const user = {
         }
 
         let routeArr = routeFilter(rootRoute, permission)
-
-        commit('SET_ROUTERS', routeArr)
+        // router.addRoutes(rootRoute)  //正确写法
+        commit('SET_ROUTERS', routeArr)  //会出问题
 
         resolve(routeArr)
       })

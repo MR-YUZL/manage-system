@@ -29,15 +29,51 @@
       <a-button icon="plus" @click="increase" />
     </a-button-group>
     <a-button @click="toOne">跳转</a-button>
+
+    <ListForm
+      :list.sync="ListForm"
+      :columns="columns"
+      style="padding: 14px"
+    ></ListForm>
+    <div :ref="test" v-for="v in columns" :key="v.key"></div>
   </div>
 </template>
 <script>
+import { ListForm } from "@/utils/name";
 export default {
   name: "hover",
   data() {
     return {
       height: 50,
       width: 50,
+      ListForm,
+      columns: [
+        {
+          title: "地区",
+          dataIndex: "cityName",
+          width: "25%",
+          scopedSlots: { customRender: "cityName" },
+        },
+        {
+          title: "选择规则",
+          dataIndex: "rule",
+          width: "30%",
+          scopedSlots: { customRender: "rule" },
+        },
+        {
+          title: "选择人员",
+          dataIndex: "name",
+          width: "25%",
+          scopedSlots: { customRender: "name" },
+        },
+        {
+          title: "操作",
+          dataIndex: "operation",
+          width: "20%",
+          align: "center",
+          scopedSlots: { customRender: "operation" },
+        },
+      ],
     };
   },
   filters: {
@@ -58,6 +94,9 @@ export default {
     this.drow();
   },
   methods: {
+    test(el) {
+      console.log("el", el);
+    },
     toOne() {
       this.$router.replace({ path: "/one/123" });
     },

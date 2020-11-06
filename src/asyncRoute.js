@@ -17,6 +17,7 @@ router.beforeEach(async (to, from, next) => {
                  
                 const asyncRoutes = await store.dispatch('AssignRoute', permission)
                 console.log('asyncRoutes',asyncRoutes)
+                
                 next({ ...to, replace: true })
             }
         } else {

@@ -72,6 +72,13 @@ export default {
       form: {
         id: "",
       },
+      fieldList:[{
+        fieldCode: "name",
+        fieldName: "姓名",
+        fieldValue: "zhangsan",
+        type: "input/select/selectMultiple/datepicker/cascader",
+        list:[]
+      }]
     };
   },
   watch: {

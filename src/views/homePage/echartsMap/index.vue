@@ -19,9 +19,7 @@
   </div>
 </template>
 <script>
-import {
- ChinaMap
-} from "@/chartsComponents";
+import { ChinaMap } from "@/chartsComponents";
 import { GetMapData } from "@/api/five";
 export default {
   name: "echartsMap",
@@ -34,7 +32,7 @@ export default {
   },
   filters: {
     numFormat(val, value = 0) {
-    //   console.log("value", value);
+      //   console.log("value", value);
       return val - 10 - value;
     },
   },
@@ -56,9 +54,9 @@ export default {
       });
     },
   },
-  components:{
-    ChinaMap
-  }
+  components: {
+    ChinaMap,
+  },
 };
 </script>
 <style lang="less" scoped>

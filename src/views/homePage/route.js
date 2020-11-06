@@ -1,6 +1,6 @@
 import fourChild from "./four/route"
 import RouteView from "@/layouts/RouteView"
-import three from "./three/three"
+import three from "./three"
 // const RouteView = {
 //   name: 'RouteView',
 //   render: (h) => h('router-view')
@@ -18,7 +18,7 @@ export const rootRoute = [{
         '编辑': 'one--edit'
       }
     },
-    component: () => import('./one/one.vue')
+    component: () => import('./one')
   },
   {
     path: '/two',
@@ -32,7 +32,7 @@ export const rootRoute = [{
         '编辑': 'two--edit'
       }
     },
-    component: () => import('./two/two.vue')
+    component: () => import('./two')
   },
   {
     path: '/three',
@@ -87,7 +87,7 @@ export const rootRoute = [{
     },
     isChildMenu: true,
     redirect: "/four/power",
-    component: () => import('./four/four.vue'),
+    component: () => import('./four'),
     children: [
       ...fourChild
     ]
@@ -98,7 +98,7 @@ export const rootRoute = [{
     meta: {
       title: 'eCharts组件',
     },
-    component: () => import('./five/five.vue')
+    component: () => import('./five')
   },
   {
     path: '/map',

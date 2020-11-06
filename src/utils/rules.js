@@ -2,7 +2,7 @@ let validatorNum = (rule, value, callback) => {
   if (!value) {
     callback(new Error("请输入报名数!"));
   } else {
-    if (parseInt(value)>50) {
+    if (parseInt(value) > 50) {
       callback(new Error("最大不能超过50!"));
     } else {
       callback();
@@ -35,4 +35,20 @@ export const rules = {
     message: "请输入最低学历要求",
     trigger: "blur",
   }, ],
+  cityName: [{
+    required: true,
+    message: "请选择城市",
+    trigger: "change",
+  }, ],
+  name: [{
+    required: true,
+    message: "请输入姓名",
+    trigger: "change",
+  }, ],
+  rule: [{
+    required: true,
+    message: "请选择规则",
+    trigger: "change",
+  }, ],
+
 }
