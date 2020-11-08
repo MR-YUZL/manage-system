@@ -36,6 +36,7 @@
       style="padding: 14px"
     ></ListForm>
     <div :ref="test" v-for="v in columns" :key="v.key"></div>
+    <div v-html="xml"></div>
   </div>
 </template>
 <script>
@@ -47,6 +48,7 @@ export default {
       height: 50,
       width: 50,
       ListForm,
+      xml:'',
       columns: [
         {
           title: "地区",
@@ -91,6 +93,10 @@ export default {
   },
   created() {},
   mounted() {
+    this.xml = `<h1>${this.height}</h1>`
+    this.$nextTick(()=> {
+      console.log('test',this.$refs['test'])
+    })
     this.drow();
   },
   methods: {
