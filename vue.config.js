@@ -1,3 +1,10 @@
+const path = require('path')
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+
+function resolve(dir) {
+  return path.join(__dirname, dir)
+}
+
 module.exports = {
   // devServer: {
   //   proxy: {
@@ -10,7 +17,40 @@ module.exports = {
   // },
   configureWebpack: {
     // webpack 配置
-    devtool: "source-map"
+    devtool: "source-map",
+    mode: 'development',
+    plugins: [
+      new VueLoaderPlugin()
+    ],
+    resolve: {
+      extensions: ['.js', '.vue', '.json'],
+      alias: {
+        'vue$': 'vue/dist/vue.esm.js',
+        '@': resolve('src'),
+      }
+    },
+    module: {
+      rules: [{
+          test: /\.vue$/,
+          use: ['vue-loader'],
+        },
+        {
+          test: /\.less$/,
+          use: ['css-loader', 'less-loader']
+        }, {
+          test: /\.js$/,
+          loader: 'babel-loader',
+          exclude: /node_modules/
+        },
+        {
+          test: /\.(png|jpg|gif|svg)$/,
+          loader: 'file-loader',
+          options: {
+            name: '[name].[ext]?[hash]'
+          }
+        }
+      ]
+    }
   },
   lintOnSave: false,
   devServer: {
@@ -29,5 +69,5 @@ module.exports = {
   },
   publicPath: "/",
   outputDir: "cloud-qf-service",
-  assetsDir: "static"
+  assetsDir: "static",
 };

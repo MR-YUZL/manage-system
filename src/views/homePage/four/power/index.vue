@@ -61,6 +61,9 @@
 <script>
 import { GetUserList, GetPowerList } from "@/api/four";
 import { GetUserInfo } from "@/api/login";
+import {
+  rootRoute,
+} from '@/views/homePage/route'
 export default {
   name: "power",
   components: {},
@@ -77,6 +80,7 @@ export default {
   },
   created() {},
   mounted() {
+    console.log('rootRoute',rootRoute)
     this.requestUserList();
     this.treeData = this.createdTree(this.$store.state.user.mainRoute);
   },

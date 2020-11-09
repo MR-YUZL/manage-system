@@ -242,7 +242,6 @@ export default {
   },
   created() {},
   mounted() {
-    console.log("route", this.$route);
     this.requestTable();
     this.init();
   },

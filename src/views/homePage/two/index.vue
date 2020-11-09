@@ -6,7 +6,7 @@
       @change="tabsChange"
       :tabBarGutter="0"
     >
-      <a-tab-pane :key="1" tab="职位招聘">
+      <a-tab-pane :key="1" tab="职位招聘" :forceRender="true">
         <a-page-header
           style="padding: 10px 20px"
           title="返回"
@@ -19,7 +19,7 @@
           @submit="formSubmit"
           @change="formChange"
           :total="dataSource2Length"
-          v-if="defaultActiveKey === 1"
+          :key="defaultActiveKey"
         >
           <template #body>
             <a-button
@@ -57,13 +57,13 @@
           </template>
         </FormLayout2>
       </a-tab-pane>
-      <a-tab-pane :key="2" tab="宣讲会">
+      <a-tab-pane :key="2" tab="宣讲会" :forceRender="true">
         <FormLayout2
           :formList="formList"
           @submit="formSubmit2"
           @change="formChange2"
+          :key="defaultActiveKey"
           :total="dataSource3Length"
-          v-if="defaultActiveKey === 2"
         >
           <template #body>
             <a-table

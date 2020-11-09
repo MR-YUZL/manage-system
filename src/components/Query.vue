@@ -104,8 +104,7 @@ export default {
     };
   },
   created() {},
-  mounted() {
-  },
+  mounted() {},
   methods: {
     handleSubmit() {
       let condition;
