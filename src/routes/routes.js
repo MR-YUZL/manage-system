@@ -16,8 +16,7 @@ let homeChild = store.state.user.mainRoute
 Vue.use(VueRouter);
 // router
 const router = new VueRouter({
-  routes: [
-    {
+  routes: [{
       path: '/login',
       redirect: '/login',
       name: 'LoginLayout',
@@ -25,6 +24,11 @@ const router = new VueRouter({
       children: [
         ...loginChild
       ]
+    },
+    {
+      path: '/showModal',
+      name: 'showModal',
+      component: () => import('@/views/showModal'),
     },
     {
       path: '/',

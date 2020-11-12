@@ -400,7 +400,7 @@ export const ListForm = [{
 }]
 
 export const ListForm2 = {
-  key:  Date.now(),
+  key: Date.now(),
   first: "cityName",
   firstOption: [{
       value: "zhejiang",
@@ -438,6 +438,69 @@ export const ListForm2 = {
     title: '测试2'
   }]
 }
+
+
+export const imgList = [{
+    img1: require('@/assets/imgs/slices/btn_jijinfuwu_nor.png'),
+    img2: require('@/assets/imgs/slices/btn_jijinguanli_nor.png'),
+    key1: '基金服务',
+    key2: '基金管理',
+    x1: "0px",
+    y1: "0px",
+    x2: "190px",
+    y2: "0px",
+  },
+  {
+    img1: require('@/assets/imgs/slices/btn_liangdingfuwu_nor.png'),
+    img2: require('@/assets/imgs/slices/btn_liangdingfuwu_sel.png'),
+    key1: '两定服务',
+    key2: '两定管理',
+    x1: "30px",
+    y1: "120px",
+    x2: "230px",
+    y2: "120px",
+  },
+  {
+    img1: require('@/assets/imgs/slices/btn_jingbanfuwu_nor.png'),
+    img2: require('@/assets/imgs/slices/btn_jingbanfuwu_sel.png'),
+    key1: '经办服务',
+    key2: '经办管理',
+    x1: "70px",
+    y1: "260px",
+    x2: "280px",
+    y2: "260px",
+  },
+  {
+    img1: require('@/assets/imgs/slices/icon_changsanjiao_nor.png'),
+    img2: require('@/assets/imgs/slices/icon_changsanjiao_sel.png'),
+    key1: '长三角',
+    key2: '长三角',
+    x1: "0px",
+    y1: "0px",
+    x2: "190px",
+    y2: "0px",
+  },
+  {
+    img1: require('@/assets/imgs/slices/btn_yibaomuluguanli_nor.png'),
+    img2: require('@/assets/imgs/slices/btn_yibaomuluguanli_sel.png'),
+    key1: '医保管理',
+    key2: '医保服务',
+    x1: "0px",
+    y1: "0px",
+    x2: "190px",
+    y2: "0px",
+  },
+  {
+    img1: require('@/assets/imgs/slices/btn_yidijiesuanguanli_nor.png'),
+    img2: require('@/assets/imgs/slices/btn_yidijiesuanguanli_sel.png'),
+    key1: '异地结算服务',
+    key2: '异地结算管理',
+    x1: "0px",
+    y1: "0px",
+    x2: "190px",
+    y2: "0px",
+  }
+]
 
 export const geoCoordMap = {
   '上海': [121.4648, 31.2891],

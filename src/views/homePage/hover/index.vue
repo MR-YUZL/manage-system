@@ -36,7 +36,7 @@
       style="padding: 14px"
     ></ListForm>
     <div :ref="test" v-for="v in columns" :key="v.key"></div>
-    <h1>{{msg}}</h1>
+    <h1 ref="msg">{{ msg }}</h1>
   </div>
 </template>
 <script>
@@ -48,7 +48,7 @@ export default {
       height: 50,
       width: 50,
       ListForm,
-      msg:'测试',
+      msg: "测试",
       columns: [
         {
           title: "地区",
@@ -93,6 +93,7 @@ export default {
   },
   created() {},
   mounted() {
+
     this.drow();
   },
   methods: {

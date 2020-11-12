@@ -11,6 +11,8 @@
     "test": "karma start --single-run"
   },
   "dependencies": {
+    "@babel/core": "^7.12.3",
+    "@babel/preset-env": "^7.12.1",
     "ant-design-vue": "^1.6.2",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
@@ -23,6 +25,7 @@
     "mockjs": "^1.1.0",
     "moment": "^2.24.0",
     "node-uuid": "^1.4.8",
+    "style-loader": "^2.0.0",
     "tim-js-sdk": "^2.6.3",
     "vue": "^2.6.11",
     "vue-count-to": "^1.0.13",
