@@ -37,6 +37,7 @@
     ></ListForm>
     <div :ref="test" v-for="v in columns" :key="v.key"></div>
     <h1 ref="msg">{{ msg }}</h1>
+    <div v-html="xml"></div>
   </div>
 </template>
 <script>
@@ -49,6 +50,7 @@ export default {
       width: 50,
       ListForm,
       msg: "测试",
+      xml:'',
       columns: [
         {
           title: "地区",
@@ -94,6 +96,10 @@ export default {
   created() {},
   mounted() {
 
+    this.xml = `<h1>${this.height}</h1>`
+    this.$nextTick(()=> {
+      console.log('test',this.$refs['test'])
+    })
     this.drow();
   },
   methods: {
