@@ -1,7 +1,7 @@
 <template>
   <main class="card-container">
     <a-tabs type="card" :activeKey="activeName" @change="tabsChange">
-      <a-tab-pane :key="1" tab="职位招聘">
+      <a-tab-pane :key="1" tab="职位招聘" @hook:mounted="changeTabs">
         <section class="card_top">
           <a-page-header
             style="padding: 0px"
@@ -266,6 +266,9 @@ export default {
     },
     tabsChange(Key) {
       this.activeName = Key;
+    },
+    changeTabs() {
+      console.log("ok");
     },
     requestTable() {
       this.tableLoading = true;

@@ -42,8 +42,13 @@
         @click.native.self="removeShade"
       >
         <Tabs defaultKey="1" @on-click="changeTab">
-          <TabPane actKey="1" label="第一"> 内容1 </TabPane>
-          <TabPane actKey="2" label="第二"> 内容2 </TabPane>
+          <TabPane :key="1" v-if="tabIndex === '1'">
+            <a-input />
+          </TabPane>
+          <TabPane :key="2" v-else>
+            <a-input />
+            11
+          </TabPane>
         </Tabs>
       </MapModal>
     </transition>
@@ -62,6 +67,7 @@ export default {
       toTop: "",
       showModal: false,
       imgList,
+      tabIndex: '1',
     };
   },
   created() {},
@@ -87,6 +93,7 @@ export default {
     changeTab(item, index) {
       //调数据
       console.log("item, index", item, index);
+      this.tabIndex = item.actKey;
     },
     handleClick(event) {
       console.log(event.target.id);

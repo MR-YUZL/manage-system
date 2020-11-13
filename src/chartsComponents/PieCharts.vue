@@ -80,7 +80,8 @@ export default {
           name: item.name,
           itemStyle: {
             borderWidth: 3,
-            borderColor: color[index].borderColor,
+            borderColor:'#0f375f',
+            // borderColor: color[index].borderColor,
             color: color[index].itemColor,
           },
         });
@@ -97,7 +98,7 @@ export default {
             type: "pie",
             radius: ["30%", "80%"],  //大小
             center: ["40%", "50%"],  //位置
-            roseType: "radius",      //是否为南丁格尔图  通过圆心角来展示数据所占百分比，半径展示大小   ‘area’圆心角相同，仅通过半径来展示大小  
+            // roseType: "radius",      //是否为南丁格尔图  通过圆心角来展示数据所占百分比，半径展示大小   ‘area’圆心角相同，仅通过半径来展示大小  
             label: {
               show: true,
               normal: {

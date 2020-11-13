@@ -21,6 +21,12 @@
         <p>vue的名字</p>
       </div>
     </section> -->
+
+    <div class="flex2">
+      <div class="flex2__1">1</div>
+      <div class="flex2__2">1</div>
+    </div>
+
     <canvas id="myCanvas" :width="300" :height="150" class="blur">
       您的浏览器不支持 HTML5 canvas 标签。
     </canvas>
@@ -30,6 +36,10 @@
     </a-button-group>
     <a-button @click="toOne">跳转</a-button>
 
+    <div class="dialog">
+      <div class="dialog_arrow"></div>
+    </div>
+
     <ListForm
       :list.sync="ListForm"
       :columns="columns"
@@ -38,6 +48,22 @@
     <div :ref="test" v-for="v in columns" :key="v.key"></div>
     <h1 ref="msg">{{ msg }}</h1>
     <div v-html="xml"></div>
+    <a-progress
+      :percent="100"
+      :success-percent="(1.2 / 2.2) * 100"
+      :strokeColor="'#FF7E58'"
+    />
+
+    <div class="flex">
+      <div class="flex__left">
+        <div class="flex__left--first"></div>
+        <div class="flex__left--second"></div>
+        <div class="flex__left--third"></div>
+        <div class="flex__left--fourth"></div>
+        <div class="flex__left--fifth"></div>
+      </div>
+      <div class="flex__right"></div>
+    </div>
   </div>
 </template>
 <script>
@@ -50,7 +76,7 @@ export default {
       width: 50,
       ListForm,
       msg: "测试",
-      xml:'',
+      xml: "",
       columns: [
         {
           title: "地区",
@@ -95,11 +121,10 @@ export default {
   },
   created() {},
   mounted() {
-
-    this.xml = `<h1>${this.height}</h1>`
-    this.$nextTick(()=> {
-      console.log('test',this.$refs['test'])
-    })
+    this.xml = `<h1>${this.height}</h1>`;
+    this.$nextTick(() => {
+      console.log("test", this.$refs["test"]);
+    });
     this.drow();
   },
   methods: {
@@ -329,6 +354,109 @@ export default {
   height: 100%;
   width: 100%;
   text-align: center;
+  .dialog {
+    position: relative;
+    width: 100px;
+    height: 50px;
+    border: 1px solid #000;
+    border-radius: 5px;
+    // .dialog_arrow {
+    //   position: absolute;
+    //   left: -10px;
+    //   top: 0;
+    //   width: 0;
+    //   height: 0;
+    //   border-top: 10px solid transparent;
+    //   border-bottom: 10px solid transparent;
+    //   border-right: 10px solid #fff;
+    // }
+    &::before,
+    &::after {
+      content: "";
+      position: absolute;
+
+      width: 0;
+      height: 0;
+    }
+    &::before {
+      top: 0;
+      left: -10px;
+      border-right: 10px solid #000;
+      border-top: 10px solid transparent;
+      border-bottom: 10px solid transparent;
+    }
+    &::after {
+      left: -9px;
+      top: 1px;
+      border-right: 9px solid #fff;
+      border-top: 9px solid transparent;
+      border-bottom: 9px solid transparent;
+    }
+  }
+  .flex2 {
+    width: 500px;
+    height: 200px;
+    display: flex;
+    justify-content: space-between;
+    .flex2__1 {
+      width: 100px;
+      height: 100%;
+      // flex-grow: 1;
+      background: darkseagreen;
+    }
+    .flex2__2 {
+      height: 100%;
+      width: 100px;
+      // flex-grow: 1;
+      background: darkslateblue;
+    }
+  }
+  .flex {
+    width: 300px;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    .flex__left {
+      width: 50%;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-content: space-between;
+
+      .flex__left--first {
+        height: 30%;
+        width: 100%;
+        padding: 5px;
+      }
+      .flex__left--second,
+      .flex__left--third,
+      .flex__left--fourth,
+      .flex__left--fifth {
+        height: 30%;
+        width: 45%;
+        padding: 5px;
+      }
+      .flex__left--first {
+        background: cornflowerblue;
+      }
+      .flex__left--second {
+        background: cyan;
+      }
+      .flex__left--third {
+        background: darkblue;
+      }
+      .flex__left--fourth {
+        background: darkgreen;
+      }
+      .flex__left--fifth {
+        background: darksalmon;
+      }
+    }
+    .flex__right {
+      width: 50%;
+      background: chartreuse;
+    }
+  }
   .lists {
     display: flex;
     margin-top: 20px;
