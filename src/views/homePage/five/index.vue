@@ -51,6 +51,10 @@
         :width="'33%'"
       ></WaveCharts>
     </section>
+
+    <FunnelCharts class="fCharts" :chartsData="funnelData"></FunnelCharts>
+
+    <InstrumentCharts class="iCharts"></InstrumentCharts>
   </div>
 </template>
 <script>
@@ -61,6 +65,8 @@ import {
   ProCharts,
   WaveCharts,
   BarCharts,
+  FunnelCharts,
+  InstrumentCharts,
 } from "@/chartsComponents";
 import CountTo from "vue-count-to";
 export default {
@@ -82,6 +88,13 @@ export default {
       startVal: 0,
       endVal: 20,
       percent: 20,
+      funnelData: [
+        { value: 2, name: "赢单" },
+        { value: 8, name: "沟通细节" },
+        { value: 15, name: "方案/报价" },
+        { value: 25, name: "需求确认" },
+        { value: 50, name: "验证客户" },
+      ],
     };
   },
   watch: {
@@ -152,6 +165,8 @@ export default {
     ProCharts,
     WaveCharts,
     BarCharts,
+    FunnelCharts,
+    InstrumentCharts,
   },
 };
 </script>
@@ -160,7 +175,9 @@ export default {
   box-shadow: 0 0 10px #a2a2a2;
 }
 .lCharts,
-.bCharts {
+.bCharts,
+.fCharts,
+.iCharts {
   background: #fff;
   margin-top: 30px;
   padding: 30px 0;

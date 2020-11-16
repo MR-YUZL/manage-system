@@ -19,6 +19,8 @@ import LineCharts from './LineCharts.vue'
 import PieCharts from './PieCharts.vue'
 import ProCharts from './ProCharts.vue'
 import WaveCharts from './WaveCharts.vue'
+import FunnelCharts from './FunnelCharts.vue'
+import InstrumentCharts from './InstrumentCharts.vue'
 
 export {
     BarCharts,
@@ -26,5 +28,7 @@ export {
     LineCharts,
     PieCharts,
     ProCharts,
-    WaveCharts
+    WaveCharts,
+    FunnelCharts,
+    InstrumentCharts
 }

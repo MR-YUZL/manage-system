@@ -36,9 +36,15 @@
     </a-button-group>
     <a-button @click="toOne">跳转</a-button>
 
-    <div class="dialog">
-      <div class="dialog_arrow"></div>
-    </div>
+    <Steps :current.sync="value">
+      <Step
+        v-for="(v, index) in stepsList"
+        :key="index"
+        :index="index"
+        :height="v.height"
+        :content="v.content"
+      />
+    </Steps>
 
     <ListForm
       :list.sync="ListForm"
@@ -72,8 +78,14 @@ export default {
   name: "hover",
   data() {
     return {
+      value: 1,
       height: 50,
       width: 50,
+      stepsList: [
+        { height: 30, content: "测试1" },
+        { height: 40, content: "测试2" },
+        { content: "测试3" },
+      ],
       ListForm,
       msg: "测试",
       xml: "",
@@ -354,45 +366,6 @@ export default {
   height: 100%;
   width: 100%;
   text-align: center;
-  .dialog {
-    position: relative;
-    width: 100px;
-    height: 50px;
-    border: 1px solid #000;
-    border-radius: 5px;
-    // .dialog_arrow {
-    //   position: absolute;
-    //   left: -10px;
-    //   top: 0;
-    //   width: 0;
-    //   height: 0;
-    //   border-top: 10px solid transparent;
-    //   border-bottom: 10px solid transparent;
-    //   border-right: 10px solid #fff;
-    // }
-    &::before,
-    &::after {
-      content: "";
-      position: absolute;
-
-      width: 0;
-      height: 0;
-    }
-    &::before {
-      top: 0;
-      left: -10px;
-      border-right: 10px solid #000;
-      border-top: 10px solid transparent;
-      border-bottom: 10px solid transparent;
-    }
-    &::after {
-      left: -9px;
-      top: 1px;
-      border-right: 9px solid #fff;
-      border-top: 9px solid transparent;
-      border-bottom: 9px solid transparent;
-    }
-  }
   .flex2 {
     width: 500px;
     height: 200px;
