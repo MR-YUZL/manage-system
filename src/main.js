@@ -14,13 +14,17 @@ import "./chartsComponents";
 import "./layouts";
 import './mock'
 import './asyncRoute'
-import '@/style/index.less' 
+import '@/style/index.less'
 
 Vue.config.devtools = true
 import axios from 'axios'
 Vue.prototype.$axios = axios
 Vue.prototype.$utils = utils;
 Vue.prototype.$echarts = echarts
+
+// (function (doc, win) {
+//   console.log('doc,win', doc, win)
+// })(document, window);
 
 Vue.use(Antd);
 new Vue({

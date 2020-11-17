@@ -70,6 +70,12 @@
       </div>
       <div class="flex__right"></div>
     </div>
+
+    <div class="test">
+      <div class="test_child"></div>
+      <div class="test_child"></div>
+      <div class="test_child"></div>
+    </div>
   </div>
 </template>
 <script>
@@ -137,6 +143,9 @@ export default {
     this.$nextTick(() => {
       console.log("test", this.$refs["test"]);
     });
+    console.log("width", document.documentElement.clientWidth);
+    console.log("width", window.innerWidth);
+
     this.drow();
   },
   methods: {
@@ -366,20 +375,33 @@ export default {
   height: 100%;
   width: 100%;
   text-align: center;
+  .test {
+    display: flex;
+    justify-content: center;
+    height: 80px;
+    // width: 2rem;
+    width: 10vw;
+    .test_child {
+      height: 100%;
+      border: 1px solid #000;
+      margin: 0 0 -1px -1px;
+      flex-grow: 1;
+    }
+  }
   .flex2 {
-    width: 500px;
+    width: 5rem;
     height: 200px;
     display: flex;
     justify-content: space-between;
     .flex2__1 {
-      width: 100px;
+      width: 1rem;
       height: 100%;
       // flex-grow: 1;
       background: darkseagreen;
     }
     .flex2__2 {
       height: 100%;
-      width: 100px;
+      width: 1rem;
       // flex-grow: 1;
       background: darkslateblue;
     }
@@ -390,7 +412,7 @@ export default {
     display: flex;
     justify-content: space-between;
     .flex__left {
-      width: 50%;
+      width: calc(50% - 30px);
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
@@ -406,7 +428,7 @@ export default {
       .flex__left--fourth,
       .flex__left--fifth {
         height: 30%;
-        width: 45%;
+        width: calc(50% - 10px);
         padding: 5px;
       }
       .flex__left--first {
@@ -426,7 +448,7 @@ export default {
       }
     }
     .flex__right {
-      width: 50%;
+      width: calc(50% - 30px);
       background: chartreuse;
     }
   }

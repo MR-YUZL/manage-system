@@ -92,15 +92,38 @@ function uniqueArr(arr) { //去重
 //   return targetObj
 // }
 
+function resetScreenSizeTwo() {  //单位像素响应
+  var docEl = document.documentElement,
+
+    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
+
+    recalc = function () {
+
+      var clientWidth = docEl.clientWidth;
+
+      if (!clientWidth) return;
+
+      docEl.style.fontSize = 100 * (clientWidth / 1440) + 'px';
+
+    };
+
+  if (!document.addEventListener) return;
+
+  window.addEventListener(resizeEvt, recalc, false);
+
+  document.addEventListener('DOMContentLoaded', recalc, false);
+
+}
+
 function resetScreenSize() { //页面自适应
   function init() {
     var _el = document.getElementById('app');
-    var hScale = window.innerHeight / 1080;
-    var wScale = window.innerWidth / 1920;
+    var hScale = window.innerHeight / 757;
+    var wScale = window.innerWidth / 1440;
     // console.log(window.innerHeight, window.innerWidth)
     _el.style.transform = 'scaleX(' + wScale + ') scaleY(' + hScale + ')'
-    _el.style.marginLeft = -((1920 - window.innerWidth) / 2) + 'px'
-    _el.style.marginTop = -((1080 - window.innerHeight) / 2) + 'px'
+    _el.style.marginLeft = -((1440 - window.innerWidth) / 2) + 'px'
+    _el.style.marginTop = -((757 - window.innerHeight) / 2) + 'px'
     //   console.log(window.innerHeight, window.innerWidth)
   }
 
@@ -124,7 +147,8 @@ let utils = {
   toThousand,
   uniqueArr,
   compose,
-  resetScreenSize
+  resetScreenSize,
+  resetScreenSizeTwo
 }
 
 export default utils;

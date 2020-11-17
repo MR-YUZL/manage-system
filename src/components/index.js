@@ -9,7 +9,7 @@ const requireComponent = require.context('.', false, /\.vue$/)
 requireComponent.keys().forEach((fileName) => {
     const config = requireComponent(fileName).default
     const componentName = changeStr(
-        fileName.replace(/^\.\//, '').replace(/\.\w+$/, '')   
+        fileName.replace(/^\.\//, '').replace(/\.\w+$/, '')
     )
     Vue.component(componentName, config)
 })

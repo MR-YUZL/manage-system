@@ -22,7 +22,9 @@ export default {
     },
   },
   created() {},
-  mounted() {},
+  mounted() {
+    console.log('ok')
+  },
   methods: {},
 };
 </script>

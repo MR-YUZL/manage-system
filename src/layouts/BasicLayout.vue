@@ -193,10 +193,25 @@ export default {
       // box-shadow: 4px 0px 10px rgba(65, 106, 115, 1);
     }
     .body_right {
-      overflow: auto;
+      overflow-y: scroll;
       height: 100%;
       background: rgba(65, 106, 115, 0.1);
       padding: 24px;
+    }
+    .body_right::-webkit-scrollbar {
+      width: 10px;
+      height: 1px;
+    }
+    .body_right::-webkit-scrollbar-thumb {
+      //滑块部分
+      border-radius: 5px;
+      background-color: rosybrown;
+    }
+    .body_right::-webkit-scrollbar-track {
+      //轨道部分
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      background: #e8e8e8;
+      border-radius: 5px;
     }
   }
 }

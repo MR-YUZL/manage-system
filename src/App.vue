@@ -11,12 +11,13 @@ import zhCN from "ant-design-vue/lib/locale-provider/zh_CN";
 export default {
   name: "app",
   data: () => ({
-    locale: zhCN
+    locale: zhCN,
   }),
   mounted() {
+    console.log("performance", window.performance);
+    this.$utils.resetScreenSizeTwo();
   },
-  methods: {
-  }
+  methods: {},
 };
 </script>
 <style lang="less" scoped>
@@ -24,4 +25,5 @@ export default {
   height: 100%;
   width: 100%;
 }
+
 </style>
