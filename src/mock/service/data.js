@@ -104,6 +104,10 @@ const rootInfo = {
       page: 'hover',
       actions: []
     },
+    {
+      page: 'layout',
+      actions: []
+    },
   ]
 }
 

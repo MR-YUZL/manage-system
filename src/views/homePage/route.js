@@ -116,4 +116,12 @@ export const rootRoute = [{
     },
     component: () => import('./hover')
   },
+  {
+    path: '/layout',
+    name: 'layout',
+    meta: {
+      title: 'layout',
+    },
+    component: () => import('./layout')
+  },
 ]

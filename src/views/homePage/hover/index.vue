@@ -24,6 +24,7 @@
 
     <div class="flex2">
       <div class="flex2__1">1</div>
+
       <div class="flex2__2">1</div>
     </div>
 
@@ -76,6 +77,19 @@
       <div class="test_child"></div>
       <div class="test_child"></div>
     </div>
+
+    <viewer :images="imgs" style="margin-bottom: 30px">
+      <img v-for="src in imgs" :src="src.url" :key="src.title" />
+    </viewer>
+    <!-- 
+    <div id="imgTooles">
+      <ul>
+        <li v-for="(item,index)in this.imgList " :key="index">
+          <img :data-original="`${item}`" :src="item" />
+        </li>
+      </ul>
+    </div> -->
+
   </div>
 </template>
 <script>
@@ -91,6 +105,18 @@ export default {
         { height: 30, content: "测试1" },
         { height: 40, content: "测试2" },
         { content: "测试3" },
+      ],
+      imgs: [
+        {
+          url:
+            "https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=85690711,3884201894&fm=27&gp=0.jpg",
+          title: "图片1",
+        },
+        {
+          url:
+            "https://ss0.bdstatic.com/70cFvHSh_Q1YnxGkpoWK1HF6hhy/it/u=3564877025,796183547&fm=27&gp=0.jpg",
+          title: "图片2",
+        },
       ],
       ListForm,
       msg: "测试",
@@ -375,6 +401,7 @@ export default {
   height: 100%;
   width: 100%;
   text-align: center;
+
   .test {
     display: flex;
     justify-content: center;

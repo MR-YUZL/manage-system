@@ -45,6 +45,9 @@ export default {
       (per, cur) => (cur.height ? [...per, cur.height] : [...per]),
       []
     );
+    this.$nextTick(()=> {
+      console.log('this.$children[0]',this.$children[0].$el.clientHeight)
+    })
   },
   methods: {
     handClick(e) {
