@@ -2,9 +2,9 @@
   <div class="layout">
     <section class="leftNav">
       <section class="layout">
-        <div class="layout_one"></div>
-        <div class="layout_two"></div>
-        <div class="layout_three"></div>
+        <div class="layout_one" ref="one"></div>
+        <div class="layout_two" ref="two"></div>
+        <div class="layout_three" ref="three"></div>
       </section>
     </section>
     <section class="middle"></section>
@@ -22,7 +22,13 @@ export default {
     };
   },
   created() {},
-  mounted() {},
+  mounted() {
+    this.$nextTick(() => {
+      this.$refs.one.style.height = "100px";
+      this.$refs.two.style.flexGrow = 1;
+      this.$refs.three.style.flexGrow = 1;
+    });
+  },
   methods: {},
 };
 </script>
@@ -45,17 +51,16 @@ export default {
       height: 100%;
       .layout_one {
         width: 100%;
-        flex-grow: 1;
         background: chocolate;
       }
       .layout_two {
         width: 100%;
-        flex-grow: 1;
+
         background: cornsilk;
       }
       .layout_three {
         width: 100%;
-        flex-grow: 1;
+
         background: coral;
       }
     }
