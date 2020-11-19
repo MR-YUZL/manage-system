@@ -1,11 +1,62 @@
 <template>
   <div class="layout">
     <section class="leftNav">
-      <section class="layout">
-        <div class="layout_one" ref="one"></div>
-        <div class="layout_two" ref="two"></div>
-        <div class="layout_three" ref="three"></div>
-      </section>
+      <Collapse>
+        <CollapsePanel :header="header1" :id="0" :edit="true" style="flex-grow:3">
+          <div class="body">
+            <div class="body_name">{{ name }}</div>
+            <div
+              class="body_content"
+              v-for="(v, index) in contentList"
+              :key="index"
+            >
+              <span>{{ v.field }}</span>
+              <span> {{ v.content }}</span>
+            </div>
+          </div>
+          <template #footer>
+            <a-divider />
+          </template>
+        </CollapsePanel>
+
+        <CollapsePanel :header="header2" :id="1" style="flex-grow:5">
+          <div class="body">
+            <div class="body_title">
+              {{ title }}
+              <a-tag color="pink" class="body_title_tag"> pink </a-tag>
+            </div>
+            <div
+              class="body_content"
+              v-for="(v, index) in contentList"
+              :key="index"
+            >
+              <span>{{ v.field }}</span>
+              <span> {{ v.content }}</span>
+            </div>
+          </div>
+          <div class="body">
+            <div class="body_title">
+              {{ title }}
+              <a-tag color="pink" class="body_title_tag"> pink </a-tag>
+            </div>
+            <div
+              class="body_content"
+              v-for="(v, index) in contentList"
+              :key="index"
+            >
+              <span>{{ v.field }}</span>
+              <span> {{ v.content }}</span>
+            </div>
+          </div>
+          <template #footer>
+            <a-divider />
+          </template>
+        </CollapsePanel>
+
+        <CollapsePanel :header="header3" :id="2" :edit="true" style="flex-grow:2">
+          <div class="body"></div>
+        </CollapsePanel>
+      </Collapse>
     </section>
     <section class="middle"></section>
     <section class="rightNav"></section>
@@ -18,16 +69,26 @@ export default {
   components: {},
   data() {
     return {
-      title: "",
+      name: "浙江卓越科技有限公司",
+      header1: "公司信息",
+      header2: "历史商机",
+      header3: "客户画像",
+      title: "领航版50套",
+      contentList: [
+        { field: "资源分组", content: "资源二组" },
+        { field: "所属行业", content: "资源二组" },
+        { field: "联系地址", content: "资源二组" },
+        { field: "资源备注", content: "资源二组" },
+      ],
     };
   },
   created() {},
   mounted() {
-    this.$nextTick(() => {
-      this.$refs.one.style.height = "100px";
-      this.$refs.two.style.flexGrow = 1;
-      this.$refs.three.style.flexGrow = 1;
-    });
+    // this.$nextTick(() => {
+    //   this.$refs.one.style.height = "100px";
+    //   this.$refs.two.style.flexGrow = 1;
+    //   this.$refs.three.style.flexGrow = 1;
+    // });
   },
   methods: {},
 };
@@ -43,25 +104,29 @@ export default {
     left: 0;
     width: 200px;
     height: 100%;
-    background-color: gray;
-    .layout {
-      display: flex;
-      flex-direction: column;
-      width: 200px;
-      height: 100%;
-      .layout_one {
-        width: 100%;
-        background: chocolate;
+    background-color: #fff;
+    .body {
+      width: 100%;
+      .body_title {
+        position: relative;
+        font-size: 16px;
+        margin: 10px 6px;
+        .body_title_tag {
+          position: absolute;
+          top: 50%;
+          right: 0;
+          transform: translateY(-50%);
+        }
       }
-      .layout_two {
-        width: 100%;
-
-        background: cornsilk;
+      .body_name {
+        margin: 10px 6px;
+        font-size: 16px;
+        color: #000;
       }
-      .layout_three {
-        width: 100%;
 
-        background: coral;
+      .body_content {
+        font-size: 14px;
+        margin: 10px 6px;
       }
     }
   }

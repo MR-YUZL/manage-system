@@ -78,6 +78,10 @@
       <div class="test_child"></div>
     </div>
 
+    <Steps2 :list="list"></Steps2>
+
+    <Steps3></Steps3>
+
     <viewer :images="imgs" style="margin-bottom: 30px">
       <img v-for="src in imgs" :src="src.url" :key="src.title" />
     </viewer>
@@ -89,7 +93,6 @@
         </li>
       </ul>
     </div> -->
-
   </div>
 </template>
 <script>
@@ -105,6 +108,29 @@ export default {
         { height: 30, content: "测试1" },
         { height: 40, content: "测试2" },
         { content: "测试3" },
+      ],
+      list: [
+        {
+          height: 120,
+          time: this.$utils.getNowFormatDate(),
+          pv: "张子涵",
+          user: "杨子荣",
+          subtotal: "初次沟通",
+        },
+        {
+          height: 120,
+          time: this.$utils.getNowFormatDate(),
+          pv: "张子涵",
+          user: "杨子荣",
+          subtotal: "初次沟通",
+        },
+        {
+          height: 120,
+          time: this.$utils.getNowFormatDate(),
+          pv: "张子涵",
+          user: "杨子荣",
+          subtotal: "初次沟通 初次沟通 初次沟通 初次沟通 初次沟通 初次沟通 初次沟通 初次沟通",
+        },
       ],
       imgs: [
         {
