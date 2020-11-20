@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <ChinaMap :mapData="mapData"></ChinaMap>
+    <ChinaMap2 :mapData="mapData2"></ChinaMap2>
     <div>
       <a-button type="primary" @click="(e) => handleClick(e)" value="北京">
         北京
@@ -19,7 +19,7 @@
   </div>
 </template>
 <script>
-import { ChinaMap } from "@/chartsComponents";
+import { ChinaMap2 } from "@/chartsComponents";
 import { GetMapData } from "@/api/five";
 export default {
   name: "echartsMap",
@@ -28,6 +28,40 @@ export default {
       data: "北京",
       mapData: [],
       num: 50,
+      mapData2: [
+        {
+          name: "上海",
+          value: 18163,
+        },
+        {
+          name: "重庆",
+          value: 26,
+        },
+        {
+          name: "北京",
+          value: 395,
+        },
+        {
+          name: "浙江",
+          value: 285,
+        },
+        {
+          name: "山西",
+          value: 152,
+        },
+        {
+          name: "河南",
+          value: 261,
+        },
+          {
+          name: "云南",
+          value: 10,
+        },
+             {
+          name: "广州",
+          value: 0,
+        },
+      ],
     };
   },
   filters: {
@@ -55,7 +89,7 @@ export default {
     },
   },
   components: {
-    ChinaMap,
+    ChinaMap2,
   },
 };
 </script>

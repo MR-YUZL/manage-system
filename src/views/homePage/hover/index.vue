@@ -80,7 +80,7 @@
 
     <Steps2 :list="list"></Steps2>
 
-    <Steps3></Steps3>
+    <Steps3 :status.sync="status"></Steps3>
 
     <viewer :images="imgs" style="margin-bottom: 30px">
       <img v-for="src in imgs" :src="src.url" :key="src.title" />
@@ -104,6 +104,7 @@ export default {
       value: 1,
       height: 50,
       width: 50,
+      status:'',
       stepsList: [
         { height: 30, content: "测试1" },
         { height: 40, content: "测试2" },
