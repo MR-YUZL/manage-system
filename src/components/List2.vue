@@ -19,7 +19,10 @@
     </div>
     <div class="list">
       <div class="header">渠道</div>
-      <a-spin :spinning="spinning2" tip="加载中...">
+      <a-spin
+        :spinning="spinning2"
+        tip="加载中..."
+      >
         <template v-if="listChild.length">
           <div
             :class="[
@@ -64,7 +67,7 @@
       <div class="add" v-if="listChild.length" @click.stop="handleAdd">
         添加渠道
       </div>
-      <div class="noDataImg" v-else></div>
+      <div class="noDataImg" v-if="!spinning2 && !listChild.length"></div>
     </div>
   </div>
 </template>
@@ -144,8 +147,10 @@ export default {
     position: relative;
     width: 100%;
     min-height: 120px;
+    line-height: 120px;
     border: 1px solid rgb(235, 235, 235);
     margin: 0 0 -1px -1px;
+    text-align: center;
     .header {
       width: 100%;
       height: 48px;
@@ -153,6 +158,8 @@ export default {
       padding: 0px 20px;
       border-bottom: 1px solid rgb(235, 235, 235);
       color: #000;
+      text-align: left;
+      font-size: 18px;
     }
     .dataNull,
     .dataLoading {
@@ -167,6 +174,7 @@ export default {
       padding: 0 20px;
       color: rgba(0, 0, 0, 0.65);
       font-size: 14px;
+      text-align: left;
       transition: all 0.3s linear;
       cursor: pointer;
     }

@@ -17,7 +17,7 @@
         <div id="triangle-bule">
           <div id="triangle-white"></div>
         </div>
-        <span>{{ v.name }}</span>
+        <span style="margin: 0 auto">{{ v.name }}</span>
       </div>
       <div id="triangle-gray" v-if="v.status === 2"></div>
       <div id="triangle-bule" v-else>
@@ -27,7 +27,7 @@
     <div class="last">
       <div class="last_body" @click="handleClick">
         <div id="triangle-unfinish"></div>
-        <span>{{ statusList[statusList.length - 1].name }}</span>
+        <span style="margin:0 auto">{{ statusList[statusList.length - 1].name }}</span>
       </div>
     </div>
     <a-button
