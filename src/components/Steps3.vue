@@ -1,11 +1,17 @@
 <template>
   <div class="Steps3">
     <div class="first">
-      <div class="first_body" @click="handleClick">
+      <div
+        class="first_body"
+        @click="handleClick"
+        :class="statusList[0].status | status"
+      >
         <span>{{ statusList[0].name }}</span>
       </div>
-
-      <div id="triangle-bule"></div>
+      <div id="triangle-gray" v-if="statusList[0].status === 2"></div>
+      <div id="triangle-bule" v-else>
+        <div id="triangle-white" v-if="statusList[0].status === 1"></div>
+      </div>
     </div>
     <div
       class="proceed"
@@ -17,7 +23,7 @@
         <div id="triangle-bule">
           <div id="triangle-white"></div>
         </div>
-        <span>{{ v.name }}</span>
+        <span style="margin-left: 10px">{{ v.name }}</span>
       </div>
       <div id="triangle-gray" v-if="v.status === 2"></div>
       <div id="triangle-bule" v-else>
@@ -25,12 +31,20 @@
       </div>
     </div>
     <div class="last">
-      <div class="last_body" @click="handleClick">
-        <div id="triangle-unfinish"></div>
-        <span>{{ statusList[statusList.length - 1].name }}</span>
+      <div
+        class="last_body"
+        @click="handleClick"
+        :class="statusList[statusList.length - 1].status | status"
+      >
+        <div id="triangle-bule">
+          <div id="triangle-white"></div>
+        </div>
+        <span style="margin-left: 10px">{{
+          statusList[statusList.length - 1].name
+        }}</span>
       </div>
     </div>
-    <a-button
+    <!-- <a-button
       type="primary"
       class="btnWin"
       icon="check-circle"
@@ -45,7 +59,13 @@
       @click.native="low"
     >
       输单
-    </a-button>
+    </a-button> -->
+
+    <div class="tipLow">输单</div>
+
+    <div class="tipWin">方案阶段赢</div>
+
+    <div class="abandon">已作废</div>
   </div>
 </template>
 <script>
@@ -61,10 +81,6 @@ export default {
         { status: 2, name: "报价谈判" },
         { status: 2, name: "在谈判" },
       ], //1代表完成 2代表进行 3代表未完成
-    },
-    status: {
-      type: String,
-      default: "",
     },
   },
   components: {},
@@ -97,6 +113,35 @@ export default {
   align-items: center;
   padding: 10px 8px;
   background: rgb(240, 240, 240);
+  .tipLow,
+  .tipWin,
+  .abandon {
+    display: inline-block;
+    font-weight: 400;
+    white-space: nowrap;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.645, 0.045, 0.355, 1);
+    height: 32px;
+    width: 120px;
+    line-height: 32px;
+    padding: 0 15px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: 0;
+  }
+  .tipWin {
+    color: rgb(115, 206, 87);
+    background: rgb(220, 243, 214);
+  }
+  .tipLow {
+    color: rgb(251, 121, 87);
+    background: rgb(255, 222, 217);
+  }
+  .abandon {
+    color: rgb(184, 184, 184);
+    background: rgb(222, 222, 222);
+  }
   .finish {
     background: #1890ff;
     color: #fff;
@@ -129,8 +174,6 @@ export default {
       line-height: 30px;
       text-align: center;
       cursor: pointer;
-      color: #fff;
-      background: #1890ff;
     }
   }
   .proceed {
@@ -158,8 +201,6 @@ export default {
       display: flex;
       width: 110px;
       height: 30px;
-      background: rgb(222, 222, 222);
-      color: #fff;
 
       cursor: pointer;
       line-height: 30px;

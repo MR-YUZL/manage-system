@@ -4,10 +4,16 @@
       v-for="(v, index) in dataList"
       :key="index"
       class="item"
-      :style="{ height: itemHeight(v) }"
+      :style="{ height: itemHeight(v.data) }"
     >
-      <div class="item_body" :style="{ background: itemBk(index) }"></div>
-      <span class="item_value">{{ v }}</span>
+      <a-tooltip placement="left">
+        <template slot="title">
+          <span>{{ v.name }}:{{v.data}}</span>
+        </template>
+        <div class="item_body" :style="{ background: itemBk(index) }"></div>
+      </a-tooltip>
+
+      <span class="item_value">{{ v.data }}</span>
     </div>
   </div>
 </template>

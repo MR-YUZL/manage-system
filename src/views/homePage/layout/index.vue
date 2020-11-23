@@ -118,7 +118,13 @@ export default {
       xAxisLine: [],
       lineTitle: "消费趋势",
       pieData: [],
-      dataList: ["40%", "20%", "15%", "5%", "20%"],
+      dataList: [
+        { data: "30%", name: "表单" },
+        { data: "30%", name: "官网" },
+        { data: "25%", name: "百度" },
+        { data: "10%", name: "搜狗" },
+        { data: "5%", name: "神马" },
+      ],
       pieTitle: "",
     };
   },

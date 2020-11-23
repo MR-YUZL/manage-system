@@ -10,6 +10,8 @@
       @editChannel="editChannel"
       @deleteChannel="deleteChannel"
       @addChannel="addChannel"
+      @addType="addType"
+      @editType="editType"
     ></List2>
   </div>
 </template>
@@ -25,11 +27,13 @@ export default {
       spinning1: false,
       spinning2: false,
       list: [
-        { name: "未分类", num: 2 },
-        { name: "新媒体平台", num: 2 },
+        //父级数据
+        { name: "未分类", num: 2, id: "1" },
+        { name: "新媒体平台", num: 2, id: "2" },
       ],
       listChild: [],
       listChild1: [
+        //子级数据
         { name: "未命名1", id: "1" },
         { name: "未命名2", id: "2" },
         { name: "未命名3", id: "3" },
@@ -69,8 +73,16 @@ export default {
         }, 1000);
       }
     },
+    editType(name, id) {
+      this.list = this.list.map((v) => {
+        if (v.id === id) {
+          return { name, id, num: 0 };
+        }
+        return v;
+      });
+      this.$message.success("保存成功");
+    },
     editChannel(name, id) {
-      console.log("name", name, id);
       this.listChild = this.listChild1.map((v) => {
         if (v.id === id) {
           return { name, id };
@@ -80,15 +92,20 @@ export default {
       this.$message.success("保存成功");
     },
     deleteChannel(id) {
-      this.listChild = this.listChild2.filter((v) => v.id !== id);
+      this.listChild = this.listChild1.filter((v) => v.id !== id);
       this.$message.success("删除成功");
     },
     addChannel() {
-      let arr = JSON.parse(JSON.stringify(this.listChild1));
+      let arr = JSON.parse(JSON.stringify(this.listChild));
       arr.push({ name: "", id: `${arr.length + 1}` });
 
       this.listChild = arr;
       this.listChild1 = arr;
+    },
+    addType() {
+      let arr = JSON.parse(JSON.stringify(this.list));
+      arr.push({ name: "", num: 0, id: `${arr.length + 1}` });
+      this.list = arr;
     },
   },
 };
