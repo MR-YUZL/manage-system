@@ -80,7 +80,7 @@
 
     <Steps2 :list="list"></Steps2>
 
-    <Steps3 :status.sync="status"></Steps3>
+    <Steps3></Steps3>
 
     <viewer :images="imgs" style="margin-bottom: 30px">
       <img v-for="src in imgs" :src="src.url" :key="src.title" />

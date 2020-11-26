@@ -121,10 +121,15 @@ export default {
             normal: {
               borderColor: "rgba(0,63,140,0.2)",
               shadowColor: "rgba(0,63,140,0.2)",
-              shadowOffsetY: 20,
-              shadowBlur: 30,
+              // shadowOffsetY: 20,
+              // shadowBlur: 30,
               borderColor: "#fff",
               borderWidth: 1,
+            },
+          },
+          emphasis: {
+            itemStyle: {
+              areaColor: "rgba(51,197,246,0.7)",
             },
           },
         },
@@ -137,11 +142,6 @@ export default {
             geoIndex: 0,
             label: {
               show: false,
-            },
-            itemStyle: {
-              normal: {
-                areaColor: "#B2CAE0",
-              },
             },
             data,
           },

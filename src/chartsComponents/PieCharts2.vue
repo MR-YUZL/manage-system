@@ -109,7 +109,9 @@ export default {
               },
             },
             labelLine: {
-              show: false,
+              show: true,
+              length:8,
+              length2:4
             },
             data,
           },
