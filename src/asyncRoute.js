@@ -15,8 +15,10 @@ router.beforeEach(async (to, from, next) => {
                 const permission = await store.dispatch('GetUserInfo', token)
 
                 const asyncRoutes = await store.dispatch('AssignRoute', permission)
-                console.log('asyncRoutes', asyncRoutes)
-
+                router.addRoutes(asyncRoutes)  //正确写法
+                setTimeout(() => {
+                    console.log('router', router)
+                }, 1000)
                 next({
                     ...to,
                     replace: true

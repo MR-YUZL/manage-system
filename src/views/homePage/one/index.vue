@@ -197,7 +197,7 @@ import {
   formList,
   levelOptions,
 } from "@/utils/name.js";
-import { recruitTable } from "@/api/one";
+import { recruitTable, requestIn } from "@/api/one";
 export default {
   name: "one",
   components: {},
@@ -242,6 +242,7 @@ export default {
   },
   created() {},
   mounted() {
+    this.requestInfo();
     this.requestTable();
     this.init();
   },
@@ -269,6 +270,11 @@ export default {
     },
     changeTabs() {
       console.log("ok");
+    },
+    requestInfo(){
+      requestIn().then(res => {
+        console.log('res',res)
+      })
     },
     requestTable() {
       this.tableLoading = true;

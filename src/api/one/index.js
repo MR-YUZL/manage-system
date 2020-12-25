@@ -7,3 +7,11 @@ export function recruitTable(params) {
     data: params
   })
 }
+
+export function requestIn(params) {
+  return request({
+    url: '/system',
+    method: 'get',
+    data: params
+  })
+}

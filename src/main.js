@@ -7,6 +7,7 @@ import Antd from "ant-design-vue";
 import echarts from 'echarts'
 import axios from 'axios'
 import Viewer from 'v-viewer'
+import E from "wangeditor";
 
 import 'viewerjs/dist/viewer.css'
 import 'echarts-liquidfill'
@@ -24,7 +25,7 @@ Vue.config.devtools = true
 Vue.prototype.$axios = axios
 Vue.prototype.$utils = utils;
 Vue.prototype.$echarts = echarts
-
+Vue.prototype.$E = E
 // (function (doc, win) {
 //   console.log('doc,win', doc, win)
 // })(document, window);

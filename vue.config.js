@@ -37,7 +37,7 @@ module.exports = {
     proxy: {
       ".*": {
         // target: "http://192.168.1.181:8082",
-        target: "http://hfw.test.com", //回头配置开发本地地址
+        target: "https://www.taojibao.cn/mock/405/", //回头配置开发本地地址
         changeOrigin: true,
         ws: false
       }

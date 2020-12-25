@@ -15,33 +15,38 @@ let homeChild = store.state.user.mainRoute
 
 Vue.use(VueRouter);
 // router
-const router = new VueRouter({
+const createRouter = () => new VueRouter({
   routes: [{
-      path: '/login',
-      redirect: '/login',
-      name: 'LoginLayout',
-      component: LoginLayout,
-      children: [
-        ...loginChild
-      ]
-    },
-    {
-      path: '/showModal',
-      name: 'showModal',
-      component: () => import('@/views/showModal'),
-    },
-    {
-      path: '/',
-      name: 'homePage',
-      redirect: '/one',
-      component: BasicLayout,
-      children: [
-        ...homeChild
-      ]
-    },
+    path: '/login',
+    redirect: '/login',
+    name: 'LoginLayout',
+    component: LoginLayout,
+    children: [
+      ...loginChild
+    ]
+  },
+  {
+    path: '/showModal',
+    name: 'showModal',
+    component: () => import('@/views/showModal'),
+  },
+  {
+    path: '/',
+    name: 'homePage',
+    redirect: '/one',
+    component: BasicLayout,
+    children: [
+      ...homeChild
+    ]
+  },
   ]
 });
 
+const router = createRouter()
 
+export function resetRouter() {
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher
+}
 
 export default router;

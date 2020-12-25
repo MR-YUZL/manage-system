@@ -5,7 +5,7 @@ import {
 import {
   rootRoute,
 } from '@/views/homePage/route'
-import router from "@/routes/routes";
+import router, { resetRouter } from "@/routes/routes";
 
 const user = {
   state: {
@@ -68,6 +68,7 @@ const user = {
     }) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
+          // resetRouter()
           commit('SET_UESRINFO', {})
           sessionStorage.removeItem('TOKEN')
           resolve()
@@ -96,8 +97,7 @@ const user = {
         }
 
         let routeArr = routeFilter(rootRoute, permission)
-        // router.addRoutes(rootRoute)  //正确写法
-        commit('SET_ROUTERS', routeArr)  //会出问题
+        // commit('SET_ROUTERS', routeArr)  //会出问题
 
         resolve(routeArr)
       })

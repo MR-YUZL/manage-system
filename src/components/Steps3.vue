@@ -1,50 +1,64 @@
 <template>
   <div class="Steps3">
-    <div class="first">
-      <div
-        class="first_body"
-        @click="handleClick"
-        :class="statusList[0].status | status"
-      >
-        <span>{{ statusList[0].name }}</span>
+    <a-popover v-model="visibleObj['visible0']" title="Title" trigger="click">
+      <div slot="content" @click="hide(0)">Close</div>
+      <div class="first">
+        <div class="first_body" :class="statusList[0].status | status">
+          <span>{{ statusList[0].name }}</span>
+        </div>
+        <div id="triangle-gray" v-if="statusList[0].status === 2"></div>
+        <div id="triangle-bule" v-else>
+          <div id="triangle-white" v-if="statusList[0].status === 1"></div>
+        </div>
       </div>
-      <div id="triangle-gray" v-if="statusList[0].status === 2"></div>
-      <div id="triangle-bule" v-else>
-        <div id="triangle-white" v-if="statusList[0].status === 1"></div>
-      </div>
-    </div>
-    <div
-      class="proceed"
+    </a-popover>
+
+    <a-popover
+      v-model="visibleObj[`visible${index + 1}`]"
+      title="Title"
+      trigger="click"
       v-for="(v, index) in statusList.slice(1, -1)"
       :key="index"
-      @click="handleClick"
     >
-      <div class="proceed_body" :class="v.status | status">
-        <div id="triangle-bule">
-          <div id="triangle-white"></div>
+      <div slot="content" @click="hide(index + 1)">
+        <slot :name="v.title"></slot>
+      </div>
+      <div class="proceed">
+        <div class="proceed_body" :class="v.status | status">
+          <div id="triangle-bule">
+            <div id="triangle-white"></div>
+          </div>
+          <span style="margin-left: 10px">{{ v.name }}</span>
         </div>
-        <span style="margin-left: 10px">{{ v.name }}</span>
-      </div>
-      <div id="triangle-gray" v-if="v.status === 2"></div>
-      <div id="triangle-bule" v-else>
-        <div id="triangle-white" v-if="v.status === 1"></div>
-      </div>
-    </div>
-    <div class="last">
-      <div
-        class="last_body"
-        @click="handleClick"
-        :class="statusList[statusList.length - 1].status | status"
-      >
-        <div id="triangle-bule">
-          <div id="triangle-white"></div>
+        <div id="triangle-gray" v-if="v.status === 2"></div>
+        <div id="triangle-bule" v-else>
+          <div id="triangle-white" v-if="v.status === 1"></div>
         </div>
-        <span style="margin-left: 10px">{{
-          statusList[statusList.length - 1].name
-        }}</span>
       </div>
-    </div>
-    <!-- <a-button
+    </a-popover>
+
+    <a-popover
+      v-model="visibleObj[`visible${statusList.length - 1}`]"
+      title="Title"
+      trigger="click"
+    >
+      <div slot="content" @click="hide(statusList.length - 1)">Close</div>
+      <div class="last">
+        <div
+          class="last_body"
+          @click="handleClick"
+          :class="statusList[statusList.length - 1].status | status"
+        >
+          <div id="triangle-bule">
+            <div id="triangle-white"></div>
+          </div>
+          <span style="margin-left: 10px">{{
+            statusList[statusList.length - 1].name
+          }}</span>
+        </div>
+      </div>
+    </a-popover>
+    <a-button
       type="primary"
       class="btnWin"
       icon="check-circle"
@@ -59,13 +73,13 @@
       @click.native="low"
     >
       输单
-    </a-button> -->
+    </a-button>
 
-    <div class="tipLow">输单</div>
+    <!-- <div class="tipLow">输单</div>
 
     <div class="tipWin">方案阶段赢</div>
 
-    <div class="abandon">已作废</div>
+    <div class="abandon">已作废</div> -->
   </div>
 </template>
 <script>
@@ -75,11 +89,11 @@ export default {
     statusList: {
       type: Array,
       default: () => [
-        { status: 0, name: "初步接洽" },
-        { status: 0, name: "需求确定" },
-        { status: 1, name: "方案阶段" },
-        { status: 2, name: "报价谈判" },
-        { status: 2, name: "在谈判" },
+        { status: 2, name: "初步接洽", title: "a" },
+        { status: 0, name: "需求确定", title: "b" },
+        { status: 1, name: "方案阶段", title: "c" },
+        { status: 2, name: "报价谈判", title: "d" },
+        { status: 2, name: "在谈判", title: "e" },
       ], //1代表完成 2代表进行 3代表未完成
     },
   },
@@ -92,15 +106,26 @@ export default {
     },
   },
   data() {
-    return {};
+    return {
+      visibleObj: {},
+    };
   },
-  created() {},
+  created() {
+    this.$nextTick(() => {
+      for (let index = 0; index < this.statusList.length; index++) {
+        this.$set(this.visibleObj, `visible${index}`, false);
+      }
+    });
+  },
   mounted() {},
   methods: {
     handleClick(e) {
       let name = e.target.innerText;
 
       this.$emit("update:status", name);
+    },
+    hide(index) {
+      this.$set(this.visibleObj, `visible${index}`, false);
     },
     win() {},
     low() {},

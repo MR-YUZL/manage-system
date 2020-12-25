@@ -80,7 +80,14 @@
 
     <Steps2 :list="list"></Steps2>
 
-    <Steps3></Steps3>
+    <Steps3>
+      <template #b>
+        <div>
+          <div>test</div>
+          <div>test</div>
+        </div>
+      </template>
+    </Steps3>
 
     <viewer :images="imgs" style="margin-bottom: 30px">
       <img v-for="src in imgs" :src="src.url" :key="src.title" />
@@ -93,6 +100,9 @@
         </li>
       </ul>
     </div> -->
+
+    <div id="edit"></div>
+    <a-button @click="handleOn">提交</a-button>
   </div>
 </template>
 <script>
@@ -101,10 +111,12 @@ export default {
   name: "hover",
   data() {
     return {
+      text: "",
+      editor: null,
       value: 1,
       height: 50,
       width: 50,
-      status:'',
+      status: "",
       stepsList: [
         { height: 30, content: "测试1" },
         { height: 40, content: "测试2" },
@@ -130,7 +142,8 @@ export default {
           time: this.$utils.getNowFormatDate(),
           pv: "张子涵",
           user: "杨子荣",
-          subtotal: "初次沟通 初次沟通 初次沟通 初次沟通 初次沟通 初次沟通 初次沟通 初次沟通",
+          subtotal:
+            "初次沟通 初次沟通 初次沟通 初次沟通 初次沟通 初次沟通 初次沟通 初次沟通",
         },
       ],
       imgs: [
@@ -190,6 +203,11 @@ export default {
       this.drow();
     },
   },
+  watch: {
+    text(val) {
+      console.log("val", val);
+    },
+  },
   created() {},
   mounted() {
     this.xml = `<h1>${this.height}</h1>`;
@@ -200,6 +218,9 @@ export default {
     console.log("width", window.innerWidth);
 
     this.drow();
+
+    this.editor = new this.$E("#edit");
+    this.editor.create();
   },
   methods: {
     test(el) {
@@ -214,6 +235,10 @@ export default {
       //   height = 100;
       // }
       this.height = height;
+    },
+    handleOn() {
+      this.text = this.editor.txt.text();
+      console.log("text", this.text);
     },
     decline() {
       let height = this.height - 5;
