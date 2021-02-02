@@ -46,7 +46,6 @@ export default {
       []
     );
     this.$nextTick(()=> {
-      console.log('this.$children[0]',this.$children[0].$el.clientHeight)
     })
   },
   methods: {

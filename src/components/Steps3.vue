@@ -96,6 +96,10 @@ export default {
         { status: 2, name: "在谈判", title: "e" },
       ], //1代表完成 2代表进行 3代表未完成
     },
+    testObj: {
+      type: Object,
+      default: () => {},
+    },
   },
   components: {},
   filters: {
@@ -117,7 +121,9 @@ export default {
       }
     });
   },
-  mounted() {},
+  mounted() {
+    this.$set(this.testObj, "a", 0);
+  },
   methods: {
     handleClick(e) {
       let name = e.target.innerText;

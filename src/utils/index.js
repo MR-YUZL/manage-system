@@ -5,6 +5,8 @@ function flatten(arr = []) { //扁平化
   return arr;
 }
 
+
+
 function deepClone(obj, hash = new WeakMap()) { //深拷贝
   if (obj === null) return obj; // 如果是null或者undefined我就不进行拷贝操作
   if (obj instanceof Date) return new Date(obj);

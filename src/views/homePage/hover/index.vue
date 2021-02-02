@@ -22,6 +22,12 @@
       </div>
     </section> -->
 
+    <div class="test1">
+      <div class="test1_test"></div>
+      <div class="test1_test"></div>
+      <div class="test1_test"></div>
+    </div>
+
     <div class="flex2">
       <div class="flex2__1">1</div>
 
@@ -80,7 +86,43 @@
 
     <Steps2 :list="list"></Steps2>
 
-    <Steps3>
+    <a-select
+      @change="handleChange"
+      ref="select"
+      style="width: 120px"
+      v-model="valueSelect"
+    >
+      <a-select-option value="1"> Jack </a-select-option>
+      <a-select-option value="2"> Lucy </a-select-option>
+      <a-select-option value="3"> Disabled </a-select-option>
+      <a-select-option value="4"> yiminghe </a-select-option>
+    </a-select>
+
+    <a-tree-select
+      v-model="valueTree"
+      show-search
+      style="width: 100%"
+      :dropdown-style="{ maxHeight: '400px', overflow: 'auto' }"
+      placeholder="Please select"
+      allow-clear
+      tree-default-expand-all
+      @search="search"
+      @change="change"
+    >
+      <a-tree-select-node key="0-1" value="parent 1" title="parent 1">
+        <a-tree-select-node key="0-1-1" value="parent 1-0" title="parent 1-0">
+          <a-tree-select-node key="random" value="leaf1" title="my leaf" />
+          <a-tree-select-node key="random1" value="leaf2" title="your leaf" />
+        </a-tree-select-node>
+        <a-tree-select-node key="random2" value="parent 1-1" title="parent 1-1">
+          <a-tree-select-node key="random3" value="sss">
+            <b slot="title" style="color: #08c">sss</b>
+          </a-tree-select-node>
+        </a-tree-select-node>
+      </a-tree-select-node>
+    </a-tree-select>
+
+    <Steps3 :testObj="testObj">
       <template #b>
         <div>
           <div>test</div>
@@ -88,6 +130,10 @@
         </div>
       </template>
     </Steps3>
+
+    <div v-for="(value, key) in testObj" :key="key">
+      {{ value }} ----- {{ key }}
+    </div>
 
     <viewer :images="imgs" style="margin-bottom: 30px">
       <img v-for="src in imgs" :src="src.url" :key="src.title" />
@@ -102,21 +148,39 @@
     </div> -->
 
     <div id="edit"></div>
-    <a-button @click="handleOn">提交</a-button>
+    <a-button @click="downloadImg">提交</a-button>
+    <a href="" id="download" @click="(e) => e.preventDefault()">下载</a>
+
+    <input type="file" id="file" />
+    <!-- <img
+      src="https://bf02-1400440145-1303031839.cos.ap-shanghai.myqcloud.com/bf02-1400440145/35b9-qfy-a270db0622554bd7856e5a5e2060f937/qfy-a270db0622554bd7856e5a5e2060f937-LTEwMzI2MTU1NjQ%3D-17134-pexels-benjamin-suter-2362004.jpg"
+      alt=""
+      @click="
+        downloadImgByBlob(
+          'https://bf02-1400440145-1303031839.cos.ap-shanghai.myqcloud.com/bf02-1400440145/35b9-qfy-a270db0622554bd7856e5a5e2060f937/qfy-a270db0622554bd7856e5a5e2060f937-LTEwMzI2MTU1NjQ%3D-17134-pexels-benjamin-suter-2362004.jpg'
+        )
+      "
+    /> -->
   </div>
 </template>
 <script>
+import CompositeImage from "composite-image";
+import { DownloadImg } from "@/utils/downloadImg";
 import { ListForm } from "@/utils/name";
 export default {
   name: "hover",
   data() {
     return {
+      file: null,
       text: "",
       editor: null,
       value: 1,
       height: 50,
       width: 50,
       status: "",
+      valueSelect: "1",
+      valueTree: "",
+      testObj: {},
       stepsList: [
         { height: 30, content: "测试1" },
         { height: 40, content: "测试2" },
@@ -202,9 +266,7 @@ export default {
     width() {
       this.drow();
     },
-  },
-  watch: {
-    text(val) {
+    file(val) {
       console.log("val", val);
     },
   },
@@ -212,17 +274,136 @@ export default {
   mounted() {
     this.xml = `<h1>${this.height}</h1>`;
     this.$nextTick(() => {
-      console.log("test", this.$refs["test"]);
+      this.file = document.getElementById("file").value;
     });
-    console.log("width", document.documentElement.clientWidth);
-    console.log("width", window.innerWidth);
+    // console.log("width", document.documentElement.clientWidth);
+    // console.log("width", window.innerWidth);
 
     this.drow();
 
     this.editor = new this.$E("#edit");
     this.editor.create();
+
+    let obj = {
+      a: 1,
+    };
+    let obj2 = Object.prototype;
+
+    // Object.defineProperty(obj2, "b", {
+    //   get: () => {
+    //     return this.height + 1;
+    //   },
+    //   set: (y) => {
+    //     console.log('y',y)
+    //     y + 3;
+    //   },
+    // });
+
+    // let newObj = new Object();
+    // newObj.b = 5;
+    // console.log("obj", newObj);
+
+    var now = new Date();
+    now.setFullYear(2001, 1);
+    console.log("now", now);
   },
   methods: {
+    downloadImg() {
+      let downloadImg = new DownloadImg();
+      downloadImg.init(
+        "download",
+        "https://bf02-1400440145-1303031839.cos.ap-shanghai.myqcloud.com/bf02-1400440145/35b9-qfy-a270db0622554bd7856e5a5e2060f937/qfy-a270db0622554bd7856e5a5e2060f937-LTEwMzI2MTU1NjQ%3D-17134-pexels-benjamin-suter-2362004.jpg"
+      );
+    },
+    getBase64(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+      });
+    },
+    getBase(imgUrl) {
+      let that = this;
+      window.URL = window.URL || window.webkitURL;
+      var xhr = new XMLHttpRequest();
+      xhr.open(
+        "get",
+        "https://bf02-1400440145-1303031839.cos.ap-shanghai.myqcloud.com/bf02-1400440145/35b9-qfy-a270db0622554bd7856e5a5e2060f937/qfy-a270db0622554bd7856e5a5e2060f937-LTEwMzI2MTU1NjQ%3D-17134-pexels-benjamin-suter-2362004.jpg",
+        true
+      );
+      // 至关重要
+      xhr.responseType = "blob";
+      xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+      xhr.onload = async function () {
+        if (this.status == 200) {
+          //得到一个blob对象
+          var content = this.response;
+          var blob = new Blob([content]);
+          // 至关重要
+          let base64 = await that.getBase64(blob);
+
+          var a = document.createElement("a"); // 生成一个a元素
+          var event = new MouseEvent("click"); // 创建一个单击事件
+          a.download = name || "photo"; // 设置图片名称
+          a.href = base64; // 将生成的URL设置为a.href属性
+          a.dispatchEvent(event); // 触发a的单击事件
+        }
+      };
+      xhr.send();
+    },
+    downloadIamge(imgsrc, name) {
+      // 下载图片地址和图片名
+      var image = new Image();
+      // 解决跨域 Canvas 污染问题
+      image.setAttribute("crossOrigin", "anonymous");
+      image.onload = async function () {
+        var canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        var context = canvas.getContext("2d");
+        context.drawImage(image, 0, 0, image.width, image.height);
+        var url = canvas.toDataURL("image/jpeg", 0.7); // 得到图片的base64编码数据
+        // var url = await this.getBase64(imgsrc);
+        var a = document.createElement("a"); // 生成一个a元素
+        var event = new MouseEvent("click"); // 创建一个单击事件
+        a.download = name || "photo"; // 设置图片名称
+        a.href = url; // 将生成的URL设置为a.href属性
+        a.dispatchEvent(event); // 触发a的单击事件
+      };
+      image.src = imgsrc;
+    },
+    downloadImgByBlob(url) {
+      var img = new Image();
+      img.onload = function () {
+        var canvas = document.createElement("canvas");
+        canvas.width = img.width;
+        canvas.height = img.height;
+        var ctx = canvas.getContext("2d");
+        // 将img中的内容画到画布上
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        // 将画布内容转换为Blob
+        canvas.toBlob((blob) => {
+          // blob转为同源url0
+          var blobUrl = window.URL.createObjectURL(blob);
+          // 创建a链接
+          var a = document.createElement("a");
+          a.href = blobUrl;
+          a.download = "";
+          // 触发a链接点击事件，浏览器开始下载文件
+          a.click();
+        });
+      };
+      img.src = url;
+      // 必须设置，否则canvas中的内容无法转换为blob
+      img.setAttribute("crossOrigin", "Anonymous");
+    },
+    search(value) {
+      console.log("value", value);
+    },
+    change(value, label, extra) {
+      console.log("value, label, extra", value, label, extra);
+    },
     test(el) {
       console.log("el", el);
     },
@@ -235,6 +416,18 @@ export default {
       //   height = 100;
       // }
       this.height = height;
+    },
+    handleChange(value, option) {
+      console.log(
+        "value,option",
+        value,
+        option.componentOptions.children[0].elm.data.trim()
+      );
+      console.log(
+        "select",
+        this.$refs.select.$el.innerText,
+        document.getElementById("select").innerText
+      );
     },
     handleOn() {
       this.text = this.editor.txt.text();
@@ -638,6 +831,20 @@ export default {
   .blur {
     box-shadow: 0 0 10px #3085a3;
     margin: 0 auto;
+  }
+}
+.test1 {
+  width: 300px;
+  .test1_test {
+    width: 100%;
+    height: 100px;
+    margin-bottom: 10px;
+    &:not(:last-child) {
+      background: #3085a3;
+    }
+    &:last-child {
+      background: #000;
+    }
   }
 }
 </style>

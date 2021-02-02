@@ -43,7 +43,6 @@ export default {
   },
   methods: {
     assignment() {
-      console.log("this.content", this.content);
       if (this.current === this.index) {
         this.$parent.content = this.content;
       }

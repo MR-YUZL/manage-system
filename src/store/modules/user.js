@@ -68,7 +68,7 @@ const user = {
     }) {
       return new Promise((resolve, reject) => {
         setTimeout(() => {
-          // resetRouter()
+          resetRouter()
           commit('SET_UESRINFO', {})
           sessionStorage.removeItem('TOKEN')
           resolve()

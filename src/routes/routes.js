@@ -16,7 +16,8 @@ let homeChild = store.state.user.mainRoute
 Vue.use(VueRouter);
 // router
 const createRouter = () => new VueRouter({
-  routes: [{
+  routes: [
+    {
     path: '/login',
     redirect: '/login',
     name: 'LoginLayout',

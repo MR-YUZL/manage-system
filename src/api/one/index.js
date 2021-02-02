@@ -10,7 +10,7 @@ export function recruitTable(params) {
 
 export function requestIn(params) {
   return request({
-    url: '/system',
+    url: '/mock/13/system',
     method: 'get',
     data: params
   })
