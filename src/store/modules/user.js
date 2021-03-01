@@ -5,7 +5,9 @@ import {
 import {
   rootRoute,
 } from '@/views/homePage/route'
-import router, { resetRouter } from "@/routes/routes";
+import router, {
+  resetRouter
+} from "@/routes/routes";
 
 const user = {
   state: {
@@ -50,7 +52,9 @@ const user = {
       commit
     }, token) {
       return new Promise((resolve, reject) => {
-        GetUserInfo({ token }).then(res => {
+        GetUserInfo({
+          token
+        }).then(res => {
           if (res.code === 200) {
             const result = res.result
 

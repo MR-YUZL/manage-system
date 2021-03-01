@@ -22,6 +22,9 @@
       </div>
     </section> -->
 
+    <h1>{{ message }}</h1>
+    <input v-model="message" />
+
     <div class="test1">
       <div class="test1_test"></div>
       <div class="test1_test"></div>
@@ -257,6 +260,16 @@ export default {
   filters: {
     numFormat(val) {
       return val;
+    },
+  },
+  computed: {
+    message: {
+      get() {
+        return this.value;
+      },
+      set(value) {
+        this.value = Number(value) + 1;
+      },
     },
   },
   watch: {

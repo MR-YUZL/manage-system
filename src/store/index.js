@@ -1,15 +1,19 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-import user from './modules/user'
+const path = require('path')
+const modules = {}
+const modulesFiles = require.context('./modules', false, /\.js$/)
 
+modulesFiles.keys().forEach(fileName => {
+  let name = path.basename(fileName, '.js')
+  modules[name] = modulesFiles(fileName).default
+});
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-  modules: {
-    user,
-  },
+  modules,
   state: {
 
   },
