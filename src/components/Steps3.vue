@@ -123,6 +123,7 @@ export default {
   },
   mounted() {
     this.$set(this.testObj, "a", 0);
+    console.log('ok')
   },
   methods: {
     handleClick(e) {

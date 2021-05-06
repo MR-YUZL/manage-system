@@ -1,13 +1,13 @@
-function flatten(arr = []) { //扁平化
-  while (arr.some(r => Array.isArray(r))) {
-    arr = [].concat.apply([], arr)
+function flatten(arr = []) {
+  //扁平化
+  while (arr.some((r) => Array.isArray(r))) {
+    arr = [].concat.apply([], arr);
   }
   return arr;
 }
 
-
-
-function deepClone(obj, hash = new WeakMap()) { //深拷贝
+function deepClone(obj, hash = new WeakMap()) {
+  //深拷贝
   if (obj === null) return obj; // 如果是null或者undefined我就不进行拷贝操作
   if (obj instanceof Date) return new Date(obj);
   if (obj instanceof RegExp) return new RegExp(obj);
@@ -27,10 +27,22 @@ function deepClone(obj, hash = new WeakMap()) { //深拷贝
   return cloneObj;
 }
 
+export function debounce(func, wait) {
+  let timeout;
+  return function() {
+    const context = this;
+    const args = [...arguments];
+    if (timeout) clearTimeout(timeout);
+    timeout = setTimeout(() => {
+      func.apply(context, args);
+    }, wait);
+  };
+}
 
-function throttle(fn, gapTime) { //节流
+function throttle(fn, gapTime) {
+  //节流
   let _lastTime = null;
-  return function () {
+  return function() {
     let _nowTime = +new Date();
     if (_nowTime - _lastTime > gapTime || !_lastTime) {
       fn();
@@ -39,12 +51,13 @@ function throttle(fn, gapTime) { //节流
   };
 }
 
-function compareUp(property) { //以某一个属性正序
-  return function (a, b) {
+function compareUp(property) {
+  //以某一个属性正序
+  return function(a, b) {
     var value1 = parseFloat(a[property]);
     var value2 = parseFloat(b[property]);
     return value1 - value2;
-  }
+  };
 }
 
 function getNowFormatDate() {
@@ -54,52 +67,65 @@ function getNowFormatDate() {
   var year = date.getFullYear();
   var month = date.getMonth() + 1;
   var strDate = date.getDate();
-  var hours = date.getHours();       // 获取当前小时数(0-23)
-  var min = date.getMinutes();     // 获取当前分钟数(0-59)
+  var hours = date.getHours(); // 获取当前小时数(0-23)
+  var min = date.getMinutes(); // 获取当前分钟数(0-59)
   // var sec = date.getSeconds();     // 获取当前秒数(0-59)
   if (month >= 1 && month <= 9) {
-      month = "0" + month;
+    month = "0" + month;
   }
   if (strDate >= 0 && strDate <= 9) {
-      strDate = "0" + strDate;
+    strDate = "0" + strDate;
   }
 
-  var currentdate = year + seperator1 + month + seperator1 + strDate + seperator1 + hours + seperator2 + min;
+  var currentdate =
+    year +
+    seperator1 +
+    month +
+    seperator1 +
+    strDate +
+    seperator1 +
+    hours +
+    seperator2 +
+    min;
   // var currentdate = year + seperator1 + month + seperator1 + strDate;
   return currentdate;
 }
 
-function compareDown(property) { //以某一个属性倒叙
-  return function (a, b) {
+function compareDown(property) {
+  //以某一个属性倒叙
+  return function(a, b) {
     var value1 = parseFloat(a[property]);
     var value2 = parseFloat(b[property]);
     return value2 - value1;
-  }
+  };
 }
 
-function toThousand(val) { //千位符
-  let s = val.toString().split('.')[0]
-  let d = 0
-  if (val.split('.')[1]) {
-    d = val.split('.')[1]
+function toThousand(val) {
+  //千位符
+  let s = val.toString().split(".")[0];
+  let d = 0;
+  if (val.split(".")[1]) {
+    d = val.split(".")[1];
   }
   var reg = /\d{1,3}(?=(\d{3})+$)/g;
-  s = (s + '').replace(reg, '$&,')
-  let result = ''
-  d ? result = s + '.' + d : result = s
-  return result
+  s = (s + "").replace(reg, "$&,");
+  let result = "";
+  d ? (result = s + "." + d) : (result = s);
+  return result;
 }
 
-function compose(...funcs) { //组合函数
-  return function (x) {
-    return funcs.reduce(function (arg, fn) {
+function compose(...funcs) {
+  //组合函数
+  return function(x) {
+    return funcs.reduce(function(arg, fn) {
       return fn(arg);
     }, x);
   };
 }
 
-function uniqueArr(arr) { //去重
-  return Array.from(new Set(arr))
+function uniqueArr(arr) {
+  //去重
+  return Array.from(new Set(arr));
 }
 // function deepClone(source) {
 //   if (!source && typeof source !== 'object') {
@@ -116,38 +142,35 @@ function uniqueArr(arr) { //去重
 //   return targetObj
 // }
 
-function resetScreenSizeTwo() {  //单位像素响应
+function resetScreenSizeTwo() {
+  //单位像素响应
   var docEl = document.documentElement,
-
-    resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',
-
-    recalc = function () {
-
+    resizeEvt = "orientationchange" in window ? "orientationchange" : "resize",
+    recalc = function() {
       var clientWidth = docEl.clientWidth;
 
       if (!clientWidth) return;
 
-      docEl.style.fontSize = 100 * (clientWidth / 1440) + 'px';
-
+      docEl.style.fontSize = 100 * (clientWidth / 1440) + "px";
     };
 
   if (!document.addEventListener) return;
 
   window.addEventListener(resizeEvt, recalc, false);
 
-  document.addEventListener('DOMContentLoaded', recalc, false);
-
+  document.addEventListener("DOMContentLoaded", recalc, false);
 }
 
-function resetScreenSize() { //页面自适应
+function resetScreenSize() {
+  //页面自适应
   function init() {
-    var _el = document.getElementById('app');
+    var _el = document.getElementById("app");
     var hScale = window.innerHeight / 757;
     var wScale = window.innerWidth / 1440;
     // console.log(window.innerHeight, window.innerWidth)
-    _el.style.transform = 'scaleX(' + wScale + ') scaleY(' + hScale + ')'
-    _el.style.marginLeft = -((1440 - window.innerWidth) / 2) + 'px'
-    _el.style.marginTop = -((757 - window.innerHeight) / 2) + 'px'
+    _el.style.transform = "scaleX(" + wScale + ") scaleY(" + hScale + ")";
+    _el.style.marginLeft = -((1440 - window.innerWidth) / 2) + "px";
+    _el.style.marginTop = -((757 - window.innerHeight) / 2) + "px";
     //   console.log(window.innerHeight, window.innerWidth)
   }
 
@@ -156,10 +179,49 @@ function resetScreenSize() { //页面自适应
   window.onresize = () => {
     clearTimeout(lazyFun);
     lazyFun = setTimeout(() => {
-      init()
-    }, 600)
+      init();
+    }, 600);
+  };
+  init();
+}
+
+export function fileLinkToStreamDownload(url, fileName, type) {
+  let reg = /^([hH][tT]{2}[pP]:\/\/|[hH][tT]{2}[pP][sS]:\/\/)(([A-Za-z0-9-~]+).)+([A-Za-z0-9-~\/])+$/;
+  if (!reg.test(url)) {
+    throw new Error("传入参数不合法,不是标准的文件链接");
+  } else {
+    let xhr = new XMLHttpRequest();
+    xhr.open("get", url, true);
+    xhr.setRequestHeader("Content-Type", `application/x-www-form-urlencoded`);
+    xhr.responseType = "blob";
+    xhr.onload = function() {
+      if (this.status == 200) {
+        //接受二进制文件流
+        var blob = this.response;
+        downloadExportFile(blob, fileName, type);
+      }
+    };
+    xhr.send();
   }
-  init()
+}
+
+function downloadExportFile(blob, tagFileName, fileType) {
+  let downloadElement = document.createElement("a");
+  let href = blob;
+  if (typeof blob == "string") {
+    downloadElement.target = "_blank";
+  } else {
+    href = window.URL.createObjectURL(blob); //创建下载的链接
+  }
+  downloadElement.href = href;
+  downloadElement.download =
+    tagFileName + new Date().getTime() + "." + fileType; //下载后文件名
+  document.body.appendChild(downloadElement);
+  downloadElement.click(); //点击下载
+  document.body.removeChild(downloadElement); //下载完成移除元素
+  if (typeof blob != "string") {
+    window.URL.revokeObjectURL(href); //释放掉blob对象
+  }
 }
 
 let utils = {
@@ -173,7 +235,7 @@ let utils = {
   compose,
   resetScreenSize,
   resetScreenSizeTwo,
-  getNowFormatDate
-}
+  getNowFormatDate,
+};
 
 export default utils;

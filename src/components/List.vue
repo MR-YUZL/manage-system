@@ -112,7 +112,7 @@ export default {
     background: #ffffff;
   }
   .list--click {
-    background: rgba(24, 144, 255);
+    background: rgb(24, 144, 255);
     color: #ffffff;
   }
   .list--unClick {

@@ -54,8 +54,6 @@ export default {
 .step {
   display: flex;
   justify-content: flex-start;
-  align-self: center;
-
   .line {
     position: absolute;
     top: 100%;

@@ -14,7 +14,8 @@ export default {
     locale: zhCN,
   }),
   mounted() {
-    console.log("performance", window.performance);
+    // window.localStorage.getItem("a");
+    console.log(window.localStorage.getItem("a"));
     this.$utils.resetScreenSizeTwo();
   },
   methods: {},

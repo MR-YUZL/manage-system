@@ -21,6 +21,7 @@
         <p>vue的名字</p>
       </div>
     </section> -->
+    <a-button @click="reflesh">刷新</a-button>
 
     <h1>{{ message }}</h1>
     <input v-model="message" />
@@ -35,6 +36,17 @@
       <div class="flex2__1">1</div>
 
       <div class="flex2__2">1</div>
+    </div>
+
+    <div style="width:100px" class="wrap">
+      <span>
+        联系人:
+      </span>
+      <span>
+        hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+        hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+        hhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh
+      </span>
     </div>
 
     <canvas id="myCanvas" :width="300" :height="150" class="blur">
@@ -94,11 +106,16 @@
       ref="select"
       style="width: 120px"
       v-model="valueSelect"
+      v-label
+      key="222"
     >
       <a-select-option value="1"> Jack </a-select-option>
-      <a-select-option value="2"> Lucy </a-select-option>
       <a-select-option value="3"> Disabled </a-select-option>
       <a-select-option value="4"> yiminghe </a-select-option>
+    </a-select>
+
+    <a-select ref="select" style="width: 120px" v-label key="111">
+      <a-select-option value="2"> Lucy </a-select-option>
     </a-select>
 
     <a-tree-select
@@ -125,14 +142,7 @@
       </a-tree-select-node>
     </a-tree-select>
 
-    <Steps3 :testObj="testObj">
-      <template #b>
-        <div>
-          <div>test</div>
-          <div>test</div>
-        </div>
-      </template>
-    </Steps3>
+    <Steps3 :testObj="testObj" key="1"> </Steps3>
 
     <div v-for="(value, key) in testObj" :key="key">
       {{ value }} ----- {{ key }}
@@ -150,11 +160,54 @@
       </ul>
     </div> -->
 
+    <!-- <div id="list-complete-demo" class="demo">
+      <button v-on:click="add">Add</button>
+      <button v-on:click="remove">Remove</button>
+      <transition-group name="list-complete" tag="p">
+        <span
+          v-for="item in items"
+          v-bind:key="item"
+          class="list-complete-item"
+        >
+          {{ item }}
+        </span>
+      </transition-group>
+    </div> -->
+
+    <a-form-model ref="ruleForm" :model="ruleForm" :rules="rules">
+      <a-form-model-item has-feedback label="Password" prop="pass">
+        <a-input v-model="ruleForm.pass" type="password" autocomplete="off" />
+      </a-form-model-item>
+      <a-form-model-item :wrapper-col="{ span: 14, offset: 4 }">
+        <a-button type="primary" @click="submitForm('ruleForm')">
+          Submit
+        </a-button>
+      </a-form-model-item>
+    </a-form-model>
+
+    <div id="list-complete-demo" class="demo">
+      <button v-on:click="add">Add</button>
+      <button v-on:click="remove">Remove</button>
+      <transition-group name="list-complete" tag="p" style="position:relative">
+        <span
+          v-for="item in items"
+          v-bind:key="item"
+          class="list-complete-item"
+        >
+          {{ item }}
+        </span>
+      </transition-group>
+    </div>
+
     <div id="edit"></div>
     <a-button @click="downloadImg">提交</a-button>
     <a href="" id="download" @click="(e) => e.preventDefault()">下载</a>
 
     <input type="file" id="file" />
+
+    <a-button @click="getBase">下载</a-button>
+
+    <img :src="base64" alt="" />
     <!-- <img
       src="https://bf02-1400440145-1303031839.cos.ap-shanghai.myqcloud.com/bf02-1400440145/35b9-qfy-a270db0622554bd7856e5a5e2060f937/qfy-a270db0622554bd7856e5a5e2060f937-LTEwMzI2MTU1NjQ%3D-17134-pexels-benjamin-suter-2362004.jpg"
       alt=""
@@ -170,11 +223,23 @@
 import CompositeImage from "composite-image";
 import { DownloadImg } from "@/utils/downloadImg";
 import { ListForm } from "@/utils/name";
+import { debounce, fileLinkToStreamDownload } from "@/utils";
+import { saveFileToLink } from "web-downloadfile";
+
 export default {
   name: "hover",
   data() {
+    function validatePass(rule, value, callback) {
+      console.log("value", rule, value);
+      if (value === "") {
+        callback(new Error("Please input the password"));
+      } else {
+        callback();
+      }
+    }
     return {
       file: null,
+      base64: "",
       text: "",
       editor: null,
       value: 1,
@@ -184,6 +249,16 @@ export default {
       valueSelect: "1",
       valueTree: "",
       testObj: {},
+      items: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      nextNum: 10,
+      ruleForm: {
+        pass: "",
+        checkPass: "",
+        age: "",
+      },
+      rules: {
+        pass: [{ validator: debounce(validatePass, 1000), trigger: "change" }],
+      },
       stepsList: [
         { height: 30, content: "测试1" },
         { height: 40, content: "测试2" },
@@ -271,6 +346,9 @@ export default {
         this.value = Number(value) + 1;
       },
     },
+    // message() {
+    //   return this.value + 1;
+    // },
   },
   watch: {
     height(val) {
@@ -321,12 +399,39 @@ export default {
     console.log("now", now);
   },
   methods: {
+    saveFile() {
+      fileLinkToStreamDownload(
+        "http://ylhslytest.oss-cn-hangzhou.aliyuncs.com/20210420/273d3ab1434248039500d4ab8372dc4b",
+        "test",
+        "pdf"
+      );
+    },
+    reflesh() {
+      // this.$router.go(0)
+      this.$router.push({
+        path:'/redirect/hover'
+      })
+    },
+    submitForm(formName) {
+      this.$refs[formName].validateField("pass", (errorMessage) => {
+        console.log("errorMessage", errorMessage);
+      });
+    },
     downloadImg() {
       let downloadImg = new DownloadImg();
       downloadImg.init(
         "download",
         "https://bf02-1400440145-1303031839.cos.ap-shanghai.myqcloud.com/bf02-1400440145/35b9-qfy-a270db0622554bd7856e5a5e2060f937/qfy-a270db0622554bd7856e5a5e2060f937-LTEwMzI2MTU1NjQ%3D-17134-pexels-benjamin-suter-2362004.jpg"
       );
+    },
+    randomIndex: function() {
+      return Math.floor(Math.random() * this.items.length);
+    },
+    add: function() {
+      this.items.splice(this.randomIndex(), 0, this.nextNum++);
+    },
+    remove: function() {
+      this.items.splice(this.randomIndex(), 1);
     },
     getBase64(file) {
       return new Promise((resolve, reject) => {
@@ -342,25 +447,25 @@ export default {
       var xhr = new XMLHttpRequest();
       xhr.open(
         "get",
-        "https://bf02-1400440145-1303031839.cos.ap-shanghai.myqcloud.com/bf02-1400440145/35b9-qfy-a270db0622554bd7856e5a5e2060f937/qfy-a270db0622554bd7856e5a5e2060f937-LTEwMzI2MTU1NjQ%3D-17134-pexels-benjamin-suter-2362004.jpg",
+        "http://ylhslytest.oss-cn-hangzhou.aliyuncs.com/20210420/fc5104234c23482487824ee5ff4e436d",
         true
       );
       // 至关重要
       xhr.responseType = "blob";
       xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-      xhr.onload = async function () {
+      xhr.onload = async function() {
         if (this.status == 200) {
           //得到一个blob对象
           var content = this.response;
           var blob = new Blob([content]);
           // 至关重要
-          let base64 = await that.getBase64(blob);
-
-          var a = document.createElement("a"); // 生成一个a元素
-          var event = new MouseEvent("click"); // 创建一个单击事件
-          a.download = name || "photo"; // 设置图片名称
-          a.href = base64; // 将生成的URL设置为a.href属性
-          a.dispatchEvent(event); // 触发a的单击事件
+          this.base64 = await that.getBase64(blob);
+          console.log("base64", this.base64);
+          // var a = document.createElement("a"); // 生成一个a元素
+          // var event = new MouseEvent("click"); // 创建一个单击事件
+          // a.download = name || "photo.png"; // 设置图片名称
+          // a.href = base64; // 将生成的URL设置为a.href属性
+          // a.dispatchEvent(event); // 触发a的单击事件
         }
       };
       xhr.send();
@@ -369,15 +474,15 @@ export default {
       // 下载图片地址和图片名
       var image = new Image();
       // 解决跨域 Canvas 污染问题
+      // 必须设置，否则canvas中的内容无法转换为blob
       image.setAttribute("crossOrigin", "anonymous");
-      image.onload = async function () {
+      image.onload = async function() {
         var canvas = document.createElement("canvas");
         canvas.width = image.width;
         canvas.height = image.height;
         var context = canvas.getContext("2d");
         context.drawImage(image, 0, 0, image.width, image.height);
         var url = canvas.toDataURL("image/jpeg", 0.7); // 得到图片的base64编码数据
-        // var url = await this.getBase64(imgsrc);
         var a = document.createElement("a"); // 生成一个a元素
         var event = new MouseEvent("click"); // 创建一个单击事件
         a.download = name || "photo"; // 设置图片名称
@@ -388,7 +493,7 @@ export default {
     },
     downloadImgByBlob(url) {
       var img = new Image();
-      img.onload = function () {
+      img.onload = function() {
         var canvas = document.createElement("canvas");
         canvas.width = img.width;
         canvas.height = img.height;
@@ -435,11 +540,6 @@ export default {
         "value,option",
         value,
         option.componentOptions.children[0].elm.data.trim()
-      );
-      console.log(
-        "select",
-        this.$refs.select.$el.innerText,
-        document.getElementById("select").innerText
       );
     },
     handleOn() {
@@ -659,7 +759,23 @@ export default {
   height: 100%;
   width: 100%;
   text-align: center;
-
+  .list-complete-item {
+    transition: all 2s;
+    display: inline-block;
+    margin-right: 10px;
+  }
+  .list-complete-enter, .list-complete-leave-to
+/* .list-complete-leave-active for below version 2.1.8 */ {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  .list-complete-leave-active {
+    transition: all 1s linear 1s;
+    position: absolute;
+  }
+  .list-complete-enter-active {
+    transition: all 1s linear 1s;
+  }
   .test {
     display: flex;
     justify-content: center;
@@ -859,5 +975,13 @@ export default {
       background: #000;
     }
   }
+}
+
+.wrap {
+  overflow: hidden;
+  display: -webkit-box; //将对象作为弹性伸缩盒子模型显示  *必须结合的属性*
+  -webkit-box-orient: vertical; //设置伸缩盒对象的子元素的排列方式  *必须结合的属性*
+  -webkit-line-clamp: 3; //用来限制在一个块元素中显示的文本的行数
+  word-break: break-all;
 }
 </style>

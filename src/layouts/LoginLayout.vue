@@ -1,5 +1,5 @@
 <template>
-  <main class="loginLayout">
+  <main class="loginLayout test" ref="loginLayout" @click="handleClick" :a-b="'123'" id="1">
     <header class="header__Layout">
       <div class="header__logo">
         <img :src="require('@/assets/qfeng.png')" alt="" class="logo" />
@@ -31,8 +31,13 @@ export default {
     return {};
   },
   created() {},
-  mounted() {},
-  methods: {},
+  mounted() {
+  },
+  methods: {
+    handleClick(e){
+      console.log(e)
+    }
+  },
 };
 </script>
 

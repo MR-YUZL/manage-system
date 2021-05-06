@@ -82,7 +82,6 @@ export default {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-self: center;
   width: 100%;
   overflow: hidden;
   .header {

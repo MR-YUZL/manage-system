@@ -1,5 +1,5 @@
 <template>
-  <a-input v-bind="$attrs" @change="change" :value="value" />
+  <a-input v-bind="$attrs" @change="change" :value="value" v-label />
 </template>
 
 <script>

@@ -23,7 +23,11 @@
                   </a-col>
                   <a-col :md="6" :sm="24">
                     <a-form-item label="对应岗位">
-                      <Select v-decorator="['post']" :options="postOptions" />
+                      <Select
+                        v-decorator="['post']"
+                        v-label
+                        :options="postOptions"
+                      />
                     </a-form-item>
                   </a-col>
                   <a-col :md="6" :sm="24">
@@ -271,10 +275,10 @@ export default {
     changeTabs() {
       console.log("ok");
     },
-    requestInfo(){
-      requestIn().then(res => {
-        console.log('res',res)
-      })
+    requestInfo() {
+      requestIn().then((res) => {
+        console.log("res", res);
+      });
     },
     requestTable() {
       this.tableLoading = true;
