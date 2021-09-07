@@ -53,7 +53,7 @@
       </nav>
       <main class="body_right">
         <transition name="fade-page" mode="out-in">
-          <router-view></router-view>
+          <router-view class="a"></router-view>
         </transition>
       </main>
     </main>

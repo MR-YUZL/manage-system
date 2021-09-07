@@ -13,6 +13,8 @@
           @search="onSearch"
       /></a-col>
       <a-col>
+        <a-input v-model="msg"></a-input>
+        <a-button type="primary" @click="onWatch"> 触发 </a-button>
         <a-button type="primary" @click="onSubmit"> 提交 </a-button>
       </a-col>
     </a-row>
@@ -61,15 +63,14 @@
 <script>
 import { GetUserList, GetPowerList } from "@/api/four";
 import { GetUserInfo } from "@/api/login";
-import {
-  rootRoute,
-} from '@/views/homePage/route'
+import { rootRoute } from "@/views/homePage/route";
 export default {
   name: "power",
   components: {},
   props: {},
   data() {
     return {
+      msg: "",
       treeData: [],
       listLoading: false,
       powerLoading: false,
@@ -80,7 +81,6 @@ export default {
   },
   created() {},
   mounted() {
-    console.log('rootRoute',rootRoute)
     this.requestUserList();
     this.treeData = this.createdTree(this.$store.state.user.mainRoute);
   },
@@ -95,11 +95,18 @@ export default {
 
         item.length > 1 ? actions.push(e) : page.push(e);
       });
-
-      console.log("page", page);
-      console.log("actions", actions);
     },
-
+    onWatch() {
+      const a = this.$watch(
+        function() {
+          return this.msg;
+        },
+        function(val) {
+          console.log("val", val);
+          // a();
+        }
+      );
+    },
     createdTree(route) {
       let tree = [];
 
@@ -108,13 +115,15 @@ export default {
           title: item.meta.title,
           key: item.name,
         };
-        if (item.meta.permission) {  //筛选出底下无子页面的
+        if (item.meta.permission) {
+          //筛选出底下无子页面的
           let arr = [];
           let permission = item.meta.permission;
           for (const key in permission) {
             arr.push({ title: key, key: permission[key] });
           }
-          if (item.children && !item.isChildMenu) { //有子页面且有权限(意味着底下的子页面也享有这个权限)
+          if (item.children && !item.isChildMenu) {
+            //有子页面且有权限(意味着底下的子页面也享有这个权限)
             arr.push({ title: item.meta.title, key: item.name });
           }
           data.children = arr;
@@ -190,7 +199,7 @@ export default {
             for (let value of arr) {
               if (value.children) {
                 if (value.actions.length !== 0) {
-                  array.push(value.actions);  //父级页面的按钮权限
+                  array.push(value.actions); //父级页面的按钮权限
                 }
                 array.push(func(value.children), value.page);
               } else {

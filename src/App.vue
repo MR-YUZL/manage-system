@@ -8,6 +8,7 @@
 
 <script>
 import zhCN from "ant-design-vue/lib/locale-provider/zh_CN";
+import "./utils/prototype";
 export default {
   name: "app",
   data: () => ({

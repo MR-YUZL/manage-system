@@ -1,6 +1,7 @@
 <template>
   <div class="">
     <h1>账号管理{{ msg }}</h1>
+    <a-button @click="msg = msg + 1">+1</a-button>
     <List2
       :list="list"
       :listChild="listChild"
@@ -55,6 +56,14 @@ export default {
   created() {},
   mounted() {
     this.msg = this.$route.fullPath;
+    this.$watch(
+      () => {
+        return this.msg + this.spinning1;
+      },
+      function(val, olVal) {
+        console.log("val,olVal", val, olVal);
+      }
+    );
   },
   methods: {
     getChannelId(id) {
@@ -111,5 +120,4 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
-</style>
+<style lang="scss" scoped></style>

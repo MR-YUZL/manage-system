@@ -45,5 +45,13 @@ Vue.directive("focus", {
 });
 
 Vue.directive("label", {
-  componentUpdated: function(el, binding, vode) {},
+  inserted: function(el) {
+    console.log("el", el);
+  },
+  update: function(el, binding, vode) {
+    console.log("el", el, binding, vode);
+  },
+  componentUpdated: function(el, binding, vode) {
+    console.log("el", el, vode);
+  },
 });

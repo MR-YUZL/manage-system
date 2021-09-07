@@ -1,14 +1,22 @@
 const path = require("path");
+const TerserPlugin = require("terser-webpack-plugin");
+const webpack = require("webpack");
+// const BASE_URL = require("./public");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 
 function resolve(dir) {
   return path.join(__dirname, dir);
 }
 
+// const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+
+// const smp = new SpeedMeasurePlugin();
+
+// module.exports = smp.wrap(YourWebpackConfig);
 module.exports = {
   chainWebpack: (config) => {
-    config.resolve.alias
-      .set("@", resolve("src"))
-      .set("views", resolve("src/views"));
+    config.resolve.alias.set("views", resolve("src/views"));
     config.module
       .rule("vue")
       .use("vue-loader")
@@ -20,11 +28,43 @@ module.exports = {
     devtool: "source-map",
     mode: "development",
     resolve: {
+      modules: [path.resolve(__dirname, "node_modules")],
       extensions: [".js", ".vue", ".json"],
       alias: {
         vue$: "vue/dist/vue.esm.js",
         "@": resolve("src"),
       },
+    },
+    plugins: [
+      // new webpack.HotModuleReplacementPlugin(),
+      new webpack.ContextReplacementPlugin(/moment[/\\]locale$/, /zh-cn/), //减小moment语言包体积
+      new HtmlWebpackPlugin({
+        //html编译插件
+        template: "./public/index.html",
+        // url: BASE_URL,
+        title: "hfw",
+      }),
+      // new webpack.DllReferencePlugin({
+      //   context: path.join(__dirname),
+      //   manifest: require("./public/vue.manifest.json"),
+      // }),
+      // new AddAssetHtmlPlugin({
+      //   filepath: path.resolve(__dirname, "./public/*.dll.js"),
+      // }),
+    ],
+    optimization: {
+      minimize: false,
+      minimizer: [
+        new TerserPlugin({
+          test: /\.js(\?.*)?$/i,
+          parallel: 4,
+          terserOptions: {
+            //Terser 压缩配置
+            output: { comments: false },
+          },
+          extractComments: true,
+        }),
+      ],
     },
   },
   lintOnSave: false,

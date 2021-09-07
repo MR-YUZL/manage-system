@@ -14,6 +14,8 @@
         <img :src="require('@/assets/logo.png')" />
       </a>
     </section>
+
+    <Background @handleClick="handleClick" :text="text"></Background>
     <!-- <section class="lists2">
       <img :src="require('@/assets/logo.png')" alt="" />
       <div class="box5">
@@ -21,10 +23,18 @@
         <p>vue的名字</p>
       </div>
     </section> -->
+
+    <ul>
+      <li v-for="(v, index) in liList" :key="index">
+        {{ index }}----
+        <a-button @click="liList.splice(index, 1)">删除</a-button>
+      </li>
+    </ul>
+
     <a-button @click="reflesh">刷新</a-button>
 
-    <h1>{{ message }}</h1>
-    <input v-model="message" />
+    <h1 @contextmenu="handleContext">{{ message }}</h1>
+    <input :value="message | msgFilters" @change="handleInputChange" />
 
     <div class="test1">
       <div class="test1_test"></div>
@@ -173,6 +183,20 @@
         </span>
       </transition-group>
     </div> -->
+    <a-radio-group v-model="isValue" @change="onChange">
+      <a-radio-button value="a">
+        Hangzhou
+      </a-radio-button>
+      <a-radio-button value="b">
+        Shanghai
+      </a-radio-button>
+      <a-radio-button value="c">
+        Beijing
+      </a-radio-button>
+      <a-radio-button value="d">
+        Chengdu
+      </a-radio-button>
+    </a-radio-group>
 
     <a-form-model ref="ruleForm" :model="ruleForm" :rules="rules">
       <a-form-model-item has-feedback label="Password" prop="pass">
@@ -225,7 +249,6 @@ import { DownloadImg } from "@/utils/downloadImg";
 import { ListForm } from "@/utils/name";
 import { debounce, fileLinkToStreamDownload } from "@/utils";
 import { saveFileToLink } from "web-downloadfile";
-
 export default {
   name: "hover",
   data() {
@@ -238,8 +261,10 @@ export default {
       }
     }
     return {
+      isValue: "",
       file: null,
       base64: "",
+      liList: [1, 2, 3],
       text: "",
       editor: null,
       value: 1,
@@ -361,6 +386,12 @@ export default {
       console.log("val", val);
     },
   },
+  filters: {
+    msgFilters(value) {
+      value = value.toString();
+      return value.slice(0, -8) + "****" + value.slice(-4);
+    },
+  },
   created() {},
   mounted() {
     this.xml = `<h1>${this.height}</h1>`;
@@ -398,7 +429,17 @@ export default {
     now.setFullYear(2001, 1);
     console.log("now", now);
   },
+  updated() {
+    console.log("---------");
+  },
   methods: {
+    handleContext(e) {
+      console.log("e", e);
+    },
+    handleClick(text) {
+      console.log("text", text);
+      this.text = text;
+    },
     saveFile() {
       fileLinkToStreamDownload(
         "http://ylhslytest.oss-cn-hangzhou.aliyuncs.com/20210420/273d3ab1434248039500d4ab8372dc4b",
@@ -409,8 +450,15 @@ export default {
     reflesh() {
       // this.$router.go(0)
       this.$router.push({
-        path:'/redirect/hover'
-      })
+        path: "/redirect/hover",
+      });
+    },
+    handleInputChange(e) {
+      console.log("e", e);
+      this.message = e.target.value;
+    },
+    onChange(e) {
+      console.log(`checked = ${e.target.value}`);
     },
     submitForm(formName) {
       this.$refs[formName].validateField("pass", (errorMessage) => {
